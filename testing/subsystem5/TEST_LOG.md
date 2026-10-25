@@ -1,6 +1,8 @@
 # Subsystem 5 — test log
 
-**Subsystem:** <name>  ·  **Student ID:** <student ID>  ·  **Code:** `app_program/subsystem5/`
+**Owner:** Timothy (2501530)  ·  **Planned subsystem:** Ultrasonic scanning and obstacle avoidance  ·  **Code:** `app_program/subsystem5/`
+
+The cases below are starter placeholders, not tests of the planned subsystem.
 
 See `testing/README.md` for how to run tests and record results.
 

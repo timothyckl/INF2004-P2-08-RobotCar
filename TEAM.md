@@ -1,11 +1,13 @@
 # Team and subsystems
 
-The tables are pre-filled with the **example** in `app_program/` (marked
-*example*). Replace those rows with your own as you replace the example code.
+Group **P2-8**. Ownership below comes from `docs/AAI08_Design_Review.pdf`
+and `docs/AAI08_PostTri1.pdf`. The latter records subsequent design decisions
+and outstanding validation.
 
-Fill this in at the start of the project and keep it up to date. It is the
-single place that says **who owns what**, so that five people can work in
-one firmware image without clashing over pins, priorities, or kernel objects.
+The firmware still runs the starter examples. Pin, task, interface and object
+entries marked *example* describe that code, not the planned robot subsystems.
+Update them as each implementation replaces the example. Keep this file current
+so five people can work in one firmware image without resource conflicts.
 
 A **subsystem** is one student's part of the product, with its own folder.
 It may contain several tasks and own several peripherals (see section 3).
@@ -15,13 +17,23 @@ subsystem, ask its owner or open a pull request for them to review.
 
 ## 1. Members and subsystems
 
-| # | Subsystem (what it does) | Student ID | GitHub username | Code | Tests |
-|---|---|---|---|---|---|
-| 1 | *example:* LED heartbeat on GP19 | | | `app_program/subsystem1/` | `testing/subsystem1/` |
-| 2 | *example:* Producer: makes a sample every 300 ms | | | `app_program/subsystem2/` | `testing/subsystem2/` |
-| 3 | *example:* Consumer: collects samples into statistics | | | `app_program/subsystem3/` | `testing/subsystem3/` |
-| 4 | *example:* Monitor: prints reports, pauses the LED | | | `app_program/subsystem4/` | `testing/subsystem4/` |
-| 5 | | | | `app_program/subsystem5/` | `testing/subsystem5/` |
+| # | Owner | Planned subsystem | Student ID | GitHub username | Code | Tests |
+|---|---|---|---|---|---|---|
+| 1 | Hong Yih | WiFi/MQTT, telemetry, command validation/forwarding, heartbeat and reconnection | 2501110 | Not provided | `app_program/subsystem1/` | `testing/subsystem1/` |
+| 2 | Dalton | Vehicle Controller; motors, encoders, PID speed/distance control and turns | 2504003 | Not provided | `app_program/subsystem2/` | `testing/subsystem2/` |
+| 3 | Edmund | IR calibration, line following, barcode decoding and navigation commands | 2501578 | Not provided | `app_program/subsystem3/` | `testing/subsystem3/` |
+| 4 | Khang | IMU calibration, motion/hump detection, highest peak and event reporting | 2503012 | Not provided | `app_program/subsystem4/` | `testing/subsystem4/` |
+| 5 | Timothy | Servo/ultrasonic scanning, obstacle profiling, bypass planning and line reacquisition | 2501530 | Not provided | `app_program/subsystem5/` | `testing/subsystem5/` |
+
+The Vehicle Controller authorises movement and recovery; only Motion Control
+writes motor PWM. Sensor subsystems report results or plans rather than driving
+motors directly. Networking remains subject to the service-task rule in section 3.
+
+Post-Tribunal decisions retain latched STOP and stop-before-scan. Remote STOP
+bypasses the normal command queue via `controller_flags`; START/RESET use
+`remote_q`. These are planned interfaces, not existing application objects.
+Compact telemetry summaries keep raw readings local; field ranges, widths,
+byte order and safe shared-data access still need agreement and testing.
 
 Shared files (`app_program/app_main.c`, `app_program/app.h`, this file)
 are changed only by agreement of the team. The exception is claiming an empty
@@ -38,6 +50,13 @@ error, but the hardware misbehaves. Each subsystem can pass its own tests
 and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
+
+The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2;
+this table still reflects the starter. Reconcile that wiring with the actual
+board and datasheets before configuring hardware. In particular, the planned
+IMU uses GP0/GP1 (conflicts with UART crash reporting), and the encoders use
+GP26–GP28 (conflicts with the sample ADC driver). No hardware configuration
+has been changed here.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -143,6 +162,11 @@ What students *can* do:
 
 1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
 change it only by team agreement. Write down every task you create.
+
+The table below is the starter's allocation, not the robot's final priorities.
+The design orders application work as Vehicle Controller, Motion Control,
+Obstacle Scan, Line Sensor, IMU/Terrain, then Wireless Comms. Numeric priorities
+and affinities remain to be reconciled with this port's kernel service tasks.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
