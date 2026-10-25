@@ -1,6 +1,8 @@
 # Subsystem 1 — test log
 
-**Subsystem:** LED heartbeat (example)  ·  **Student ID:** <student ID>  ·  **Code:** `app_program/subsystem1/`
+**Owner:** Hong Yih (2501110)  ·  **Planned subsystem:** WiFi/MQTT communication  ·  **Code:** `app_program/subsystem1/`
+
+The cases below test the current LED starter example, not the planned subsystem.
 
 See `testing/README.md` for how to run tests and record results.
 

@@ -1,6 +1,8 @@
 # Subsystem 3 — test log
 
-**Subsystem:** Consumer (example)  ·  **Student ID:** <student ID>  ·  **Code:** `app_program/subsystem3/`
+**Owner:** Edmund (2501578)  ·  **Planned subsystem:** IR line following and barcode decoding  ·  **Code:** `app_program/subsystem3/`
+
+The cases below test the current consumer starter example, not the planned subsystem.
 
 See `testing/README.md` for how to run tests and record results.
 

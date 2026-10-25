@@ -1,7 +1,21 @@
-# micro T-Kernel 3.0 project for Raspberry Pi Pico W
+# INF2004 P2-8 — Autonomous Robot Car
 
-A starting point for your project: micro T-Kernel 3.0 running on **both cores**
-of the Pico W's RP2040, with a USB serial console and the WiFi driver built in.
+Team P2-8's autonomous robot car uses the Raspberry Pi Pico W + Robo Pico
+platform and micro T-Kernel 3.0. The project must follow a line, decode navigation
+barcodes, detect humps and report the highest peak, profile and bypass obstacles,
+reacquire the original line, and report telemetry over WiFi/MQTT.
+
+The firmware currently contains the RTOS starter examples, not these robot
+features. It runs on **both cores** of the Pico W's RP2040, with a USB serial
+console and the WiFi driver built in.
+
+Project references in `docs/`:
+- `Project Description.pdf` — mission and subsystem requirements.
+- `AAI08_Design_Review.pdf` — team ownership and initial architecture.
+- `AAI08_PostTri1.pdf` — later decisions, open risks and planned validation.
+
+See `TEAM.md` for subsystem owners. Design targets are not measured results;
+interfaces and compact data formats still need implementation and validation.
 
 You need a **Raspberry Pi Pico W**, a USB cable, and a computer running
 macOS, Linux, or Windows with **WSL (Ubuntu)**. On Windows, run every
@@ -84,8 +98,8 @@ toolchain's `bin` folder. Fix that before going further.
 
 ```sh
 cd ~/pico
-git clone <URL-of-this-repo> my-project
-cd my-project
+git clone https://github.com/timothyckl/INF2004-P2-08-RobotCar.git
+cd INF2004-P2-08-RobotCar
 ```
 
 **2.2 Build**
