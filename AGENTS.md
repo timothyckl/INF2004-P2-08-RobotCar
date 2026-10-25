@@ -32,6 +32,28 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 - Keep application code and drivers in `app_program/subsystemN/`; `device/`
   contains kernel drivers. Track shared hardware assignments in `TEAM.md`.
 
+## Software engineering principles
+
+- **Defect prevention:** Prefer practices and tools that prevent or detect defects
+  before execution, including compiler warnings and static analysis.
+- **Quality attributes:** Prioritise reliability, readability, maintainability,
+  efficiency, and portability over programmer convenience.
+- **Encapsulation and low coupling:** Expose only necessary interfaces and keep
+  implementation details private to their modules.
+- **Modularity and cohesion:** Give each source module one clear responsibility or
+  entity to control.
+- **Quality assurance:** Use version control, defect tracking, architecture and
+  design reviews, peer reviews, and automated analysis.
+- **Embedded robustness:** Account explicitly for concurrency, interrupts, shared
+  state, integer ranges, overflow, and implementation-defined behaviour.
+- **Governance:** Enforce agreed standards and document the reason and approval
+  for every deviation.
+- **YAGNI:** Do not add functionality or abstractions until they are actually
+  needed.
+- **DRY:** Keep each piece of knowledge in one authoritative place rather than
+  duplicating it.
+- **KISS:** Choose the simplest design that correctly meets the requirements.
+
 ## Hardware references
 
 | Hardware | Local datasheet / manual |
