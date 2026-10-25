@@ -9,6 +9,7 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
   records the initial architecture and ownership; `docs/AAI08_PostTri1.pdf`
   records later decisions and open validation. Use the later decisions where
   they revise the initial design. `TEAM.md` maps members to subsystem folders.
+- `docs/decisions.md` records agreed resolutions to tribunal gaps and implementation issues (currently subsystem 5). All members must record new agreed decisions there, labelled by subsystem—not unresolved proposals.
 - Distinguish planned robot behaviour from the starter examples still in the
   firmware. Do not present proposed timing, data widths or test criteria as
   validated results.
