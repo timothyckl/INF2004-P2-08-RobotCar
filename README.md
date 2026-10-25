@@ -102,6 +102,9 @@ git clone https://github.com/timothyckl/INF2004-P2-08-RobotCar.git
 cd INF2004-P2-08-RobotCar
 ```
 
+Place the Pico SDK in this directory as `pico-sdk/` and point `PICO_SDK_PATH`
+to it. The directory is ignored by Git.
+
 **2.2 Build**
 
 ```sh

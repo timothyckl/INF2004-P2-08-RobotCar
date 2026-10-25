@@ -2,8 +2,14 @@
 # micro T-Kernel 3.0 BSP  makefile
 ################################################################################
 
-# app_program/*.c plus one level of subfolders (one per subsystem)
-TEMP_SRCS = $(wildcard ../app_program/*.c) $(wildcard ../app_program/*/*.c)
+# Existing flat subsystems plus subsystem 5's src/ layout.
+TEMP_SRCS = $(wildcard ../app_program/*.c) $(wildcard ../app_program/*/*.c) \
+            $(wildcard ../app_program/subsystem5/src/*.c)
+# Subsystem 5 unit cases execute through subsystem5_test on the Pico W.
+ifeq ($(TEST),1)
+TEMP_SRCS += $(wildcard ../testing/subsystem5/unit_tests/src/*.c)
+endif
+
 TEMP_OBJS = $(TEMP_SRCS:.c=.o)
 TEMP_DEPS = $(TEMP_SRCS:.c=.d)
 
@@ -12,6 +18,13 @@ C_DEPS += $(subst ../, ./mtkernel_3/, $(TEMP_DEPS))
 
 mtkernel_3/app_program/%.o: ../app_program/%.c
 	@echo 'Building file: $<'
+	@mkdir -p $(dir $@)
+	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+mtkernel_3/testing/subsystem5/unit_tests/src/%.o: ../testing/subsystem5/unit_tests/src/%.c
+	@echo 'Building Pico W test: $<'
 	@mkdir -p $(dir $@)
 	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 	@echo 'Finished building: $<'
