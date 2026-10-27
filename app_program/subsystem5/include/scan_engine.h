@@ -53,7 +53,14 @@ typedef struct
     bool                      b_asserted;
 } scan_engine_output_t;
 
-/** Clock and output dependencies owned by the calling environment. */
+/**
+ * @brief Clock and output dependencies owned by the calling environment.
+ *
+ * Both callbacks execute synchronously and shall be bounded and non-blocking.
+ * They shall not re-enter the same scan engine. The microsecond clock shall
+ * advance monotonically through its 32-bit wraparound. Calls shall occur often
+ * enough that no measured interval spans a complete clock period.
+ */
 typedef struct
 {
     uint32_t (*p_time_now_us)(void);
@@ -70,25 +77,42 @@ typedef struct
 /** State owned by the task that operates the scanner. */
 typedef struct
 {
-    scan_engine_port_t port;
+    scan_engine_port_t   port;
     scan_engine_config_t config;
-    uint32_t request_id;
-    uint32_t settling_started_us;
-    bool b_has_request;
-    bool b_is_authorised;
-    bool b_is_stopped;
-    bool b_is_scanning;
-    bool b_trigger_started;
+    uint32_t             request_id;
+    uint32_t             settling_started_us;
+    bool                 b_has_request;
+    bool                 b_is_authorised;
+    bool                 b_is_stopped;
+    bool                 b_is_scanning;
+    bool                 b_trigger_started;
 } scan_engine_t;
 
-/** Reset a scanner instance using explicit dependencies and configuration. */
-void scan_engine_reset(scan_engine_t * p_engine,
-                       scan_engine_port_t const * p_port,
-                       scan_engine_config_t const * p_config);
+/**
+ * @brief Reset a scanner using explicit dependencies and configuration.
+ *
+ * Null dependency or configuration pointers leave the corresponding fields
+ * cleared. A null engine pointer has no effect.
+ *
+ * @param p_engine Scanner state to reset.
+ * @param p_port Clock and publication dependencies, or NULL.
+ * @param p_config Calibrated scanner configuration, or NULL.
+ */
+void scan_engine_reset (scan_engine_t * p_engine,
+                        scan_engine_port_t const * p_port,
+                        scan_engine_config_t const * p_config);
 
-/** Process one decoded event without blocking. */
-void scan_engine_process(scan_engine_t * p_engine,
-                         scan_engine_event_t const * p_event);
+/**
+ * @brief Process one decoded event without blocking.
+ *
+ * Null engine or event pointers have no effect. Processing remains
+ * non-blocking when the port callbacks satisfy scan_engine_port_t's contract.
+ *
+ * @param p_engine Scanner state that owns the event.
+ * @param p_event Decoded event to process.
+ */
+void scan_engine_process (scan_engine_t * p_engine,
+                          scan_engine_event_t const * p_event);
 
 #endif /* SCAN_ENGINE_H */
 

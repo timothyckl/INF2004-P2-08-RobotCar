@@ -17,8 +17,8 @@
  * @param p_distance_mm Destination for the converted distance.
  * @return true when the duration is within the supported physical range.
  */
-bool range_measurement_from_echo(uint32_t echo_us,
-                                 uint16_t * p_distance_mm);
+bool range_measurement_from_echo (uint32_t echo_us,
+                                  uint16_t * p_distance_mm);
 
 #endif /* RANGE_MEASUREMENT_H */
 

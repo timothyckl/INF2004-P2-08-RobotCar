@@ -46,13 +46,15 @@ test_subject_forward_only (void)
 
     for (uint32_t index = 0u; index < test_fixture_size(); index++)
     {
-        test_fixture_record_t const * p_record = test_fixture_record(index);
+        test_fixture_record_t const * const p_record =
+            test_fixture_record(index);
 
         if ((TEST_INTERFACE_SERVO == p_record->output.kind)
             && (0 != p_record->output.angle_deg))
         {
             b_forward = false;
         }
+
     }
 
     return (b_forward && (!test_fixture_overflowed()));

@@ -52,7 +52,7 @@ Set the hazard threshold from measured sensor offset, worst braking distance, tr
 
 Match scan authorisation and stop confirmation to the active request ID. Confirm both wheels stationary for 100 ms using calibrated encoder thresholds; allow at most 2 s for confirmation.
 
-Distinguish existing motor inhibition from a new STOP event. A new STOP, cancellation, vehicle movement or withdrawn authorisation aborts the scan and invalidates its echo generation, profile and plan. Acknowledge cancellation and reject late results. Recovery requires controller-authorised RESET and fresh sensor validation.
+Distinguish existing motor inhibition from a new STOP event. A new STOP, cancellation, vehicle movement or withdrawn authorisation aborts the scan and invalidates its echo generation, profile and plan. Acknowledge cancellation and reject late results. A rejected initial servo command prevents scan entry. A rejected trigger command aborts the active scan and requests a best-effort return to forward; the request remains invalid even if that return command is also rejected. Do not recursively publish a fault through a failed output path. Recovery requires controller-authorised RESET and fresh sensor validation.
 
 ### 7. Messages and compact formats
 
@@ -81,3 +81,44 @@ Repeat each physical measurement condition 10 times. Target distance error no gr
 Test under concurrent encoder, IR, ECHO, servo and WiFi load. Require control cycles ≤20 ms, stop/slowing initiation ≤100 ms after unsafe confirmation, and STOP-flag-to-motor-off ≤20 ms. Measure STOP reception-to-flag and physical braking separately.
 
 Compare actual RAM, queue/payload sizes and timing against an unpacked reference using identical data and workload. Record calibration, tested commit, inputs, results and saved evidence. Numerical targets remain unvalidated until tested.
+
+### 11. C module templates
+
+Use these maintained templates for new subsystem 5 modules. Replace `module`
+consistently and choose a root name that is unique in its first eight characters.
+
+Header template:
+
+```c
+/**
+ * @file module.h
+ * @brief Describe the single entity exposed by this module.
+ */
+#ifndef MODULE_H
+#define MODULE_H
+
+/** Perform the documented module operation. */
+void module_run (void);
+
+#endif /* MODULE_H */
+
+/* End of file. */
+```
+
+Source template:
+
+```c
+/**
+ * @file module.c
+ * @brief Implement the single entity exposed by this module.
+ */
+#include "../include/module.h"
+
+void
+module_run (void)
+{
+    /* Implement the documented operation. */
+}
+
+/* End of file. */
+```

@@ -8,12 +8,12 @@ Requirements come from the Design Review (FR6, FR7, FR10, NFR2–NFR8), PostTri1
 
 All test cases execute on the **Raspberry Pi Pico W**, not on the build computer. The computer only cross-compiles firmware, copies the UF2 and saves serial output.
 
-- **Ready:** S5-U03–S5-U17 have executable on-device test code bound to the production distance and scan-gating logic. Each reports `PASS` or `FAIL`; no on-device execution has been recorded yet.
+- **Ready:** S5-U03–S5-U17 and S5-U51–S5-U52 have executable on-device test code bound to the production distance and scan-gating logic. Each reports `PASS` or `FAIL`; no on-device execution has been recorded yet.
 - **Planned:** the case is specified but its code, interface or hardware prerequisites are not ready. Planned cases are not counted as executed.
-- Automated logic cases run through the existing test entry in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
+- Automated logic cases run through `scan_lifecycle_test()` in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
 - Real sensor, servo, RTOS/ISR and integration cases require separate on-board measurements. No motor or servo movement is enabled by this test scaffold.
 
-Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source only for `TEST=1`. Normal firmware excludes it. All new/modified C requires BARR-C:2018 review; there is no custom BARR checker.
+Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source and adapter only for `TEST=1`. Normal firmware excludes them. The subsystem build compiles project-authored subsystem 5 C as C99 with strict warnings treated as errors. It also runs `tools/check_subsystem5_barr_c.py` for mechanically enforceable BARR-C:2018 rules; semantic rules still require review.
 
 1. Build with `make -C build_make TEST=1 -j8`, following the SDK/toolchain setup in the project README. `make -C testing/subsystem5/unit_tests` forwards to the same firmware build; it does not run a native executable.
 2. Flash `build_make/mtk3pico_smp1_usb_cdc_wifi_test.uf2` to the Pico W using BOOTSEL. This is the default build profile's filename; other profile options change it.
@@ -35,21 +35,23 @@ All cases below are **ready** to execute on the Pico W through an adapter bound 
 |---|---|---|---|
 | S5-U03 | D3 | Convert 1000, 2000 and 5000 µs pulse widths. | Valid outputs of 170, 340 and 850 mm, independently derived from 340 m/s. |
 | S5-U04 | D3 | Convert 117 and 118 µs. | Reject the below-minimum physical pulse; accept the first above-minimum pulse with an in-range integer result. |
-| S5-U05 | D3 | Convert 23529 and 23530 µs. | Accept the below-maximum physical pulse; reject the above-maximum pulse. |
+| S5-U05 | D3 | Convert 23530 and 23531 µs. | Accept 23530 µs as 4000 mm; reject the next integer pulse width. |
 | S5-U06 | D3 | Convert zero width with an existing output value. | Invalid result; no plausible measurement replaces the existing value. |
 | S5-U07 | D3; invalid input handling | Supply a null conversion output pointer. | Reject safely without a crash. |
 | S5-U08 | D3, D8 | Convert 30000 µs and `UINT32_MAX`. | Invalid; multiplication/overflow cannot produce a valid near obstacle distance. |
-| S5-U09 | D6; FR10 | Request 7 and authorise it, but supply no stop confirmation. Advance 1000 µs. | No non-forward scan command or bypass plan. |
-| S5-U10 | D6 | Request/authorise 7; confirm stop for request 8. Advance 1000 µs. | Wrong-request confirmation does not start scanning. |
-| S5-U11 | D6 | Request 7 and confirm its stop, but provide no scan authorisation. | No non-forward scan command or bypass plan. |
+| S5-U09 | D6; FR10 | Request 7 and authorise it, but supply no stop confirmation. Advance 1000 µs. | No non-forward servo command, trigger or bypass plan. |
+| S5-U10 | D6 | Request/authorise 7; confirm stop for request 8. Advance 1000 µs. | No non-forward servo command, trigger or bypass plan. |
+| S5-U11 | D6 | Request 7 and confirm its stop, but provide no scan authorisation. | No non-forward servo command, trigger or bypass plan. |
 | S5-U12 | D6; FR6 | Request 7, authorise 7 and confirm its stop. Advance the effective settling interval. | Scan starts; no premature plan. This positive control prevents a no-op subject from passing the gate suite. |
-| S5-U13 | D6, D8 | Start an authorised scan; cancel 7; inject late echo edges. | Acknowledge 7; no subsequent sweep or plan from cancelled work. Forward monitoring may continue. |
-| S5-U14 | D6 | Start an authorised stationary scan, then inject a new STOP event. | No subsequent sweep or bypass plan. Existing motor inhibition is not itself this new event. |
+| S5-U13 | D6, D8 | Start an authorised scan; cancel 7; inject late echo edges. | Acknowledge 7; no subsequent trigger, sweep or plan from cancelled work. Forward monitoring may continue. |
+| S5-U14 | D6 | Start an authorised stationary scan, then inject a new STOP event. | No subsequent trigger, sweep or bypass plan. Existing motor inhibition is not itself this new event. |
 | S5-U15 | D4; FR6 | Start a matched, authorised scan. | First non-forward coarse command is −60°. |
 | S5-U16 | D4 | Start the scan at time zero; tick at 999 and 1000 µs with the synthetic effective settling interval. | No scan trigger before settling; first trigger when the interval completes. |
-| S5-U17 | D6 | Authorise request 7, withdraw authorisation, then confirm its stop. | Withdrawn permission cannot start scanning. |
+| S5-U17 | D6 | Authorise request 7, withdraw authorisation, then confirm its stop. | Withdrawn permission cannot command the servo, trigger ranging or produce a plan. |
+| S5-U51 | D6 | Reject the initial non-forward servo command for an otherwise authorised scan. | Scan entry is invalidated after one servo attempt; no retry, trigger or plan follows. |
+| S5-U52 | D6 | Accept scan entry, then reject its first trigger command and advance another settling interval. | The scan aborts after one rejected trigger attempt, requests a forward servo position and emits no retry or plan. |
 
-The physical boundaries 20 and 4000 mm are not exactly representable as integer microsecond echo widths. U04/U05 therefore bracket them with adjacent pulse widths rather than invent exact pulses. Fractional-millimetre rounding is not asserted by U03; the fixtures there are exact integers.
+The physical boundaries 20 and 4000 mm are not exactly representable as integer microsecond echo widths. U04/U05 use the first integer widths that produce the inclusive whole-millimetre endpoints, then reject the adjacent outside widths. Fractional-millimetre rounding is not asserted by U03; the fixtures there are exact integers.
 
 ## Remaining Pico W logic cases
 

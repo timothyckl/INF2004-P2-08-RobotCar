@@ -73,10 +73,11 @@ typedef struct
 } test_interface_config_t;
 
 /**
- * @brief Operations a future adapter must bind to actual subsystem 5 logic.
+ * @brief Operations bound by the adapter to production subsystem 5 logic.
  *
- * reset_fixture establishes a clean, ready, forward-monitoring fixture.
- * pulse_mm converts an echo width at 340 m/s. Exact-value tests use integral
+ * reset_fixture establishes a clean, ready, forward-monitoring fixture and
+ * copies the supplied callback pointers and configuration values. pulse_mm
+ * converts an echo width at 340 m/s. Exact-value tests use integral
  * millimetre fixtures. Invalid conversion leaves the output untouched.
  * dispatch uses the injected clock. SCAN_AUTHORISE and STOP_CONFIRM are
  * separate, request-matched inputs; b_value=false withdraws their assertion.

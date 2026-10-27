@@ -1,11 +1,11 @@
 /**
- * @file subsystem5_test.c
- * @brief Pico W test entry called by usermain in TEST=1 firmware.
+ * @file obstacle_test.c
+ * @brief Pico W obstacle-scanning test runner.
  *
  * S5-U01 and S5-U02 are retired. Cases start at S5-U03.
  * Source: testing/subsystem5/TEST_LOG.md.
  */
-#include "../include/subsystem5_test.h"
+#include "../include/obstacle_test.h"
 
 #if APP_TEST
 #include "../../../testing/subsystem5/unit_tests/include/test_ranging.h"
@@ -16,7 +16,7 @@
 #include <stddef.h>
 
 void
-subsystem5_test (void)
+obstacle_test_run (void)
 {
     test_interface_api_t const * p_api = test_subject_get();
 
