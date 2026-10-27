@@ -14,7 +14,52 @@ _No decisions recorded yet._
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
-_No decisions recorded yet._
+### 1. Standalone ownership and wiring
+
+Subsystem 4 owns the GY-511 / LSM303DLHC and I2C0. Use GP0 for SDA and GP1
+for SCL, power the module from 3V3, and use a common ground. UART0 and its
+crash-report mirror must remain disabled or be relocated while this wiring is
+present. Only `s4_imu_task` accesses I2C0; the standalone implementation has
+no dependency on motor, encoder, controller, or network subsystems.
+
+### 2. Sensor mode and calibration
+
+Configure the accelerometer for 100 Hz, all axes enabled, +/-2 g,
+high-resolution mode, and block-data update. Verify the magnetometer identity
+bytes and read back both accelerometer control registers before accepting the
+device. Require fresh stationary calibration at startup and after local sensor
+recovery. Assume the installed sensor X axis points forward and Z points up;
+physical orientation must be recorded before validation.
+
+### 3. Terrain and fault processing
+
+Use integer milligravity and millimetre units. Confirm ascent, descent, and
+return-to-level over consecutive samples before reporting a hump. A direct
+ascent-to-level transition is incomplete. Treat repeated invalid samples,
+stale timestamps, unstable calibration, I2C failures, and data overruns as
+faults. Local recovery closes and revalidates the sensor and recalibrates,
+while retaining the run maximum; only an explicit new-run reset clears it.
+
+### 4. Experimental measurements
+
+Candidate height is the accumulated forward distance multiplied by the
+small-angle gravity projection. It is valid only when distance increments are
+provided for the active ascent. The standalone task has no encoder input, so
+its height result remains invalid even when a hump is detected. The
+LSM303DLHC has no gyroscope; no angular-rate result may be claimed.
+
+All current calibration spans, tilt thresholds, impact thresholds, and sample
+confirmation counts are provisional engineering estimates. They are not
+acceptance criteria and must be replaced or approved using recorded physical
+evidence.
+
+### 5. Test evidence
+
+Run synthetic logic and raw-decode cases in the Pico W `TEST=1` image. Enable
+the live startup check only with `TEST=1 S4_HW_TEST=1` and connected hardware.
+A successful cross-build is not a passed on-board or physical test. Record the
+commit, wiring, mounting, reference instruments, serial log, raw observations,
+and repeated measurements before marking a hardware case passed.
 
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
