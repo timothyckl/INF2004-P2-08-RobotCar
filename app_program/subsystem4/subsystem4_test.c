@@ -2,12 +2,9 @@
  * @file subsystem4_test.c
  * @brief On-target standalone tests for Subsystem 4 terrain logic.
  */
-#include "subsystem4.h"
-#include "terrain_logic.h"
+#include "subsystem4_test_internal.h"
 
 #if APP_TEST
-#include "../test_report.h"
-
 #define S4_TEST_SAMPLE_PERIOD_US    10000u
 #define S4_TEST_TILT_MG             400
 
@@ -38,6 +35,12 @@ static bool s4_test_new_run_clears_max(void);
 static bool s4_test_height_needs_distance(void);
 static bool s4_test_impact_edge(void);
 static bool s4_test_null_safety(void);
+static bool s4_test_decode_axes(void);
+static bool s4_test_decode_signed_limits(void);
+static bool s4_test_decode_null_safety(void);
+#if S4_HARDWARE_TEST
+static bool s4_test_hardware_startup(void);
+#endif
 
 void
 subsystem4_test (void)
@@ -74,6 +77,19 @@ subsystem4_test (void)
                "impact is reported once per threshold crossing");
     TEST_CHECK("S4-U17", s4_test_null_safety(),
                "null API inputs do not crash");
+    TEST_CHECK("S4-U18", s4_test_decode_axes(),
+               "driver decodes axis order and scale");
+    TEST_CHECK("S4-U19", s4_test_decode_signed_limits(),
+               "driver decodes signed 12-bit limits");
+    TEST_CHECK("S4-U20", s4_test_decode_null_safety(),
+               "driver decode rejects null pointers");
+#if S4_HARDWARE_TEST
+    TEST_CHECK("S4-H01", s4_test_hardware_startup(),
+               "live identity configuration and calibration");
+#else
+    tm_printf((UB const *) "[TEST] S4-H01 BLOCKED  build with "
+              "TEST=1 S4_HW_TEST=1 and connected IMU\n");
+#endif
 
     TEST_SUMMARY("subsystem4");
 }
@@ -375,6 +391,76 @@ s4_test_null_safety (void)
     return ((NULL == s4_terrain_get_result(NULL)) &&
             (S4_TERRAIN_STATE_FAULT == context.result.state));
 }
+
+static bool
+s4_test_decode_axes (void)
+{
+    uint8_t const raw_data[6] =
+    {
+        0x40u, 0x06u, 0x80u, 0xf3u, 0x80u, 0x3eu
+    };
+    s4_terrain_sample_t sample = {0};
+    bool b_decoded = s4_lsm303_decode_acceleration(raw_data, 1234u,
+                                                    &sample);
+
+    return (b_decoded && sample.b_valid &&
+            (100 == sample.acceleration_x_mg) &&
+            (-200 == sample.acceleration_y_mg) &&
+            (1000 == sample.acceleration_z_mg) &&
+            (1234u == sample.capture_time_us));
+}
+
+static bool
+s4_test_decode_signed_limits (void)
+{
+    uint8_t const raw_data[6] =
+    {
+        0x00u, 0x80u, 0xf0u, 0x7fu, 0x00u, 0x00u
+    };
+    s4_terrain_sample_t sample = {0};
+    bool b_decoded = s4_lsm303_decode_acceleration(raw_data, 0u,
+                                                    &sample);
+
+    return (b_decoded && (-2048 == sample.acceleration_x_mg) &&
+            (2047 == sample.acceleration_y_mg) &&
+            (0 == sample.acceleration_z_mg));
+}
+
+static bool
+s4_test_decode_null_safety (void)
+{
+    uint8_t const raw_data[6] = {0u};
+    s4_terrain_sample_t sample = {0};
+
+    return ((!s4_lsm303_decode_acceleration(NULL, 0u, &sample)) &&
+            (!s4_lsm303_decode_acceleration(raw_data, 0u, NULL)));
+}
+
+#if S4_HARDWARE_TEST
+static bool
+s4_test_hardware_startup (void)
+{
+    s4_terrain_result_t result = {0};
+    bool b_ready = false;
+
+    for (uint16_t poll = 0u; (poll < 70u) && (!b_ready); poll++)
+    {
+        if (E_OK == subsystem4_get_status(&result))
+        {
+            b_ready = (S4_TERRAIN_STATE_MONITORING == result.state) ||
+                      (S4_TERRAIN_STATE_ASCENDING == result.state) ||
+                      (S4_TERRAIN_STATE_DESCENDING == result.state);
+        }
+
+        if (!b_ready)
+        {
+            (void) tk_dly_tsk(50u);
+        }
+    }
+
+    return (b_ready && (S4_TERRAIN_FAULT_NONE == result.fault));
+}
+#endif
 #endif
 
 /* End of file. */

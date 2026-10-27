@@ -28,6 +28,15 @@ Build with:
 make -C build_make TEST=1 -j8
 ```
 
+For the connected-IMU startup case only, build with:
+
+```sh
+make -C build_make TEST=1 S4_HW_TEST=1 -j8
+```
+
+Do not use the hardware-test result without recording the exact board, sensor,
+wiring, mounting, commit, and captured serial log.
+
 Flash the resulting UF2, capture the USB serial console at 115200 baud, and
 record the commit and saved evidence in the results table.
 
@@ -60,6 +69,9 @@ is no longer executed by Subsystem 4 after the starter monitor is replaced.
 | S4-U15 | Hump sequence without valid injected distance. | Hump may be detected, but height remains invalid. |
 | S4-U16 | Acceleration magnitude exceeds the configured impact threshold. | One impact event is reported without changing motor state. |
 | S4-U17 | Null context, configuration, sample, or result access. | Calls reject or ignore invalid pointers without a crash. |
+| S4-U18 | Known raw bytes for +100 mg, -200 mg, and +1000 mg. | Axis order, 1 mg/LSB scaling, validity, and timestamp decode correctly. |
+| S4-U19 | Raw values at the signed 12-bit limits. | Values decode as -2048 mg and +2047 mg without implementation-defined shifting. |
+| S4-U20 | Null raw-data or destination pointer passed to the decode helper. | Decode is rejected without dereferencing the pointer. |
 
 Boundary cases use small synthetic thresholds to remain deterministic. These
 values are not physical calibration evidence.
