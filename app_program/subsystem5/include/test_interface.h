@@ -3,8 +3,9 @@
  * @brief Subsystem 5 Pico W unit-test interfaces, not a wire format.
  *
  * Inputs describe decoded events. Native integer containers here do not set
- * packed field widths. No sensor, servo or controller behaviour is implemented.
- * Sources: docs/decisions.md, subsystem 5 sections 3, 4, 6 and 8.
+ * packed field widths. The fixture does not drive sensor, servo or controller
+ * hardware. Sources: docs/decisions.md, obstacle-scanning decisions 3, 4, 6
+ * and 8.
  */
 #ifndef TEST_INTERFACE_H
 #define TEST_INTERFACE_H
@@ -72,10 +73,11 @@ typedef struct
 } test_interface_config_t;
 
 /**
- * @brief Operations a future adapter must bind to actual subsystem 5 logic.
+ * @brief Operations bound by the adapter to production subsystem 5 logic.
  *
- * reset_fixture establishes a clean, ready, forward-monitoring fixture.
- * pulse_mm converts an echo width at 340 m/s. Exact-value tests use integral
+ * reset_fixture establishes a clean, ready, forward-monitoring fixture and
+ * copies the supplied callback pointers and configuration values. pulse_mm
+ * converts an echo width at 340 m/s. Exact-value tests use integral
  * millimetre fixtures. Invalid conversion leaves the output untouched.
  * dispatch uses the injected clock. SCAN_AUTHORISE and STOP_CONFIRM are
  * separate, request-matched inputs; b_value=false withdraws their assertion.

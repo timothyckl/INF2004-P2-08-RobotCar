@@ -7,7 +7,7 @@
 
 #include "../../../../app_program/subsystem5/include/test_interface.h"
 
-/** Run this suite against actual logic, or report every case blocked. */
+/** Run the safety-gating cases against the bound production logic. */
 void test_safety_run (test_interface_api_t const * p_api);
 
 #endif /* TEST_SAFETY_H */
