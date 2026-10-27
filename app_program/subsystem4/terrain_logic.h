@@ -11,8 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/* Set to one only when terrain_logic.c provides the complete binding. */
-#define S4_TERRAIN_LOGIC_AVAILABLE 0u
+#define S4_TERRAIN_LOGIC_AVAILABLE 1u
 
 typedef uint8_t s4_terrain_state_t;
 
@@ -91,6 +90,7 @@ typedef struct
     uint8_t             invalid_count;
     bool                b_have_previous_time;
     bool                b_candidate_height_valid;
+    bool                b_impact_active;
 } s4_terrain_context_t;
 
 void s4_terrain_init(s4_terrain_context_t * p_context,
