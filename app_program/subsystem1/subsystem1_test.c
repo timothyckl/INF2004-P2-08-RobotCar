@@ -8,6 +8,7 @@
  */
 
 #include "subsystem1.h"
+#include "comms_test.h"
 #include "../test_report.h"
 
 #if APP_TEST
@@ -38,6 +39,10 @@ EXPORT void subsystem1_test(void)
 		}
 		TEST_CHECK("S1-U02", waiting >= 9, "LED task sleeps between ticks");
 	}
+
+    TEST_CHECK("S1-U04", comms_test_commands(), "command parser logic");
+    TEST_CHECK("S1-U05", comms_test_telemetry(), "telemetry codec logic");
+    TEST_CHECK("S1-U06", comms_test_timers(), "heartbeat and retry logic");
 
 	TEST_SUMMARY("subsystem1");
 }
