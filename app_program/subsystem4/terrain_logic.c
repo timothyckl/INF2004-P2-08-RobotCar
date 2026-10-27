@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <stddef.h>
 
-#define S4_GRAVITY_MG        1000u
+#define S4_GRAVITY_MG        1000
 #define S4_FILTER_DIVISOR    4
 
 static bool s4_config_is_valid(s4_terrain_config_t const * p_config);
