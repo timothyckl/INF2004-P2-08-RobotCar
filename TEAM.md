@@ -51,12 +51,12 @@ and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
-The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2;
-this table still reflects the starter. Reconcile that wiring with the actual
-board and datasheets before configuring hardware. In particular, the planned
-IMU uses GP0/GP1 (conflicts with UART crash reporting), and the encoders use
-GP26–GP28 (conflicts with the sample ADC driver). No hardware configuration
-has been changed here.
+The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2.
+Reconcile each claim with the actual board and datasheets before configuring
+hardware. Subsystem 4 has now claimed GP0/GP1 for its IMU, which excludes UART
+crash reporting on those pins. The planned encoders use GP26–GP28 and still
+conflict with the sample ADC driver until their owner updates that shared
+configuration.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -67,8 +67,8 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
+| GP0 | S4 | LSM303DLHC SDA (I2C0); `CRASH_REPORT=1` is prohibited |
+| GP1 | S4 | LSM303DLHC SCL (I2C0); `CRASH_REPORT=1` is prohibited |
 | GP2 | | |
 | GP3 | | |
 | GP4 | | |
@@ -125,7 +125,7 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | |
+| I2C0 | S4 | `s4_imu_task` | GP0 / GP1 |
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |
@@ -173,7 +173,7 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 | 1 | 12–13 | *example:* led_task – 12 – any |
 | 2 | 14–15 | *example:* producer_task – 14 – core 1 |
 | 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
-| 4 | 18–19 | *example:* monitor_task – 18 – any |
+| 4 | 18–19 | `s4_imu_task` – 18 – any |
 | 5 | 20–21 | |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
@@ -207,11 +207,11 @@ limit there. The numbers below are the example's usage.
 | Semaphore | 16 | | 1 | | | |
 | Event flag | 16 | | | | 1 | |
 | Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | | 1 | | |
+| Mutex | 12 | | | 1 | 1 | |
 | Message buffer | 12 | | | | 1 | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
 | Cyclic handler | 12 | 1 | | | | |
-| Alarm handler | 12 | | | | 1 | |
+| Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)
