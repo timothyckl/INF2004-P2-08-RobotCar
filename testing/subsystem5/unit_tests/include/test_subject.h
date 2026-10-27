@@ -7,7 +7,7 @@
 
 #include "../../../../app_program/subsystem5/include/test_interface.h"
 
-/** Return NULL until an adapter to actual subsystem logic is available. */
+/** Return the adapter bound to the production obstacle-scanning logic. */
 test_interface_api_t const * test_subject_get (void);
 
 /** Reject incomplete bindings before any test can dereference callbacks. */

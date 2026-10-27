@@ -8,9 +8,9 @@ Requirements come from the Design Review (FR6, FR7, FR10, NFR2–NFR8), PostTri1
 
 All test cases execute on the **Raspberry Pi Pico W**, not on the build computer. The computer only cross-compiles firmware, copies the UF2 and saves serial output.
 
-- **Ready / blocked:** S5-U03–S5-U17 have executable on-device test code. Until actual subsystem logic is bound, each reports `BLOCKED`, never PASS. The serial summary includes the blocked count.
+- **Ready:** S5-U03–S5-U17 have executable on-device test code bound to the production distance and scan-gating logic. Each reports `PASS` or `FAIL`; no on-device execution has been recorded yet.
 - **Planned:** the case is specified but its code, interface or hardware prerequisites are not ready. Planned cases are not counted as executed.
-- Automated logic cases run through the existing `subsystem5_test()` call in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
+- Automated logic cases run through the existing test entry in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
 - Real sensor, servo, RTOS/ISR and integration cases require separate on-board measurements. No motor or servo movement is enabled by this test scaffold.
 
 Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source only for `TEST=1`. Normal firmware excludes it. All new/modified C requires BARR-C:2018 review; there is no custom BARR checker.
@@ -29,7 +29,7 @@ Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in 
 
 ## Executable Pico W logic cases
 
-All cases below execute on the Pico W and are **ready / blocked** until an adapter binds to real S5 logic. Every stateful case uses an isolated on-device fixture with controlled inputs, starting ready and forward-facing with no echo in flight. The synthetic fixture uses a 1000 µs effective settling interval and a 200 mm hazard threshold; neither is physical calibration evidence.
+All cases below are **ready** to execute on the Pico W through an adapter bound to the production logic. Every stateful case uses an isolated on-device fixture with controlled inputs, starting ready and forward-facing with no echo in flight. The synthetic fixture uses a 1000 µs effective settling interval and a 200 mm hazard threshold; neither is physical calibration evidence.
 
 | ID | Reference | Initial state / inputs | Expected result |
 |---|---|---|---|

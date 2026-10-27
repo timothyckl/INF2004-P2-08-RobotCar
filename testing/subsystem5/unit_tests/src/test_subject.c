@@ -1,19 +1,18 @@
 /**
  * @file test_subject.c
- * @brief Default absent binding, not a fake implementation of subsystem 5.
+ * @brief Binding and shared helpers for production obstacle-scan logic.
  */
 #include "../include/test_subject.h"
 
 #include "../include/test_fixture.h"
+#include "../../../../app_program/subsystem5/include/scan_test_adapter.h"
 #include <stddef.h>
 
-#ifndef TEST_SUBJECT_BOUND
 test_interface_api_t const *
 test_subject_get (void)
 {
-    return (NULL);
+    return (scan_test_adapter_get());
 }
-#endif
 
 bool
 test_subject_valid (test_interface_api_t const * p_api)
