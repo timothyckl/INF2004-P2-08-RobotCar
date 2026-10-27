@@ -1,10 +1,9 @@
 /*
  *  subsystem5.h
- *  Subsystem 5 -- <name>.  Student ID: <student ID>.
+ *  Shared application declarations for obstacle scanning.
  *
- *  EMPTY TEMPLATE.  Subsystems 1-4 show a complete example; copy their
- *  pattern.  Put here only what OTHER subsystems may use (object IDs,
- *  message formats, priorities); keep everything else LOCAL in the .c.
+ *  Cross-subsystem objects and messages remain intentionally absent until
+ *  their contracts are agreed with the controller, motion and line owners.
  */
 
 #ifndef SUBSYSTEM5_H
@@ -12,7 +11,7 @@
 
 #include "../../app.h"
 
-#define S5_PRI_MAIN 20      /* priority band 20-21 (TEAM.md) */
+#define OBSTACLE_SCAN_PRIORITY 20
 
 #endif /* SUBSYSTEM5_H */
 
