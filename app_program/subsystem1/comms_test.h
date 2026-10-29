@@ -15,6 +15,9 @@ bool comms_test_telemetry (void);
 /** @brief Return true if retry and heartbeat scheduling pass all cases. */
 bool comms_test_timers (void);
 
+/** @brief Return true if fragmented MQTT bridge routing passes all cases. */
+bool comms_test_bridge (void);
+
 #endif /* COMMS_TEST_H */
 
 /*** End of file. ***/

@@ -43,6 +43,7 @@ EXPORT void subsystem1_test(void)
     TEST_CHECK("S1-U04", comms_test_commands(), "command parser logic");
     TEST_CHECK("S1-U05", comms_test_telemetry(), "telemetry codec logic");
     TEST_CHECK("S1-U06", comms_test_timers(), "heartbeat and retry logic");
+    TEST_CHECK("S1-U07", comms_test_bridge(), "MQTT service bridge logic");
 
 	TEST_SUMMARY("subsystem1");
 }

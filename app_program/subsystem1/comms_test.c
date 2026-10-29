@@ -7,11 +7,29 @@
 
 #include "command_parser.h"
 #include "comms_timer.h"
+#include "service_bridge.h"
 #include "telemetry_encoder.h"
 
 #include <string.h>
 
 static void check (bool condition, bool * p_passed);
+
+typedef struct
+{
+    uint32_t                   stop_calls;
+    uint32_t                   command_calls;
+    uint32_t                   last_received_ms;
+    command_parser_command_t   last_command;
+    telemetry_encoder_snapshot_t snapshot;
+    bool                       deliver;
+    bool                       snapshot_ready;
+} comms_test_context_t;
+
+static bool fake_stop (void * p_context, uint32_t received_ms);
+static bool fake_command (void * p_context,
+    command_parser_command_t command, uint32_t received_ms);
+static bool fake_snapshot (void * p_context,
+    telemetry_encoder_snapshot_t * p_snapshot);
 
 bool comms_test_commands (void)
 {
@@ -200,6 +218,137 @@ bool comms_test_timers (void)
                comms_timer_poll(&timer, 0u, false, true, false)), &passed);
 
     return passed;
+}
+
+bool comms_test_bridge (void)
+{
+    comms_test_context_t context = {0};
+    service_bridge_port_t port =
+    {
+        fake_stop, fake_command, fake_snapshot, &context
+    };
+    service_bridge_t bridge = {0};
+    service_bridge_stats_t stats = {0};
+    uint8_t output[TELEMETRY_ENCODER_SIZE] = {0u};
+    bool    passed = true;
+
+    check(!service_bridge_init(NULL, "robot/cmd", 9u, &port), &passed);
+    check(!service_bridge_init(&bridge, NULL, 9u, &port), &passed);
+    check(!service_bridge_init(&bridge, "", 0u, &port), &passed);
+    check(!service_bridge_init(&bridge, "robot/cmd", 9u, NULL), &passed);
+    port.p_raise_remote_stop = NULL;
+    check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
+    port.p_raise_remote_stop = fake_stop;
+    check(service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
+
+    check(!service_bridge_begin(&bridge, "other/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_IGNORED == service_bridge_data(
+        &bridge, "STOP", 4u, true, 1u)), &passed);
+    check(!service_bridge_begin(&bridge, "robot/cmd", 9u, 0u), &passed);
+    check(!service_bridge_begin(&bridge, "robot/cmd", 9u, 6u), &passed);
+    check(!service_bridge_begin(&bridge, NULL, 9u, 4u), &passed);
+
+    context.deliver = true;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_MORE == service_bridge_data(
+        &bridge, "ST", 2u, false, 10u)), &passed);
+    check((SERVICE_BRIDGE_FORWARDED == service_bridge_data(
+        &bridge, "OP", 2u, true, 11u)), &passed);
+    check((1u == context.stop_calls), &passed);
+    check((0u == context.command_calls), &passed);
+    check((11u == context.last_received_ms), &passed);
+
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 5u), &passed);
+    check((SERVICE_BRIDGE_FORWARDED == service_bridge_data(
+        &bridge, "START", 5u, true, 20u)), &passed);
+    check((1u == context.command_calls), &passed);
+    check((COMMAND_PARSER_START == context.last_command), &passed);
+    check((20u == context.last_received_ms), &passed);
+
+    context.deliver = false;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 5u), &passed);
+    check((SERVICE_BRIDGE_UNDELIVERED == service_bridge_data(
+        &bridge, "RESET", 5u, true, 30u)), &passed);
+    check((2u == context.command_calls), &passed);
+    check((COMMAND_PARSER_RESET == context.last_command), &passed);
+
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_INVALID == service_bridge_data(
+        &bridge, "NOPE", 4u, true, 40u)), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_INVALID == service_bridge_data(
+        &bridge, NULL, 1u, true, 41u)), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_INVALID == service_bridge_data(
+        &bridge, "STOPX", 5u, true, 42u)), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_INVALID == service_bridge_data(
+        &bridge, "STOP", 4u, false, 43u)), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check((SERVICE_BRIDGE_INVALID == service_bridge_data(
+        &bridge, "ST", 2u, true, 44u)), &passed);
+
+    context.snapshot = (telemetry_encoder_snapshot_t)
+    {
+        100u, 250u, true, true, true
+    };
+    context.snapshot_ready = false;
+    check((0u == service_bridge_telemetry(&bridge, output,
+                                          sizeof(output))), &passed);
+    context.snapshot_ready = true;
+    check((TELEMETRY_ENCODER_SIZE == service_bridge_telemetry(
+        &bridge, output, sizeof(output))), &passed);
+    check((TELEMETRY_ENCODER_VERSION == output[0]), &passed);
+    check((7u == output[1]), &passed);
+    check((100u == output[2]), &passed);
+    check((250u == output[6]), &passed);
+
+    check(service_bridge_get_stats(&bridge, &stats), &passed);
+    check((2u == stats.valid_commands), &passed);
+    check((7u == stats.invalid_messages), &passed);
+    check((1u == stats.delivery_failures), &passed);
+    check((2u == stats.ignored_topics), &passed);
+    check(!service_bridge_get_stats(NULL, &stats), &passed);
+    check(!service_bridge_get_stats(&bridge, NULL), &passed);
+
+    return passed;
+}
+
+static bool fake_stop (void * p_context, uint32_t received_ms)
+{
+    comms_test_context_t * const p_test = p_context;
+
+    ++p_test->stop_calls;
+    p_test->last_received_ms = received_ms;
+
+    return p_test->deliver;
+}
+
+static bool fake_command (void * p_context,
+    command_parser_command_t command, uint32_t received_ms)
+{
+    comms_test_context_t * const p_test = p_context;
+
+    ++p_test->command_calls;
+    p_test->last_command = command;
+    p_test->last_received_ms = received_ms;
+
+    return p_test->deliver;
+}
+
+static bool fake_snapshot (void * p_context,
+    telemetry_encoder_snapshot_t * p_snapshot)
+{
+    comms_test_context_t * const p_test = p_context;
+    bool copied = false;
+
+    if (p_test->snapshot_ready)
+    {
+        *p_snapshot = p_test->snapshot;
+        copied = true;
+    }
+
+    return copied;
 }
 
 /** @brief Accumulate a failed check without skipping subsequent cases. */

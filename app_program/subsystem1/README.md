@@ -2,8 +2,26 @@
 
 These modules are a first implementation for isolated testing. They do not
 start networking, create controller objects, or replace the LED starter task.
-The existing subsystem 1 self-test now also runs three communication logic
+The existing subsystem 1 self-test now also runs four communication logic
 groups when built with `TEST=1`.
+
+The service-task integration boundary and the exact questions for Buddy 2,
+the sensor owners and the team are in [INTEGRATION.md](INTEGRATION.md).
+Recommended starting values for team review are in
+[PROPOSAL.md](PROPOSAL.md); they remain explicitly unapproved.
+
+## MQTT service bridge
+
+`service_bridge` accepts an exact command topic at runtime, assembles bounded
+MQTT fragments and dispatches a complete validated command through callbacks.
+STOP has its own callback; START and RESET share the regular-command callback.
+The bridge also asks a provider for one consistent telemetry snapshot before
+encoding it. It contains no network or kernel calls and is intended to run
+inside the existing WiFi service task after shared integration is approved.
+
+The final broker, topic, authentication, timing, QoS, retain, command-ID and
+telemetry-field decisions are intentionally absent. The starter values are
+not treated as project requirements.
 
 ## Command parser
 
@@ -89,7 +107,7 @@ the shared-library agreement described in `TEAM.md`.
 ## Testing and next steps
 
 The tests use injected bytes, snapshots, status and timestamps. On a Pico W,
-`make TEST=1` runs them through `subsystem1_test()` as S1-U04–S1-U06. Their
+`make TEST=1` runs them through `subsystem1_test()` as S1-U04–S1-U07. Their
 host runner uses the same test functions; it does not simulate the RTOS,
 MQTT callbacks, motor safety or physical hardware.
 

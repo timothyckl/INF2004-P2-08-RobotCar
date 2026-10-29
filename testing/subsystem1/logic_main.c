@@ -13,12 +13,14 @@ int main (void)
     const bool commands = comms_test_commands();
     const bool telemetry = comms_test_telemetry();
     const bool timers = comms_test_timers();
+    const bool bridge = comms_test_bridge();
 
     printf("S1-U04 commands: %s\n", commands ? "PASS" : "FAIL");
     printf("S1-U05 telemetry: %s\n", telemetry ? "PASS" : "FAIL");
     printf("S1-U06 timers: %s\n", timers ? "PASS" : "FAIL");
+    printf("S1-U07 bridge: %s\n", bridge ? "PASS" : "FAIL");
 
-    return (commands && telemetry && timers) ? 0 : 1;
+    return (commands && telemetry && timers && bridge) ? 0 : 1;
 }
 
 /*** End of file. ***/

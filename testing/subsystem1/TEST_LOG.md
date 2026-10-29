@@ -2,7 +2,7 @@
 
 **Owner:** Hong Yih (2501110)  ·  **Planned subsystem:** WiFi/MQTT communication  ·  **Code:** `app_program/subsystem1/`
 
-S1-U01–S1-U03 test the LED starter example. S1-U04–S1-U06 test the
+S1-U01–S1-U03 test the LED starter example. S1-U04–S1-U07 test the
 hardware-independent communication logic using provisional message formats.
 
 See `testing/README.md` for how to run tests and record results.
@@ -19,6 +19,7 @@ Define a test here before running it. Test IDs never change.
 | S1-U04 | Bounded command parsing | Command syntax, provisional contract | auto / host | `comms_test_commands()`; valid tokens, malformed input, nulls, explicit lengths and oversized input | All cases pass; unsupported bytes rejected |
 | S1-U05 | Binary telemetry encoding | Provisional codec v1 | auto / host | `comms_test_telemetry()`; golden bytes, each flag, integer limits, valid zero, invalid distance, nulls and every undersized buffer | Exact bytes; no overwrite on failure |
 | S1-U06 | Heartbeat and retries | Isolated scheduling logic | auto / host | `comms_test_timers()`; initialisation bounds, pending attempts, retry deadlines, reconnect, clock wrap and delayed polling | Correct actions without busy retries or catch-up bursts |
+| S1-U07 | MQTT service bridge | Planned service-task integration boundary | auto / host | Fragmentation, exact topic, malformed lengths, STOP routing, regular routing, failed delivery, telemetry provider and counters | STOP never uses regular path; invalid input rejected; failures reported |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
@@ -46,3 +47,13 @@ STOP timing or hardware validation was performed in this run.
 
 Reproduce the host run with `run_host.ps1` as documented in
 `app_program/subsystem1/README.md`. Record on-target results separately.
+
+### Service bridge run — 2026-10-29
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-10-29 | S1-U04–S1-U07 | Working changes based on `75a488f` | Codex | PASS, host only | [Host output](logs/2026-10-29_service-bridge-host.txt) | MSVC C11 mode, `/W4 /WX /analyze`; four groups passed |
+
+The new bridge and the existing logic modules also pass ARM GCC 10.3.1
+syntax checking for Cortex-M0+ with strict C99 warnings. No full firmware,
+Pico W, broker, RTOS concurrency or physical STOP timing was exercised.

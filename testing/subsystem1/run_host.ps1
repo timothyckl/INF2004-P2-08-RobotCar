@@ -10,6 +10,7 @@ $sourceFiles = @(
     'app_program/subsystem1/command_parser.c'
     'app_program/subsystem1/telemetry_encoder.c'
     'app_program/subsystem1/comms_timer.c'
+    'app_program/subsystem1/service_bridge.c'
     'app_program/subsystem1/comms_test.c'
     'testing/subsystem1/logic_main.c'
 ) | ForEach-Object { Join-Path $projectRoot $_ }
