@@ -1,9 +1,10 @@
 # Buddy 1: independent communication logic
 
 These modules are a first implementation for isolated testing. They do not
-start networking, create controller objects, or replace the LED starter task.
-The existing subsystem 1 self-test now also runs four communication logic
-groups when built with `TEST=1`.
+start networking or create controller objects. The old GP19 LED activity is
+disabled; a sleeping compatibility task remains temporarily because subsystem
+4 still refers to starter interface IF-05. The existing subsystem 1 self-test
+also runs four communication logic groups when built with `TEST=1`.
 
 The service-task integration boundary and the exact questions for Buddy 2,
 the sensor owners and the team are in [INTEGRATION.md](INTEGRATION.md).

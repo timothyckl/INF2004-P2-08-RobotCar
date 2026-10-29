@@ -104,11 +104,12 @@ The final adapter belongs in the existing WiFi service task. Adding it changes
 `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c` and build include paths, so
 `TEAM.md` requires team and instructor agreement first.
 
-The current `subsystem1_init()`/`subsystem1_start()` still run the LED starter
-example because subsystem 4 directly uses its `tid_led` example interface.
-Removing that task requires coordinated removal of example IF-05 by Buddy 4
-and an agreed update to shared startup documentation; subsystem 1 cannot
-delete it independently without breaking the current firmware link/runtime.
+The current `subsystem1_start()` retains a sleeping compatibility task because
+subsystem 4 directly uses its `tid_led` starter interface. The task no longer
+configures or writes GP19. Deleting the compatibility task requires coordinated
+removal of example IF-05 by Buddy 4 and an agreed update to shared startup
+documentation; subsystem 1 cannot delete it independently without breaking the
+current firmware link/runtime.
 
 After that approval, the adapter should perform this sequence:
 
