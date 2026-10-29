@@ -1,0 +1,11 @@
+command_parser.c
+telemetry_encoder.c
+comms_timer.c
+comms_test.c
+logic_main.c
+Running Code Analysis for C/C++...
+Generating Code...
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+Test executable: C:\Users\leeho\AppData\Local\Temp\robotcar-s1-991f7090ef694da8b219dbfa72e38654\s1_logic.exe
