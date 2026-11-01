@@ -74,11 +74,11 @@ fixed.
 | GP4 | | |
 | GP5 | | |
 | GP6 | | |
-| GP7 | | |
-| GP8 | | |
-| GP9 | | |
-| GP10 | | |
-| GP11 | | |
+| GP7 | S2 | ENC2_A, motor 2 encoder (GPIO interrupt) |
+| GP8 | S2 | M1A motor 1 PWM (slice 4A) |
+| GP9 | S2 | M1B motor 1 PWM (slice 4B) |
+| GP10 | S2 | M2A motor 2 PWM (slice 5A) |
+| GP11 | S2 | M2B motor 2 PWM (slice 5B) |
 | GP12 | | |
 | GP13 | | |
 | GP14 | | |
@@ -90,9 +90,9 @@ fixed.
 | GP20 | | |
 | GP21 | | |
 | GP22 | | |
-| GP26 | | (ADC0 capable) |
-| GP27 | | (ADC1 capable) |
-| GP28 | | (ADC2 capable) |
+| GP26 | S2 | ENC1_A, motor 1 encoder (GPIO interrupt); ADC driver must be off |
+| GP27 | S2 | ENC1_B, motor 1 encoder; ADC driver must be off |
+| GP28 | S2 | ENC2_B, motor 2 encoder; battery-sense jumper open, ADC driver must be off |
 
 ## 3. Peripherals
 
@@ -130,7 +130,7 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
-| PWM slices (list) | | | |
+| PWM slices (list) | S2: slices 4, 5 | Motion Control | GP8-GP11 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
