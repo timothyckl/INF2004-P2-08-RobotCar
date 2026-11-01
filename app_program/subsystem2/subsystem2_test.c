@@ -4,7 +4,8 @@
  *	Record results in testing/subsystem2/TEST_LOG.md.
  *
  *	S2-U03..S2-U14 test the pure PID and odometry logic with synthetic
- *	gains and geometry; they need no motors or encoders.
+ *	gains and geometry; they need no motors or encoders. S2-U20..S2-U35
+ *	(test_motion.c) drive the Motion Control logic with a wheel model.
  *
  *	Bench mode, off by default (S2_HW_TEST 0). Set it locally for a
  *	bench session and never commit it non-zero:
@@ -19,6 +20,7 @@
 #include "drv_motor.h"
 #include "drv_encoder.h"
 #include "drv_gpio_irq.h"
+#include "test_motion.h"
 #include "../test_report.h"
 
 #ifndef S2_HW_TEST
@@ -411,6 +413,38 @@ EXPORT void subsystem2_test(void)
 		   "quadrature x2 decode");
 	TEST_CHECK("S2-U19", test_encoder_snapshot(),
 		   "encoder snapshot rejects NULL, stable when idle");
+	TEST_CHECK("S2-U20", test_motion_start(),
+		   "motion start: Idle + READY, or Fault(INIT)");
+	TEST_CHECK("S2-U21", test_motion_speed(),
+		   "Speed state reaches the wheel targets");
+	TEST_CHECK("S2-U22", test_motion_move(),
+		   "MOVE stops at target, DONE after stop confirmed");
+	TEST_CHECK("S2-U23", test_motion_turn(),
+		   "TURN sign and angle (left positive)");
+	TEST_CHECK("S2-U24", test_motion_straight(),
+		   "straight PID recovers lost wheel distance");
+	TEST_CHECK("S2-U25", test_motion_stop_all(),
+		   "latched STOP in every state");
+	TEST_CHECK("S2-U26", test_motion_reject_stop(),
+		   "motion commands rejected while STOP latched");
+	TEST_CHECK("S2-U27", test_motion_replace(),
+		   "replace only while STOP clear; stale IDs rejected");
+	TEST_CHECK("S2-U28", test_motion_stop_timing(),
+		   "stop confirmation timing, query and 2 s limit");
+	TEST_CHECK("S2-U29", test_motion_stall(),
+		   "stalled wheel gives Fault(STALL)");
+	TEST_CHECK("S2-U30", test_motion_timeout(),
+		   "slow MOVE gives Fault(TIMEOUT)");
+	TEST_CHECK("S2-U31", test_motion_encoder_fault(),
+		   "bad snapshots or decode errors give Fault(ENCODER)");
+	TEST_CHECK("S2-U32", test_motion_recovery(),
+		   "Fault cleared only by RESET with wheels still");
+	TEST_CHECK("S2-U33", test_motion_params(),
+		   "invalid motion parameters rejected");
+	TEST_CHECK("S2-U34", test_motion_odometry(),
+		   "odometry travel, pose and NEW_RUN");
+	TEST_CHECK("S2-U35", test_motion_api(),
+		   "motion API builds and range-checks commands");
 
 #if S2_HW_TEST
 	hw_test();
