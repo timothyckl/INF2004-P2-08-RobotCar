@@ -21,6 +21,8 @@
 #include "drv_encoder.h"
 #include "drv_gpio_irq.h"
 #include "test_motion.h"
+#include "test_controller.h"
+#include "s2_bridge.h"
 #include "../test_report.h"
 
 #ifndef S2_HW_TEST
@@ -390,6 +392,42 @@ static bool test_interface_codes(void)
 	       (S2_RESULT_FAILED == 8u) && one_bit(SAFETY_FLG_STOP);
 }
 
+/* S2-U51 kernel half: on a real queue the size of remote_q, the third
+   START is refused while the STOP adapter still sets its bit */
+static bool test_stop_adapter_full(void)
+{
+	T_CMBF cmbf = { 0 };
+	T_CFLG cflg = { 0 };
+	T_RFLG rflg;
+	ID q, flg;
+	bool ok;
+
+	cmbf.mbfatr = TA_TFIFO;
+	cmbf.bufsz = S2_REMOTE_Q_BYTES;
+	cmbf.maxmsz = (INT)sizeof(s2_remote_cmd_t);
+	cflg.flgatr = TA_TFIFO | TA_WSGL;
+	q = tk_cre_mbf(&cmbf);
+	flg = tk_cre_flg(&cflg);
+	if ((q < E_OK) || (flg < E_OK)) {
+		if (q >= E_OK) (void)tk_del_mbf(q);
+		if (flg >= E_OK) (void)tk_del_flg(flg);
+		return false;
+	}
+
+	ok = s2_bridge_send_command(q, S2_REMOTE_START, 1u, 0u) &&
+	     s2_bridge_send_command(q, S2_REMOTE_START, 2u, 0u) &&
+	     !s2_bridge_send_command(q, S2_REMOTE_START, 3u, 0u) &&
+	     s2_bridge_raise_stop(flg, 1234u) &&
+	     (tk_ref_flg(flg, &rflg) == E_OK) &&
+	     ((rflg.flgptn & CTRL_FLG_REMOTE_STOP) != 0u) &&
+	     !s2_bridge_send_command(0, S2_REMOTE_START, 4u, 0u) &&
+	     !s2_bridge_raise_stop(0, 0u);
+
+	(void)tk_del_mbf(q);
+	(void)tk_del_flg(flg);
+	return ok;
+}
+
 #if S2_HW_TEST
 /* Print both encoders every 100 ms for the given number of seconds */
 static void hw_print_counts(const char *step, INT seconds)
@@ -566,6 +604,32 @@ EXPORT void subsystem2_test(void)
 		   "interface record sizes");
 	TEST_CHECK("S2-U40", test_interface_codes(),
 		   "flag bits distinct; codes match subsystem 1");
+	TEST_CHECK("S2-U41", test_ctrl_boot(),
+		   "boot: Initialising, then Ready, STOP latched");
+	TEST_CHECK("S2-U42", test_ctrl_init_timeout(),
+		   "Initialising times out to Fault(INIT)");
+	TEST_CHECK("S2-U43", test_ctrl_start(),
+		   "START only in Ready with healthy motion");
+	TEST_CHECK("S2-U44", test_ctrl_script(),
+		   "demo script steps wait for DONE");
+	TEST_CHECK("S2-U45", test_ctrl_stop_running(),
+		   "STOP bits in Running go to Stopped");
+	TEST_CHECK("S2-U46", test_ctrl_stop_other(),
+		   "STOP in other states re-latches only");
+	TEST_CHECK("S2-U47", test_ctrl_faults(),
+		   "fault paths latch STOP with the right code");
+	TEST_CHECK("S2-U48", test_ctrl_reset_stopped(),
+		   "RESET from Stopped needs wheels stopped");
+	TEST_CHECK("S2-U49", test_ctrl_reset_fault(),
+		   "RESET from Fault re-initialises");
+	TEST_CHECK("S2-U50", test_ctrl_remote_rules(),
+		   "remote expiry, duplicate and result");
+	TEST_CHECK("S2-U51", test_ctrl_stop_queue_full() && test_stop_adapter_full(),
+		   "STOP while remote_q is full");
+	TEST_CHECK("S2-U52", test_ctrl_only_start_clears(),
+		   "only START in Ready clears STOP");
+	TEST_CHECK("S2-U53", test_ctrl_robot_state(),
+		   "robot_state snapshot fields");
 
 #if S2_HW_TEST
 	hw_test();
