@@ -5,12 +5,25 @@
  *
  *	S2-U03..S2-U14 test the pure PID and odometry logic with synthetic
  *	gains and geometry; they need no motors or encoders.
+ *
+ *	Bench mode, off by default (S2_HW_TEST 0). Set it locally for a
+ *	bench session and never commit it non-zero:
+ *	  1  encoder counts every 100 ms for 60 s; motors stay OFF (S2-H03)
+ *	  2  also SPINS THE MOTORS (S2-H01, S2-H02, S2-H04): wheels off the
+ *	     ground first
  */
 
 #include "subsystem2.h"
 #include "pid.h"
 #include "odometry.h"
+#include "drv_motor.h"
+#include "drv_encoder.h"
+#include "drv_gpio_irq.h"
 #include "../test_report.h"
+
+#ifndef S2_HW_TEST
+#define S2_HW_TEST	0
+#endif
 
 #if APP_TEST
 
@@ -181,6 +194,165 @@ static bool test_odom_invalid(void)
 	       (out == SENTINEL);
 }
 
+/* S2-U15: duty sign selects the A or B output; zero brakes */
+static bool test_motor_map(void)
+{
+	drv_motor_cc_t fwd, rev, stop, full;
+
+	return drv_motor_map(1000, &fwd) &&
+	       (fwd.cc_a == 1000u) && (fwd.cc_b == 0u) &&
+	       drv_motor_map(-1000, &rev) &&
+	       (rev.cc_a == 0u) && (rev.cc_b == 1000u) &&
+	       drv_motor_map(0, &stop) &&
+	       (stop.cc_a == 0u) && (stop.cc_b == 0u) &&
+	       drv_motor_map(-DRV_MOTOR_DUTY_MAX, &full) &&
+	       (full.cc_b == (uint16_t)DRV_MOTOR_DUTY_MAX);
+}
+
+/* S2-U16: out-of-range duty and NULL output are rejected, output kept */
+static bool test_motor_reject(void)
+{
+	drv_motor_cc_t cc = { 7u, 9u };
+
+	return !drv_motor_map(DRV_MOTOR_DUTY_MAX + 1, &cc) &&
+	       !drv_motor_map(-DRV_MOTOR_DUTY_MAX - 1, &cc) &&
+	       !drv_motor_map(INT32_MIN, &cc) &&
+	       !drv_motor_map(0, NULL) &&
+	       (cc.cc_a == 7u) && (cc.cc_b == 9u);
+}
+
+static void test_gpio_cb(uint32_t gpio, uint32_t events, uint32_t now_us)
+{
+	(void)gpio; (void)events; (void)now_us;
+}
+
+/* S2-U17: invalid registrations are refused before touching hardware */
+static bool test_gpio_irq_reject(void)
+{
+	uint32_t const both = DRV_GPIO_IRQ_EDGE_RISE | DRV_GPIO_IRQ_EDGE_FALL;
+
+	return (drv_gpio_irq_register(30u, both, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(23u, both, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(24u, both, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(25u, both, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(29u, both, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(5u, 0u, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(5u, 0x1u, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(5u, 0x2u, test_gpio_cb) == E_PAR) &&
+	       (drv_gpio_irq_register(5u, both, NULL) == E_PAR) &&
+	       (drv_gpio_irq_unregister(30u) == E_PAR);
+}
+
+/* S2-U18: x2 quadrature decode */
+static bool test_encoder_step(void)
+{
+	uint32_t const rise = DRV_GPIO_IRQ_EDGE_RISE;
+	uint32_t const fall = DRV_GPIO_IRQ_EDGE_FALL;
+
+	return (drv_encoder_step(rise, false) == 1) &&
+	       (drv_encoder_step(rise, true) == -1) &&
+	       (drv_encoder_step(fall, true) == 1) &&
+	       (drv_encoder_step(fall, false) == -1) &&
+	       (drv_encoder_step(rise | fall, false) == 0) &&
+	       (drv_encoder_step(rise | fall, true) == 0) &&
+	       (drv_encoder_step(0u, true) == 0);
+}
+
+/* S2-U19: snapshot rejects NULL; idle counts do not change */
+static bool test_encoder_snapshot(void)
+{
+	drv_encoder_snapshot_t a, b;
+	UINT e;
+	bool same = true;
+
+	if ((drv_encoder_snapshot(NULL) != E_PAR) ||
+	    (drv_encoder_snapshot(&a) != E_OK) ||
+	    (drv_encoder_snapshot(&b) != E_OK)) {
+		return false;
+	}
+	for (e = 0u; e < (UINT)DRV_ENCODER_COUNT; e++) {
+		same = same && (a.count[e] == b.count[e]) &&
+		       (a.errors[e] == b.errors[e]);
+	}
+	return same;
+}
+
+#if S2_HW_TEST
+/* Print both encoders every 100 ms for the given number of seconds */
+static void hw_print_counts(const char *step, INT seconds)
+{
+	drv_encoder_snapshot_t s;
+	INT i;
+
+	for (i = 0; i < seconds * 10; i++) {
+		if (drv_encoder_snapshot(&s) == E_OK) {
+			tm_printf((UB*)"[HW] %s enc1 %d (err %d)  enc2 %d (err %d)\n",
+				  step, (INT)s.count[0], (INT)s.errors[0],
+				  (INT)s.count[1], (INT)s.errors[1]);
+		}
+		tk_dly_tsk(100);
+	}
+}
+
+#if S2_HW_TEST >= 2
+/* S2-H01, S2-H02, S2-H04.  Wheels OFF THE GROUND. */
+static void hw_motor_sequence(void)
+{
+	const int32_t duty30 = (DRV_MOTOR_DUTY_MAX * 3) / 10;
+	drv_encoder_snapshot_t s0, s1;
+	UINT m;
+
+	for (m = 0u; m < (UINT)DRV_MOTOR_COUNT; m++) {
+		tm_printf((UB*)"[HW] S2-H01 motor %d forward 30%%\n", m + 1u);
+		(void)drv_motor_set((drv_motor_id_t)m, duty30);
+		hw_print_counts("S2-H01 fwd", 2);
+		tm_printf((UB*)"[HW] S2-H02 motor %d BRAKE: turn by hand\n", m + 1u);
+		(void)drv_motor_brake((drv_motor_id_t)m);
+		hw_print_counts("S2-H02 brake", 3);
+		tm_printf((UB*)"[HW] S2-H01 motor %d backward 30%%\n", m + 1u);
+		(void)drv_motor_set((drv_motor_id_t)m, -duty30);
+		hw_print_counts("S2-H01 back", 2);
+		tm_printf((UB*)"[HW] S2-H02 motor %d COAST: turn by hand\n", m + 1u);
+		(void)drv_motor_coast((drv_motor_id_t)m);
+		hw_print_counts("S2-H02 coast", 3);
+	}
+
+	tm_printf((UB*)"[HW] S2-H04 both motors 100%% for 10 s\n");
+	(void)drv_encoder_snapshot(&s0);
+	(void)drv_motor_set(DRV_MOTOR_1, DRV_MOTOR_DUTY_MAX);
+	(void)drv_motor_set(DRV_MOTOR_2, DRV_MOTOR_DUTY_MAX);
+	tk_dly_tsk(10000);
+	(void)drv_encoder_snapshot(&s1);
+	(void)drv_motor_brake(DRV_MOTOR_1);
+	(void)drv_motor_brake(DRV_MOTOR_2);
+	tm_printf((UB*)"[HW] S2-H04 counts/s enc1 %d enc2 %d, new errors %d %d\n",
+		  (INT)(odom_count_delta(s1.count[0], s0.count[0]) / 10),
+		  (INT)(odom_count_delta(s1.count[1], s0.count[1]) / 10),
+		  (INT)(s1.errors[0] - s0.errors[0]),
+		  (INT)(s1.errors[1] - s0.errors[1]));
+}
+#endif /* S2_HW_TEST >= 2 */
+
+static void hw_test(void)
+{
+	CHECK(drv_gpio_irq_init(), "drv_gpio_irq_init");
+	CHECK(drv_motor_init(), "drv_motor_init");	/* starts braked */
+	CHECK(drv_encoder_init(), "drv_encoder_init");
+
+	/* S2-H03: motors coast so the wheels turn freely by hand */
+	(void)drv_motor_coast(DRV_MOTOR_1);
+	(void)drv_motor_coast(DRV_MOTOR_2);
+	tm_printf((UB*)"[HW] S2-H03: turn each wheel by hand (60 s)\n");
+	hw_print_counts("S2-H03", 60);
+	(void)drv_motor_brake(DRV_MOTOR_1);
+	(void)drv_motor_brake(DRV_MOTOR_2);
+
+#if S2_HW_TEST >= 2
+	hw_motor_sequence();
+#endif
+}
+#endif /* S2_HW_TEST */
+
 EXPORT void subsystem2_test(void)
 {
 	T_RSEM	rsem;
@@ -229,6 +401,20 @@ EXPORT void subsystem2_test(void)
 		   "turn angle sign and magnitude");
 	TEST_CHECK("S2-U14", test_odom_invalid(),
 		   "odometry rejects invalid geometry and overflow");
+	TEST_CHECK("S2-U15", test_motor_map(),
+		   "motor duty maps to A/B outputs");
+	TEST_CHECK("S2-U16", test_motor_reject(),
+		   "motor rejects out-of-range duty");
+	TEST_CHECK("S2-U17", test_gpio_irq_reject(),
+		   "GPIO IRQ registration rejects invalid requests");
+	TEST_CHECK("S2-U18", test_encoder_step(),
+		   "quadrature x2 decode");
+	TEST_CHECK("S2-U19", test_encoder_snapshot(),
+		   "encoder snapshot rejects NULL, stable when idle");
+
+#if S2_HW_TEST
+	hw_test();
+#endif
 
 	TEST_SUMMARY("subsystem2");
 }
