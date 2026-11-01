@@ -11,7 +11,7 @@
  *   1. read the encoder snapshot, the 1 MHz timer and the latched STOP;
  *   2. handle every queued motion_q command (non-blocking);
  *   3. run motion_step() and write the duties to the motors;
- *   4. raise S2_CFLG_MOTION_FAULT if Motion Control entered Fault;
+ *   4. raise CTRL_FLG_MOTION_FAULT if Motion Control entered Fault;
  *   5. publish motion_status_t under its mutex.
  * The motors are written (3) before anything else is shared.
  *
@@ -243,7 +243,7 @@ read_input (motion_input_t * p_in)
     }
 
     p_in->b_stop = (tk_ref_flg(safety_flags, &rflg) < E_OK)
-                   || (0u != (rflg.flgptn & S2_SFLG_STOP));
+                   || (0u != (rflg.flgptn & SAFETY_FLG_STOP));
 }
 
 static void
@@ -261,7 +261,7 @@ raise_fault (motion_output_t const * p_out)
 {
     if (p_out->b_raise_fault)
     {
-        (void)tk_set_flg(controller_flags, S2_CFLG_MOTION_FAULT);
+        (void)tk_set_flg(controller_flags, CTRL_FLG_MOTION_FAULT);
     }
 }
 

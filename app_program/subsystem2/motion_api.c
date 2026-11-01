@@ -10,6 +10,7 @@
 
 #include "motion_cmd.h"
 #include "motion_config.h"
+#include "subsystem2.h"
 
 static uint16_t g_next_id = 1u;     /* Vehicle Controller task only */
 static uint16_t g_last_id = 0u;
@@ -151,6 +152,42 @@ motion_send (uint8_t cmd, int32_t value)
     g_next_id = (uint16_t)(g_next_id + 1u);
 
     return (E_OK);
+}
+
+/**
+ * @brief Forward distance between two status samples, for subsystem 4.
+ * @return false (delta 0) unless both samples are valid, from the same
+ *         run, and the vehicle moved 0..65535 mm forward between them.
+ */
+bool
+s2_distance_delta (motion_status_t const * p_prev,
+                   motion_status_t const * p_now, uint16_t * p_delta_mm)
+{
+    if (NULL == p_delta_mm)
+    {
+        return (false);
+    }
+
+    *p_delta_mm = 0u;
+
+    if ((NULL == p_prev) || (NULL == p_now)
+        || (0u == (p_prev->flags & MOTION_ST_VALID))
+        || (0u == (p_now->flags & MOTION_ST_VALID))
+        || (p_prev->run_id != p_now->run_id))
+    {
+        return (false);
+    }
+
+    int64_t const d = (int64_t)p_now->travel_mm - p_prev->travel_mm;
+
+    if ((d < 0) || (d > (int64_t)UINT16_MAX))
+    {
+        return (false);
+    }
+
+    *p_delta_mm = (uint16_t)d;
+
+    return (true);
 }
 
 /* End of file. */

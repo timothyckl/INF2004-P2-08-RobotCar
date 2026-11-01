@@ -6,7 +6,7 @@
  * subsystem includes this file. PROVISIONAL.
  *
  * Stale commands: Motion Control rejects every command while the latched
- * STOP (S2_SFLG_STOP) is set, and the controller drains motion_q before it
+ * STOP (SAFETY_FLG_STOP) is set, and the controller drains motion_q before it
  * clears STOP. The controller is the only sender, so nothing older can
  * arrive afterwards. cmd_id increases by one per command (wrapping) so
  * results in sensor_q can be matched, and Motion Control also rejects an

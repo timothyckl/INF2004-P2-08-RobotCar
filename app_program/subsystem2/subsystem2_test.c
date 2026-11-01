@@ -279,6 +279,117 @@ static bool test_encoder_snapshot(void)
 	return same;
 }
 
+/* S2-U36: remote_q record for START/RESET only, request ID nonzero */
+static bool test_remote_make(void)
+{
+	s2_remote_cmd_t m, keep = { 99u, 98u, 97u, { 1u, 2u, 3u } };
+
+	return s2_remote_make(S2_REMOTE_START, 5u, 1234u, &m) &&
+	       (m.request_id == 5u) && (m.received_ms == 1234u) &&
+	       (m.command == S2_REMOTE_START) && (m.reserved[0] == 0u) &&
+	       (m.reserved[1] == 0u) && (m.reserved[2] == 0u) &&
+	       s2_remote_make(S2_REMOTE_RESET, 6u, 0u, &m) &&
+	       (m.command == S2_REMOTE_RESET) &&
+	       !s2_remote_make(S2_REMOTE_STOP, 7u, 0u, &keep) &&
+	       !s2_remote_make(0u, 7u, 0u, &keep) &&
+	       !s2_remote_make(4u, 7u, 0u, &keep) &&
+	       !s2_remote_make(S2_REMOTE_START, 0u, 0u, &keep) &&
+	       !s2_remote_make(S2_REMOTE_START, 7u, 0u, NULL) &&
+	       (keep.request_id == 99u) && (keep.reserved[2] == 3u);
+}
+
+/* S2-U37: telemetry fields from robot_state */
+static bool test_telemetry_fill(void)
+{
+	s2_robot_state_t st = { 0u };
+	s2_telemetry_t a, b, c, d;
+
+	st.captured_ms = 4321u;
+	st.flags = S2_RS_DISTANCE_VALID | S2_RS_STOPPED;
+	st.run_distance_mm = 500;
+	s2_telemetry_from_state(&st, &a);
+	st.run_distance_mm = 70000;
+	st.flags = S2_RS_DISTANCE_VALID;
+	s2_telemetry_from_state(&st, &b);
+	st.run_distance_mm = -5;
+	s2_telemetry_from_state(&st, &c);
+	st.run_distance_mm = 300;
+	st.flags = 0u;
+	s2_telemetry_from_state(&st, &d);
+
+	return (a.captured_ms == 4321u) && (a.distance_mm == 500u) &&
+	       a.b_distance_valid && a.b_stopped &&
+	       (b.distance_mm == 65535u) && !b.b_distance_valid &&
+	       !b.b_stopped &&
+	       (c.distance_mm == 0u) && !c.b_distance_valid &&
+	       (d.distance_mm == 0u) && !d.b_distance_valid;
+}
+
+/* S2-U38: subsystem 4 distance delta */
+static bool test_distance_delta(void)
+{
+	motion_status_t p = { 0u }, n = { 0u };
+	uint16_t dm = 7u;
+	bool ok = true;
+
+	p.flags = MOTION_ST_VALID;
+	n.flags = MOTION_ST_VALID;
+	p.travel_mm = 1000;
+	n.travel_mm = 1012;
+	ok = s2_distance_delta(&p, &n, &dm) && (dm == 12u) && ok;
+	n.travel_mm = 1000;
+	ok = s2_distance_delta(&p, &n, &dm) && (dm == 0u) && ok;
+	n.travel_mm = 997;
+	ok = !s2_distance_delta(&p, &n, &dm) && (dm == 0u) && ok;
+	n.travel_mm = 1000 + 65536;
+	ok = !s2_distance_delta(&p, &n, &dm) && ok;
+	n.travel_mm = 1010;
+	n.run_id = 1u;
+	ok = !s2_distance_delta(&p, &n, &dm) && ok;
+	n.run_id = 0u;
+	n.flags = 0u;
+	ok = !s2_distance_delta(&p, &n, &dm) && ok;
+	return ok && !s2_distance_delta(&p, &n, NULL);
+}
+
+/* S2-U39: record sizes used to size the queues */
+static bool test_interface_sizes(void)
+{
+	return (sizeof(s2_remote_cmd_t) == 12u) &&
+	       (sizeof(s2_scan_cmd_t) == 12u) &&
+	       (sizeof(s2_nav_request_t) == 12u) &&
+	       (sizeof(s2_robot_state_t) == 20u);
+}
+
+/* True if v has exactly one bit set */
+static bool one_bit(UW v)
+{
+	return (v != 0u) && ((v & (v - 1u)) == 0u);
+}
+
+/* S2-U40: flag bits distinct; codes equal subsystem 1's */
+static bool test_interface_codes(void)
+{
+	UW const bits[] = { CTRL_FLG_HAZARD, CTRL_FLG_SCAN_FAULT,
+			    CTRL_FLG_MOTION_FAULT, CTRL_FLG_REMOTE_STOP,
+			    CTRL_FLG_LOCAL_STOP };
+	UW seen = 0u;
+	UINT i;
+	bool ok = true;
+
+	for (i = 0u; i < (UINT)(sizeof(bits) / sizeof(bits[0])); i++) {
+		ok = ok && one_bit(bits[i]) && ((seen & bits[i]) == 0u) &&
+		     ((bits[i] & ~CTRL_FLG_ALL) == 0u);
+		seen |= bits[i];
+	}
+	return ok && (seen == CTRL_FLG_ALL) &&
+	       (S2_REMOTE_START == 1u) && (S2_REMOTE_STOP == 2u) &&
+	       (S2_REMOTE_RESET == 3u) &&
+	       (S2_RESULT_DUPLICATE == 3u) && (S2_RESULT_EXPIRED == 4u) &&
+	       (S2_RESULT_REJECTED == 6u) && (S2_RESULT_COMPLETED == 7u) &&
+	       (S2_RESULT_FAILED == 8u) && one_bit(SAFETY_FLG_STOP);
+}
+
 #if S2_HW_TEST
 /* Print both encoders every 100 ms for the given number of seconds */
 static void hw_print_counts(const char *step, INT seconds)
@@ -445,6 +556,16 @@ EXPORT void subsystem2_test(void)
 		   "odometry travel, pose and NEW_RUN");
 	TEST_CHECK("S2-U35", test_motion_api(),
 		   "motion API builds and range-checks commands");
+	TEST_CHECK("S2-U36", test_remote_make(),
+		   "remote_q record for START/RESET only");
+	TEST_CHECK("S2-U37", test_telemetry_fill(),
+		   "telemetry snapshot clamps and flags");
+	TEST_CHECK("S2-U38", test_distance_delta(),
+		   "S4 distance delta rules");
+	TEST_CHECK("S2-U39", test_interface_sizes(),
+		   "interface record sizes");
+	TEST_CHECK("S2-U40", test_interface_codes(),
+		   "flag bits distinct; codes match subsystem 1");
 
 #if S2_HW_TEST
 	hw_test();

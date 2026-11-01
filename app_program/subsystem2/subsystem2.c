@@ -7,10 +7,12 @@
 
 #include "subsystem2.h"
 
-/* Created by the Vehicle Controller (Step 4); 0 until then, which keeps
-   Motion Control in its fail-safe STOP. */
+/* Robot interface objects (subsystem2.h), created by the Vehicle
+   Controller (Step 4). 0 until then: Motion Control stays in its
+   fail-safe STOP and the S1 adapters return false. */
 EXPORT ID	controller_flags = 0;
 EXPORT ID	safety_flags = 0;
+EXPORT ID	remote_q = 0;
 
 EXPORT ID	sem_slots;	/* IF-02, see subsystem2.h */
 EXPORT ID	mpf_samples;
