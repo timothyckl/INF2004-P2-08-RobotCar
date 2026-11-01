@@ -39,6 +39,9 @@ static ID              g_cyc_motion = 0;
 static ID              g_status_mtx = 0;
 static motion_status_t g_status;            /* guarded by g_status_mtx */
 static motion_t        g_motion;            /* motion task only */
+static volatile uint32_t g_latch_us   = 0u; /* written by the controller */
+static volatile uint32_t g_off_us     = 0u; /* written by this task */
+static volatile bool     g_b_off_due  = false;
 
 static const motion_cfg_t g_motion_cfg =
 {
@@ -133,6 +136,29 @@ s2_motion_wake (void)
     }
 }
 
+void
+s2_motion_note_latch (void)
+{
+    g_latch_us  = in_w(TIMER_TIMERAWL);
+    g_b_off_due = true;
+}
+
+/** @brief Latest latch and motor-off times; false until one is recorded. */
+bool
+s2_stop_timing (uint32_t * p_latch_us, uint32_t * p_motor_off_us)
+{
+    if ((NULL == p_latch_us) || (NULL == p_motor_off_us) || g_b_off_due
+        || (0u == g_off_us))
+    {
+        return (false);
+    }
+
+    *p_latch_us     = g_latch_us;
+    *p_motor_off_us = g_off_us;
+
+    return (true);
+}
+
 /** @brief Copy the latest Motion Control status (any task). */
 ER
 motion_get_status (motion_status_t * p_status)
@@ -205,6 +231,13 @@ motion_task (INT stacd, void * exinf)
 
         motion_step(&g_motion, &in, &out);
         apply_duty(out.duty_l, out.duty_r);
+
+        if (g_b_off_due && in.b_stop && (0 == out.duty_l)
+            && (0 == out.duty_r))
+        {
+            g_off_us    = in_w(TIMER_TIMERAWL);  /* duties now zero */
+            g_b_off_due = false;
+        }
         raise_fault(&out);
         publish_status();
     }

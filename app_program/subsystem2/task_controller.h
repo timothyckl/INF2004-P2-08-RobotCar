@@ -19,6 +19,21 @@
 #define S2_DEMO_SCRIPT  1
 #endif
 
+/* 1: send one local START 5 s after first reaching Ready, for a demo
+   without MQTT. THE ROBOT MOVES BY ITSELF: wheels off the ground for the
+   first run. Default 0. */
+#ifndef S2_DEMO_AUTOSTART
+#define S2_DEMO_AUTOSTART   0
+#endif
+
+/* 1: print controller state, motion state, distance and the last STOP
+   latency to the console every 500 ms. Printing takes time in this
+   task; the latency figure itself is timestamped, not printed, in the
+   STOP path. Default 0. */
+#ifndef S2_DEMO_LOG
+#define S2_DEMO_LOG         0
+#endif
+
 ER s2_controller_create (void);
 ER s2_controller_start (void);
 

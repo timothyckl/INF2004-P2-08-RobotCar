@@ -1,8 +1,12 @@
-# Subsystem 2 — test log
+# Subsystem 2 test log
 
 **Owner:** Dalton (2504003)  ·  **Planned subsystem:** Vehicle Controller and motion control  ·  **Code:** `app_program/subsystem2/`
 
-The cases below test the current producer starter example, not the planned subsystem.
+S2-U01 and S2-U02 test the starter producer, kept until subsystem 3 stops
+using it. S2-U03 onwards test the Vehicle Controller and Motion Control:
+S2-U* run automatically in a `TEST=1` build, S2-H* are bench checks, and
+S2-I* are integration demos with teammates. A clean build is not a passed
+test: record a row in Results for every run on the Pico W.
 
 See `testing/README.md` for how to run tests and record results.
 
@@ -65,13 +69,74 @@ Define a test here before running it. Test IDs never change.
 | S2-U51 | STOP while remote_q is full: (a) logic: a STOP bit and two queued STARTs in one cycle end Stopped with STOP latched and both STARTs REJECTED; (b) adapters on a real 2-record test queue: the third send returns false, the STOP adapter still sets the bit | Remote STOP bypasses remote_q | auto | `test_controller.c`, temporary queue and flag | `[TEST] S2-U51 PASS` |
 | S2-U52 | nothing but START in Ready clears STOP: RESET, repeated ticks, no-flag cycles and a duplicate START never request a clear (WiFi reconnect sends nothing) | WiFi reconnect never clears STOP | auto | `test_controller.c` | `[TEST] S2-U52 PASS` |
 | S2-U53 | robot_state: state, fault, STOP latched, wheels stopped, run distance since START and its validity | IF S2 to S1 (robot_state) | auto | `test_controller.c` | `[TEST] S2-U53 PASS` |
-| S2-H01 | each motor drives the expected way | Robo Pico truth table, design review section 2 | manual | Wheels off the ground. Build with `S2_HW_TEST` set to 2 in `subsystem2_test.c`. Per motor: 30% forward 2 s, brake 3 s, 30% backward 2 s, coast 3 s. Watch the wheel and the board's MxA/MxB LEDs | Forward: wheel turns forward, MxA LED on. Backward: reverse, MxB LED on |
+| S2-H01 | each motor drives the expected way | Robo Pico truth table, design review section 2 | manual | Wheels off the ground. Build with `S2_HW_TEST` set to 2 in `task_motion.h`. Per motor: 30% forward 2 s, brake 3 s, 30% backward 2 s, coast 3 s. Watch the wheel and the board's MxA/MxB LEDs | Forward: wheel turns forward, MxA LED on. Backward: reverse, MxB LED on |
 | S2-H02 | brake and coast differ as the truth table says | Robo Pico truth table | manual | During S2-H01, turn each wheel by hand in the brake and coast steps | Brake: noticeably stiff. Coast: turns freely |
 | S2-H03 | encoder count sign and counts per revolution | drv_encoder, calibration | manual | GP28 battery-sense jumper open. `S2_HW_TEST` set to 1 (motors stay off) prints both counts every 100 ms for 60 s. Mark each wheel, turn it exactly one revolution forward by hand, then one back. Repeat 3 times per wheel | Count changes by the same amount each way, opposite signs, error count unchanged. Record counts per rev and which encoders count down going forward |
 | S2-H04 | encoder edges are not missed at full speed | drv_encoder, GPIO dispatcher, PostTri1 interrupt load | manual | Wheels off the ground, `S2_HW_TEST` set to 2: after S2-H01, both motors 100% forward for 10 s | Error counts stay 0. Record counts/s per wheel: that is the interrupt rate per wheel (one interrupt per A edge) |
 
+| S2-I01 | remote STOP while moving (with Hong Yih) | IF-06, latched STOP | manual | `NET=lwip MQTT=1` build with S1's bridge. START over MQTT, send STOP while the demo script drives. Repeat with `remote_q` filled by two pending commands | Robot stops; STOP still latched until RESET then START; `S2_DEMO_LOG` prints latch-to-motor-off; record receipt-to-flag from `s2_remote_stop_info()` separately |
+| S2-I02 | stop confirmation before scan (with Timothy) | IF-10, decisions S5 section 6 | manual | Drive, trigger a STOP, read `motion_stop_confirmed()`; Timothy's engine must only start scanning after STOP_CONFIRM | STOP_CONFIRM sent only after 100 ms still; no scan while moving |
+| S2-I03 | hump height from the distance feed (with Khang) | IF-09 | manual | Khang's task calls `motion_get_status()` + `s2_distance_delta()` each 10 ms; drive the demo script over a known hump | S4 reports a valid height; `b_distance_valid` false while reversing; run_id change resets his run maximum |
+
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
+
+## Calibration (fill in, then update motion_config.h)
+
+| Quantity | Method | Trial 1 | Trial 2 | Trial 3 | Value used | Date / commit |
+|---|---|---|---|---|---|---|
+| Counts per wheel rev, left (x2) | S2-H03, one hand-turned rev | | | | | |
+| Counts per wheel rev, right (x2) | S2-H03 | | | | | |
+| Wheel circumference (um) | roll 10 revs on the floor, measure, divide by 10 | | | | | |
+| Track width (mm) | wheel contact centre to centre | | | | | |
+| Left/right encoder counts down going forward? | S2-H03 | | | | | |
+| Left/right motor needs negative duty to go forward? | S2-H01 | | | | | |
+| Still threshold (mm/s) | robot at rest: largest speed reading over 10 s, plus margin | | | | | |
+| Interrupt rate at full speed (edges/s per wheel) | S2-H04 | | | | | |
+
+## PID tuning
+
+| Date | Loop | Kp | Ki | Kd | Setpoint | Rise time | Overshoot | Steady error | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| | wheel speed | | | | e.g. 200 mm/s step | | | | |
+| | straight-line difference | | | | 0 mm, 500 mm move | | | | |
+
+Final gains: speed Kp ___ Ki ___ Kd ___; straight Kp ___ Ki ___ Kd ___.
+
+## Accuracy (10 runs each, after calibration)
+
+Straight 500 mm (target: within 20 mm):
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Distance (mm) | | | | | | | | | | | | |
+| Lateral drift (mm) | | | | | | | | | | | | |
+
+Left 90 deg (target: within 5 deg):
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Angle (deg) | | | | | | | | | | | | |
+
+Right 90 deg (target: within 5 deg):
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Angle (deg) | | | | | | | | | | | | |
+
+U-turn 180 deg (target: within 10 deg):
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Angle (deg) | | | | | | | | | | | | |
+
+STOP latency, latch to motors commanded off (target: within one 20 ms
+cycle; `S2_DEMO_LOG` prints it from `s2_stop_timing()`):
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Latch to motor off (us) | | | | | | | | | | | | |
+| Receipt to flag, remote STOP (ms, S2-I01) | | | | | | | | | | | | |
 
 ## Results
 

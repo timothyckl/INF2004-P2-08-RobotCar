@@ -27,6 +27,8 @@
 #define CTRL_WATCHDOG_MS    10
 #define CTRL_INIT_LIMIT_MS  3000u       /* UNMEASURED: motion start-up */
 #define CTRL_RESULT_LIMIT_MS 20000u     /* UNMEASURED: longest manoeuvre */
+#define CTRL_AUTOSTART_MS   5000u
+#define CTRL_LOG_MS         500u
 
 #if S2_DEMO_SCRIPT
 static const ctrl_step_t g_demo[] =
@@ -45,6 +47,7 @@ static const ctrl_step_t g_demo[] =
 static ctrl_t g_ctrl;               /* controller task only */
 
 static void     controller_task (INT stacd, void * exinf);
+static void     demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in);
 static void     read_input (ctrl_input_t * p_in);
 static void     apply (ctrl_output_t * p_out, ctrl_input_t const * p_in);
 static ER       send_action (ctrl_action_t action, uint32_t value);
@@ -153,7 +156,60 @@ controller_task (INT stacd, void * exinf)
 
         ctrl_get_state(&g_ctrl, &in, &st);
         s2_robot_state_publish(&st);
+        demo(&st, &in);
     }
+}
+
+/* Optional demo helpers (S2_DEMO_AUTOSTART, S2_DEMO_LOG). */
+static void
+demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in)
+{
+#if S2_DEMO_AUTOSTART
+    static bool     b_started  = false;
+    static bool     b_in_ready = false;
+    static uint32_t ready_ms   = 0u;
+
+    if ((S2_SYS_READY == p_st->state) && (!b_started))
+    {
+        if (!b_in_ready)
+        {
+            b_in_ready = true;
+            ready_ms   = p_in->now_ms;
+        }
+        else if ((p_in->now_ms - ready_ms) >= CTRL_AUTOSTART_MS)
+        {
+            b_started = s2_local_command(S2_REMOTE_START);
+        }
+        else
+        {
+            /* Waiting before the automatic START. */
+        }
+    }
+#endif
+
+#if S2_DEMO_LOG
+    static uint32_t last_ms = 0u;
+    uint32_t        latch_us;
+    uint32_t        off_us;
+
+    if ((p_in->now_ms - last_ms) >= CTRL_LOG_MS)
+    {
+        last_ms = p_in->now_ms;
+        tm_printf((UB *)"[S2] state %d fault %d motion %d dist %d mm"
+                  " flags 0x%x\n", (INT)p_st->state, (INT)p_st->fault,
+                  (INT)p_st->motion_state, (INT)p_st->run_distance_mm,
+                  (INT)p_st->flags);
+
+        if (s2_stop_timing(&latch_us, &off_us))
+        {
+            tm_printf((UB *)"[S2] last STOP: latch to motor off %d us\n",
+                      (INT)(off_us - latch_us));
+        }
+    }
+#endif
+
+    (void)p_st;
+    (void)p_in;
 }
 
 static void
@@ -171,6 +227,7 @@ apply (ctrl_output_t * p_out, ctrl_input_t const * p_in)
 
     if (p_out->b_latch_stop)
     {
+        s2_motion_note_latch();
         (void)tk_set_flg(safety_flags, SAFETY_FLG_STOP);
         s2_motion_wake();
     }
@@ -199,6 +256,7 @@ apply (ctrl_output_t * p_out, ctrl_input_t const * p_in)
 
         if (again.b_latch_stop)
         {
+            s2_motion_note_latch();
             (void)tk_set_flg(safety_flags, SAFETY_FLG_STOP);
             s2_motion_wake();
         }
