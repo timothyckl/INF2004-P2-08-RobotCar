@@ -1,42 +1,68 @@
-/*
- *	subsystem3.c
- *	Subsystem 3 -- Consumer: creates its objects and starts its task.
+/**
+ * @file subsystem3.c
+ * @brief Subsystem 3 object creation and task startup.
  *
- *	APIs shown: tk_cre_mbx, tk_cre_mtx
+ * The public starter object names are retained for compatibility with the
+ * remaining producer, consumer, and monitor examples.
  */
 
 #include "subsystem3.h"
 
-EXPORT ID		mbx_samples;	/* IF-01 */
-EXPORT ID		mtx_stats;	/* IF-04 */
-EXPORT APP_STATS	app_stats;
+EXPORT ID        mbx_samples = 0;
+EXPORT ID        mtx_stats = 0;
+EXPORT APP_STATS app_stats = {0};
 
-EXPORT ER subsystem3_init(void)
+EXPORT ER
+subsystem3_init (void)
 {
-	T_CMBX	cmbx = {0};
-	T_CMTX	cmtx = {0};
+    T_CMBX mailbox_config = {0};
+    T_CMTX mutex_config = {0};
+    ER error = E_OK;
 
-	/* Mailbox: passes a POINTER to a message (zero copy).  The message
-	   memory must stay valid until the receiver is done with it, which
-	   is why subsystem 2 takes it from its memory pool. */
-	cmbx.mbxatr = TA_TFIFO | TA_MFIFO;	/* FIFO waiters, FIFO messages */
-	mbx_samples = tk_cre_mbx(&cmbx);
-	if (mbx_samples < E_OK) {
-		return mbx_samples;
-	}
+    mailbox_config.mbxatr = TA_TFIFO | TA_MFIFO;
+    mbx_samples = tk_cre_mbx(&mailbox_config);
+    if (E_OK > mbx_samples)
+    {
+        error = mbx_samples;
+    }
 
-	/* Mutex: only one task at a time may touch app_stats.  TA_INHERIT
-	   (priority inheritance) avoids priority inversion: a low-priority
-	   holder is temporarily raised to the waiter's priority. */
-	cmtx.mtxatr = TA_INHERIT;
-	mtx_stats = tk_cre_mtx(&cmtx);
-	return (mtx_stats < E_OK) ? mtx_stats : E_OK;
+    if (E_OK == error)
+    {
+        mutex_config.mtxatr = TA_INHERIT;
+        mtx_stats = tk_cre_mtx(&mutex_config);
+        if (E_OK > mtx_stats)
+        {
+            error = mtx_stats;
+        }
+    }
+
+    if (E_OK == error)
+    {
+        error = line_sensor_init();
+    }
+
+    return (error);
 }
 
-EXPORT ER subsystem3_start(void)
+EXPORT ER
+subsystem3_start (void)
 {
-	/* Pinned to core 0 (TP_PRC1): opposite core to the producer */
-	ID tid = app_start_task(consumer_task, S3_PRI_CONSUMER, TP_PRC1,
-				"consumer_task");
-	return (tid < E_OK) ? tid : E_OK;
+    ID const task_id = app_start_task(consumer_task,
+                                      S3_PRI_CONSUMER,
+                                      TP_PRC1,
+                                      "consumer_task");
+    ER error = E_OK;
+
+    if (E_OK > task_id)
+    {
+        error = task_id;
+    }
+    else
+    {
+        error = line_sensor_start();
+    }
+
+    return (error);
 }
+
+/* End of file. */

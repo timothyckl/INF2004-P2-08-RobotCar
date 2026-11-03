@@ -46,7 +46,12 @@ EXPORT ER subsystem4_init(void)
 
 EXPORT ER subsystem4_start(void)
 {
+#if APP_TEST
 	/* No affinity: the scheduler may run it on either core */
 	ID tid = app_start_task(monitor_task, S4_PRI_MONITOR, 0, "monitor_task");
 	return (tid < E_OK) ? tid : E_OK;
+#else
+	/* The starter monitor is silent in the production IR demo. */
+	return E_OK;
+#endif
 }

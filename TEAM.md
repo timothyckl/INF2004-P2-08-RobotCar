@@ -51,12 +51,12 @@ and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
-The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2;
-this table still reflects the starter. Reconcile that wiring with the actual
-board and datasheets before configuring hardware. In particular, the planned
-IMU uses GP0/GP1 (conflicts with UART crash reporting), and the encoders use
-GP26–GP28 (conflicts with the sample ADC driver). No hardware configuration
-has been changed here.
+The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2.
+Rows are claimed here as implementation replaces the starter. Reconcile every
+assignment with the actual board and datasheets before configuring hardware.
+For the current line-following demo, subsystem 3 claims GP6 and GP16. GP4 is
+not used by this demo. The planned IMU and encoder assignments still require
+their owners to resolve the documented UART and sample-ADC conflicts.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -71,24 +71,24 @@ fixed.
 | GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
 | GP2 | | |
 | GP3 | | |
-| GP4 | | |
+| GP4 | | Previous IR input; unused by the current line-follow demo |
 | GP5 | | |
-| GP6 | | |
+| GP6 | S3 | Left IR line sensor on Grove port 5 (demo mapping) |
 | GP7 | | |
-| GP8 | | |
-| GP9 | | |
-| GP10 | | |
-| GP11 | | |
+| GP8 | S2 | Motor 1 A PWM (demo Motion Control) |
+| GP9 | S2 | Motor 1 B PWM (demo Motion Control) |
+| GP10 | S2 | Motor 2 A PWM (demo Motion Control) |
+| GP11 | S2 | Motor 2 B PWM (demo Motion Control) |
 | GP12 | | |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | | |
+| GP16 | S3 | Right IR line sensor on Grove port 4 |
 | GP17 | | |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
-| GP20 | | |
-| GP21 | | |
+| GP20 | S2 | Robo Pico user button: calibrate both sensors on white and latch START |
+| GP21 | S2 | Robo Pico user button: latched emergency STOP |
 | GP22 | | |
 | GP26 | | (ADC0 capable) |
 | GP27 | | (ADC1 capable) |
@@ -130,7 +130,7 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
-| PWM slices (list) | | | |
+| PWM slices 4 and 5 | S2 | `motion_control_task` | GP8–GP11 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -163,7 +163,7 @@ What students *can* do:
 1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
 change it only by team agreement. Write down every task you create.
 
-The table below is the starter's allocation, not the robot's final priorities.
+The table below mixes implemented tasks with remaining starter tasks.
 The design orders application work as Vehicle Controller, Motion Control,
 Obstacle Scan, Line Sensor, IMU/Terrain, then Wireless Comms. Numeric priorities
 and affinities remain to be reconciled with this port's kernel service tasks.
@@ -171,8 +171,8 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
 | 1 | 12–13 | *example:* led_task – 12 – any |
-| 2 | 14–15 | *example:* producer_task – 14 – core 1 |
-| 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
+| 2 | 14–15 | motion_control_task – 14 – core 1; *example:* producer_task – 15 – core 1 |
+| 3 | 16–17 | line_sensor_task – 16 – core 0; *example:* consumer_task – 17 – core 0 |
 | 4 | 18–19 | *example:* monitor_task – 18 – any |
 | 5 | 20–21 | |
 
@@ -191,7 +191,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
 | IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
 | IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
-| IF-06 | | | | | |
+| IF-06 | S3 → S2 | protected snapshot API (mutex owned by S3) | `line_sensor_get_snapshot` | IR state and left/right motor targets for demo Motion Control | demo-branch approval |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -199,15 +199,15 @@ Each interface is tested by at least one integration test
 ## 6. Kernel object budget
 
 Limits are set in `config/config.h`. If the team needs more, raise the
-limit there. The numbers below are the example's usage.
+limit there. The numbers below include implemented and remaining example use.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | 1 | 1 | 1 | 1 | |
+| Task | 32 | 1 | 2 | 2 | 1 | |
 | Semaphore | 16 | | 1 | | | |
 | Event flag | 16 | | | | 1 | |
 | Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | | 1 | | |
+| Mutex | 12 | | | 2 | | |
 | Message buffer | 12 | | | | 1 | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |

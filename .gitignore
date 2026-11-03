@@ -10,6 +10,7 @@ Release
 build_make/tools/elf2uf2
 tools/elf2uf2/elf2uf2
 build_make/.build_profile
+testing/subsystem3/unit_tests/test_line_follower
 
 # Local third-party SDK
 pico-sdk/

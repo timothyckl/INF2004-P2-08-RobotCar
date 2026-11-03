@@ -94,6 +94,7 @@ EXPORT ID app_start_task(FP entry, PRI pri, UW prc, const char *name)
 
 EXPORT INT usermain(void)
 {
+#if APP_TEST
 	T_RVER	ver;
 
 	/* tk_ref_ver: ask the kernel who it is */
@@ -105,6 +106,7 @@ EXPORT INT usermain(void)
 		  tk_get_prc() - 1);	/* tk_get_prc() counts from 1 */
 #else
 	tm_printf((UB*)"single-core build\n");
+#endif
 #endif
 
 	/* Phase 1: every subsystem creates its kernel objects */
@@ -121,9 +123,8 @@ EXPORT INT usermain(void)
 	CHECK(subsystem4_start(), "subsystem4_start");
 	CHECK(subsystem5_start(), "subsystem5_start");
 
-	tm_printf((UB*)"all subsystems started\n\n");
-
 #if APP_TEST
+	tm_printf((UB*)"all subsystems started\n\n");
 	/* Test build (make TEST=1): run every subsystem's tests in turn,
 	   here in the initial task, while the system is running.  Tests may
 	   call tk_dly_tsk() to let the other tasks work for a while. */

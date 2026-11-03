@@ -38,8 +38,21 @@ EXPORT ER subsystem2_init(void)
 
 EXPORT ER subsystem2_start(void)
 {
-	/* Pinned to core 1 (TP_PRC2): samples cross to subsystem 3 on core 0 */
-	ID tid = app_start_task(producer_task, S2_PRI_PRODUCER, TP_PRC2,
-				"producer_task");
+	ID tid;
+
+	/* The motion task is the sole owner of the motor PWM peripheral. */
+	tid = app_start_task(motion_control_task, S2_PRI_MOTION_CONTROL,
+			     TP_PRC2, "motion_control_task");
+	if (tid < E_OK) {
+		return tid;
+	}
+
+#if APP_TEST
+	/* Retain the starter producer in the automated-test profile only. */
+	tid = app_start_task(producer_task, S2_PRI_PRODUCER, TP_PRC2,
+			     "producer_task");
 	return (tid < E_OK) ? tid : E_OK;
+#else
+	return E_OK;
+#endif
 }

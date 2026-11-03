@@ -11,7 +11,8 @@
 
 #include "../app.h"
 
-#define S2_PRI_PRODUCER		14	/* priority band 14-15 (TEAM.md) */
+#define S2_PRI_MOTION_CONTROL	14	/* priority band 14-15 (TEAM.md) */
+#define S2_PRI_PRODUCER		15	/* retained starter task */
 #define S2_PERIOD_MS		300	/* one sample every 300 ms */
 
 /* ---------------------------------------------------------------------
@@ -37,6 +38,7 @@ IMPORT ID	mpf_samples;
 
 /* Private to subsystem 2 */
 IMPORT void	producer_task(INT stacd, void *exinf);
+IMPORT void motion_control_task(INT start_code, void * p_extension);
 IMPORT INT	s2_make_value(UW seq);
 
 #endif /* SUBSYSTEM2_H */
