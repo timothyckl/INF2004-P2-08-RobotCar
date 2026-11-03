@@ -14,6 +14,7 @@
  *	  2  also SPINS THE MOTORS (S2-H01, S2-H02, S2-H04): wheels off the
  *	     ground first
  *	  3  only the S2-H04 full-speed diagnostic (SPINS THE MOTORS)
+ *	  4  only the S2-H05 watchdog check (SPINS MOTOR 1, then resets)
  */
 
 #include "subsystem2.h"
@@ -22,6 +23,8 @@
 #include "drv_motor.h"
 #include "drv_encoder.h"
 #include "drv_gpio_irq.h"
+#include "drv_watchdog.h"
+#include "motion_config.h"
 #include "test_motion.h"
 #include "test_controller.h"
 #include "s2_bridge.h"
@@ -428,6 +431,19 @@ static bool test_stop_adapter_full(void)
 	return ok;
 }
 
+/* S2-U54: watchdog LOAD value, x2 for erratum RP2040-E1, range checked */
+static bool test_watchdog_load(void)
+{
+	return (drv_watchdog_load_value(1u) == 2000u) &&
+	       (drv_watchdog_load_value(MC_WATCHDOG_MS) ==
+		MC_WATCHDOG_MS * 2000u) &&
+	       (drv_watchdog_load_value(200u) == 400000u) &&
+	       (drv_watchdog_load_value(DRV_WATCHDOG_MAX_MS) == 16776000u) &&
+	       (drv_watchdog_load_value(DRV_WATCHDOG_MAX_MS) <= 0x00FFFFFFu) &&
+	       (drv_watchdog_load_value(DRV_WATCHDOG_MAX_MS + 1u) == 0u) &&
+	       (drv_watchdog_load_value(0u) == 0u);
+}
+
 #if S2_HW_TEST
 /* Print both encoders every 100 ms for the given number of seconds */
 static void hw_print_counts(const char *step, INT seconds)
@@ -445,7 +461,7 @@ static void hw_print_counts(const char *step, INT seconds)
 	}
 }
 
-#if S2_HW_TEST >= 2
+#if (S2_HW_TEST == 2) || (S2_HW_TEST == 3)
 /* S2-H04, split up to find where the full-speed freeze happens: each
    motor alone at 100%, then both, printing every 100 ms so the log
    shows the last moment the CPU was alive.  Wheels OFF THE GROUND. */
@@ -478,7 +494,36 @@ static void hw_full_speed(void)
 	hw_full_speed_step("S2-H04c both", 100, 100, 5);
 	tm_printf((UB*)"[HW] S2-H04 finished, all motors braked\n");
 }
-#endif /* S2_HW_TEST >= 2 */
+#endif /* S2_HW_TEST 2 or 3 */
+
+#if S2_HW_TEST == 4
+/* S2-H05: arm the watchdog, run motor 1 at 30%, kick for 3 s, then stop
+   kicking. The board should reset within MC_WATCHDOG_MS and the next boot
+   print "[S2] previous reset: WATCHDOG". If no reset comes within 2 s,
+   brake and report FAIL so the motor never runs on.  Wheels OFF THE
+   GROUND. */
+static void hw_watchdog_check(void)
+{
+	UINT t;
+
+	tm_printf((UB*)"[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND\n");
+	hw_print_counts("S2-H05 wait", 5);
+	CHECK(drv_watchdog_start(MC_WATCHDOG_MS), "drv_watchdog_start");
+	(void)drv_motor_set(DRV_MOTOR_1, (DRV_MOTOR_DUTY_MAX * 3) / 10);
+	for (t = 0u; t < 3000u; t += 20u) {
+		drv_watchdog_kick();
+		tk_dly_tsk(20);
+	}
+	tm_printf((UB*)"[HW] S2-H05 stopped kicking: reset expected within %d ms\n",
+		  (INT)MC_WATCHDOG_MS);
+	for (t = 0u; t < 2000u; t += 20u) {
+		tm_printf((UB*)"[HW] S2-H05 %d ms since last kick\n", (INT)t);
+		tk_dly_tsk(20);
+	}
+	(void)drv_motor_brake(DRV_MOTOR_1);
+	tm_printf((UB*)"[HW] S2-H05 FAIL: no watchdog reset after 2 s, braked\n");
+}
+#endif /* S2_HW_TEST == 4 */
 
 #if S2_HW_TEST == 2
 /* S2-H01, S2-H02, S2-H04.  Wheels OFF THE GROUND. */
@@ -512,7 +557,9 @@ static void hw_test(void)
 	CHECK(drv_motor_init(), "drv_motor_init");	/* starts braked */
 	CHECK(drv_encoder_init(), "drv_encoder_init");
 
-#if S2_HW_TEST == 3
+#if S2_HW_TEST == 4
+	hw_watchdog_check();
+#elif S2_HW_TEST == 3
 	/* Full-speed diagnostic only: skip the hand and 30% steps. */
 	tm_printf((UB*)"[HW] S2-H04 starts in 5 s: wheels OFF THE GROUND\n");
 	hw_print_counts("S2-H04 wait", 5);
@@ -659,6 +706,8 @@ EXPORT void subsystem2_test(void)
 		   "only START in Ready clears STOP");
 	TEST_CHECK("S2-U53", test_ctrl_robot_state(),
 		   "robot_state snapshot fields");
+	TEST_CHECK("S2-U54", test_watchdog_load(),
+		   "watchdog load value (E1 x2, range)");
 	TEST_CHECK("S2-U55", test_motion_ramp(),
 		   "duty ramp limits increases only");
 	TEST_CHECK("S2-U56", test_motion_ramp_stall(),

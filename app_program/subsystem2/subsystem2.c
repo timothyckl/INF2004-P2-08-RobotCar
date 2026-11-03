@@ -19,6 +19,7 @@
 
 #include "subsystem2.h"
 #include "drv_gpio_irq.h"
+#include "drv_watchdog.h"
 #include "task_controller.h"
 #include "task_motion.h"
 
@@ -37,6 +38,11 @@ EXPORT ER subsystem2_init(void)
 	T_CSEM	csem = {0};
 	T_CMPF	cmpf = {0};
 	ER	er;
+
+	/* Evidence that the watchdog protection fired (S2-H05) */
+	if (drv_watchdog_caused_reset()) {
+		tm_printf((UB*)"[S2] previous reset: WATCHDOG\n");
+	}
 
 	er = s2_controller_create();
 	if (er < E_OK) {

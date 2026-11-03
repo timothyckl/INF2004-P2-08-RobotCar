@@ -12,7 +12,8 @@
  *   2. handle every queued motion_q command (non-blocking);
  *   3. run motion_step() and write the duties to the motors;
  *   4. raise CTRL_FLG_MOTION_FAULT if Motion Control entered Fault;
- *   5. publish motion_status_t under its mutex.
+ *   5. publish motion_status_t under its mutex;
+ *   6. kick the hardware watchdog (normal firmware only).
  * The motors are written (3) before anything else is shared.
  *
  * Fail safe: if safety_flags cannot be read (e.g. not created yet), STOP
@@ -25,12 +26,18 @@
 
 #include "drv_encoder.h"
 #include "drv_motor.h"
+#include "drv_watchdog.h"
 #include "motion_config.h"
 #include "motion_logic.h"
 #include "subsystem2.h"
 
 #define MC_TASK_CORE        TP_PRC2
 
+/* The hardware watchdog is armed only in the normal firmware. A TEST=1
+   build runs the unit tests in usermain, which can hold the CPU long
+   enough to starve this task on purpose, and a bench build (S2_HW_TEST)
+   never starts this task, so arming it there would reset the board. */
+#define MC_USE_WATCHDOG     ((0 == APP_TEST) && (0 == S2_HW_TEST))
 #define MC_LOCK_TMO_MS      10      /* reader wait for the status lock */
 
 EXPORT ID motion_q = 0;
@@ -212,8 +219,17 @@ motion_task (INT stacd, void * exinf)
     bool const b_motor_ok = (drv_motor_init() >= E_OK);
     bool const b_enc_ok   = (drv_encoder_init() >= E_OK);
 
+#if MC_USE_WATCHDOG
+    /* Armed before the first period; a tick that is not running means
+       no protection, so Motion Control starts in Fault(INIT). */
+    bool const b_wdt_ok   = (drv_watchdog_start(MC_WATCHDOG_MS) >= E_OK);
+#else
+    bool const b_wdt_ok   = true;
+#endif
+
     motion_output_clear(&out);
-    motion_start(&g_motion, b_cfg_ok && b_motor_ok && b_enc_ok, &out);
+    motion_start(&g_motion, b_cfg_ok && b_motor_ok && b_enc_ok && b_wdt_ok,
+                 &out);
     raise_fault(&out);
     publish_status();
 
@@ -233,6 +249,9 @@ motion_task (INT stacd, void * exinf)
 
         motion_step(&g_motion, &in, &out);
         apply_duty(out.duty_l, out.duty_r);
+#if MC_USE_WATCHDOG
+        drv_watchdog_kick();    /* the only kick: a hung task resets */
+#endif
 
         if (g_b_off_due && in.b_stop && (0 == out.duty_l)
             && (0 == out.duty_r))

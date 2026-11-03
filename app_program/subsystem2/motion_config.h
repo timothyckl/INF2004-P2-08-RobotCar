@@ -85,6 +85,10 @@
    STOP and Fault are never ramped. */
 #define MC_DUTY_STEP_MAX        (DRV_MOTOR_DUTY_MAX / 20)
 
+/* Hardware watchdog timeout. UNMEASURED: 20 control periods. Kicked only
+   by Motion Control; not armed in TEST=1 or bench builds. */
+#define MC_WATCHDOG_MS          200u
+
 /* motion_q: 8 commands of 4 + 16 bytes (kernel message overhead). */
 #define MC_MOTION_Q_BYTES       160
 

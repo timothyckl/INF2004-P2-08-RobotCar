@@ -20,7 +20,8 @@
    the bench sequence owns the motors. Never commit it non-zero:
      1  encoder counts every 100 ms, motors off (S2-H03)
      2  also spins the motors (S2-H01, S2-H02, S2-H04)
-     3  only the S2-H04 full-speed diagnostic (each motor, then both) */
+     3  only the S2-H04 full-speed diagnostic (each motor, then both)
+     4  only the S2-H05 watchdog check (motor 1 at 30%, stop kicking) */
 #ifndef S2_HW_TEST
 #define S2_HW_TEST  0
 #endif
