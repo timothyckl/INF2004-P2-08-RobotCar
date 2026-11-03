@@ -56,9 +56,9 @@ The authoritative GPIO mapping is `AGENTS.md`, section *Agreed pin mapping*;
 the claims below must match it. The proposed robot wiring is in
 `docs/AAI08_Design_Review.pdf` section 2. The rows below follow the team pin
 mapping of 2026-11-03, which records the assembled robot (`docs/decisions.md`,
-subsystem 2, decision 1): the wheel encoders use GP7/GP28 (left) and GP0/GP1 (right), the IMU uses I2C1 on GP2/GP3,
-the HC-SR04 GP4/GP5, the servo GP12, and the line and barcode sensors GP6,
-GP16, GP17, GP26 and GP27. Because GP0/GP1 carry an encoder, building with
+subsystem 2, decision 1): the wheel encoders use GP7/GP28 (left) and GP0/GP1
+(right), the IMU uses I2C1 on GP2/GP3, the HC-SR04 GP4/GP5, the servo GP12,
+and the line and barcode sensors GP6, GP16, GP17, GP26 and GP27. Because GP0/GP1 carry an encoder, building with
 `CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. The kernel ADC driver is
 enabled, but its RP2040 pin initialisation stays disabled on GP26 to GP28 so it
 does not take those pins. Reconcile any other wiring with the actual board and
