@@ -41,9 +41,16 @@ S3_SRC  := $(APP)/subsystem3/s3_ir.c \
            $(APP)/subsystem3/s3_nav.c \
            $(ROOT)/testing/subsystem3/test_main.c
 
-.PHONY: all s1 s2 s3 clean
+S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
+           $(APP)/subsystem5/src/scan_test_adapter.c \
+           $(APP)/subsystem5/src/scan_engine.c \
+           $(APP)/subsystem5/src/range_measurement.c \
+           $(wildcard $(ROOT)/testing/subsystem5/unit_tests/src/*.c) \
+           s5_host_main.c
 
-all: s1 s2 s3
+.PHONY: all s1 s2 s3 s5 clean
+
+all: s1 s2 s3 s5
 	@echo "[HOST] all suites passed"
 
 s1:
@@ -55,10 +62,24 @@ s2:
 	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s2_logic $(STUBS) $(S2_SRC)
 	$(OUT)/s2_logic
 
+S3_TRACK_SRC := $(APP)/subsystem3/s3_ir.c $(APP)/subsystem3/s3_bar.c \
+           $(APP)/subsystem3/s3_track.c $(APP)/subsystem3/s3_scan.c \
+           $(ROOT)/testing/subsystem3/test_track_scan.c
+
 s3:
 	$(CC) $(STRICT) -Wconversion -I$(APP)/subsystem3 -o $(OUT)/s3_logic \
 	    $(S3_SRC)
 	$(OUT)/s3_logic
+	$(CC) $(STRICT) -Wconversion -I$(APP)/subsystem3 -o $(OUT)/s3_track \
+	    $(S3_TRACK_SRC)
+	$(OUT)/s3_track
+
+# The S5 runner prints one line per case; any FAIL or BLOCKED fails here.
+s5:
+	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s5_logic $(STUBS) $(S5_SRC)
+	$(OUT)/s5_logic | tee $(OUT)/s5.txt
+	@! grep -qE " (FAIL|BLOCKED) " $(OUT)/s5.txt
 
 clean:
-	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic
+	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic $(OUT)/s3_track \
+	    $(OUT)/s5_logic

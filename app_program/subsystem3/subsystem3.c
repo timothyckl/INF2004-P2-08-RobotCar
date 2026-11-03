@@ -1,6 +1,7 @@
 /*
  *	subsystem3.c
- *	Subsystem 3 -- Consumer: creates its objects and starts its task.
+ *	Subsystem 3 -- creates its objects and starts its tasks: the Line
+ *	Sensor task (task_line.c, IF-06) and the legacy starter consumer.
  *
  *	APIs shown: tk_cre_mbx, tk_cre_mtx
  */
@@ -15,6 +16,11 @@ EXPORT ER subsystem3_init(void)
 {
 	T_CMBX	cmbx = {0};
 	T_CMTX	cmtx = {0};
+	ER	er = s3_line_create();
+
+	if (er < E_OK) {
+		return er;
+	}
 
 	/* Mailbox: passes a POINTER to a message (zero copy).  The message
 	   memory must stay valid until the receiver is done with it, which
@@ -35,6 +41,12 @@ EXPORT ER subsystem3_init(void)
 
 EXPORT ER subsystem3_start(void)
 {
+	ER	er = s3_line_start();
+
+	if (er < E_OK) {
+		return er;
+	}
+
 	/* Pinned to core 0 (TP_PRC1): opposite core to the producer */
 	ID tid = app_start_task(consumer_task, S3_PRI_CONSUMER, TP_PRC1,
 				"consumer_task");
