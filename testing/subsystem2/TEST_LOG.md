@@ -93,8 +93,8 @@ Define a test here before running it. Test IDs never change.
 | Counts per wheel rev, right (x2) | S2-H03 | | | | | |
 | Wheel circumference (um) | roll 10 revs on the floor, measure, divide by 10 | | | | | |
 | Track width (mm) | wheel contact centre to centre | | | | | |
-| Left/right encoder counts down going forward? | S2-H03 | | | | | |
-| Left/right motor needs negative duty to go forward? | S2-H01 | | | | | |
+| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | left no, right yes (relative to its own motor direction) | 2026-11-02, `9f43bc3` |
+| Left/right motor needs negative duty to go forward? | S2-H01 (bench) | | | | left no, right yes | 2026-11-02, `9f43bc3` |
 | Still threshold (mm/s) | robot at rest: largest speed reading over 10 s, plus margin | | | | | |
 | Interrupt rate at full speed (edges/s per wheel) | S2-H04 | | | | | |
 
@@ -149,3 +149,11 @@ Add a new row for every run. Never edit or delete old rows.
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
 | YYYY-MM-DD | S2-U01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
+| 2026-11-02 | S2-U01 to S2-U53 | `806cd45` | Dalton | PASS (53 passed, 0 failed) | log name to add | `TEST=1` on the Pico W |
+| 2026-11-02 | S2-H01 | `9f43bc3` | Dalton | PASS | log name to add | Both motors drive both ways. Right side reversed (positive duty drove it backward, its encoder counted up); inverts set in `9f43bc3`. Run with the PWM reset fix and new encoder pins, before the inverts |
+| 2026-11-02 | S2-H04 | `9f43bc3` | Dalton | FAIL | log name to add | CPU hung with both motors at 100%; serial output stopped and the motors kept running. Happened with and without working encoders. Under investigation: split diagnostic `8e0f87e`, duty ramp `469c1f0`, watchdog `a2577d4` |
+
+Note, 2026-11-02 demo image (`806cd45`, `S2_DEMO_AUTOSTART`): Ready, Running,
+then Fault(motion) after about 1 s, because the motors never moved (PWM block
+held in reset, fixed in `9f43bc3`) and stall detection fired. STOP latch to
+motor off: 389 us (one sample, from that image).

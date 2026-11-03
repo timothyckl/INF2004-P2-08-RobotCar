@@ -15,15 +15,35 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 | Motor 2 | GP10 (M2A) / GP11 (M2B), PWM slice 5 | as above |
 | Motor PWM | 20 kHz: 125 MHz clk_sys, divider 1, TOP 6249; duty -6250..+6250 | Robo Pico datasheet table 1 row 10 |
 | Driver truth table | A high B low forward; A low B high backward; both low brake; both high coast | Robo Pico datasheet section 4 |
-| Encoder 1 | GP26 (A) / GP27 (B) | design review section 2 |
-| Encoder 2 | GP7 (A) / GP28 (B); keep the GP28 battery-sense jumper open | as above |
+| Encoder 1 (left, motor 1) | GP7 (A, blue) / GP28 (B, green); keep the GP28 battery-sense jumper open | wiring on the robot, bench 2026-11-02 |
+| Encoder 2 (right, motor 2) | GP0 (A, blue) / GP1 (B, green); needs `CRASH_REPORT=0` (UART0 mirror) | as above |
+| Encoder power | 3V3 and GND | as above |
+| Motor plug | PH2.0-6P: 01 encoder GND, 02 encoder A, 03 encoder B, 04 encoder VCC, 05 motor +, 06 motor - | as above |
+| Motor wires | M1A GP8 yellow, M1B GP9 black; M2A GP10 yellow, M2B GP11 black | as above |
 | Encoder type | TT motor two-channel Hall (confirmed on the robot; no datasheet) | owner |
+| Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control (normal firmware only) | Pico SDK register headers; RP2040 datasheet not in `docs/datasheets` |
 | GPIO interrupt | IO_IRQ_BANK0, IRQ 13, NVIC priority 2, on core 0 | SDK `hardware/regs/intctrl.h` |
 
-The sample ADC driver turns off digital input on GP26 to GP28 at start-up
-(`device/adc/sysdepend/rp2040/adc_rp2040.c`). `DEVCNF_USE_ADC` must be set to
-0 in `config/config_device.h`; this is a shared file and the change waits for
-agreement with Khang, whose branch edits the next line.
+The encoder pins were swapped with subsystem 4 to match the robot's wiring:
+the IMU moves to Grove 6 (GP26 SDA1 / GP27 SCL1, I2C1). The sample ADC driver
+does not touch GP26 to GP28 at start-up: `DEVCONF_ADC_PIN_INIT_*` are all FALSE
+in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` (an earlier version of this
+document said otherwise). GP28 is an encoder input, so no code may configure
+it as an ADC input.
+
+### Bench findings, 2026-11-02
+
+- **PWM block in reset.** The kernel releases `RESETS_RESET_PWM` only when it
+  uses PWM as its physical timer (`USE_PTMR`, 0 in `config/config.h`), so the
+  motors did not move at any duty. `drv_motor_init()` now clears that reset
+  itself and never asserts it, because the servo (subsystem 5) shares the block.
+- **Right side mirrored.** Positive duty drove the right wheel backward while its
+  encoder counted up, so `MC_RIGHT_MOTOR_INVERT` and `MC_RIGHT_ENC_INVERT` are 1.
+  The left side needs no inversion.
+- **Full-speed freeze (open).** With both motors at 100% the CPU hung and the
+  motors kept running, with working and non-working encoders alike. A supply
+  dip or motor noise is the likely cause. The duty ramp and the watchdog below
+  are the response; S2-H04 is split to find where it happens.
 
 ## Software structure
 
@@ -31,6 +51,7 @@ agreement with Khang, whose branch edits the next line.
 |---|---|
 | `drv_motor.c` | PWM set-up, signed duty, brake, coast; one function maps sign to A/B |
 | `drv_encoder.c` | x2 quadrature counting in the dispatcher interrupt; lock-free snapshot |
+| `drv_watchdog.c` | RP2040 hardware watchdog: start, kick, last-reset reason |
 | `drv_gpio_irq.c` | Shared GPIO edge-interrupt dispatcher for the whole team |
 | `pid.c`, `odometry.c` | Integer PID; counts to mm, speed and turn angle |
 | `motion_logic.c` | Pure Motion Control statechart |
@@ -75,6 +96,18 @@ section 6.2).
 - Stall, encoder fault and Move/Turn timeout go to Fault (zero duty,
   `CTRL_FLG_MOTION_FAULT`). Only RESET with both wheels still leaves Fault.
 - If `safety_flags` cannot be read, STOP is treated as set.
+- Duty ramp: each wheel's |duty| grows by at most `MC_DUTY_STEP_MAX` per period
+  (full scale in 200 ms), so both motors never jump from 0 to 100% at once.
+  Decreases, STOP and Fault are immediate; a sign change passes through 0. It
+  is applied before the stall check, so stall timing starts only once the
+  ramped duty reaches the stall level.
+- Hardware watchdog: armed when the task starts and kicked only by Motion
+  Control, every period. If the CPU hangs or the task is starved for
+  `MC_WATCHDOG_MS` (200 ms), the chip resets; the reset puts the PWM block back
+  in reset and the pads back to their pull-downs, so the motors stop. The load
+  value is doubled for erratum RP2040-E1, and PSM `WDSEL` is set (its reset value
+  0 would reset nothing). Not armed in `TEST=1` or bench builds. After such a
+  reset the boot prints `[S2] previous reset: WATCHDOG`.
 
 ### Vehicle Controller (Week 10 subset)
 
@@ -125,14 +158,14 @@ Controller task only. Results appear in `motion_get_status()`.
 
 | Option | File | Default | Effect |
 |---|---|---|---|
-| `S2_HW_TEST` | `task_motion.h` | 0 | 1: bench encoder print; 2: also spins motors. Tasks not started. Never commit non-zero |
+| `S2_HW_TEST` | `task_motion.h` | 0 | 1: encoder print, motors off; 2: also spins motors; 3: S2-H04 full-speed diagnostic only; 4: S2-H05 watchdog check. Tasks not started. Never commit non-zero |
 | `S2_DEMO_SCRIPT` | `task_controller.h` | 1 | Running performs the demo script |
 | `S2_DEMO_AUTOSTART` | `task_controller.h` | 0 | Local START 5 s after Ready. The robot moves by itself |
 | `S2_DEMO_LOG` | `task_controller.h` | 0 | Console status and STOP latency every 500 ms |
 
 ```sh
 make -C build_make            # firmware
-make -C build_make TEST=1     # firmware with S2-U01..S2-U53
+make -C build_make TEST=1     # firmware with S2-U01..S2-U56
 ```
 
 Compilation does not run the tests: flash the UF2 and capture the USB serial
@@ -169,7 +202,16 @@ subsystem 2. TEAM.md section 5 then drops IF-01 and IF-02.
 
 ## Known limitations
 
-- Nothing has run on the Pico W yet; every result row is open.
+- S2-U01 to S2-U53 passed on the Pico W (2026-11-02, `806cd45`); S2-U54 to
+  S2-U56 and the watchdog and ramp have not run on the robot yet.
+- **S2-H04 is open:** the CPU hung with both motors at 100%. The ramp and the
+  watchdog limit the risk but the cause is not diagnosed; run S2-H04
+  (`S2_HW_TEST` 3) and S2-H05 (4) next.
+- `S2_DEMO_LOG` prints from the controller, above Motion Control on the same
+  core; a console print that blocks for over 200 ms would starve Motion
+  Control and trigger a watchdog reset.
+- That the pads' reset pull-downs hold both driver inputs low (brake) after a
+  watchdog reset is reasoned, not yet observed (S2-H05).
 - All tuning is UNMEASURED; distances and angles are only as good as the
   calibration.
 - Move does not slow down near the target, so overshoot depends on braking.
