@@ -30,7 +30,7 @@
 #define DEVCNF_USE_IIC		1		// I2C communication device
 
 #if defined(_PICO_RP2040_) && !defined(BOARD_UART0_FREE)
-#error "I2C0 on GP0/GP1 requires UART0 to be disabled or relocated"
+#error "Encoder inputs on GP0/GP1 require UART0 to be disabled or relocated"
 #endif
 
 #endif	/* __DEV_CONFIG_H__ */

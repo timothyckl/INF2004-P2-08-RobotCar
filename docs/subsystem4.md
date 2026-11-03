@@ -12,12 +12,12 @@ authorise movement.
 |---|---|
 | Module | GY-511 with ST LSM303DLHC |
 | Supply | Pico W 3V3 and common ground |
-| Bus | I2C0 at 400 kbit/s through the kernel I2C service |
-| Pins | SDA GP0, SCL GP1 |
+| Bus | I2C1 at 400 kbit/s through the kernel I2C service (`iicb`) |
+| Pins | SDA GP2, SCL GP3 |
 | Accelerometer address | `0x19` |
 | Magnetometer address | `0x1E` |
 | Accelerometer mode | 100 Hz, XYZ, +/-2 g, high resolution, BDU |
-| Console constraint | USB CDC only; UART0/crash mirror cannot use GP0/GP1 |
+| Console constraint | S4 no longer uses UART0 pins; project wiring still assigns GP0/GP1 to the right encoder |
 
 Before power-up, verify that the assembled module provides external SDA/SCL
 pull-ups to 3V3; the LSM303DLHC I2C interface requires pull-ups and the RP2040
@@ -31,7 +31,7 @@ at 1 mg/LSB.
 
 These choices follow `docs/datasheets/LSM303DLHC-datasheet.pdf`, the RP2040
 GPIO function assignments in `docs/datasheets/pico_w_datasheet.pdf`, and the
-Robo Pico Grove 1 mapping in `docs/datasheets/Robo-Pico-datasheet.pdf`.
+Robo Pico Grove 2 mapping in `docs/datasheets/Robo-Pico-datasheet.pdf`.
 
 ## Software structure
 

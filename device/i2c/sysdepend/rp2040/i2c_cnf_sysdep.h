@@ -28,12 +28,12 @@
  * GPIO function table), and must be recorded in TEAM.md.
  *   I2C0: SDA on GP0/4/8/12/16/20/28, SCL on GP1/5/9/13/17/21
  *   I2C1: SDA on GP2/6/10/14/18/22/26, SCL on GP3/7/11/15/19/27
- * Subsystem 4 uses I2C0 on Grove 1 GP0/GP1.  GP8/GP9 remain reserved for
- * motor 1 PWM. */
+ * Subsystem 4 uses I2C1 on GP2/GP3.  I2C0 is not initialized by the current
+ * Pico W device-startup configuration. */
 #define	DEVCNF_I2C0_SDA_PIN	0
 #define	DEVCNF_I2C0_SCL_PIN	1
-#define	DEVCNF_I2C1_SDA_PIN	6
-#define	DEVCNF_I2C1_SCL_PIN	7
+#define	DEVCNF_I2C1_SDA_PIN	2
+#define	DEVCNF_I2C1_SCL_PIN	3
 
 /* Register initial value */
 

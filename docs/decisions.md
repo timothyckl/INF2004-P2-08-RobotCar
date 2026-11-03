@@ -16,10 +16,9 @@ _No decisions recorded yet._
 
 ### 1. Standalone ownership and wiring
 
-Subsystem 4 owns the GY-511 / LSM303DLHC and I2C0. Use GP0 for SDA and GP1
-for SCL, power the module from 3V3, and use a common ground. UART0 and its
-crash-report mirror must remain disabled or be relocated while this wiring is
-present. Only `s4_imu_task` accesses I2C0; the standalone implementation has
+Subsystem 4 owns the GY-511 / LSM303DLHC and I2C1. Use GP2 for SDA and GP3
+for SCL, power the module from 3V3, and use a common ground. Only
+`s4_imu_task` accesses I2C1; the standalone implementation has
 no dependency on motor, encoder, controller, or network subsystems.
 
 ### 2. Sensor mode and calibration
@@ -69,7 +68,12 @@ Write specifications and executable C tests for the Pico W before production cod
 
 ### 2. Hardware test setup
 
-Use TRIG GP2, ECHO GP3 and servo GP15. Verify the assembled wiring, ECHO level shifting, supply voltages and actual servo model before powered tests. Obtain the matching servo datasheet before choosing PWM limits. Use a ruler, angle reference, logic analyser and voltage measurement for calibration.
+Use TRIG GP4, ECHO GP5 and servo GP12. Verify the assembled wiring, ECHO level
+shifting, supply voltages and actual servo model before powered tests. The local
+HC-SR04 datasheet specifies a 5 V supply, so the present 3.3 V test wiring is not
+accepted as validated operation. Obtain the matching servo datasheet before
+choosing PWM limits. Use a ruler, angle reference, logic analyser and voltage
+measurement for calibration.
 
 ### 3. Ranging rules
 

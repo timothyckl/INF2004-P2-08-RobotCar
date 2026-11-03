@@ -44,7 +44,7 @@ s4_lsm303_init (s4_lsm303_driver_t * p_driver)
 ER
 s4_lsm303_open (s4_lsm303_driver_t * p_driver)
 {
-    static UB device_name[] = "iica";
+    static UB device_name[] = "iicb";
     ER error = E_PAR;
 
     if (NULL != p_driver)
