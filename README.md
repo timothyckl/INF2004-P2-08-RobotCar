@@ -5,9 +5,11 @@ platform and micro T-Kernel 3.0. The project must follow a line, decode navigati
 barcodes, detect humps and report the highest peak, profile and bypass obstacles,
 reacquire the original line, and report telemetry over WiFi/MQTT.
 
-The firmware currently contains the RTOS starter examples, not these robot
-features. It runs on **both cores** of the Pico W's RP2040, with a USB serial
-console and the WiFi driver built in.
+The firmware contains each subsystem's first implementation alongside some
+remaining starter examples (see `TEAM.md`). The subsystems are not yet joined
+into the complete robot behaviour, and the integrated firmware has not been
+validated on hardware. It runs on **both cores** of the Pico W's RP2040, with a
+USB serial console and the WiFi driver built in.
 
 Project references in `docs/`:
 - `Project Description.pdf` — mission and subsystem requirements.
@@ -139,8 +141,7 @@ screen /dev/ttyACM0 115200            # Linux
 ```
 
 On Windows, use PuTTY or the VS Code *Serial Monitor* on the new COM port.
-You should see the task reports. Connect an LED with a 330 Ω resistor from
-**GP19** to GND to see subsystem 1's LED blink.
+You should see the task reports.
 
 **2.5 Write your own code**
 
@@ -151,10 +152,9 @@ subfolders, is compiled automatically.
   every subsystem's `subsystemN_init()` (create kernel objects), then every
   `subsystemN_start()` (start tasks). Read its comments first.
 - **One folder per student:** `app_program/subsystem1/` … `subsystem5/`.
-  Subsystems 1–4 hold a working example, one task each (LED, producer,
-  consumer, monitor). Together they use the main micro T-Kernel APIs and
-  pass data between subsystems. Subsystem 5 is an empty template.
-  Replace the examples with your own subsystems.
+  Each holds that subsystem's implementation. Some starter examples
+  remain until their replacements are integrated; `TEAM.md` sections 4 to 6
+  mark them.
 - `subsystemN.h` is that subsystem's public interface: the object IDs and
   data formats the other subsystems may use.
 - `app.h` holds the definitions shared by the whole team.
@@ -170,10 +170,11 @@ between subsystems in **`TEAM.md`**, and record every test in **`testing/`**
 the subsystem tests at power-up. Short videos of tests and demos are shared
 as unlisted YouTube links, listed in **`videos/`**.
 
-Pins: use **GP0–GP22 and GP26–GP28**. GP0/GP1 are free unless your team
-builds with `CRASH_REPORT=1` (section 3), which needs them. Never use
-GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico W's
-on-board LED is also on the radio, so use an external LED instead.
+Pins: the robot's wiring is in `AGENTS.md`, section *Agreed pin mapping*,
+which is the authoritative GPIO reference. GP0/GP1 carry the right wheel
+encoder, so build with `CRASH_REPORT=0` and `CONSOLE=usb_cdc` (section 3).
+Never use GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico
+W's on-board LED is also on the radio, so use an external LED instead.
 
 After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
 
@@ -187,7 +188,7 @@ after `make`. They can be combined in any order:
 ```sh
 make -j8                          # defaults: SMP=1 CONSOLE=usb_cdc WIFI=cyw43 TEST=0 CRASH_REPORT=0
 make SMP=0 -j8                    # single-core build
-make CONSOLE=uart WIFI=none -j8   # no USB console, radio off (no Pico SDK needed)
+make CONSOLE=uart WIFI=none -j8   # no USB console, radio off (see note below)
 make TEST=1 -j8                   # firmware with the subsystem self-tests
 make CRASH_REPORT=1 -j8           # also see crash reports, on GP0/GP1 (uses those pins)
 ```
@@ -220,8 +221,14 @@ UART output *is* sent at once, even inside the crash handler. So when you
 need to know why the Pico crashed or froze, build with `CRASH_REPORT=1`,
 connect a USB-serial adapter (adapter RX → GP0, adapter GND → GND), and read
 it at 115200 baud. Normal `tm_printf` output on USB works the same with
-either setting. If a subsystem has claimed GP0/GP1 in `TEAM.md`, unplug that
-hardware before using `CRASH_REPORT=1`.
+either setting. On this robot GP0/GP1 carry the right wheel encoder
+(`TEAM.md` section 2), so `CRASH_REPORT=1` and `CONSOLE=uart` are prohibited
+(`docs/decisions.md`, subsystem 2, decision 1). `CONSOLE=uart WIFI=none` also
+no longer compiles without the Pico SDK: subsystem 2's GPIO interrupt driver
+includes an SDK header.
+
+`S4_HW_TEST=1` (only with `TEST=1`) adds subsystem 4's live IMU start-up check
+and the `_s4hw` image suffix; see `docs/subsystem4.md`.
 
 The options are part of the image name, e.g.
 `mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build

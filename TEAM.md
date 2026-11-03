@@ -4,10 +4,11 @@ Group **P2-8**. Ownership below comes from `docs/AAI08_Design_Review.pdf`
 and `docs/AAI08_PostTri1.pdf`. The latter records subsequent design decisions
 and outstanding validation.
 
-The firmware still runs the starter examples. Pin, task, interface and object
-entries marked *example* describe that code, not the planned robot subsystems.
-Update them as each implementation replaces the example. Keep this file current
-so five people can work in one firmware image without resource conflicts.
+Some starter examples still run beside the subsystem implementations. Pin,
+task, interface and object entries marked *example* describe that starter code,
+not the planned robot subsystems. Update them as each implementation replaces
+the example. Keep this file current so five people can work in one firmware
+image without resource conflicts.
 
 A **subsystem** is one student's part of the product, with its own folder.
 It may contain several tasks and own several peripherals (see section 3).
@@ -51,10 +52,11 @@ and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
-The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2.
-The rows below follow the team pin mapping of 2026-11-03, which records the
-assembled robot (`docs/decisions.md`, subsystem 2, decision 1): the wheel
-encoders use GP7/GP28 (left) and GP0/GP1 (right), the IMU uses I2C1 on GP2/GP3,
+The authoritative GPIO mapping is `AGENTS.md`, section *Agreed pin mapping*;
+the claims below must match it. The proposed robot wiring is in
+`docs/AAI08_Design_Review.pdf` section 2. The rows below follow the team pin
+mapping of 2026-11-03, which records the assembled robot (`docs/decisions.md`,
+subsystem 2, decision 1): the wheel encoders use GP7/GP28 (left) and GP0/GP1 (right), the IMU uses I2C1 on GP2/GP3,
 the HC-SR04 GP4/GP5, the servo GP12, and the line and barcode sensors GP6,
 GP16, GP17, GP26 and GP27. Because GP0/GP1 carry an encoder, building with
 `CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. The kernel ADC driver is
@@ -90,7 +92,7 @@ fixed.
 | GP16 | S3 | front-left line sensor DO; demo liveness LED must not use this pin |
 | GP17 | S3 | front-left line sensor AO (connected, unused; not ADC-capable) |
 | GP18 | | |
-| GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
+| GP19 | | |
 | GP20 | | |
 | GP21 | | |
 | GP22 | | |
@@ -176,11 +178,11 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 12–13 | *example:* led_task – 12 – any |
-| 2 | 14–15 | *example:* producer_task – 14 – core 1 |
+| 1 | 12–13 | led_task – 12 – any (sleeping IF-05 compatibility stub, no GPIO) |
+| 2 | 14–15 | `controller` – 14 – core 1; `motion` – 15 – core 1; *example:* producer_task – 15 – core 1 |
 | 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
 | 4 | 18–19 | `s4_imu_task` – 18 – any |
-| 5 | 20–21 | |
+| 5 | 20–21 | none yet: the scan engine has no task (`scan_lifecycle.c`) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
@@ -199,25 +201,44 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
 | IF-06 | | | | | |
 
+Status after merging all five subsystems (2026-11-03):
+
+- IF-01, IF-02: still active between subsystem 2's legacy producer and
+  subsystem 3's starter consumer; INT-01 remains in `subsystem3_test.c`.
+- IF-03: subsystem 4 still creates `mbf_summary` and `flg_events`, and the
+  consumer still sends with `TMO_POL`, but no task receives them since
+  subsystem 4 replaced its monitor. INT-02's check was removed with it.
+- IF-04, IF-05: no longer used; subsystem 4 neither reads `app_stats` nor
+  controls `tid_led`. Subsystem 1 still runs a sleeping `led_task` for IF-05,
+  but no other subsystem references `tid_led` now.
+- Robot interfaces are still proposals, not agreements: subsystem 2's
+  `subsystem2.h` and `docs/subsystem2.md` (`controller_flags`, `safety_flags`,
+  `remote_q`, scan and navigation messages, the subsystem 1 adapter),
+  subsystem 1's `PROPOSAL.md` and `INTEGRATION.md`, and subsystem 5's scan
+  engine ports. None is connected between subsystems yet. Record each here as
+  IF-06 onward once both owners agree.
+
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
 
 ## 6. Kernel object budget
 
 Limits are set in `config/config.h`. If the team needs more, raise the
-limit there. The numbers below are the example's usage.
+limit there. The numbers below are counted from the integrated code for the
+normal build; `TEST=1` adds one subsystem 2 event flag and message buffer.
+Kernel driver objects are not included.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | 1 | 1 | 1 | 1 | |
+| Task | 32 | 1 | 3 | 1 | 1 | |
 | Semaphore | 16 | | 1 | | | |
-| Event flag | 16 | | | | 1 | |
+| Event flag | 16 | | 2 | | 1 | |
 | Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | | 1 | 1 | |
-| Message buffer | 12 | | | | 1 | |
+| Mutex | 12 | | 2 | 1 | 1 | |
+| Message buffer | 12 | | 2 | | 1 | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | 1 | | | | |
+| Cyclic handler | 12 | | 1 | | | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

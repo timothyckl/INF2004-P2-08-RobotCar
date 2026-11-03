@@ -68,6 +68,9 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 
 ## Agreed pin mapping
 
+This section is the authoritative GPIO reference. `TEAM.md` section 2 records
+per-pin ownership claims and must match it; change both together.
+
 | Device | Signal | GPIO | Interface | Owner / constraint |
 |---|---|---|---|---|
 | GY-511 / LSM303DLHC IMU | SDA / SCL | GP2 / GP3 | I2C1 | IMU/Terrain; power from 3V3 |
@@ -86,7 +89,9 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 Configuration constraints:
 
 - Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
-  carry the right encoder. `config/config_device.h` fails the build otherwise.
+  carry the right encoder. The `#error` guard in `config/config_device.h` does
+  not currently enforce this (`BOARD_UART0_FREE` is always defined), so check
+  the build options.
 - Disable or reassign the demo liveness LED from GP16.
 - Keep RP2040 ADC pin initialisation disabled on GP26 to GP28: GP26 is the
   barcode sensor's digital output and GP28 carries the left encoder. GP17 and

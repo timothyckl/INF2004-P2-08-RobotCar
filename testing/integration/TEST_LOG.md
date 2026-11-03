@@ -13,6 +13,11 @@ Define a test here before running it. Test IDs never change.
 | INT-01 | samples flow from S2 to S3 (≥ 5 in 2 s) | IF-01, IF-02 | auto | `subsystem3_test.c` | `[TEST] INT-01 PASS` |
 | INT-02 | summary lines flow from S3 to S4 (≥ 2 in 3.5 s) | IF-03 | auto | `subsystem4_test.c` | `[TEST] INT-02 PASS` |
 
+Note, 2026-11-03: subsystem 4 replaced its starter monitor, so
+`subsystem4_test.c` no longer contains the INT-02 check and no task receives
+IF-03 (`TEAM.md` section 5). INT-02 cannot run until IF-03 is retired or
+given a new receiver.
+
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
 
