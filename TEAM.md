@@ -51,12 +51,13 @@ and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
-The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2;
-this table still reflects the starter. Reconcile that wiring with the actual
-board and datasheets before configuring hardware. In particular, the planned
-IMU uses GP0/GP1 (conflicts with UART crash reporting), and the encoders use
-GP26–GP28 (conflicts with the sample ADC driver). No hardware configuration
-has been changed here.
+The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2.
+On 2026-11-02 it was changed to match the assembled robot (`docs/decisions.md`,
+subsystem 2, decision 1): the wheel encoders use GP7/GP28 (left) and GP0/GP1
+(right), and the IMU moves to I2C1 on GP26/GP27 (Grove 6). Because GP0/GP1 now
+carry an encoder, building with `CRASH_REPORT=1` (UART0 on GP0/GP1) is
+prohibited. Reconcile any other wiring with the actual board and datasheets
+before configuring hardware.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -67,14 +68,14 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
+| GP0 | S2 | ENC2_A, right encoder (GPIO interrupt); `CRASH_REPORT=1` prohibited |
+| GP1 | S2 | ENC2_B, right encoder; `CRASH_REPORT=1` prohibited |
 | GP2 | | |
 | GP3 | | |
 | GP4 | | |
 | GP5 | | |
 | GP6 | | |
-| GP7 | S2 | ENC2_A, motor 2 encoder (GPIO interrupt) |
+| GP7 | S2 | ENC1_A, left encoder (GPIO interrupt) |
 | GP8 | S2 | M1A motor 1 PWM (slice 4A) |
 | GP9 | S2 | M1B motor 1 PWM (slice 4B) |
 | GP10 | S2 | M2A motor 2 PWM (slice 5A) |
@@ -90,9 +91,9 @@ fixed.
 | GP20 | | |
 | GP21 | | |
 | GP22 | | |
-| GP26 | S2 | ENC1_A, motor 1 encoder (GPIO interrupt); ADC driver must be off |
-| GP27 | S2 | ENC1_B, motor 1 encoder; ADC driver must be off |
-| GP28 | S2 | ENC2_B, motor 2 encoder; battery-sense jumper open, ADC driver must be off |
+| GP26 | | (ADC0 capable) free for S4's IMU on I2C1 (SDA1); S4 claims it |
+| GP27 | | (ADC1 capable) free for S4's IMU on I2C1 (SCL1); S4 claims it |
+| GP28 | S2 | ENC1_B, left encoder; battery-sense jumper open |
 
 ## 3. Peripherals
 
@@ -129,7 +130,7 @@ the drivers have no locking to stop it.
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | GP26–GP28 |
+| ADC | | | GP26–GP28: none free (GP26/GP27 planned for S4's I2C1, GP28 is an S2 encoder input) |
 | PWM slices (list) | S2: slices 4, 5 | Motion Control | GP8-GP11 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 

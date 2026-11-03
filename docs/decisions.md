@@ -6,7 +6,28 @@ _No decisions recorded yet._
 
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
-_No decisions recorded yet._
+### 1. Encoder and IMU pins
+
+The left wheel encoder uses GP7 (A) / GP28 (B) and the right wheel encoder
+GP0 (A) / GP1 (B); the IMU moves to I2C1 on GP26 (SDA1) / GP27 (SCL1),
+Grove 6. Agreed with Khang (subsystem 4) on 2026-11-02. Reason: this matches
+the robot's wiring and gives the IMU's I2C a full Grove port. Consequence:
+`CRASH_REPORT=1` (UART0 on GP0/GP1) cannot be used.
+
+### 2. PWM block reset
+
+Motion Control releases the PWM block from reset in its own driver instead of
+setting `USE_PTMR`, which would make the kernel use PWM as its physical timer.
+It only clears that reset and never asserts it, because the servo (subsystem
+5) shares the PWM block.
+
+### 3. Motor protection
+
+The RP2040 hardware watchdog is kicked only by Motion Control, once per control
+period, and is armed only outside `TEST=1` and bench builds; a hung or starved
+Motion Control task resets the chip, which stops the motors. Motion Control
+ramps duty increases (full scale in 200 ms, provisional); decreases, STOP and
+Fault are never ramped.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
