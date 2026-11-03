@@ -9,10 +9,11 @@ _No decisions recorded yet._
 ### 1. Encoder and IMU pins
 
 The left wheel encoder uses GP7 (A) / GP28 (B) and the right wheel encoder
-GP0 (A) / GP1 (B); the IMU moves to I2C1 on GP26 (SDA1) / GP27 (SCL1),
-Grove 6. Agreed with Khang (subsystem 4) on 2026-11-02. Reason: this matches
-the robot's wiring and gives the IMU's I2C a full Grove port. Consequence:
-`CRASH_REPORT=1` (UART0 on GP0/GP1) cannot be used.
+GP0 (A) / GP1 (B), agreed with Khang (subsystem 4) on 2026-11-02 to match the
+robot's wiring. The team pin mapping of 2026-11-03 then put the IMU on I2C1 at
+GP2 (SDA1) / GP3 (SCL1) and confirmed the wheels: motor 1 (GP8/GP9) drives the
+right wheel and motor 2 (GP10/GP11) the left. Consequence: `CRASH_REPORT=1`
+(UART0 on GP0/GP1) cannot be used.
 
 ### 2. PWM block reset
 

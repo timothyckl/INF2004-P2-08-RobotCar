@@ -52,12 +52,13 @@ against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
 The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2.
-On 2026-11-02 it was changed to match the assembled robot (`docs/decisions.md`,
-subsystem 2, decision 1): the wheel encoders use GP7/GP28 (left) and GP0/GP1
-(right), and the IMU moves to I2C1 on GP26/GP27 (Grove 6). Because GP0/GP1 now
-carry an encoder, building with `CRASH_REPORT=1` (UART0 on GP0/GP1) is
-prohibited. Reconcile any other wiring with the actual board and datasheets
-before configuring hardware.
+The rows below follow the team pin mapping of 2026-11-03, which records the
+assembled robot (`docs/decisions.md`, subsystem 2, decision 1): the wheel
+encoders use GP7/GP28 (left) and GP0/GP1 (right), the IMU uses I2C1 on GP2/GP3,
+the HC-SR04 GP4/GP5, the servo GP12, and the line and barcode sensors GP6,
+GP16, GP17, GP26 and GP27. Because GP0/GP1 carry an encoder, building with
+`CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. Reconcile any other wiring
+with the actual board and datasheets before configuring hardware.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -70,29 +71,29 @@ fixed.
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
 | GP0 | S2 | ENC2_A, right encoder (GPIO interrupt); `CRASH_REPORT=1` prohibited |
 | GP1 | S2 | ENC2_B, right encoder; `CRASH_REPORT=1` prohibited |
-| GP2 | | |
-| GP3 | | |
-| GP4 | | |
-| GP5 | | |
-| GP6 | | |
+| GP2 | S4 | IMU SDA1 (I2C1) |
+| GP3 | S4 | IMU SCL1 (I2C1) |
+| GP4 | S5 | HC-SR04 TRIG |
+| GP5 | S5 | HC-SR04 ECHO |
+| GP6 | S3 | front-right line sensor DO |
 | GP7 | S2 | ENC1_A, left encoder (GPIO interrupt) |
-| GP8 | S2 | M1A motor 1 PWM (slice 4A) |
-| GP9 | S2 | M1B motor 1 PWM (slice 4B) |
-| GP10 | S2 | M2A motor 2 PWM (slice 5A) |
-| GP11 | S2 | M2B motor 2 PWM (slice 5B) |
-| GP12 | | |
+| GP8 | S2 | M1A motor 1 PWM (slice 4A), right wheel forward |
+| GP9 | S2 | M1B motor 1 PWM (slice 4B), right wheel backward |
+| GP10 | S2 | M2A motor 2 PWM (slice 5A), left wheel backward |
+| GP11 | S2 | M2B motor 2 PWM (slice 5B), left wheel forward |
+| GP12 | S5 | SG90 servo PWM (slice 6A) |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | | |
-| GP17 | | |
+| GP16 | S3 | front-left line sensor DO |
+| GP17 | S3 | front-left line sensor AO (connected, unused) |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
 | GP20 | | |
 | GP21 | | |
 | GP22 | | |
-| GP26 | | (ADC0 capable) free for S4's IMU on I2C1 (SDA1); S4 claims it |
-| GP27 | | (ADC1 capable) free for S4's IMU on I2C1 (SCL1); S4 claims it |
+| GP26 | S3 | side barcode sensor DO (ADC0 capable, used as digital) |
+| GP27 | S3 | side barcode sensor AO (ADC1 capable; connected, unused) |
 | GP28 | S2 | ENC1_B, left encoder; battery-sense jumper open |
 
 ## 3. Peripherals
@@ -127,11 +128,11 @@ the drivers have no locking to stop it.
 |---|---|---|---|
 | UART1 | | | |
 | I2C0 | | | |
-| I2C1 | | | |
+| I2C1 | S4 | | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | GP26–GP28: none free (GP26/GP27 planned for S4's I2C1, GP28 is an S2 encoder input) |
-| PWM slices (list) | S2: slices 4, 5 | Motion Control | GP8-GP11 |
+| ADC | | | GP26 is S3's barcode DO (digital), GP27 S3's barcode AO (unused), GP28 an S2 encoder input |
+| PWM slices (list) | S2: slices 4, 5; S5: slice 6 | Motion Control; Obstacle Scan | GP8-GP11; GP12 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special

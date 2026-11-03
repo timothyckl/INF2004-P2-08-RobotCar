@@ -70,15 +70,17 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 
 | Device | Signal | GPIO | Interface | Owner / constraint |
 |---|---|---|---|---|
-| GY-511 / LSM303DLHC IMU | SDA / SCL | GP26 / GP27 | I2C1 (Grove 6) | IMU/Terrain; power from 3V3 |
-| HC-SR04 | TRIG | GP2 | GPIO output | Obstacle Scan generates the trigger pulse |
-| HC-SR04 | ECHO | GP3 | GPIO input | Obstacle Scan times the pulse; level-shift 5 V to 3.3 V |
-| IR line sensors 1–3 | IR1_OUT / IR2_OUT / IR3_OUT | GP4 / GP16 / GP6 | GPIO inputs | Line Sensor |
-| Motor 1 encoder (left) | ENC1_A / ENC1_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
-| Motor 2 encoder (right) | ENC2_A / ENC2_B | GP0 / GP1 | GPIO interrupts | Motion Control; requires `CRASH_REPORT=0` |
-| Motor 1 | M1A_PWM / M1B_PWM | GP8 / GP9 | PWM | Motion Control only |
-| Motor 2 | M2A_PWM / M2B_PWM | GP10 / GP11 | PWM | Motion Control only |
-| SG90 servo | SERVO_PWM | GP15 | PWM | Obstacle Scan; power from V+ |
+| GY-511 / LSM303DLHC IMU | SDA / SCL | GP2 / GP3 | I2C1 | IMU/Terrain; power from 3V3 |
+| HC-SR04 | TRIG | GP4 | GPIO output | Obstacle Scan generates the trigger pulse |
+| HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; currently powered from 3V3, see below |
+| Front-left line sensor | DO / AO | GP16 / GP17 | GPIO input / unused | Line Sensor: left line guide; AO connected, not used |
+| Front-right line sensor | DO | GP6 | GPIO input | Line Sensor: right line guide; AO not connected |
+| Side barcode sensor | DO / AO | GP26 / GP27 | GPIO input / unused | Line Sensor: barcode only, never steering; AO connected, not used |
+| Left wheel encoder (encoder 1) | ENC1_A / ENC1_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
+| Right wheel encoder (encoder 2) | ENC2_A / ENC2_B | GP0 / GP1 | GPIO interrupts | Motion Control; requires `CRASH_REPORT=0` |
+| Motor 1 (right wheel) | M1A_PWM / M1B_PWM | GP8 (forward) / GP9 (backward) | PWM | Motion Control only |
+| Motor 2 (left wheel) | M2A_PWM / M2B_PWM | GP10 (backward) / GP11 (forward) | PWM | Motion Control only |
+| SG90 servo | SERVO_PWM | GP12 | PWM | Obstacle Scan; power from the servo header V+ |
 | Pico W radio | Internal WiFi signals | GP23 / GP24 / GP25 / GP29 | Internal SPI/PIO | Reserved; do not use for other functions |
 
 Configuration constraints:
@@ -86,8 +88,12 @@ Configuration constraints:
 - Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
   carry the right encoder.
 - Disable or reassign the demo liveness LED from GP16.
-- Do not configure GP26–GP28 as ADC inputs: GP26/GP27 carry the IMU's I2C1
-  and GP28 carries the left encoder.
-- GP5 and GP17 are unused. Connect IR sensor 3 to GP6 only; its Grove 5 GP26
-  contact must remain disconnected because GP26 is the IMU's SDA1 (I2C1).
-- Power the HC-SR04 from 5 V and keep all signal grounds common.
+- Do not configure GP26 or GP28 as ADC inputs: GP26 is the barcode sensor's
+  digital output and GP28 carries the left encoder. GP17 and GP27 carry
+  analogue outputs that the current logic does not use.
+- GP13, GP14, GP15 and GP18 to GP22 are unused.
+- The HC-SR04 is currently powered from 3V3 (team pin mapping, 2026-11-03).
+  Obstacle Scan must confirm ranging at that supply against the datasheet. If
+  it is powered from 5 V, ECHO must be level-shifted to 3.3 V: Pico GPIO is not
+  5 V tolerant.
+- Keep all signal grounds common.
