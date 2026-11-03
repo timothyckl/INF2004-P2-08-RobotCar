@@ -22,13 +22,22 @@ typedef enum
     SCAN_ENGINE_RESET
 } scan_engine_event_kind_t;
 
-/** One decoded scan-control or timing event. */
+/**
+ * One decoded scan-control or timing event. For ECHO_EDGE, b_asserted is
+ * the new ECHO level and time_us is the edge's capture time from the
+ * interrupt; other kinds ignore time_us.
+ */
 typedef struct
 {
     scan_engine_event_kind_t kind;
     uint32_t                 request_id;
     bool                     b_asserted;
+    uint32_t                 time_us;
 } scan_engine_event_t;
+
+/** Coarse scan: -60 to +60 degrees in 15 degree steps (decision 4). */
+#define SCAN_ENGINE_ANGLES      (9u)
+#define SCAN_ENGINE_SAMPLES     (3u)
 
 /** Observable actions requested by the state machine. */
 typedef enum
@@ -74,18 +83,37 @@ typedef struct
     uint16_t hazard_mm;
 } scan_engine_config_t;
 
-/** State owned by the task that operates the scanner. */
+/**
+ * State owned by the task that operates the scanner.
+ *
+ * DISTANCE outputs carry each angle's median of three valid samples
+ * (b_asserted true). PLAN with b_asserted true reports that the whole
+ * coarse profile was published; the caller then plans the bypass. FAULT
+ * reports three consecutive invalid attempts, stuck ECHO or the 15 s scan
+ * limit; the scan is then invalid and the servo returns forward.
+ */
 typedef struct
 {
     scan_engine_port_t   port;
     scan_engine_config_t config;
     uint32_t             request_id;
     uint32_t             settling_started_us;
+    uint32_t             scan_started_us;
+    uint32_t             trigger_us;
+    uint32_t             rise_us;
+    uint16_t             samples[SCAN_ENGINE_SAMPLES];
+    uint8_t              sample_count;
+    uint8_t              invalid_count;
+    uint8_t              angle_index;
     bool                 b_has_request;
     bool                 b_is_authorised;
     bool                 b_is_stopped;
     bool                 b_is_scanning;
     bool                 b_trigger_started;
+    bool                 b_has_trigger;
+    bool                 b_capture_open;
+    bool                 b_rise_seen;
+    bool                 b_echo_high;
 } scan_engine_t;
 
 /**

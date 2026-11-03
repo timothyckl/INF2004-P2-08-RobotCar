@@ -89,7 +89,7 @@ scan_test_convert_echo (uint32_t echo_us,
 static void
 scan_test_dispatch (test_interface_input_t const * p_input)
 {
-    scan_engine_event_t event = {SCAN_ENGINE_TICK, 0u, false};
+    scan_engine_event_t event = {SCAN_ENGINE_TICK, 0u, false, 0u};
     bool b_is_mapped = false;
 
     if (NULL != p_input)
@@ -97,6 +97,9 @@ scan_test_dispatch (test_interface_input_t const * p_input)
         b_is_mapped      = scan_test_map_input(p_input->kind, &event.kind);
         event.request_id = p_input->request_id;
         event.b_asserted = p_input->b_value;
+
+        /* The fixture delivers each edge at its controlled time. */
+        event.time_us    = scan_test_time_now_us();
     }
 
     if (b_is_mapped)

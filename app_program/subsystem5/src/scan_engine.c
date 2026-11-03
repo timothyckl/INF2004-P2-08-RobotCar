@@ -2,14 +2,24 @@
  * @file scan_engine.c
  * @brief Safety-gated obstacle scan sequencing.
  *
- * Source: obstacle-scanning decisions 4 and 6 in docs/decisions.md.
+ * Source: obstacle-scanning decisions 3, 4, 6 and 8 in docs/decisions.md.
+ * Coarse angles only: the 5 degree fine refinement (planned S5-U27) is
+ * not implemented.
  */
 #include "../include/scan_engine.h"
 
+#include "../include/range_measurement.h"
+
 #include <stddef.h>
 
-static int16_t const g_scan_first_angle_deg   = -60;
-static int16_t const g_scan_forward_angle_deg = 0;
+static int16_t const  g_scan_first_angle_deg   = -60;
+static int16_t const  g_scan_forward_angle_deg = 0;
+static int16_t const  g_scan_step_deg          = 15;
+static uint32_t const g_scan_retrigger_us      = 65000u;
+static uint32_t const g_scan_deadline_us       = 30000u;
+static uint32_t const g_scan_stuck_us          = 130000u;
+static uint32_t const g_scan_limit_us          = 15000000u;
+static uint8_t const  g_scan_invalid_limit     = 3u;
 
 /** Accept a new request only while the scanner is idle. */
 static void scan_engine_accept_request (scan_engine_t * p_engine,
@@ -39,10 +49,31 @@ static void scan_engine_tick (scan_engine_t * p_engine);
 /** Request one trigger and abort the scan if the command is rejected. */
 static void scan_engine_try_trigger (scan_engine_t * p_engine);
 
+/** Record one ECHO edge belonging to the open capture. */
+static void scan_engine_echo (scan_engine_t * p_engine,
+                              scan_engine_event_t const * p_event);
+
+/** Close the open capture with a valid distance or an invalid attempt. */
+static void scan_engine_complete (scan_engine_t * p_engine, bool b_valid,
+                                  uint16_t distance_mm);
+
+/** Publish the angle's median, then move on or finish the profile. */
+static void scan_engine_next_angle (scan_engine_t * p_engine);
+
+/** Report a fault and invalidate the scan. */
+static void scan_engine_fail (scan_engine_t * p_engine);
+
+/** Current coarse angle in degrees. */
+static int16_t scan_engine_angle (scan_engine_t const * p_engine);
+
+/** Median of three samples. */
+static uint16_t scan_engine_median (uint16_t const * p_samples);
+
 /** Publish one output and report whether the receiver accepted it. */
 static bool scan_engine_publish (scan_engine_t const * p_engine,
                                  scan_engine_output_kind_t kind,
                                  int16_t angle_deg,
+                                 uint16_t distance_mm,
                                  bool b_asserted);
 
 void
@@ -52,17 +83,9 @@ scan_engine_reset (scan_engine_t * p_engine,
 {
     if (NULL != p_engine)
     {
-        p_engine->port.p_time_now_us  = NULL;
-        p_engine->port.p_publish      = NULL;
-        p_engine->config.settling_us  = 0u;
-        p_engine->config.hazard_mm    = 0u;
-        p_engine->request_id          = 0u;
-        p_engine->settling_started_us = 0u;
-        p_engine->b_has_request       = false;
-        p_engine->b_is_authorised     = false;
-        p_engine->b_is_stopped        = false;
-        p_engine->b_is_scanning       = false;
-        p_engine->b_trigger_started   = false;
+        scan_engine_t const cleared = {0};
+
+        *p_engine = cleared;
 
         if (NULL != p_port)
         {
@@ -91,7 +114,7 @@ scan_engine_process (scan_engine_t * p_engine,
             break;
 
             case SCAN_ENGINE_ECHO_EDGE:
-                /* TODO: Add echo capture for planned cases S5-U18 to S5-U22. */
+                scan_engine_echo(p_engine, p_event);
             break;
 
             case SCAN_ENGINE_REQUEST:
@@ -198,8 +221,8 @@ scan_engine_cancel (scan_engine_t * p_engine,
 
     if (b_is_current && (p_event->b_asserted))
     {
-        scan_engine_publish(p_engine, SCAN_ENGINE_CANCEL_ACK,
-                            g_scan_forward_angle_deg, true);
+        (void) scan_engine_publish(p_engine, SCAN_ENGINE_CANCEL_ACK,
+                                   g_scan_forward_angle_deg, 0u, true);
         scan_engine_abort(p_engine);
     }
 
@@ -215,12 +238,15 @@ scan_engine_abort (scan_engine_t * p_engine)
     p_engine->b_is_stopped      = false;
     p_engine->b_is_scanning     = false;
     p_engine->b_trigger_started = false;
+    p_engine->b_capture_open    = false;
+    p_engine->sample_count      = 0u;
+    p_engine->invalid_count     = 0u;
 
     if (b_was_scanning)
     {
         /* Active work remains invalid if this return command is rejected. */
-        scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
-                            g_scan_forward_angle_deg, true);
+        (void) scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
+                                   g_scan_forward_angle_deg, 0u, true);
     }
 
 }
@@ -238,14 +264,20 @@ scan_engine_try_start (scan_engine_t * p_engine)
     if (b_can_start)
     {
         bool const b_servo_accepted = scan_engine_publish(
-            p_engine, SCAN_ENGINE_SERVO, g_scan_first_angle_deg, true);
+            p_engine, SCAN_ENGINE_SERVO, g_scan_first_angle_deg, 0u, true);
 
         if (b_servo_accepted)
         {
+            uint32_t const now_us = p_engine->port.p_time_now_us();
+
             p_engine->b_is_scanning       = true;
             p_engine->b_trigger_started   = false;
-            p_engine->settling_started_us =
-                p_engine->port.p_time_now_us();
+            p_engine->b_capture_open      = false;
+            p_engine->angle_index         = 0u;
+            p_engine->sample_count        = 0u;
+            p_engine->invalid_count       = 0u;
+            p_engine->settling_started_us = now_us;
+            p_engine->scan_started_us     = now_us;
         }
         else
         {
@@ -261,18 +293,45 @@ scan_engine_tick (scan_engine_t * p_engine)
 {
     bool const b_clock_ready = (NULL != p_engine->port.p_time_now_us);
 
-    if ((p_engine->b_is_scanning)
-        && (!p_engine->b_trigger_started)
-        && b_clock_ready)
+    if ((p_engine->b_is_scanning) && b_clock_ready)
     {
         uint32_t const now_us = p_engine->port.p_time_now_us();
 
         /* Unsigned subtraction handles one documented clock wrap. */
-        uint32_t const elapsed_us = now_us - p_engine->settling_started_us;
+        uint32_t const settled_us = now_us - p_engine->settling_started_us;
+        uint32_t const since_us   = now_us - p_engine->trigger_us;
 
-        if (p_engine->config.settling_us <= elapsed_us)
+        if ((now_us - p_engine->scan_started_us) > g_scan_limit_us)
+        {
+            scan_engine_fail(p_engine);
+        }
+        else if (p_engine->b_capture_open)
+        {
+            if (since_us >= g_scan_deadline_us)
+            {
+                /* No completion within 30 ms: not a measurement. */
+                scan_engine_complete(p_engine, false, 0u);
+            }
+
+        }
+        else if (p_engine->b_echo_high && p_engine->b_has_trigger)
+        {
+            /* Never retrigger while ECHO is high; stuck high faults. */
+            if (since_us >= g_scan_stuck_us)
+            {
+                scan_engine_fail(p_engine);
+            }
+
+        }
+        else if ((p_engine->config.settling_us <= settled_us)
+                 && ((!p_engine->b_has_trigger)
+                     || (since_us >= g_scan_retrigger_us)))
         {
             scan_engine_try_trigger(p_engine);
+        }
+        else
+        {
+            /* Settling, or waiting out the 65 ms trigger spacing. */
         }
 
     }
@@ -283,11 +342,16 @@ static void
 scan_engine_try_trigger (scan_engine_t * p_engine)
 {
     bool const b_trigger_accepted = scan_engine_publish(
-        p_engine, SCAN_ENGINE_TRIGGER, g_scan_first_angle_deg, true);
+        p_engine, SCAN_ENGINE_TRIGGER, scan_engine_angle(p_engine), 0u,
+        true);
 
     if (b_trigger_accepted)
     {
         p_engine->b_trigger_started = true;
+        p_engine->b_has_trigger     = true;
+        p_engine->b_capture_open    = true;
+        p_engine->b_rise_seen       = false;
+        p_engine->trigger_us        = p_engine->port.p_time_now_us();
     }
     else
     {
@@ -296,10 +360,152 @@ scan_engine_try_trigger (scan_engine_t * p_engine)
 
 }
 
+static void
+scan_engine_echo (scan_engine_t * p_engine,
+                  scan_engine_event_t const * p_event)
+{
+    /* Edges carry their own capture time. One from before the trigger
+       wraps to a huge age and is rejected with any other late edge. */
+    uint32_t const age_us = p_event->time_us - p_engine->trigger_us;
+
+    if (p_event->b_asserted)
+    {
+        p_engine->b_echo_high = true;
+
+        if ((p_engine->b_capture_open) && (!p_engine->b_rise_seen)
+            && (age_us < g_scan_deadline_us))
+        {
+            p_engine->b_rise_seen = true;
+            p_engine->rise_us     = p_event->time_us;
+        }
+
+    }
+    else
+    {
+        p_engine->b_echo_high = false;
+
+        if ((p_engine->b_capture_open) && (p_engine->b_rise_seen))
+        {
+            uint16_t distance_mm = 0u;
+            bool const b_in_time = (age_us <= g_scan_deadline_us);
+            bool const b_valid   = b_in_time
+                && range_measurement_from_echo(
+                       p_event->time_us - p_engine->rise_us, &distance_mm);
+
+            scan_engine_complete(p_engine, b_valid, distance_mm);
+        }
+
+        /* A fall without its rise is malformed and is ignored. */
+    }
+
+}
+
+static void
+scan_engine_complete (scan_engine_t * p_engine, bool b_valid,
+                      uint16_t distance_mm)
+{
+    p_engine->b_capture_open = false;
+
+    if (b_valid)
+    {
+        p_engine->invalid_count = 0u;
+        p_engine->samples[p_engine->sample_count] = distance_mm;
+        p_engine->sample_count++;
+
+        if (SCAN_ENGINE_SAMPLES <= p_engine->sample_count)
+        {
+            scan_engine_next_angle(p_engine);
+        }
+
+    }
+    else
+    {
+        p_engine->invalid_count++;
+
+        if (g_scan_invalid_limit <= p_engine->invalid_count)
+        {
+            scan_engine_fail(p_engine);
+        }
+
+    }
+
+}
+
+static void
+scan_engine_next_angle (scan_engine_t * p_engine)
+{
+    (void) scan_engine_publish(p_engine, SCAN_ENGINE_DISTANCE,
+                               scan_engine_angle(p_engine),
+                               scan_engine_median(p_engine->samples), true);
+
+    p_engine->sample_count = 0u;
+    p_engine->angle_index++;
+
+    if (SCAN_ENGINE_ANGLES <= p_engine->angle_index)
+    {
+        /* Profile complete: report it, then return forward. */
+        (void) scan_engine_publish(p_engine, SCAN_ENGINE_PLAN,
+                                   g_scan_forward_angle_deg, 0u, true);
+        scan_engine_abort(p_engine);
+    }
+    else if (scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
+                                 scan_engine_angle(p_engine), 0u, true))
+    {
+        p_engine->settling_started_us = p_engine->port.p_time_now_us();
+    }
+    else
+    {
+        scan_engine_abort(p_engine);
+    }
+
+}
+
+static void
+scan_engine_fail (scan_engine_t * p_engine)
+{
+    (void) scan_engine_publish(p_engine, SCAN_ENGINE_FAULT,
+                               scan_engine_angle(p_engine), 0u, true);
+    scan_engine_abort(p_engine);
+}
+
+static int16_t
+scan_engine_angle (scan_engine_t const * p_engine)
+{
+    /* The cast is safe: the index is below SCAN_ENGINE_ANGLES. */
+    return ((int16_t) (g_scan_first_angle_deg
+                       + ((int16_t) p_engine->angle_index
+                          * g_scan_step_deg)));
+}
+
+static uint16_t
+scan_engine_median (uint16_t const * p_samples)
+{
+    uint16_t const a = p_samples[0];
+    uint16_t const b = p_samples[1];
+    uint16_t const c = p_samples[2];
+    uint16_t       median = c;
+
+    if (((a <= b) && (b <= c)) || ((c <= b) && (b <= a)))
+    {
+        median = b;
+    }
+    else if (((b <= a) && (a <= c)) || ((c <= a) && (a <= b)))
+    {
+        median = a;
+    }
+    else
+    {
+        /* c is the middle value. */
+    }
+
+    return (median);
+}
+
 static bool
 scan_engine_publish (scan_engine_t const * p_engine,
                      scan_engine_output_kind_t kind,
                      int16_t angle_deg,
+                     uint16_t distance_mm,
                      bool b_asserted)
 {
     bool b_is_published = false;
@@ -311,7 +517,7 @@ scan_engine_publish (scan_engine_t const * p_engine,
             kind,
             p_engine->request_id,
             angle_deg,
-            0u,
+            distance_mm,
             b_asserted
         };
 
