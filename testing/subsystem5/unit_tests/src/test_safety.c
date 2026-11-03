@@ -9,18 +9,36 @@
 #include "../include/test_runner.h"
 #include "../include/test_subject.h"
 
-#define TEST_SAFETY_REQUEST 7u
-#define TEST_SAFETY_OTHER 8u
-#define TEST_SAFETY_SETTLING_US 1000u
+static uint32_t const g_test_safety_request     = 7u;
+static uint32_t const g_test_safety_other       = 8u;
+static uint32_t const g_test_safety_settling_us = 1000u;
 
+/** Verify that authorisation alone cannot start scanning. */
 static bool test_safety_no_stop (test_interface_api_t const * p_api);
+
+/** Verify that stop confirmation for another request is ignored. */
 static bool test_safety_wrong_stop (test_interface_api_t const * p_api);
+
+/** Verify that stop confirmation alone cannot start scanning. */
 static bool test_safety_no_permission (test_interface_api_t const * p_api);
+
+/** Verify that matching safety inputs permit scanning. */
 static bool test_safety_matching (test_interface_api_t const * p_api);
+
+/** Verify that cancellation invalidates active scan work. */
 static bool test_safety_cancel (test_interface_api_t const * p_api);
+
+/** Verify that a new stop event invalidates active scan work. */
 static bool test_safety_new_stop (test_interface_api_t const * p_api);
+
+/** Supply the matching inputs needed to start a scan. */
 static void test_safety_start_scan (test_interface_api_t const * p_api);
+
+/** Report whether no scanning output occurs after an observation index. */
 static bool test_safety_no_scan_after (uint32_t first);
+
+/** Report whether the current trace contains no scan activity. */
+static bool test_safety_is_inactive (void);
 
 void
 test_safety_run (test_interface_api_t const * p_api)
@@ -47,12 +65,12 @@ test_safety_no_stop (test_interface_api_t const * p_api)
 {
     test_subject_start(p_api, 0u);
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
-                       TEST_SAFETY_REQUEST, true);
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE,
-                       TEST_SAFETY_REQUEST, true);
-    test_fixture_advance(TEST_SAFETY_SETTLING_US, p_api);
+                       g_test_safety_request, true);
+    test_fixture_advance(g_test_safety_settling_us, p_api);
 
-    return ((test_subject_forward_only()) && (test_subject_no_plan()));
+    return (test_safety_is_inactive());
 }
 
 static bool
@@ -60,14 +78,14 @@ test_safety_wrong_stop (test_interface_api_t const * p_api)
 {
     test_subject_start(p_api, 0u);
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
-                       TEST_SAFETY_REQUEST, true);
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE,
-                       TEST_SAFETY_REQUEST, true);
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM,
-                       TEST_SAFETY_OTHER, true);
-    test_fixture_advance(TEST_SAFETY_SETTLING_US, p_api);
+                       g_test_safety_other, true);
+    test_fixture_advance(g_test_safety_settling_us, p_api);
 
-    return ((test_subject_forward_only()) && (test_subject_no_plan()));
+    return (test_safety_is_inactive());
 }
 
 static bool
@@ -75,12 +93,12 @@ test_safety_no_permission (test_interface_api_t const * p_api)
 {
     test_subject_start(p_api, 0u);
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
-                       TEST_SAFETY_REQUEST, true);
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM,
-                       TEST_SAFETY_REQUEST, true);
-    test_fixture_advance(TEST_SAFETY_SETTLING_US, p_api);
+                       g_test_safety_request, true);
+    test_fixture_advance(g_test_safety_settling_us, p_api);
 
-    return ((test_subject_forward_only()) && (test_subject_no_plan()));
+    return (test_safety_is_inactive());
 }
 
 static bool
@@ -90,6 +108,7 @@ test_safety_matching (test_interface_api_t const * p_api)
     test_safety_start_scan(p_api);
 
     return ((!test_subject_forward_only()) && (test_subject_no_plan())
+            && (1u == test_fixture_count(TEST_INTERFACE_TRIGGER))
             && (!test_fixture_overflowed()));
 }
 
@@ -98,10 +117,12 @@ test_safety_cancel (test_interface_api_t const * p_api)
 {
     test_subject_start(p_api, 0u);
     test_safety_start_scan(p_api);
-    bool b_started = !test_subject_forward_only();
-    uint32_t first = test_fixture_size();
 
-    test_fixture_send(p_api, TEST_INTERFACE_CANCEL, TEST_SAFETY_REQUEST, true);
+    bool const     b_started = !test_subject_forward_only();
+    uint32_t const first     = test_fixture_size();
+
+    test_fixture_send(p_api, TEST_INTERFACE_CANCEL,
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_ECHO, 0u, true);
     test_fixture_advance(1000u, p_api);
     test_fixture_send(p_api, TEST_INTERFACE_ECHO, 0u, false);
@@ -111,14 +132,15 @@ test_safety_cancel (test_interface_api_t const * p_api)
 
     for (uint32_t index = first; index < test_fixture_size(); index++)
     {
-        test_interface_output_t const * p_output =
+        test_interface_output_t const * const p_output =
             &test_fixture_record(index)->output;
 
         if ((TEST_INTERFACE_CANCEL_ACK == p_output->kind)
-            && (TEST_SAFETY_REQUEST == p_output->request_id))
+            && (g_test_safety_request == p_output->request_id))
         {
             b_acknowledged = true;
         }
+
     }
 
     return (b_started && b_acknowledged && (test_safety_no_scan_after(first)));
@@ -129,8 +151,9 @@ test_safety_new_stop (test_interface_api_t const * p_api)
 {
     test_subject_start(p_api, 0u);
     test_safety_start_scan(p_api);
-    bool b_started = !test_subject_forward_only();
-    uint32_t first = test_fixture_size();
+
+    bool const     b_started = !test_subject_forward_only();
+    uint32_t const first     = test_fixture_size();
 
     test_fixture_send(p_api, TEST_INTERFACE_STOP, 0u, true);
     test_fixture_advance(2000u, p_api);
@@ -142,12 +165,12 @@ static void
 test_safety_start_scan (test_interface_api_t const * p_api)
 {
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
-                       TEST_SAFETY_REQUEST, true);
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE,
-                       TEST_SAFETY_REQUEST, true);
+                       g_test_safety_request, true);
     test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM,
-                       TEST_SAFETY_REQUEST, true);
-    test_fixture_advance(TEST_SAFETY_SETTLING_US, p_api);
+                       g_test_safety_request, true);
+    test_fixture_advance(g_test_safety_settling_us, p_api);
 }
 
 static bool
@@ -157,18 +180,33 @@ test_safety_no_scan_after (uint32_t first)
 
     for (uint32_t index = first; index < test_fixture_size(); index++)
     {
-        test_interface_output_t const * p_output =
+        test_interface_output_t const * const p_output =
             &test_fixture_record(index)->output;
-        bool b_sweeping = (TEST_INTERFACE_SERVO == p_output->kind)
-                         && (0 != p_output->angle_deg);
 
-        if (b_sweeping || (TEST_INTERFACE_PLAN == p_output->kind))
+        bool const b_sweeping   =
+            (TEST_INTERFACE_SERVO == p_output->kind)
+            && (0 != p_output->angle_deg);
+        bool const b_triggering =
+            (TEST_INTERFACE_TRIGGER == p_output->kind)
+            && (p_output->b_value);
+
+        if (b_sweeping || b_triggering
+            || (TEST_INTERFACE_PLAN == p_output->kind))
         {
             b_safe = false;
         }
+
     }
 
     return (b_safe);
+}
+
+static bool
+test_safety_is_inactive (void)
+{
+    return ((test_subject_forward_only())
+            && (0u == test_fixture_count(TEST_INTERFACE_TRIGGER))
+            && (test_subject_no_plan()));
 }
 
 /* End of file. */

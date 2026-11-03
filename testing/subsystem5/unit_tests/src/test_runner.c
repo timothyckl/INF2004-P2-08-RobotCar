@@ -62,12 +62,14 @@ test_runner_cases (test_runner_case_t const * p_cases, uint32_t count,
         }
         else
         {
-            bool b_passed = p_cases[index].p_run(p_api);
+            bool const b_passed = p_cases[index].p_run(p_api);
 
             test_runner_check(p_cases[index].p_id, b_passed,
                               p_cases[index].p_description);
         }
+
     }
+
 }
 
 void
