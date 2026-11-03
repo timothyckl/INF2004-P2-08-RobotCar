@@ -50,9 +50,13 @@ S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(wildcard $(ROOT)/testing/subsystem5/unit_tests/src/*.c) \
            s5_host_main.c
 
-.PHONY: all s1 s2 s3 s5 clean
+S4_SRC  := $(APP)/subsystem4/s4_odometry.c \
+           $(APP)/subsystem2/motion_api.c \
+           $(ROOT)/testing/subsystem4/test_odometry.c
 
-all: s1 s2 s3 s5
+.PHONY: all s1 s2 s3 s4 s5 clean
+
+all: s1 s2 s3 s4 s5
 	@echo "[HOST] all suites passed"
 
 s1:
@@ -76,6 +80,10 @@ s3:
 	    $(S3_TRACK_SRC)
 	$(OUT)/s3_track
 
+s4:
+	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s4_logic $(STUBS) $(S4_SRC)
+	$(OUT)/s4_logic
+
 # The S5 runner prints one line per case; any FAIL or BLOCKED fails here.
 s5:
 	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s5_logic $(STUBS) $(S5_SRC)
@@ -84,4 +92,4 @@ s5:
 
 clean:
 	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic $(OUT)/s3_track \
-	    $(OUT)/s5_logic
+	    $(OUT)/s4_logic $(OUT)/s5_logic
