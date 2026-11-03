@@ -54,8 +54,8 @@ static ER       send_action (ctrl_action_t action, uint32_t value);
 static uint32_t now_ms (void);
 
 /**
- * @brief Create controller_flags, safety_flags (STOP set), remote_q and
- *        state_mutex. Each global ID is set only once its object exists,
+ * @brief Create controller_flags, safety_flags (STOP set), remote_q,
+ *        scan_q and state_mutex. Each global ID is set only once its object exists,
  *        because the WiFi task may already be calling the adapters.
  */
 ER
@@ -97,7 +97,18 @@ s2_controller_create (void)
         return (q);
     }
 
-    remote_q = q;
+    remote_q    = q;
+    cmbf.bufsz  = S2_SCAN_Q_BYTES;
+    cmbf.maxmsz = (INT)sizeof(s2_scan_cmd_t);
+
+    ID const sq = tk_cre_mbf(&cmbf);
+
+    if (sq < E_OK)
+    {
+        return (sq);
+    }
+
+    scan_q = sq;
 
     return (s2_robot_state_create());
 }

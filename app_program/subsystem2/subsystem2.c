@@ -29,6 +29,7 @@
 EXPORT ID	controller_flags = 0;
 EXPORT ID	safety_flags = 0;
 EXPORT ID	remote_q = 0;
+EXPORT ID	scan_q = 0;	/* controller to obstacle scan */
 
 EXPORT ID	sem_slots;	/* IF-02, see subsystem2.h */
 EXPORT ID	mpf_samples;

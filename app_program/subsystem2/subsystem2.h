@@ -109,6 +109,16 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 #define S2_RESULT_COMPLETED     7u      /* took effect */
 #define S2_RESULT_FAILED        8u      /* accepted, then failed */
 
+/* s2_robot_state_t.mode: the Running substate (design review statechart).
+   S2_MODE_NONE outside Running. Subsystem 5 raises CTRL_FLG_HAZARD only
+   in the moving modes FOLLOW, BYPASS and REACQUIRE. */
+#define S2_MODE_NONE            0u
+#define S2_MODE_FOLLOW          1u      /* line following */
+#define S2_MODE_NAVIGATE        2u      /* barcode manoeuvre at a junction */
+#define S2_MODE_SCAN            3u      /* stopped; S5 scans and plans */
+#define S2_MODE_BYPASS          4u      /* executing S5's plan segments */
+#define S2_MODE_REACQUIRE       5u      /* bounded search for the line */
+
 /* s2_robot_state_t.flags */
 #define S2_RS_STOP_LATCHED      0x01u
 #define S2_RS_STOPPED           0x02u   /* wheels still >= 100 ms */
@@ -126,7 +136,8 @@ typedef struct
     uint8_t  last_command;      /* S2_REMOTE_* */
     uint8_t  last_result;       /* S2_RESULT_* */
     uint8_t  motion_state;      /* motion_state_t */
-    uint8_t  reserved[2];
+    uint8_t  mode;              /* S2_MODE_*: Running substate */
+    uint8_t  reserved;
 } s2_robot_state_t;
 
 ER s2_get_robot_state (s2_robot_state_t * p_state);
@@ -148,7 +159,7 @@ bool s2_distance_delta (motion_status_t const * p_prev,
 
 /* ------------------------------------------------------------------------
  *  scan_q (message buffer, owned by S2), Controller to Obstacle Scan.
- *  HEADER ONLY: not created until the Scan & Plan state exists. Kinds
+ *  Created by subsystem2_init(); subsystem 5's scan task receives. Kinds
  *  mirror scan_engine_event_kind_t (feat/subsystem5-obstacle-scanning);
  *  TICK and ECHO_EDGE are internal to S5. request_id matches
  *  scan_engine_event_t (uint32_t) so no conversion is needed. The
@@ -171,6 +182,10 @@ typedef struct
     uint8_t  b_asserted;
     uint8_t  reserved[2];
 } s2_scan_cmd_t;
+
+#define S2_SCAN_Q_BYTES         96      /* 6 x (4 + 12): one scan's traffic */
+
+IMPORT ID scan_q;
 
 /* ------------------------------------------------------------------------
  *  Navigation request from S3 (s3_nav_take on

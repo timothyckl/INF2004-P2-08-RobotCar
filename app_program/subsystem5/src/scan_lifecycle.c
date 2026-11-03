@@ -3,36 +3,38 @@
  * @brief Application lifecycle compatibility hooks for obstacle scanning.
  *
  * Production scan logic is implemented in focused modules and exercised
- * through injected test ports. No task or hardware is started here until
- * the controller interfaces and servo calibration have been agreed.
+ * through injected test ports. scan_task.c binds it to the servo, the
+ * HC-SR04 and the Vehicle Controller (scan_q, controller_flags).
  */
 
 #include "../include/scan_lifecycle.h"
+
+#include "../include/scan_task.h"
 
 #if APP_TEST
 #include "../include/obstacle_test.h"
 #endif
 
 /**
- * @brief Initialize agreed objects without starting hardware or tasks.
+ * @brief Create the scan task's objects without starting hardware or tasks.
  *
- * @return E_OK because no kernel objects are currently required.
+ * @return E_OK, or the kernel error.
  */
 EXPORT ER
 scan_lifecycle_init (void)
 {
-    return E_OK;
+    return (scan_task_create());
 }
 
 /**
- * @brief Start agreed subsystem tasks after initialization is complete.
+ * @brief Start the drivers and the scan task after initialization.
  *
- * @return E_OK because no production task is currently enabled.
+ * @return E_OK, or the driver or kernel error.
  */
 EXPORT ER
 scan_lifecycle_start (void)
 {
-    return E_OK;
+    return (scan_task_start());
 }
 
 #if APP_TEST
