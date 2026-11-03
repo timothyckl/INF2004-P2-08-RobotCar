@@ -46,6 +46,18 @@ drv_motor_init (void)
 {
     drv_motor_cc_t const brake = {0u, 0u};
 
+    /* The kernel releases the PWM block from reset only when it uses PWM
+       as its physical timer (USE_PTMR in config.h, 0 in this build), so
+       release it here. Only clear the reset, never assert it: another
+       subsystem (the servo) may already be using the block. Found on the
+       bench (S2-H01): motors did not move at any duty. */
+    clr_w(RESETS_RESET, RESETS_RESET_PWM);
+
+    while (0u == (in_w(RESETS_RESET_DONE) & RESETS_RESET_PWM))
+    {
+        /* Wait a few clock cycles for the block to come out of reset. */
+    }
+
     for (UINT m = 0u; m < (UINT)DRV_MOTOR_COUNT; m++)
     {
         drv_motor_hw_t const * p_hw = &g_motor_hw[m];

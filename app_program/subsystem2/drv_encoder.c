@@ -24,8 +24,8 @@ typedef struct
 
 static const drv_encoder_hw_t g_encoder_hw[DRV_ENCODER_COUNT] =
 {
-    {26u, 27u},     /* DRV_ENCODER_1: ENC1_A, ENC1_B */
-    {7u,  28u}      /* DRV_ENCODER_2: ENC2_A, ENC2_B */
+    {7u,  28u},     /* DRV_ENCODER_1: left (motor 1), blue = A GP7, green = B GP28 */
+    {0u,  1u}       /* DRV_ENCODER_2: right (motor 2), blue = A GP0, green = B GP1 */
 };
 
 static volatile uint32_t g_seq;

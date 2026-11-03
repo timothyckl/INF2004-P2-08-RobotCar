@@ -4,8 +4,9 @@
  *
  * Hardware: TT motors with two-channel Hall encoders (confirmed on the
  * robot; part number and datasheet unknown, so counts per revolution are
- * UNVERIFIED until test S2-H03). Encoder 1 = GP26 (A) / GP27 (B), encoder
- * 2 = GP7 (A) / GP28 (B) (design review section 2). Keep the GP28
+ * UNVERIFIED until test S2-H03). Wiring as on the robot (bench
+ * 2026-11-02): encoder 1 = left = GP7 (A) / GP28 (B), encoder 2 = right =
+ * GP0 (A) / GP1 (B); GP0/GP1 need CRASH_REPORT=0. Keep the GP28
  * battery-sense jumper open.
  *
  * Decoding (x2): an interrupt on both edges of A only; B's level at that
@@ -33,8 +34,8 @@
 
 typedef enum
 {
-    DRV_ENCODER_1 = 0,  /* motor 1, GP26/GP27 */
-    DRV_ENCODER_2,      /* motor 2, GP7/GP28 */
+    DRV_ENCODER_1 = 0,  /* motor 1, left, GP7/GP28 */
+    DRV_ENCODER_2,      /* motor 2, right, GP0/GP1 */
     DRV_ENCODER_COUNT
 } drv_encoder_id_t;
 
