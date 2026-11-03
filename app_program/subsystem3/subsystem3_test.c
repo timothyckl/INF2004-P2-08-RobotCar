@@ -1,8 +1,10 @@
 /*
  *	subsystem3_test.c
  *	On-target tests for subsystem 3.  Built only with: make TEST=1
- *	Record unit results in testing/subsystem3/TEST_LOG.md and the
- *	INT- result in testing/integration/TEST_LOG.md.
+ *	The logic cases run on the host (testing/host: test_main.c,
+ *	test_track_scan.c). This checks the live Line Sensor task.
+ *	Record results in testing/subsystem3/TEST_LOG.md and the INT- result
+ *	in testing/integration/TEST_LOG.md.
  */
 
 #include "subsystem3.h"
@@ -10,35 +12,34 @@
 
 #if APP_TEST
 
-LOCAL APP_STATS read_stats(void)
-{
-	APP_STATS	s;
-
-	tk_loc_mtx(mtx_stats, TMO_FEVR);
-	s = app_stats;
-	tk_unl_mtx(mtx_stats);
-	return s;
-}
-
 EXPORT void subsystem3_test(void)
 {
-	APP_STATS	before, after;
+	s3_line_status_t	before, after;
+	SYSTIM			now;
+	ER			er1, er2;
 
 	TEST_INIT();
 
-	/* INT-01 (integration, IF-01): samples from subsystem 2 arrive.
-	   At one sample per 300 ms, 2 s should bring at least 5. */
-	before = read_stats();
-	tk_dly_tsk(2000);
-	after = read_stats();
-	TEST_CHECK("INT-01", after.received >= before.received + 5,
-		   "samples flow from subsystem 2 to subsystem 3");
+	/* INT-03 (IF-06): the Line Sensor task publishes a fresh snapshot
+	   every 10 ms. In 1 s at least 80 new samples (allowing for test
+	   load), and the latest is no older than 50 ms. */
+	er1 = s3_line_get(&before);
+	tk_dly_tsk(1000);
+	er2 = s3_line_get(&after);
+	(void)tk_get_tim(&now);
+	TEST_CHECK("INT-03", (E_OK == er1) && (E_OK == er2)
+		   && ((after.seq - before.seq) >= 80u)
+		   && ((now.lo - after.captured_ms) <= 50u),
+		   "line sensor publishes IF-06 every 10 ms");
 
-	/* S3-U01: the statistics are self-consistent */
-	TEST_CHECK("S3-U01",
-		   after.received > 0 && after.min <= after.max &&
-		   after.min >= 0 && after.max <= 100,
-		   "min <= max, both within 0..100");
+	/* S3-U02: the published snapshot is internally consistent: no
+	   steering unless valid, steering within +/-1000. */
+	TEST_CHECK("S3-U02",
+		   ((0u != (after.flags & S3_ST_VALID))
+		    || (0 == after.steer_permille))
+		   && (after.steer_permille <= 1000)
+		   && (after.steer_permille >= -1000),
+		   "IF-06 snapshot fields consistent");
 
 	TEST_SUMMARY("subsystem3");
 }

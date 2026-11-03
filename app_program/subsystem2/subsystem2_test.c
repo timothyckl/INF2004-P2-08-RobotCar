@@ -362,7 +362,6 @@ static bool test_interface_sizes(void)
 {
 	return (sizeof(s2_remote_cmd_t) == 12u) &&
 	       (sizeof(s2_scan_cmd_t) == 12u) &&
-	       (sizeof(s2_nav_request_t) == 12u) &&
 	       (sizeof(s2_robot_state_t) == 20u);
 }
 
@@ -582,28 +581,9 @@ static void hw_test(void)
 
 EXPORT void subsystem2_test(void)
 {
-	T_RSEM	rsem;
-	T_RMPF	rmpf;
-	UW	seq;
-	INT	v, bad = 0;
-
 	TEST_INIT();
 
-	/* S2-U01: every sample value is inside the documented 0..100 range */
-	for (seq = 0; seq < 40; seq++) {
-		v = s2_make_value(seq);
-		if (v < 0 || v > 100) bad++;
-	}
-	TEST_CHECK("S2-U01", bad == 0, "sample values stay within 0..100");
-
-	/* S2-U02: flow control never over- or under-counts */
-	TEST_CHECK("S2-U02",
-		   tk_ref_sem(sem_slots, &rsem) == E_OK &&
-		   rsem.semcnt >= 0 && rsem.semcnt <= S2_POOL_COUNT &&
-		   tk_ref_mpf(mpf_samples, &rmpf) == E_OK &&
-		   rmpf.frbcnt <= S2_POOL_COUNT,
-		   "free slots and free blocks within pool size");
-
+	/* S2-U01 and S2-U02 tested the starter producer, retired with it. */
 	TEST_CHECK("S2-U03", test_pid_proportional(),
 		   "PID proportional term is kp * error");
 	TEST_CHECK("S2-U04", test_pid_clamp(),

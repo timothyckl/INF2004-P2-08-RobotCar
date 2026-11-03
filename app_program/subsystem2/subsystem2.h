@@ -190,55 +190,15 @@ typedef struct
 IMPORT ID scan_q;
 
 /* ------------------------------------------------------------------------
- *  Navigation request from S3 (s3_nav_take on
- *  feature/subsystem3-ir-line-barcode). HEADER ONLY: the barcode
- *  manoeuvre state is not built yet. S3 calls s3_nav_take() each
- *  iteration with stopped = SAFETY_FLG_STOP set, authorised =
- *  S2_RS_NAV_AUTHORISED in robot_state, junction = S3's own detection;
- *  a non-NONE result is sent as this record.
+ *  Navigation commands from S3. S3 calls s3_nav_take() each sample with
+ *  stopped = SAFETY_FLG_STOP set, authorised = S2_RS_NAV_AUTHORISED in
+ *  robot_state, junction = its own detection, and publishes an offered
+ *  command in IF-06 (subsystem3.h: nav_cmd with a unique nav_id). The
+ *  controller runs each nav_id at most once.
  * ------------------------------------------------------------------------ */
 #define S2_NAV_LEFT             1u  /* = S3_NAV_LEFT: turn left 90 deg */
 #define S2_NAV_RIGHT            2u  /* = S3_NAV_RIGHT: turn right 90 deg */
 #define S2_NAV_STRAIGHT         3u  /* = S3_NAV_STRAIGHT: continue */
 #define S2_NAV_UTURN            4u  /* = S3_NAV_UTURN: turn 180 deg */
-
-typedef struct
-{
-    uint32_t scan_id;       /* S3's unique barcode scan ID */
-    uint32_t staged_ms;     /* when S3 staged it, for expiry */
-    uint8_t  command;       /* S2_NAV_* */
-    uint8_t  reserved[3];
-} s2_nav_request_t;
-
-/* ---------------------------------------------------------------------
- *  LEGACY STARTER (IF-01, IF-02): kept while subsystems 3 and 4 use it.
- * --------------------------------------------------------------------- */
-#define S2_PRI_PRODUCER		S2_PRI_MOTION	/* below the controller */
-#define S2_PERIOD_MS		300	/* one sample every 300 ms */
-
-/* ---------------------------------------------------------------------
- *  IF-01 data format: one sample, sent to subsystem 3's mailbox.
- *  A mailbox message MUST start with a T_MSG header: the kernel links
- *  messages together through it, so the data itself is never copied.
- * --------------------------------------------------------------------- */
-typedef struct {
-	T_MSG	hdr;		/* used by the kernel, do not touch */
-	UW	seq;		/* sample sequence number */
-	UW	time_ms;	/* system time when the sample was taken */
-	INT	value;		/* the "measurement", 0..100 */
-	INT	prc;		/* processor (core) that produced it: 1 or 2 */
-} SAMPLE_MSG;
-
-#define S2_POOL_COUNT	4	/* at most 4 samples in flight */
-
-/* IF-02: the receiver of a sample gives its memory block back to
-   mpf_samples (tk_rel_mpf) and then a slot back to sem_slots
-   (tk_sig_sem, count 1).  Nothing else may use these two objects. */
-IMPORT ID	sem_slots;
-IMPORT ID	mpf_samples;
-
-/* Private to subsystem 2 */
-IMPORT void	producer_task(INT stacd, void *exinf);
-IMPORT INT	s2_make_value(UW seq);
 
 #endif /* SUBSYSTEM2_H */

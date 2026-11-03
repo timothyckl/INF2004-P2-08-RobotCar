@@ -7,14 +7,13 @@
  *	    state_mutex), then motion objects (motion_q, status mutex,
  *	    10 ms cyclic handler), then the shared GPIO dispatcher on this
  *	    core (core 0, usermain), so every subsystem can register pins
- *	    in its own _start().  Then the LEGACY starter objects.
+ *	    in its own _start().
  *	subsystem2_start(): Motion Control, then the Vehicle Controller.
  *	    Neither runs in a bench build (S2_HW_TEST in task_motion.h):
- *	    the bench sequence owns the motors.  Then the LEGACY producer.
+ *	    the bench sequence owns the motors.
  *
- *	The starter producer (IF-01, IF-02) stays until subsystem 3's
- *	consumer stops using it (docs/subsystem2.md, "Removing the
- *	starter").
+ *	The starter producer (IF-01, IF-02) was retired once subsystem 3's
+ *	consumer was replaced by its Line Sensor task.
  */
 
 #include "subsystem2.h"
@@ -31,13 +30,8 @@ EXPORT ID	safety_flags = 0;
 EXPORT ID	remote_q = 0;
 EXPORT ID	scan_q = 0;	/* controller to obstacle scan */
 
-EXPORT ID	sem_slots;	/* IF-02, see subsystem2.h */
-EXPORT ID	mpf_samples;
-
 EXPORT ER subsystem2_init(void)
 {
-	T_CSEM	csem = {0};
-	T_CMPF	cmpf = {0};
 	ER	er;
 
 	/* Evidence that the watchdog protection fired (S2-H05) */
@@ -53,38 +47,11 @@ EXPORT ER subsystem2_init(void)
 	if (er < E_OK) {
 		return er;
 	}
-	er = drv_gpio_irq_init();
-	if (er < E_OK) {
-		return er;
-	}
-
-	/* LEGACY starter objects (IF-01, IF-02) */
-
-	/* Semaphore: a counter of free "slots".  The producer takes one
-	   (tk_wai_sem) before each sample; the consumer gives one back
-	   (tk_sig_sem).  It never exceeds the number of memory blocks, so
-	   the producer can never run out of memory. */
-	csem.sematr  = TA_TFIFO;	/* waiting tasks queue in FIFO order */
-	csem.isemcnt = S2_POOL_COUNT;	/* initial count */
-	csem.maxsem  = S2_POOL_COUNT;	/* maximum count */
-	sem_slots = tk_cre_sem(&csem);
-	if (sem_slots < E_OK) {
-		return sem_slots;
-	}
-
-	/* Fixed-size memory pool: S2_POOL_COUNT blocks, each exactly one
-	   SAMPLE_MSG.  Faster and more predictable than malloc(). */
-	cmpf.mpfatr = TA_TFIFO | TA_RNG3;
-	cmpf.mpfcnt = S2_POOL_COUNT;		/* number of blocks */
-	cmpf.blfsz  = sizeof(SAMPLE_MSG);	/* size of one block */
-	mpf_samples = tk_cre_mpf(&cmpf);
-	return (mpf_samples < E_OK) ? mpf_samples : E_OK;
+	return drv_gpio_irq_init();
 }
 
 EXPORT ER subsystem2_start(void)
 {
-	ID	tid;
-
 #if !S2_HW_TEST
 	ER	er;
 
@@ -92,14 +59,8 @@ EXPORT ER subsystem2_start(void)
 	if (er < E_OK) {
 		return er;
 	}
-	er = s2_controller_start();
-	if (er < E_OK) {
-		return er;
-	}
+	return s2_controller_start();
+#else
+	return E_OK;
 #endif
-
-	/* LEGACY producer, pinned to core 1: samples cross to subsystem 3 */
-	tid = app_start_task(producer_task, S2_PRI_PRODUCER, TP_PRC2,
-			     "producer_task");
-	return (tid < E_OK) ? tid : E_OK;
 }

@@ -62,30 +62,7 @@ typedef struct
    or E_TMOUT if the writer holds the lock (keep the previous copy). */
 IMPORT ER	s3_line_get(s3_line_status_t *p_status);
 
-/* ---------------------------------------------------------------------
- *  LEGACY STARTER (IF-01, IF-04): kept while subsystems 2 and 4 use it.
- * --------------------------------------------------------------------- */
-#define S3_PRI_CONSUMER		17	/* priority band 16-17 (TEAM.md) */
-#define S3_BATCH_SIZE		5	/* report to subsystem 4 every N samples */
-
-/* IF-01: send SAMPLE_MSG (subsystem2.h) here with tk_snd_mbx */
-IMPORT ID	mbx_samples;
-
-/* IF-04: statistics.  Read them ONLY while holding mtx_stats:
- *	tk_loc_mtx(mtx_stats, TMO_FEVR);  copy = app_stats;  tk_unl_mtx(mtx_stats);
- */
-typedef struct {
-	UW	received;	/* samples received so far */
-	INT	min;
-	INT	max;
-	W	sum;
-} APP_STATS;
-
-IMPORT ID		mtx_stats;
-IMPORT APP_STATS	app_stats;
-
 /* Private to subsystem 3 */
-IMPORT void	consumer_task(INT stacd, void *exinf);
 IMPORT ER	s3_line_create(void);	/* task_line.c, from subsystem3_init */
 IMPORT ER	s3_line_start(void);	/* task_line.c, from subsystem3_start */
 

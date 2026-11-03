@@ -15,30 +15,10 @@
 
 EXPORT void subsystem1_test(void)
 {
-	T_RTSK	rtsk;
-	ER	er;
-
 	TEST_INIT();
 
-	/* S1-U01: The temporary IF-05 compatibility task exists. */
-	er = tk_ref_tsk(tid_led, &rtsk);
-	TEST_CHECK("S1-U01", er == E_OK, "compatibility task exists");
-
-	/* S1-U02: The compatibility task remains asleep and does not busy-loop. */
-	{
-		INT	i, waiting = 0;
-		for (i = 0; i < 10; i++)
-		{
-			tk_dly_tsk(97);
-			if (tk_ref_tsk(tid_led, &rtsk) == E_OK &&
-			    (rtsk.tskstat & TTS_WAI))
-			{
-				waiting++;
-			}
-		}
-		TEST_CHECK("S1-U02", waiting >= 9,
-		           "compatibility task remains asleep");
-	}
+	/* S1-U01..S1-U03 tested the starter LED / IF-05 compatibility task,
+	   retired with it (testing/subsystem1/TEST_LOG.md). */
 
     TEST_CHECK("S1-U04", comms_test_commands(), "command parser logic");
     TEST_CHECK("S1-U05", comms_test_telemetry(), "telemetry codec logic");

@@ -12,12 +12,7 @@
 
 #include "../app.h"
 
-#define S1_PRI_LED 12	/* Temporary IF-05 compatibility task priority. */
-
-/* IF-05: Retained temporarily so subsystem 4's starter monitor still links. */
-IMPORT ID tid_led;
-
-/* Private to subsystem 1, shared between its own .c files */
-IMPORT void led_task(INT stacd, void * exinf);
+/* No public objects: commands and telemetry pass through the WiFi service
+   task (mqtt_service.h) and subsystem 2's adapters (s2_s1_adapter.h). */
 
 #endif /* SUBSYSTEM1_H */
