@@ -86,14 +86,15 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 Configuration constraints:
 
 - Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
-  carry the right encoder.
+  carry the right encoder. `config/config_device.h` fails the build otherwise.
 - Disable or reassign the demo liveness LED from GP16.
-- Do not configure GP26 or GP28 as ADC inputs: GP26 is the barcode sensor's
-  digital output and GP28 carries the left encoder. GP17 and GP27 carry
-  analogue outputs that the current logic does not use.
+- Keep RP2040 ADC pin initialisation disabled on GP26 to GP28: GP26 is the
+  barcode sensor's digital output and GP28 carries the left encoder. GP17 and
+  GP27 carry analogue outputs that the current logic does not use.
 - GP13, GP14, GP15 and GP18 to GP22 are unused.
-- The HC-SR04 is currently powered from 3V3 (team pin mapping, 2026-11-03).
-  Obstacle Scan must confirm ranging at that supply against the datasheet. If
-  it is powered from 5 V, ECHO must be level-shifted to 3.3 V: Pico GPIO is not
-  5 V tolerant.
+- The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently
+  powered from 3V3 (team pin mapping, 2026-11-03). That wiring is outside the
+  datasheet and is not validated. Obstacle Scan must confirm ranging at 3V3 or
+  move to 5 V; at 5 V, ECHO must be level-shifted to 3.3 V because Pico GPIO is
+  not 5 V tolerant.
 - Keep all signal grounds common.

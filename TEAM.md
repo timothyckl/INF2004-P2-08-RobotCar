@@ -57,8 +57,10 @@ assembled robot (`docs/decisions.md`, subsystem 2, decision 1): the wheel
 encoders use GP7/GP28 (left) and GP0/GP1 (right), the IMU uses I2C1 on GP2/GP3,
 the HC-SR04 GP4/GP5, the servo GP12, and the line and barcode sensors GP6,
 GP16, GP17, GP26 and GP27. Because GP0/GP1 carry an encoder, building with
-`CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. Reconcile any other wiring
-with the actual board and datasheets before configuring hardware.
+`CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. The kernel ADC driver is
+enabled, but its RP2040 pin initialisation stays disabled on GP26 to GP28 so it
+does not take those pins. Reconcile any other wiring with the actual board and
+datasheets before configuring hardware.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -74,7 +76,7 @@ fixed.
 | GP2 | S4 | IMU SDA1 (I2C1) |
 | GP3 | S4 | IMU SCL1 (I2C1) |
 | GP4 | S5 | HC-SR04 TRIG |
-| GP5 | S5 | HC-SR04 ECHO |
+| GP5 | S5 | HC-SR04 ECHO; input level must not exceed Pico limits |
 | GP6 | S3 | front-right line sensor DO |
 | GP7 | S2 | ENC1_A, left encoder (GPIO interrupt) |
 | GP8 | S2 | M1A motor 1 PWM (slice 4A), right wheel forward |
@@ -85,8 +87,8 @@ fixed.
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | S3 | front-left line sensor DO |
-| GP17 | S3 | front-left line sensor AO (connected, unused) |
+| GP16 | S3 | front-left line sensor DO; demo liveness LED must not use this pin |
+| GP17 | S3 | front-left line sensor AO (connected, unused; not ADC-capable) |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
 | GP20 | | |
@@ -107,8 +109,8 @@ fixed.
 | **Peripheral** | one hardware block on the RP2040 | I2C0, UART1, the ADC |
 
 A driver is **not** a subsystem. It is code *inside* the subsystem that
-needs that hardware: the "environment sensing" subsystem contains the I2C
-sensor code, and owns I2C0. Write it as `drv_<name>.c` / `drv_<name>.h` in
+needs that hardware: Subsystem 4 contains the IMU sensor code and owns I2C1.
+Write it as `drv_<name>.c` / `drv_<name>.h` in
 that subsystem's folder, never under `device/`, and call it only from the
 peripheral's owning task. The kernel's own drivers in `device/` (serial,
 I2C, ADC) may be used instead; switching one on in `config/config_device.h`
@@ -127,12 +129,14 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | |
-| I2C1 | S4 | | GP2 (SDA1), GP3 (SCL1) |
+| I2C0 | | | not initialised by the current Pico W startup |
+| I2C1 | S4 | `s4_imu_task` | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | GP26 is S3's barcode DO (digital), GP27 S3's barcode AO (unused), GP28 an S2 encoder input |
-| PWM slices (list) | S2: slices 4, 5; S5: slice 6 | Motion Control; Obstacle Scan | GP8-GP11; GP12 |
+| ADC | | no application owner | RP2040 ADC pin initialisation disabled; GP26 is S3's barcode DO (digital), GP27 S3's barcode AO (unused), GP28 an S2 encoder input |
+| PWM slice 4 | S2 | Motion Control task (`motion`) | GP8 / GP9 |
+| PWM slice 5 | S2 | Motion Control task (`motion`) | GP10 / GP11 |
+| PWM slice 6 channel A | S5 | Obstacle Scan (task not yet created) | GP12 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -175,7 +179,7 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 | 1 | 12–13 | *example:* led_task – 12 – any |
 | 2 | 14–15 | *example:* producer_task – 14 – core 1 |
 | 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
-| 4 | 18–19 | *example:* monitor_task – 18 – any |
+| 4 | 18–19 | `s4_imu_task` – 18 – any |
 | 5 | 20–21 | |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
@@ -209,11 +213,11 @@ limit there. The numbers below are the example's usage.
 | Semaphore | 16 | | 1 | | | |
 | Event flag | 16 | | | | 1 | |
 | Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | | 1 | | |
+| Mutex | 12 | | | 1 | 1 | |
 | Message buffer | 12 | | | | 1 | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
 | Cyclic handler | 12 | 1 | | | | |
-| Alarm handler | 12 | | | | 1 | |
+| Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)
