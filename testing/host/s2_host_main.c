@@ -57,6 +57,13 @@ static host_case_t const g_cases[] =
     {"S2-U51", test_ctrl_stop_queue_full},
     {"S2-U52", test_ctrl_only_start_clears},
     {"S2-U53", test_ctrl_robot_state},
+    {"S2-U60", test_ctrl_start_line},
+    {"S2-U61", test_ctrl_follow},
+    {"S2-U62", test_ctrl_navigate},
+    {"S2-U63", test_ctrl_bypass},
+    {"S2-U64", test_ctrl_scan_outcomes},
+    {"S2-U65", test_ctrl_reacquire},
+    {"S2-U66", test_ctrl_mission_stop},
 };
 
 int

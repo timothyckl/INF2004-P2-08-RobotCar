@@ -14,9 +14,10 @@
 #include "../app.h"
 
 /* 1: Running performs the Week 10 demo script (forward 500 mm, left
-   90 degrees, forward 500 mm) after START. 0: Running does nothing yet. */
+   90 degrees, forward 500 mm) after START instead of the mission. 0
+   (default): Running runs the mission substates (controller_logic.h). */
 #ifndef S2_DEMO_SCRIPT
-#define S2_DEMO_SCRIPT  1
+#define S2_DEMO_SCRIPT  0
 #endif
 
 /* 1: send one local START 5 s after first reaching Ready, for a demo

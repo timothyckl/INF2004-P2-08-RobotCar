@@ -100,6 +100,8 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 #define S2_FAULT_MOTION         2u      /* detail: motion_status_t.fault */
 #define S2_FAULT_SCAN           3u      /* CTRL_FLG_SCAN_FAULT */
 #define S2_FAULT_DELIVERY       4u      /* a required send failed */
+#define S2_FAULT_LINE           5u      /* line sensor fault or stale IF-06,
+                                           or reacquisition failed */
 
 /* Remote command results, using the S1 PROPOSAL section 3 ack codes. */
 #define S2_RESULT_NONE          0u

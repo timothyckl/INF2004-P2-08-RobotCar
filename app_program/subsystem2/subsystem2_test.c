@@ -718,6 +718,20 @@ EXPORT void subsystem2_test(void)
 		   "renewed speed holds; STOP is not a lease stop");
 	TEST_CHECK("S2-U59", test_motion_drive_api(),
 		   "speed command bounds (motion_drive)");
+	TEST_CHECK("S2-U60", test_ctrl_start_line(),
+		   "START needs a fresh valid line (mission)");
+	TEST_CHECK("S2-U61", test_ctrl_follow(),
+		   "follow steers; stale line holds then faults");
+	TEST_CHECK("S2-U62", test_ctrl_navigate(),
+		   "barcode command runs once at its junction");
+	TEST_CHECK("S2-U63", test_ctrl_bypass(),
+		   "hazard: scan, plan, bypass, search, align");
+	TEST_CHECK("S2-U64", test_ctrl_scan_outcomes(),
+		   "scan clear resumes; no route or limit faults");
+	TEST_CHECK("S2-U65", test_ctrl_reacquire(),
+		   "reacquisition bounded; heading checked");
+	TEST_CHECK("S2-U66", test_ctrl_mission_stop(),
+		   "STOP preempts every mission mode");
 
 #if S2_HW_TEST
 	hw_test();
