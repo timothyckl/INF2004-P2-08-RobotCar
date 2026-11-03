@@ -34,8 +34,8 @@
 
 typedef enum
 {
-    DRV_ENCODER_1 = 0,  /* motor 1, left, GP7/GP28 */
-    DRV_ENCODER_2,      /* motor 2, right, GP0/GP1 */
+    DRV_ENCODER_1 = 0,  /* left wheel (motor 2), GP7/GP28 */
+    DRV_ENCODER_2,      /* right wheel (motor 1), GP0/GP1 */
     DRV_ENCODER_COUNT
 } drv_encoder_id_t;
 

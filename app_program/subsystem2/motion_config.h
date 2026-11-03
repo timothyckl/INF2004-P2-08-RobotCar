@@ -26,19 +26,21 @@
 #define MC_WHEEL_CIRC_UM        204000u     /* um */
 #define MC_TRACK_MM             130u        /* wheel centre to centre */
 
-/* Wiring. Right side measured on the bench 2026-11-02 (S2-H01): positive
-   duty turned the right wheel backward while its encoder counted up, so
-   both are inverted. Left side: no inversion needed. */
-#define MC_LEFT_MOTOR           DRV_MOTOR_1
-#define MC_RIGHT_MOTOR          DRV_MOTOR_2
-#define MC_LEFT_MOTOR_INVERT    0           /* 1: forward needs -duty */
-#define MC_RIGHT_MOTOR_INVERT   1           /* measured on the bench
-                                               2026-11-02 (S2-H01) */
+/* Wiring, from the team pin mapping of 2026-11-03 (viewed from behind):
+   left wheel = motor 2 (GP10 back, GP11 forward) and encoder 1 (GP7/GP28);
+   right wheel = motor 1 (GP8 forward, GP9 back) and encoder 2 (GP0/GP1).
+   Positive duty drives the A pin (GP8, GP10), so the left motor is
+   inverted; this matches S2-H01 (motor 2 ran backward on positive duty).
+   Encoder inverts: UNMEASURED. The S2-H01 values assumed motor 2 was the
+   right wheel; re-measure in S2-H01 before closed-loop runs. */
+#define MC_LEFT_MOTOR           DRV_MOTOR_2
+#define MC_RIGHT_MOTOR          DRV_MOTOR_1
+#define MC_LEFT_MOTOR_INVERT    1           /* 1: forward needs -duty */
+#define MC_RIGHT_MOTOR_INVERT   0
 #define MC_LEFT_ENCODER         DRV_ENCODER_1
 #define MC_RIGHT_ENCODER        DRV_ENCODER_2
 #define MC_LEFT_ENC_INVERT      0           /* 1: forward counts down */
-#define MC_RIGHT_ENC_INVERT     1           /* measured on the bench
-                                               2026-11-02 (S2-H01) */
+#define MC_RIGHT_ENC_INVERT     1           /* UNMEASURED, see above */
 
 /* Speed PID per wheel: mm/s in, duty out. UNMEASURED gains, tune on the
    robot. Gains are x PID_GAIN_SCALE (1024 = 1.0), per 10 ms sample. */

@@ -93,8 +93,8 @@ Define a test here before running it. Test IDs never change.
 | Counts per wheel rev, right (x2) | S2-H03 | | | | | |
 | Wheel circumference (um) | roll 10 revs on the floor, measure, divide by 10 | | | | | |
 | Track width (mm) | wheel contact centre to centre | | | | | |
-| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | left no, right yes (relative to its own motor direction) | 2026-11-02, `9f43bc3` |
-| Left/right motor needs negative duty to go forward? | S2-H01 (bench) | | | | left no, right yes | 2026-11-02, `9f43bc3` |
+| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | to re-measure: the 2026-11-02 reading assumed encoder 2 was on motor 2's wheel | |
+| Left/right motor needs negative duty to go forward? | S2-H01 (bench) | | | | motor 1 (right wheel) no, motor 2 (left wheel) yes | 2026-11-02, `9f43bc3`; wheels per pin mapping 2026-11-03 |
 | Still threshold (mm/s) | robot at rest: largest speed reading over 10 s, plus margin | | | | | |
 | Interrupt rate at full speed (edges/s per wheel) | S2-H04 | | | | | |
 
@@ -157,3 +157,9 @@ Note, 2026-11-02 demo image (`806cd45`, `S2_DEMO_AUTOSTART`): Ready, Running,
 then Fault(motion) after about 1 s, because the motors never moved (PWM block
 held in reset, fixed in `9f43bc3`) and stall detection fired. STOP latch to
 motor off: 389 us (one sample, from that image).
+
+Note, 2026-11-03: the team pin mapping puts motor 1 (GP8/GP9) on the right
+wheel and motor 2 (GP10/GP11) on the left; encoder 1 (GP7/GP28) is left and
+encoder 2 (GP0/GP1) right. The 2026-11-02 rows above call motor 2 "right".
+The motor result stands (motor 2 needs negative duty); the encoder direction
+must be measured again.

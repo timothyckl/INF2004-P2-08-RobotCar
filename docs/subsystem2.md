@@ -11,12 +11,12 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 
 | Item | Setting | Source |
 |---|---|---|
-| Motor 1 | GP8 (M1A) / GP9 (M1B), PWM slice 4 | design review section 2, Robo Pico datasheet |
-| Motor 2 | GP10 (M2A) / GP11 (M2B), PWM slice 5 | as above |
+| Motor 1 (right wheel) | GP8 (M1A, forward) / GP9 (M1B, backward), PWM slice 4 | Robo Pico datasheet; team pin mapping 2026-11-03 |
+| Motor 2 (left wheel) | GP10 (M2A, backward) / GP11 (M2B, forward), PWM slice 5 | as above |
 | Motor PWM | 20 kHz: 125 MHz clk_sys, divider 1, TOP 6249; duty -6250..+6250 | Robo Pico datasheet table 1 row 10 |
 | Driver truth table | A high B low forward; A low B high backward; both low brake; both high coast | Robo Pico datasheet section 4 |
-| Encoder 1 (left, motor 1) | GP7 (A, blue) / GP28 (B, green); keep the GP28 battery-sense jumper open | wiring on the robot, bench 2026-11-02 |
-| Encoder 2 (right, motor 2) | GP0 (A, blue) / GP1 (B, green); needs `CRASH_REPORT=0` (UART0 mirror) | as above |
+| Encoder 1 (left wheel) | GP7 (A, blue) / GP28 (B, green); keep the GP28 battery-sense jumper open | wiring on the robot; team pin mapping 2026-11-03 |
+| Encoder 2 (right wheel) | GP0 (A, blue) / GP1 (B, green); needs `CRASH_REPORT=0` (UART0 mirror) | as above |
 | Encoder power | 3V3 and GND | as above |
 | Motor plug | PH2.0-6P: 01 encoder GND, 02 encoder A, 03 encoder B, 04 encoder VCC, 05 motor +, 06 motor - | as above |
 | Motor wires | M1A GP8 yellow, M1B GP9 black; M2A GP10 yellow, M2B GP11 black | as above |
@@ -24,12 +24,17 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 | Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control (normal firmware only) | Pico SDK register headers; RP2040 datasheet not in `docs/datasheets` |
 | GPIO interrupt | IO_IRQ_BANK0, IRQ 13, NVIC priority 2, on core 0 | SDK `hardware/regs/intctrl.h` |
 
-The encoder pins were swapped with subsystem 4 to match the robot's wiring:
-the IMU moves to Grove 6 (GP26 SDA1 / GP27 SCL1, I2C1). The sample ADC driver
-does not touch GP26 to GP28 at start-up: `DEVCONF_ADC_PIN_INIT_*` are all FALSE
-in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` (an earlier version of this
+The encoder pins were swapped with subsystem 4 to match the robot's wiring;
+the IMU is on GP2 (SDA1) / GP3 (SCL1), I2C1. The sample ADC driver does not
+touch GP26 to GP28 at start-up: `DEVCONF_ADC_PIN_INIT_*` are all FALSE in
+`device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` (an earlier version of this
 document said otherwise). GP28 is an encoder input, so no code may configure
 it as an ADC input.
+
+Wheel pairing: the left wheel is motor 2 with encoder 1, and the right wheel is
+motor 1 with encoder 2 (team pin mapping, 2026-11-03). Code before that paired
+motor 1 with encoder 1 as "left", so each wheel's speed loop read the other
+wheel's encoder. `motion_config.h` now follows the pin mapping.
 
 ### Bench findings, 2026-11-02
 
@@ -37,9 +42,11 @@ it as an ADC input.
   uses PWM as its physical timer (`USE_PTMR`, 0 in `config/config.h`), so the
   motors did not move at any duty. `drv_motor_init()` now clears that reset
   itself and never asserts it, because the servo (subsystem 5) shares the block.
-- **Right side mirrored.** Positive duty drove the right wheel backward while its
-  encoder counted up, so `MC_RIGHT_MOTOR_INVERT` and `MC_RIGHT_ENC_INVERT` are 1.
-  The left side needs no inversion.
+- **Motor 2 mirrored.** Positive duty drove motor 2 backward. At the time
+  motor 2 was taken as the right wheel; per the 2026-11-03 pin mapping it is the
+  left wheel (forward is M2B, GP11), so `MC_LEFT_MOTOR_INVERT` is now 1 and
+  `MC_RIGHT_MOTOR_INVERT` 0. The encoder directions noted then assumed the old
+  pairing and must be measured again (S2-H01).
 - **Full-speed freeze (open).** With both motors at 100% the CPU hung and the
   motors kept running, with working and non-working encoders alike. A supply
   dip or motor noise is the likely cause. The duty ramp and the watchdog below
