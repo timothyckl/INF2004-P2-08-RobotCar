@@ -20,78 +20,41 @@
 #include "lwip/timeouts.h"
 #include "wifi_secrets.h"
 #include "mqtt_utk.h"
+#include "../../../../app_program/subsystem1/mqtt_service.h"
 #include <tm/tmonitor.h>
 
 #define MQTT_UTK_HEARTBEAT_MS   5000
 #define MQTT_UTK_KEEPALIVE_S    60
 #define MQTT_UTK_RETRY_MS       3000
 
-/* Inbound message staging. A publish arrives as one topic callback followed by
- * one or more data callbacks, so the topic has to be kept until the fragment
- * carrying MQTT_DATA_FLAG_LAST shows up. Both buffers are sized well past the
- * heartbeat this demo publishes; anything longer is truncated and flagged
- * rather than being allowed to run off the end. */
-#define MQTT_UTK_RX_TOPIC_MAX   64
-#define MQTT_UTK_RX_DATA_MAX    128
-
 static mqtt_client_t	*client;
 static ip_addr_t	broker_addr;
 static u8_t		connecting;
 
-static char		rx_topic[MQTT_UTK_RX_TOPIC_MAX];
-static UB		rx_data[MQTT_UTK_RX_DATA_MAX];
-static u16_t		rx_len;
-static u8_t		rx_truncated;
-
 static void heartbeat_timeout(void *arg);
+static void telemetry_timeout(void *arg);
 
-/* mqtt.c NUL-terminates the topic before handing it over, but it is only
- * valid for the duration of this call -- copy it out. */
+/* Inbound publications go to subsystem 1's service bridge
+ * (app_program/subsystem1/mqtt_service.c), which matches the command topic,
+ * assembles fragments and routes START, STOP and RESET to the Vehicle
+ * Controller. Raw payload bytes are untrusted and never printed. */
 static void incoming_publish_cb(void *arg, const char *topic, u32_t tot_len)
 {
-	u32_t	i;
-
 	(void)arg;
-	(void)tot_len;
-
-	for(i = 0; i < (MQTT_UTK_RX_TOPIC_MAX - 1) && topic[i] != '\0'; i++) {
-		rx_topic[i] = topic[i];
-	}
-	rx_topic[i] = '\0';
-
-	rx_len = 0;
-	rx_truncated = 0;
+	(void)mqtt_service_topic(topic, (size_t)tot_len);
 }
 
 static void incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t flags)
 {
-	u16_t	i;
-
 	(void)arg;
-
-	for(i = 0; i < len; i++) {
-		if(rx_len < (MQTT_UTK_RX_DATA_MAX - 1)) {
-			/* The console is a terminal -- keep raw bytes from a
-			 * payload this demo did not publish from scrambling it. */
-			UB c = data[i];
-			rx_data[rx_len++] = (c >= 0x20 && c < 0x7f)? c: '.';
-		} else {
-			rx_truncated = 1;
-		}
-	}
-
-	if((flags & MQTT_DATA_FLAG_LAST) != 0) {
-		rx_data[rx_len] = '\0';
-		tm_printf((UB*)"mqtt: RX [%s] \"%s\"%s\n", rx_topic, rx_data,
-			  rx_truncated? " (truncated)": "");
-	}
+	mqtt_service_data(data, (size_t)len, (flags & MQTT_DATA_FLAG_LAST) != 0);
 }
 
 static void subscribe_done_cb(void *arg, err_t result)
 {
 	(void)arg;
 	if(result == ERR_OK) {
-		tm_printf((UB*)"mqtt: subscribed to " MQTT_TOPIC "\n");
+		tm_printf((UB*)"mqtt: subscribed to " S1_MQTT_COMMAND_TOPIC "\n");
 	} else {
 		tm_printf((UB*)"mqtt: subscribe failed, err=%d\n", (int)result);
 	}
@@ -127,6 +90,27 @@ static void heartbeat_timeout(void *arg)
 	sys_timeout(MQTT_UTK_HEARTBEAT_MS, heartbeat_timeout, NULL);
 }
 
+/* Subsystem 1 telemetry: one encoded snapshot per period, QoS 0, never
+ * retained. A period with no safe snapshot publishes nothing. */
+static void telemetry_timeout(void *arg)
+{
+	u8_t	payload[S1_MQTT_TELEMETRY_MAX];
+	size_t	len;
+
+	(void)arg;
+
+	if(mqtt_client_is_connected(client)) {
+		len = mqtt_service_telemetry(payload, sizeof(payload));
+		if(len > 0u) {
+			(void)mqtt_publish(client, S1_MQTT_TELEMETRY_TOPIC, payload,
+					   (u16_t)len, 0 /* qos */, 0 /* retain */,
+					   publish_done_cb, NULL);
+		}
+	}
+
+	sys_timeout(S1_MQTT_TELEMETRY_MS, telemetry_timeout, NULL);
+}
+
 static void retry_timeout(void *arg)
 {
 	(void)arg;
@@ -150,16 +134,17 @@ static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t 
 
 		tm_printf((UB*)"mqtt: connected to " MQTT_BROKER_IP "\n");
 
-		/* Subscribe to the same topic this client publishes to, so every
-		 * heartbeat comes back from the broker and is printed by
-		 * incoming_data_cb(). A matching RX for each TX is end-to-end
-		 * proof of the round trip without needing mosquitto_sub on the
-		 * broker host. Callbacks must be registered before subscribing,
-		 * or the first delivery has nowhere to go. */
+		/* Subscribe only to the command topic (subsystem 1
+		 * INTEGRATION.md): heartbeat and telemetry use other topics, so
+		 * the client never parses its own publications as commands.
+		 * The bridge and callbacks are set up before subscribing, or the
+		 * first delivery has nowhere to go. Reconnecting starts nothing
+		 * and clears no STOP: the controller ignores link state. */
+		(void)mqtt_service_init();
 		mqtt_set_inpub_callback(client, incoming_publish_cb,
 					incoming_data_cb, NULL);
 
-		err = mqtt_subscribe(client, MQTT_TOPIC, 0 /* qos */,
+		err = mqtt_subscribe(client, S1_MQTT_COMMAND_TOPIC, 1 /* qos */,
 				     subscribe_done_cb, NULL);
 		if(err != ERR_OK) {
 			tm_printf((UB*)"mqtt: mqtt_subscribe() failed, err=%d\n",
@@ -172,6 +157,8 @@ static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t 
 		 * MEMP_SYS_TIMEOUT slot until the pool is exhausted. */
 		sys_untimeout(heartbeat_timeout, NULL);
 		sys_timeout(MQTT_UTK_HEARTBEAT_MS, heartbeat_timeout, NULL);
+		sys_untimeout(telemetry_timeout, NULL);
+		sys_timeout(S1_MQTT_TELEMETRY_MS, telemetry_timeout, NULL);
 	} else {
 		/* mqtt_client_connect() reconnects on its own for a dropped
 		 * keepalive; a rejected/never-established connection does not

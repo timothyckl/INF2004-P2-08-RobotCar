@@ -55,6 +55,12 @@ typedef struct
    if not created yet or state_mutex is busy. Never waits. */
 bool s2_read_telemetry (s2_telemetry_t * p_out);
 
+/* The controller's clock (tk_get_tim, low 32 bits, ms) for the
+   received_ms of remote commands, so command age is judged on the same
+   clock the controller uses. lwIP's sys_now() is operating time, which
+   need not match. */
+uint32_t s2_clock_ms (void);
+
 #ifdef TELEMETRY_ENCODER_H
 /* Available when S1's telemetry_encoder.h is included first. */
 bool robot_read_telemetry (void * p_context,
