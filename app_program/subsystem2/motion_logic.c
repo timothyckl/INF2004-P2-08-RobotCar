@@ -80,7 +80,7 @@ motion_init (motion_t * p_m, motion_cfg_t const * p_cfg)
     if ((NULL == p_m) || (NULL == p_cfg) || (!odom_cfg_valid(&p_cfg->odom))
         || (p_cfg->speed_window < 1u)
         || (p_cfg->speed_window > MOTION_WINDOW_MAX)
-        || (p_cfg->speed_max_mm_s <= 0)
+        || (p_cfg->speed_max_mm_s <= 0) || (p_cfg->duty_step_max <= 0)
         || (!pid_init(&m.pid_l, &p_cfg->pid))
         || (!pid_init(&m.pid_r, &p_cfg->pid))
         || (!pid_init(&m.pid_diff, &p_cfg->straight_pid)))
@@ -338,6 +338,38 @@ motion_state_t
 motion_state (motion_t const * p_m)
 {
     return ((NULL == p_m) ? MOTION_FAULT : p_m->state);
+}
+
+/**
+ * @brief Limit how fast |duty| may grow (pure).
+ *
+ * Toward zero (including target 0 for STOP and Fault) is immediate. A
+ * sign change returns 0 for one step, then ramps from 0. An increase is
+ * limited to step_max; step_max <= 0 disables the limit.
+ */
+int32_t
+motion_ramp (int32_t prev, int32_t target, int32_t step_max)
+{
+    int32_t out = target;
+
+    if ((0 == target) || (step_max <= 0))
+    {
+        /* STOP, Fault, or no limit: immediate. */
+    }
+    else if (((prev > 0) && (target < 0)) || ((prev < 0) && (target > 0)))
+    {
+        out = 0;                            /* through zero first */
+    }
+    else if (target > 0)
+    {
+        out = ((target - prev) > step_max) ? (prev + step_max) : target;
+    }
+    else
+    {
+        out = ((prev - target) > step_max) ? (prev - step_max) : target;
+    }
+
+    return (out);
 }
 
 uint8_t
@@ -697,9 +729,11 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
             (void)pid_update(&p_m->pid_l, p_m->tgt_l, p_m->speed_l, &dl);
             (void)pid_update(&p_m->pid_r, p_m->tgt_r, p_m->speed_r, &dr);
-            p_m->duty_l = dl;
-            p_m->duty_r = dr;
-            check_stall(p_m, now, p_out);
+            p_m->duty_l = motion_ramp(p_m->duty_l, dl,
+                                      p_m->cfg.duty_step_max);
+            p_m->duty_r = motion_ramp(p_m->duty_r, dr,
+                                      p_m->cfg.duty_step_max);
+            check_stall(p_m, now, p_out);   /* on the ramped duty */
         }
     }
     else if (MOTION_STOPPING == p_m->state)

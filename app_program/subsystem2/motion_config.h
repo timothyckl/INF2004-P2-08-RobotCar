@@ -77,6 +77,14 @@
 #define MC_MOVE_TOL_MM          5u
 #define MC_TURN_TOL_MDEG        2000u
 
+/* Duty ramp: largest increase in |duty| per 10 ms period. UNMEASURED.
+   Full scale in 200 ms (20 periods): both motors can no longer jump from
+   0 to 100% in one step, which spreads the start-up current that most
+   likely caused the S2-H04 freeze, yet it is short next to a manoeuvre
+   (500 mm at 200 mm/s takes 2.5 s) and next to MC_STALL_MS. Decreases,
+   STOP and Fault are never ramped. */
+#define MC_DUTY_STEP_MAX        (DRV_MOTOR_DUTY_MAX / 20)
+
 /* motion_q: 8 commands of 4 + 16 bytes (kernel message overhead). */
 #define MC_MOTION_Q_BYTES       160
 

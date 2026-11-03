@@ -659,6 +659,10 @@ EXPORT void subsystem2_test(void)
 		   "only START in Ready clears STOP");
 	TEST_CHECK("S2-U53", test_ctrl_robot_state(),
 		   "robot_state snapshot fields");
+	TEST_CHECK("S2-U55", test_motion_ramp(),
+		   "duty ramp limits increases only");
+	TEST_CHECK("S2-U56", test_motion_ramp_stall(),
+		   "ramp cannot cause a false stall");
 
 #if S2_HW_TEST
 	hw_test();

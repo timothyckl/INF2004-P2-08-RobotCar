@@ -65,7 +65,8 @@ static motion_cfg_t const g_cfg =
     2000u,      /* turn_tol_mdeg */
     2u,         /* enc_errors_max */
     3u,         /* enc_invalid_max */
-    2u          /* speed_window */
+    2u,         /* speed_window */
+    DRV_MOTOR_DUTY_MAX / 20     /* duty_step_max, as MC_DUTY_STEP_MAX */
 };
 
 static void
@@ -767,6 +768,88 @@ test_motion_api (void)
         && (E_PAR == motion_turn_right(360001u));
 
     return (b_build && b_refuse && b_public);
+}
+
+bool
+test_motion_ramp (void)
+{
+    int32_t const st = 300;
+    int32_t       d  = 0;
+    bool          ok = true;
+
+    /* Increase limited per step, both signs. */
+    ok = ok && (300 == motion_ramp(0, 6250, st));
+    ok = ok && (600 == motion_ramp(300, 6250, st));
+    ok = ok && (6250 == motion_ramp(6100, 6250, st));
+    ok = ok && (-300 == motion_ramp(0, -6250, st));
+    ok = ok && (-1300 == motion_ramp(-1000, -6250, st));
+
+    /* Sign change: 0 first, then ramps from 0. */
+    ok = ok && (0 == motion_ramp(2000, -2000, st));
+    ok = ok && (0 == motion_ramp(-2000, 2000, st));
+    ok = ok && (-300 == motion_ramp(0, -2000, st));
+
+    /* Decrease, STOP and Fault (target 0) are immediate. */
+    ok = ok && (500 == motion_ramp(6250, 500, st));
+    ok = ok && (-500 == motion_ramp(-6250, -500, st));
+    ok = ok && (0 == motion_ramp(6250, 0, st));
+    ok = ok && (0 == motion_ramp(-6250, 0, st));
+
+    /* Full scale from 0 takes ceil(6250 / 300) = 21 steps. */
+    for (uint32_t i = 0u; i < 20u; i++)
+    {
+        d = motion_ramp(d, 6250, st);
+    }
+
+    ok = ok && (6000 == d) && (6250 == motion_ramp(d, 6250, st));
+
+    return (ok && (6250 == motion_ramp(0, 6250, 0)));   /* 0 = no limit */
+}
+
+bool
+test_motion_ramp_stall (void)
+{
+    /* A very slow ramp (1 duty step per 10 ms): the free wheel stays
+       below the still speed for about 1.25 s while the PID output is
+       already saturated. A stall check on the un-ramped duty would fire
+       at 500 ms; on the ramped duty it must not. */
+    motion_cfg_t cfg = g_cfg;
+    sim_t *      p_s = sim_fresh();
+
+    cfg.duty_step_max = 1;
+    (void)motion_init(&p_s->m, &cfg);
+    motion_output_clear(&p_s->out);
+    motion_start(&p_s->m, true, &p_s->out);
+    (void)sim_cmd(p_s, S2_CMD_SPEED, 400, 400);
+    sim_run(p_s, 150);                  /* 1.5 s, duty still ramping */
+
+    bool const b_free = (sim_find(p_s, MOTION_EVT_FAULT, 0u) < 0)
+                        && (MOTION_SPEED == motion_state(&p_s->m));
+
+    /* Stuck wheel with the normal ramp: no stall before the ramped duty
+       reaches the stall level, then a stall MC_STALL_MS after that. */
+    p_s = sim_new(true);
+    p_s->b_stuck_l = true;
+    (void)sim_cmd(p_s, S2_CMD_SPEED, 400, 400);
+
+    uint32_t t_level = 0u;
+
+    for (uint32_t i = 0u; (i < 200u)
+         && (sim_find(p_s, MOTION_EVT_FAULT, 0u) < 0); i++)
+    {
+        sim_step(p_s);
+
+        if ((0u == t_level) && (p_s->out.duty_l >= g_cfg.stall_duty))
+        {
+            t_level = p_s->in.now_us - SIM_DT_US;
+        }
+    }
+
+    int32_t const f = sim_find(p_s, MOTION_EVT_FAULT, 0u);
+
+    return (b_free && (t_level > 0u) && (f >= 0)
+            && sim_fault(p_s, MOTION_FAULT_STALL)
+            && ((p_s->log[f].t_us - t_level) >= (g_cfg.stall_ms * 1000u)));
 }
 
 #endif /* APP_TEST */

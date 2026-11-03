@@ -18,6 +18,14 @@
  * difference loop does, and its integral term cancels a steady
  * left/right imbalance the speed loops leave behind.
  *
+ * Output ramp: each wheel's |duty| may grow by at most duty_step_max per
+ * step; a sign change goes through 0 first; a decrease, STOP and Fault
+ * are immediate (motion_ramp). It is applied here, before the stall
+ * check, so stall timing starts only once the duty really reaches the
+ * stall level. The ramp is odd-symmetric, so the wrapper's motor invert
+ * (a sign flip) after it gives the same result as ramping after the
+ * invert.
+ *
  * Rules:
  * - Latched STOP and S2_CMD_STOP win: motion states enter Stopping at
  *   once with zero duty. Motion commands are rejected while STOP is set.
@@ -76,6 +84,7 @@ typedef struct
     uint32_t   enc_errors_max;  /* new decode errors allowed per step */
     uint32_t   enc_invalid_max; /* consecutive invalid inputs allowed */
     uint32_t   speed_window;    /* 1..MOTION_WINDOW_MAX steps */
+    int32_t    duty_step_max;   /* largest |duty| increase per step, > 0 */
 } motion_cfg_t;
 
 /** Inputs sampled by the wrapper each period. */
@@ -187,6 +196,7 @@ void motion_get_status_logic (motion_t const * p_m,
                               motion_status_t * p_status);
 bool motion_is_stopped (motion_t const * p_m);
 motion_state_t motion_state (motion_t const * p_m);
+int32_t motion_ramp (int32_t prev, int32_t target, int32_t step_max);
 uint8_t motion_fault_code (motion_t const * p_m);
 
 #endif /* MOTION_LOGIC_H */

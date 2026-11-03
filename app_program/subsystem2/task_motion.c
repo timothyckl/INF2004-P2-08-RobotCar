@@ -30,6 +30,7 @@
 #include "subsystem2.h"
 
 #define MC_TASK_CORE        TP_PRC2
+
 #define MC_LOCK_TMO_MS      10      /* reader wait for the status lock */
 
 EXPORT ID motion_q = 0;
@@ -61,7 +62,8 @@ static const motion_cfg_t g_motion_cfg =
     MC_TURN_TOL_MDEG,
     MC_ENC_ERRORS_MAX,
     MC_ENC_INVALID_MAX,
-    MC_SPEED_WINDOW
+    MC_SPEED_WINDOW,
+    MC_DUTY_STEP_MAX
 };
 
 static void     motion_task (INT stacd, void * exinf);
