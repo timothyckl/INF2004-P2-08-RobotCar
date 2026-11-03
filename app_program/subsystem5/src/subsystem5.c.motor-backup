@@ -1,0 +1,184 @@
+#include "../include/subsystem5.h"
+#include <stdint.h>
+
+#define MOTOR1_A       8u
+#define MOTOR1_B       9u
+#define MOTOR2_A       10u
+#define MOTOR2_B       11u
+
+/*
+ * Assumes the same 125 MHz system clock as our servo test.
+ * Divider 125 gives a 1 MHz PWM counter.
+ * Wrap 999 gives 1 kHz PWM.
+ */
+#define MOTOR_WRAP     999u
+#define MOTOR_LEVEL    350u  /* 35% duty */
+
+#define RESET_REG      0x4000C000u
+#define RESET_DONE_REG 0x4000C008u
+#define PWM_RESET_BIT  0x00004000u
+
+#define PWM_BASE_ADDR  0x40050000u
+#define PWM_SLICE_SIZE 0x14u
+
+#define PWM_CSR_OFFSET 0x00u
+#define PWM_DIV_OFFSET 0x04u
+#define PWM_CTR_OFFSET 0x08u
+#define PWM_CC_OFFSET  0x0Cu
+
+static const UINT motor_pins[] = {
+    MOTOR1_A, MOTOR1_B, MOTOR2_A, MOTOR2_B
+};
+
+static void motor_reg_write(uint32_t address, uint32_t value)
+{
+    *(volatile uint32_t *)(uintptr_t)address = value;
+}
+
+static uint32_t motor_reg_read(uint32_t address)
+{
+    return *(volatile uint32_t *)(uintptr_t)address;
+}
+
+static uint32_t motor_slice_base(UINT pin)
+{
+    return PWM_BASE_ADDR
+         + (((pin >> 1u) & 7u) * PWM_SLICE_SIZE);
+}
+
+static void motor_stop_all(void)
+{
+    /* Both inputs LOW: brake, according to the board truth table. */
+    pwm_set_cc(MOTOR1_A, 0u);
+    pwm_set_cc(MOTOR1_B, 0u);
+    pwm_set_cc(MOTOR2_A, 0u);
+    pwm_set_cc(MOTOR2_B, 0u);
+}
+
+static void motor_run(UINT pin_a, UINT pin_b, BOOL reverse)
+{
+    /* Stop before selecting the next direction. */
+    pwm_set_cc(pin_a, 0u);
+    pwm_set_cc(pin_b, 0u);
+
+    if (reverse) {
+        pwm_set_cc(pin_b, MOTOR_LEVEL);
+    } else {
+        pwm_set_cc(pin_a, MOTOR_LEVEL);
+    }
+}
+
+static void motor_test_task(INT stacd, void *exinf)
+{
+    (void)stacd;
+    (void)exinf;
+
+    motor_stop_all();
+
+    tm_printf((UB*)"MOTOR: test starts in 3 seconds\n");
+    tk_dly_tsk(3000);
+
+    tm_printf((UB*)"MOTOR: M1 direction A, 35%%, 1 second\n");
+    motor_run(MOTOR1_A, MOTOR1_B, 0);
+    tk_dly_tsk(1000);
+    motor_stop_all();
+    tk_dly_tsk(1500);
+
+    tm_printf((UB*)"MOTOR: M1 direction B, 35%%, 1 second\n");
+    motor_run(MOTOR1_A, MOTOR1_B, 1);
+    tk_dly_tsk(1000);
+    motor_stop_all();
+    tk_dly_tsk(1500);
+
+    tm_printf((UB*)"MOTOR: M2 direction A, 35%%, 1 second\n");
+    motor_run(MOTOR2_A, MOTOR2_B, 0);
+    tk_dly_tsk(1000);
+    motor_stop_all();
+    tk_dly_tsk(1500);
+
+    tm_printf((UB*)"MOTOR: M2 direction B, 35%%, 1 second\n");
+    motor_run(MOTOR2_A, MOTOR2_B, 1);
+    tk_dly_tsk(1000);
+    motor_stop_all();
+
+    tm_printf((UB*)"MOTOR: test finished; both motors stopped\n");
+
+    /* Run the test only once per restart. */
+    for (;;) {
+        tk_dly_tsk(1000);
+    }
+}
+
+EXPORT ER subsystem5_init(void)
+{
+    unsigned int i;
+    unsigned int attempt;
+    uint32_t base;
+    uint32_t reset_value;
+    ER err;
+
+    /* Release PWM from reset without resetting other peripherals. */
+    reset_value = motor_reg_read(RESET_REG);
+    motor_reg_write(RESET_REG, reset_value & ~PWM_RESET_BIT);
+
+    for (attempt = 0u; attempt < 100u; ++attempt) {
+        if (motor_reg_read(RESET_DONE_REG) & PWM_RESET_BIT) {
+            break;
+        }
+        tk_dly_tsk(1);
+    }
+
+    if (attempt == 100u) {
+        tm_printf((UB*)"MOTOR: PWM hardware readiness timeout\n");
+        return E_SYS;
+    }
+
+    /*
+     * GP8/9 share slice 4.
+     * GP10/11 share slice 5.
+     * Set both channels to zero before connecting PWM to the pins.
+     */
+    for (i = 0u; i < 2u; ++i) {
+        base = motor_slice_base((i == 0u) ? MOTOR1_A : MOTOR2_A);
+
+        motor_reg_write(base + PWM_CSR_OFFSET, 0u);
+        motor_reg_write(base + PWM_DIV_OFFSET, 125u << 4u);
+        motor_reg_write(base + PWM_CTR_OFFSET, 0u);
+        motor_reg_write(base + PWM_CC_OFFSET, 0u);
+
+        err = pwm_set_wrap(
+            (i == 0u) ? MOTOR1_A : MOTOR2_A,
+            MOTOR_WRAP
+        );
+        if (err < E_OK) {
+            return err;
+        }
+    }
+
+    for (i = 0u; i < 4u; ++i) {
+        err = pwm_set_pin(motor_pins[i]);
+        if (err < E_OK) {
+            return err;
+        }
+    }
+
+    motor_stop_all();
+    pwm_set_enabled(MOTOR1_A, 1);
+    pwm_set_enabled(MOTOR2_A, 1);
+
+    return E_OK;
+}
+
+EXPORT ER subsystem5_start(void)
+{
+    ID tid;
+
+    tid = app_start_task(
+        (FP)motor_test_task,
+        S5_PRI_MAIN,
+        0,
+        "motor_test"
+    );
+
+    return (tid < E_OK) ? tid : E_OK;
+}

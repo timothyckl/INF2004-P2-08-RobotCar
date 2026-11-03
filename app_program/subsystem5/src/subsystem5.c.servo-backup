@@ -1,0 +1,638 @@
+#include "../include/subsystem5.h"
+#include <stdint.h>
+
+/* ================================================================
+ * Ultrasonic sensor: TRIG=GP4, ECHO=GP5
+ * ================================================================ */
+
+#define US_TRIG_PIN       (4u)
+#define US_ECHO_PIN       (5u)
+#define US_TIMEOUT_US     (30000u)
+
+#define US_TIMER_RAW_LOW  (0x40054028u)
+
+static uint32_t us_now(void)
+{
+    return (uint32_t)in_w(US_TIMER_RAW_LOW);
+}
+
+static void us_delay(uint32_t duration)
+{
+    uint32_t start = us_now();
+
+    while ((uint32_t)(us_now() - start) < duration)
+    {
+        /* Short timing delay. */
+    }
+}
+
+static int us_wait_level(UINT level)
+{
+    uint32_t start = us_now();
+
+    while (gpio_get_val(US_ECHO_PIN) != level)
+    {
+        if ((uint32_t)(us_now() - start) >= US_TIMEOUT_US)
+        {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+/* ================================================================
+ * GY-511 / LSM303DLHC accelerometer
+ * Software I2C: SDA=GP2, SCL=GP3
+ *
+ * No other task should use these pins during this test.
+ * Lines are driven LOW or released, never driven HIGH.
+ * ================================================================ */
+
+#define ACC_SDA_PIN       (2u)
+#define ACC_SCL_PIN       (3u)
+#define ACC_ADDRESS       (0x19u)
+#define ACC_CLOCK_WAIT_US (2000u)
+#define ACC_HALF_BIT_US   (10u)
+
+static void acc_release(UINT pin)
+{
+    gpio_set_pin(pin, GPIO_MODE_IN);
+    clr_w(GPIO(pin), GPIO_PDE);
+    set_w(GPIO(pin), GPIO_PUE);
+}
+
+static void acc_low(UINT pin)
+{
+    gpio_set_val(pin, 0u);
+    gpio_set_pin(pin, GPIO_MODE_OUT);
+}
+
+static void acc_pause(void)
+{
+    us_delay(ACC_HALF_BIT_US);
+}
+
+static int acc_clock_high(void)
+{
+    uint32_t start = us_now();
+
+    acc_release(ACC_SCL_PIN);
+
+    while (gpio_get_val(ACC_SCL_PIN) == 0u)
+    {
+        if ((uint32_t)(us_now() - start) >= ACC_CLOCK_WAIT_US)
+        {
+            return 0;
+        }
+    }
+
+    acc_pause();
+    return 1;
+}
+
+static int acc_start(void)
+{
+    acc_release(ACC_SDA_PIN);
+    acc_pause();
+
+    if (!acc_clock_high() ||
+        (gpio_get_val(ACC_SDA_PIN) == 0u))
+    {
+        return 0;
+    }
+
+    acc_low(ACC_SDA_PIN);
+    acc_pause();
+    acc_low(ACC_SCL_PIN);
+    acc_pause();
+
+    return 1;
+}
+
+static int acc_stop(void)
+{
+    int clock_ok;
+
+    acc_low(ACC_SCL_PIN);
+    acc_low(ACC_SDA_PIN);
+    acc_pause();
+
+    clock_ok = acc_clock_high();
+
+    acc_release(ACC_SDA_PIN);
+    acc_pause();
+
+    return clock_ok;
+}
+
+static int acc_write_byte(uint8_t value)
+{
+    unsigned int bit;
+    int acknowledged;
+
+    for (bit = 0u; bit < 8u; ++bit)
+    {
+        if ((value & 0x80u) != 0u)
+        {
+            acc_release(ACC_SDA_PIN);
+        }
+        else
+        {
+            acc_low(ACC_SDA_PIN);
+        }
+
+        acc_pause();
+
+        if (!acc_clock_high())
+        {
+            return 0;
+        }
+
+        acc_low(ACC_SCL_PIN);
+        acc_pause();
+
+        value = (uint8_t)(value << 1);
+    }
+
+    acc_release(ACC_SDA_PIN);
+    acc_pause();
+
+    if (!acc_clock_high())
+    {
+        return 0;
+    }
+
+    acknowledged = (gpio_get_val(ACC_SDA_PIN) == 0u);
+
+    acc_low(ACC_SCL_PIN);
+    acc_pause();
+
+    return acknowledged;
+}
+
+static int acc_read_byte(uint8_t *value, int acknowledge)
+{
+    unsigned int bit;
+    uint8_t result = 0u;
+
+    acc_release(ACC_SDA_PIN);
+
+    for (bit = 0u; bit < 8u; ++bit)
+    {
+        acc_pause();
+
+        if (!acc_clock_high())
+        {
+            return 0;
+        }
+
+        result = (uint8_t)(
+            (result << 1) |
+            (gpio_get_val(ACC_SDA_PIN) != 0u ? 1u : 0u));
+
+        acc_low(ACC_SCL_PIN);
+        acc_pause();
+    }
+
+    if (acknowledge)
+    {
+        acc_low(ACC_SDA_PIN);
+    }
+    else
+    {
+        acc_release(ACC_SDA_PIN);
+    }
+
+    acc_pause();
+
+    if (!acc_clock_high())
+    {
+        return 0;
+    }
+
+    acc_low(ACC_SCL_PIN);
+    acc_pause();
+    acc_release(ACC_SDA_PIN);
+
+    *value = result;
+    return 1;
+}
+
+static int acc_write_register(uint8_t reg, uint8_t value)
+{
+    int ok;
+    int stopped;
+
+    ok = acc_start() &&
+         acc_write_byte((uint8_t)(ACC_ADDRESS << 1)) &&
+         acc_write_byte(reg) &&
+         acc_write_byte(value);
+
+    stopped = acc_stop();
+
+    return ok && stopped;
+}
+
+static int acc_read_registers(
+    uint8_t reg,
+    uint8_t *data,
+    unsigned int count)
+{
+    unsigned int index;
+    int ok;
+    int stopped;
+
+    ok = acc_start() &&
+         acc_write_byte((uint8_t)(ACC_ADDRESS << 1)) &&
+         acc_write_byte(reg) &&
+         acc_start() &&
+         acc_write_byte((uint8_t)((ACC_ADDRESS << 1) | 1u));
+
+    for (index = 0u; ok && (index < count); ++index)
+    {
+        ok = acc_read_byte(&data[index], (index + 1u) < count);
+    }
+
+    stopped = acc_stop();
+
+    return ok && stopped;
+}
+
+static int acc_configure(void)
+{
+    uint8_t ctrl1;
+    uint8_t ctrl4;
+
+    /*
+     * CTRL_REG4_A:
+     * Block data update, little endian, +/-2g, high resolution.
+     *
+     * CTRL_REG1_A:
+     * 100 Hz, normal power, X/Y/Z enabled.
+     */
+    if (!acc_write_register(0x23u, 0x88u) ||
+        !acc_write_register(0x20u, 0x57u) ||
+        !acc_read_registers(0x20u, &ctrl1, 1u) ||
+        !acc_read_registers(0x23u, &ctrl4, 1u))
+    {
+        tm_printf(
+            (UB *)"ACC: no response or bus timeout at 0x19; "
+                  "check power/SDA/SCL\n");
+
+        return 0;
+    }
+
+    if ((ctrl1 != 0x57u) || (ctrl4 != 0x88u))
+    {
+        tm_printf(
+            (UB *)"ACC: config mismatch: CTRL1=0x%02x CTRL4=0x%02x\n",
+            (unsigned int)ctrl1,
+            (unsigned int)ctrl4);
+
+        return 0;
+    }
+
+    tm_printf(
+        (UB *)"ACC: responding at 0x19; "
+              "config verified, +/-2g, units=mg\n");
+
+    tk_dly_tsk(100);
+    return 1;
+}
+
+static int acc_axis_mg(uint8_t low, uint8_t high)
+{
+    unsigned int raw;
+
+    /*
+     * Signed 12-bit data, left-justified in the register pair.
+     * At +/-2g in high-resolution mode, one count is 1 mg.
+     */
+    raw = (((unsigned int)high << 8) | low) >> 4;
+
+    return (raw >= 2048u) ? ((int)raw - 4096) : (int)raw;
+}
+
+static int acc_print_sample(void)
+{
+    uint8_t data[6];
+    uint8_t status;
+
+    if (!acc_read_registers(0x27u, &status, 1u))
+    {
+        tm_printf(
+            (UB *)"ACC: status read failed; retrying setup\n");
+
+        return 0;
+    }
+
+    if ((status & 0x08u) == 0u)
+    {
+        tm_printf(
+            (UB *)"ACC: waiting for fresh XYZ data\n");
+
+        return 1;
+    }
+
+    /* Read all six XYZ bytes with address auto-increment. */
+    if (!acc_read_registers(0xA8u, data, 6u))
+    {
+        tm_printf(
+            (UB *)"ACC: XYZ read failed; retrying setup\n");
+
+        return 0;
+    }
+
+    tm_printf(
+        (UB *)"ACC: X=%d mg Y=%d mg Z=%d mg\n",
+        acc_axis_mg(data[0], data[1]),
+        acc_axis_mg(data[2], data[3]),
+        acc_axis_mg(data[4], data[5]));
+
+    return 1;
+}
+
+/* ================================================================
+ * Combined ultrasonic and accelerometer task
+ * ================================================================ */
+
+static void ultrasonic_task(INT stacd, void *exinf)
+{
+    int acc_ready;
+
+    (void)stacd;
+    (void)exinf;
+
+    tm_printf(
+        (UB *)"US: test started, TRIG=GP4 ECHO=GP5\n");
+
+    tk_dly_tsk(500);
+
+    gpio_set_val(ACC_SDA_PIN, 0u);
+    gpio_set_val(ACC_SCL_PIN, 0u);
+
+    acc_release(ACC_SDA_PIN);
+    acc_release(ACC_SCL_PIN);
+
+    tm_printf(
+        (UB *)"ACC: test started, "
+              "SDA=GP2 SCL=GP3 (software I2C)\n");
+
+    acc_ready = acc_configure();
+
+    for (;;)
+    {
+        uint32_t start;
+        uint32_t pulse_us;
+        uint32_t distance_mm;
+
+        if (!us_wait_level(0u))
+        {
+            tm_printf((UB *)"US: ECHO stuck HIGH\n");
+        }
+        else
+        {
+            gpio_set_val(US_TRIG_PIN, 0u);
+            us_delay(2u);
+
+            gpio_set_val(US_TRIG_PIN, 1u);
+            us_delay(10u);
+            gpio_set_val(US_TRIG_PIN, 0u);
+
+            if (!us_wait_level(1u))
+            {
+                tm_printf(
+                    (UB *)"US: timeout waiting for ECHO\n");
+            }
+            else
+            {
+                start = us_now();
+
+                if (!us_wait_level(0u))
+                {
+                    tm_printf(
+                        (UB *)"US: ECHO pulse too long\n");
+                }
+                else
+                {
+                    pulse_us = (uint32_t)(us_now() - start);
+                    distance_mm = (pulse_us * 343u) / 2000u;
+
+                    tm_printf(
+                        (UB *)"US: echo=%u us, distance=%u mm\n",
+                        (unsigned int)pulse_us,
+                        (unsigned int)distance_mm);
+                }
+            }
+        }
+
+        if (!acc_ready)
+        {
+            acc_ready = acc_configure();
+        }
+        else
+        {
+            acc_ready = acc_print_sample();
+        }
+
+        tk_dly_tsk(500);
+    }
+}
+
+/* ================================================================
+ * SG90 servo test: GP12, PWM slice 6, channel A
+ *
+ * Timing still assumes a 125 MHz system clock.
+ * This test owns PWM slice 6.
+ * Do not use GP13, GP28 or GP29 for another PWM task simultaneously.
+ * ================================================================ */
+
+#define SERVO_PIN          (12u)
+
+#define SERVO_RESET_REG    (0x4000C000u)
+#define SERVO_RESET_DONE   (0x4000C008u)
+#define SERVO_RESET_BIT    (0x00004000u)
+
+#define SERVO_PWM_CSR      (0x40050078u)
+#define SERVO_PWM_DIV      (0x4005007Cu)
+#define SERVO_PWM_CTR      (0x40050080u)
+#define SERVO_PWM_CC       (0x40050084u)
+#define SERVO_PWM_TOP      (0x40050088u)
+
+static void servo_write_reg(uint32_t address, uint32_t value)
+{
+    *(volatile uint32_t *)(uintptr_t)address = value;
+}
+
+static void servo_test_task(INT stacd, void *exinf)
+{
+    ER err;
+    unsigned int step;
+    uint32_t reset_start;
+
+    static const uint32_t pulses_us[] =
+    {
+        1500u, 1400u, 1500u, 1600u, 1500u
+    };
+
+    (void)stacd;
+    (void)exinf;
+
+    tm_printf(
+        (UB *)"SERVO: starting GP12 test in 2 seconds\n");
+
+    tk_dly_tsk(2000);
+
+    /* Check whether PWM was held in reset. */
+    tm_printf(
+        (UB *)"SERVO: PWM reset before setup=%u\n",
+        (unsigned int)
+            ((in_w(SERVO_RESET_REG) & SERVO_RESET_BIT) != 0u));
+
+    /*
+     * Release PWM from reset.
+     * This clears its reset bit without asserting a new reset.
+     */
+    clr_w(SERVO_RESET_REG, SERVO_RESET_BIT);
+
+    reset_start = us_now();
+
+    while ((in_w(SERVO_RESET_DONE) & SERVO_RESET_BIT) == 0u)
+    {
+        if ((uint32_t)(us_now() - reset_start) >= 100000u)
+        {
+            tm_printf(
+                (UB *)"SERVO: PWM hardware readiness timeout\n");
+
+            for (;;)
+            {
+                tk_dly_tsk(1000);
+            }
+        }
+    }
+
+    tm_printf((UB *)"SERVO: PWM hardware ready\n");
+
+    err = pwm_set_pin(SERVO_PIN);
+
+    if (err < E_OK)
+    {
+        for (;;)
+        {
+            tm_printf(
+                (UB *)"SERVO: pin setup failed, error=%d\n",
+                (int)err);
+
+            tk_dly_tsk(2000);
+        }
+    }
+
+    /*
+     * Disable slice 6 while configuring it.
+     * Assuming 125 MHz:
+     * 125 MHz / 125 = 1 MHz, so one tick = 1 us.
+     * 20000 ticks per period = 50 Hz.
+     */
+    servo_write_reg(SERVO_PWM_CSR, 0u);
+    servo_write_reg(SERVO_PWM_DIV, (125u << 4));
+    servo_write_reg(SERVO_PWM_CTR, 0u);
+    servo_write_reg(SERVO_PWM_TOP, 19999u);
+    servo_write_reg(SERVO_PWM_CC, 1500u);
+    servo_write_reg(SERVO_PWM_CSR, 1u);
+
+    for (step = 0u;
+         step < (sizeof(pulses_us) / sizeof(pulses_us[0]));
+         ++step)
+    {
+        servo_write_reg(SERVO_PWM_CC, pulses_us[step]);
+
+        tm_printf(
+            (UB *)"SERVO: step %u/5, pulse=%u us\n",
+            step + 1u,
+            (unsigned int)pulses_us[step]);
+
+        tk_dly_tsk(2000);
+    }
+
+    /* Finish with the signal LOW, then disable PWM. */
+    servo_write_reg(SERVO_PWM_CC, 0u);
+    tk_dly_tsk(40);
+    servo_write_reg(SERVO_PWM_CSR, 0u);
+
+    for (;;)
+    {
+        tm_printf(
+            (UB *)"SERVO: task alive; movement test finished\n");
+
+        tk_dly_tsk(2000);
+    }
+}
+
+/* ================================================================
+ * Subsystem initialization and task startup
+ * ================================================================ */
+
+EXPORT ER subsystem5_init(void)
+{
+    ER err;
+
+    err = gpio_set_pin(US_TRIG_PIN, GPIO_MODE_OUT);
+
+    if (err < E_OK)
+    {
+        return err;
+    }
+
+    err = gpio_set_val(US_TRIG_PIN, 0u);
+
+    if (err < E_OK)
+    {
+        return err;
+    }
+
+    err = gpio_set_pin(US_ECHO_PIN, GPIO_MODE_IN);
+
+    if (err < E_OK)
+    {
+        return err;
+    }
+
+    clr_w(GPIO(US_ECHO_PIN), GPIO_PUE);
+    set_w(GPIO(US_ECHO_PIN), GPIO_PDE);
+
+    return E_OK;
+}
+
+EXPORT ER subsystem5_start(void)
+{
+    ID tid;
+
+    tid = app_start_task(
+        (FP)ultrasonic_task,
+        S5_PRI_MAIN,
+        0,
+        "ultrasonic");
+
+    if (tid < E_OK)
+    {
+        return (ER)tid;
+    }
+
+    tid = app_start_task(
+        (FP)servo_test_task,
+        S5_PRI_MAIN + 1,
+        0,
+        "servo_test");
+
+    if (tid < E_OK)
+    {
+        tm_printf(
+            (UB *)"SERVO: task creation failed, error=%d\n",
+            (int)tid);
+
+        return (ER)tid;
+    }
+
+    return E_OK;
+}

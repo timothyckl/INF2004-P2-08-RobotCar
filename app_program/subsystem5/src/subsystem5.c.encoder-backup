@@ -1,0 +1,123 @@
+#include "../include/subsystem5.h"
+
+#define LEFT_ENC_A   7u
+#define LEFT_ENC_B   28u
+#define RIGHT_ENC_A  0u
+#define RIGHT_ENC_B  1u
+
+static void encoder_test_task(INT stacd, void *exinf)
+{
+    UINT left_a, left_b, right_a, right_b;
+    UINT prev_left_a, prev_left_b;
+    UINT prev_right_a, prev_right_b;
+
+    unsigned int left_a_edges = 0u;
+    unsigned int left_b_edges = 0u;
+    unsigned int right_a_edges = 0u;
+    unsigned int right_b_edges = 0u;
+    unsigned int samples = 0u;
+
+    (void)stacd;
+    (void)exinf;
+
+    prev_left_a  = gpio_get_val(LEFT_ENC_A);
+    prev_left_b  = gpio_get_val(LEFT_ENC_B);
+    prev_right_a = gpio_get_val(RIGHT_ENC_A);
+    prev_right_b = gpio_get_val(RIGHT_ENC_B);
+
+    tm_printf((UB*)"ENC: gently turn one wheel at a time\n");
+
+    for (;;) {
+        left_a  = gpio_get_val(LEFT_ENC_A);
+        left_b  = gpio_get_val(LEFT_ENC_B);
+        right_a = gpio_get_val(RIGHT_ENC_A);
+        right_b = gpio_get_val(RIGHT_ENC_B);
+
+        if (left_a != prev_left_a) {
+            ++left_a_edges;
+        }
+        if (left_b != prev_left_b) {
+            ++left_b_edges;
+        }
+        if (right_a != prev_right_a) {
+            ++right_a_edges;
+        }
+        if (right_b != prev_right_b) {
+            ++right_b_edges;
+        }
+
+        prev_left_a  = left_a;
+        prev_left_b  = left_b;
+        prev_right_a = right_a;
+        prev_right_b = right_b;
+
+        ++samples;
+
+        if (samples >= 500u) {
+            tm_printf(
+                (UB*)"ENC LEFT: A=%u B=%u edges A=%u B=%u\n",
+                left_a, left_b, left_a_edges, left_b_edges
+            );
+
+            tm_printf(
+                (UB*)"ENC RIGHT: A=%u B=%u edges A=%u B=%u\n",
+                right_a, right_b, right_a_edges, right_b_edges
+            );
+
+            samples = 0u;
+        }
+
+        tk_dly_tsk(1);
+    }
+}
+
+EXPORT ER subsystem5_init(void)
+{
+    static const UINT motor_pins[] = {8u, 9u, 10u, 11u};
+    static const UINT encoder_pins[] = {
+        LEFT_ENC_A, LEFT_ENC_B,
+        RIGHT_ENC_A, RIGHT_ENC_B
+    };
+
+    unsigned int i;
+    ER err;
+
+    /*
+     * Both driver inputs HIGH selects coast on Robo Pico.
+     * This allows manual wheel movement without electrical braking.
+     */
+    for (i = 0u; i < 4u; ++i) {
+        err = gpio_set_val(motor_pins[i], 1u);
+        if (err < E_OK) {
+            return err;
+        }
+
+        err = gpio_set_pin(motor_pins[i], GPIO_MODE_OUT);
+        if (err < E_OK) {
+            return err;
+        }
+    }
+
+    for (i = 0u; i < 4u; ++i) {
+        err = gpio_set_pin(encoder_pins[i], GPIO_MODE_IN);
+        if (err < E_OK) {
+            return err;
+        }
+    }
+
+    return E_OK;
+}
+
+EXPORT ER subsystem5_start(void)
+{
+    ID tid;
+
+    tid = app_start_task(
+        (FP)encoder_test_task,
+        S5_PRI_MAIN,
+        0,
+        "encoder_test"
+    );
+
+    return (tid < E_OK) ? tid : E_OK;
+}
