@@ -19,7 +19,8 @@
    subsystem2_start() does not start the motion or controller task, so
    the bench sequence owns the motors. Never commit it non-zero:
      1  encoder counts every 100 ms, motors off (S2-H03)
-     2  also spins the motors (S2-H01, S2-H02, S2-H04) */
+     2  also spins the motors (S2-H01, S2-H02, S2-H04)
+     3  only the S2-H04 full-speed diagnostic (each motor, then both) */
 #ifndef S2_HW_TEST
 #define S2_HW_TEST  0
 #endif

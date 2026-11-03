@@ -13,6 +13,7 @@
  *	  1  encoder counts every 100 ms for 60 s; motors stay OFF (S2-H03)
  *	  2  also SPINS THE MOTORS (S2-H01, S2-H02, S2-H04): wheels off the
  *	     ground first
+ *	  3  only the S2-H04 full-speed diagnostic (SPINS THE MOTORS)
  */
 
 #include "subsystem2.h"
@@ -445,11 +446,45 @@ static void hw_print_counts(const char *step, INT seconds)
 }
 
 #if S2_HW_TEST >= 2
+/* S2-H04, split up to find where the full-speed freeze happens: each
+   motor alone at 100%, then both, printing every 100 ms so the log
+   shows the last moment the CPU was alive.  Wheels OFF THE GROUND. */
+static void hw_full_speed_step(const char *step, INT m1, INT m2, INT seconds)
+{
+	drv_encoder_snapshot_t s0, s1;
+
+	tm_printf((UB*)"[HW] %s: m1 %d%% m2 %d%% for %d s\n", step,
+		  m1, m2, seconds);
+	(void)drv_encoder_snapshot(&s0);
+	(void)drv_motor_set(DRV_MOTOR_1, (DRV_MOTOR_DUTY_MAX * m1) / 100);
+	(void)drv_motor_set(DRV_MOTOR_2, (DRV_MOTOR_DUTY_MAX * m2) / 100);
+	hw_print_counts(step, seconds);
+	(void)drv_encoder_snapshot(&s1);
+	(void)drv_motor_brake(DRV_MOTOR_1);
+	(void)drv_motor_brake(DRV_MOTOR_2);
+	tm_printf((UB*)"[HW] %s done: counts/s enc1 %d enc2 %d, new errors %d %d\n",
+		  step,
+		  (INT)(odom_count_delta(s1.count[0], s0.count[0]) / seconds),
+		  (INT)(odom_count_delta(s1.count[1], s0.count[1]) / seconds),
+		  (INT)(s1.errors[0] - s0.errors[0]),
+		  (INT)(s1.errors[1] - s0.errors[1]));
+	hw_print_counts("S2-H04 braked", 2);
+}
+
+static void hw_full_speed(void)
+{
+	hw_full_speed_step("S2-H04a motor 1 only", 100, 0, 3);
+	hw_full_speed_step("S2-H04b motor 2 only", 0, 100, 3);
+	hw_full_speed_step("S2-H04c both", 100, 100, 5);
+	tm_printf((UB*)"[HW] S2-H04 finished, all motors braked\n");
+}
+#endif /* S2_HW_TEST >= 2 */
+
+#if S2_HW_TEST == 2
 /* S2-H01, S2-H02, S2-H04.  Wheels OFF THE GROUND. */
 static void hw_motor_sequence(void)
 {
 	const int32_t duty30 = (DRV_MOTOR_DUTY_MAX * 3) / 10;
-	drv_encoder_snapshot_t s0, s1;
 	UINT m;
 
 	for (m = 0u; m < (UINT)DRV_MOTOR_COUNT; m++) {
@@ -467,21 +502,9 @@ static void hw_motor_sequence(void)
 		hw_print_counts("S2-H02 coast", 3);
 	}
 
-	tm_printf((UB*)"[HW] S2-H04 both motors 100%% for 10 s\n");
-	(void)drv_encoder_snapshot(&s0);
-	(void)drv_motor_set(DRV_MOTOR_1, DRV_MOTOR_DUTY_MAX);
-	(void)drv_motor_set(DRV_MOTOR_2, DRV_MOTOR_DUTY_MAX);
-	tk_dly_tsk(10000);
-	(void)drv_encoder_snapshot(&s1);
-	(void)drv_motor_brake(DRV_MOTOR_1);
-	(void)drv_motor_brake(DRV_MOTOR_2);
-	tm_printf((UB*)"[HW] S2-H04 counts/s enc1 %d enc2 %d, new errors %d %d\n",
-		  (INT)(odom_count_delta(s1.count[0], s0.count[0]) / 10),
-		  (INT)(odom_count_delta(s1.count[1], s0.count[1]) / 10),
-		  (INT)(s1.errors[0] - s0.errors[0]),
-		  (INT)(s1.errors[1] - s0.errors[1]));
+	hw_full_speed();
 }
-#endif /* S2_HW_TEST >= 2 */
+#endif /* S2_HW_TEST == 2 */
 
 static void hw_test(void)
 {
@@ -489,6 +512,12 @@ static void hw_test(void)
 	CHECK(drv_motor_init(), "drv_motor_init");	/* starts braked */
 	CHECK(drv_encoder_init(), "drv_encoder_init");
 
+#if S2_HW_TEST == 3
+	/* Full-speed diagnostic only: skip the hand and 30% steps. */
+	tm_printf((UB*)"[HW] S2-H04 starts in 5 s: wheels OFF THE GROUND\n");
+	hw_print_counts("S2-H04 wait", 5);
+	hw_full_speed();
+#else
 	/* S2-H03: motors coast so the wheels turn freely by hand */
 	(void)drv_motor_coast(DRV_MOTOR_1);
 	(void)drv_motor_coast(DRV_MOTOR_2);
@@ -499,6 +528,7 @@ static void hw_test(void)
 
 #if S2_HW_TEST >= 2
 	hw_motor_sequence();
+#endif
 #endif
 }
 #endif /* S2_HW_TEST */
