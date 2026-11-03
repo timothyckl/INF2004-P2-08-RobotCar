@@ -51,12 +51,12 @@ and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
-The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2;
-this table still reflects the starter. Reconcile that wiring with the actual
-board and datasheets before configuring hardware. In particular, the planned
-IMU uses GP0/GP1 (conflicts with UART crash reporting), and the encoders use
-GP26–GP28 (conflicts with the sample ADC driver). No hardware configuration
-has been changed here.
+The original proposed wiring is in `docs/AAI08_Design_Review.pdf` section 2.
+The confirmed replacement wiring is recorded in `updatedmapping.md` and below.
+Reconcile each claim with the actual board and datasheets before configuring
+hardware. GP0/GP1 now belong to the right encoder, so UART0 and its crash-report
+mirror remain prohibited. The kernel ADC driver is enabled, but its RP2040 pin
+initialization remains disabled on GP26–GP28 so it does not take those pins.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -67,32 +67,32 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP2 | | |
-| GP3 | | |
-| GP4 | | |
-| GP5 | | |
-| GP6 | | |
-| GP7 | | |
-| GP8 | | |
-| GP9 | | |
-| GP10 | | |
-| GP11 | | |
-| GP12 | | |
+| GP0 | S2 | right encoder A; `CRASH_REPORT=1` is prohibited |
+| GP1 | S2 | right encoder B; `CRASH_REPORT=1` is prohibited |
+| GP2 | S4 | LSM303DLHC SDA (I2C1) |
+| GP3 | S4 | LSM303DLHC SCL (I2C1) |
+| GP4 | S5 | HC-SR04 TRIG |
+| GP5 | S5 | HC-SR04 ECHO; input level must not exceed Pico limits |
+| GP6 | S3 | front-right line sensor DO |
+| GP7 | S2 | left encoder A |
+| GP8 | S2 | right motor forward PWM |
+| GP9 | S2 | right motor backward PWM |
+| GP10 | S2 | left motor backward PWM |
+| GP11 | S2 | left motor forward PWM |
+| GP12 | S5 | SG90 servo PWM |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | | |
-| GP17 | | |
+| GP16 | S3 | front-left line sensor DO; demo liveness LED must not use this pin |
+| GP17 | S3 | front-left line sensor AO; connected but not used by digital logic; not ADC-capable |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
 | GP20 | | |
 | GP21 | | |
 | GP22 | | |
-| GP26 | | (ADC0 capable) |
-| GP27 | | (ADC1 capable) |
-| GP28 | | (ADC2 capable) |
+| GP26 | S3 | side barcode sensor DO; digital input (ADC0-capable pin) |
+| GP27 | S3 | side barcode sensor AO; connected but unused (ADC1-capable pin) |
+| GP28 | S2 | left encoder B; keep the battery-sense jumper open |
 
 ## 3. Peripherals
 
@@ -105,8 +105,8 @@ fixed.
 | **Peripheral** | one hardware block on the RP2040 | I2C0, UART1, the ADC |
 
 A driver is **not** a subsystem. It is code *inside* the subsystem that
-needs that hardware: the "environment sensing" subsystem contains the I2C
-sensor code, and owns I2C0. Write it as `drv_<name>.c` / `drv_<name>.h` in
+needs that hardware: Subsystem 4 contains the IMU sensor code and owns I2C1.
+Write it as `drv_<name>.c` / `drv_<name>.h` in
 that subsystem's folder, never under `device/`, and call it only from the
 peripheral's owning task. The kernel's own drivers in `device/` (serial,
 I2C, ADC) may be used instead; switching one on in `config/config_device.h`
@@ -125,12 +125,14 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | |
-| I2C1 | | | |
+| I2C0 | | | not initialized by the current Pico W startup |
+| I2C1 | S4 | `s4_imu_task` | GP2 / GP3 |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | GP26–GP28 |
-| PWM slices (list) | | | |
+| ADC | | no application owner | RP2040 ADC pin initialization disabled; GP27 AO is currently unused |
+| PWM slice 4 | S2 | Motion Control task | GP8 / GP9 |
+| PWM slice 5 | S2 | Motion Control task | GP10 / GP11 |
+| PWM slice 6 channel A | S5 | Obstacle Scan task | GP12 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -173,7 +175,7 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 | 1 | 12–13 | *example:* led_task – 12 – any |
 | 2 | 14–15 | *example:* producer_task – 14 – core 1 |
 | 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
-| 4 | 18–19 | *example:* monitor_task – 18 – any |
+| 4 | 18–19 | `s4_imu_task` – 18 – any |
 | 5 | 20–21 | |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
@@ -207,11 +209,11 @@ limit there. The numbers below are the example's usage.
 | Semaphore | 16 | | 1 | | | |
 | Event flag | 16 | | | | 1 | |
 | Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | | 1 | | |
+| Mutex | 12 | | | 1 | 1 | |
 | Message buffer | 12 | | | | 1 | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
 | Cyclic handler | 12 | 1 | | | | |
-| Alarm handler | 12 | | | | 1 | |
+| Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)
