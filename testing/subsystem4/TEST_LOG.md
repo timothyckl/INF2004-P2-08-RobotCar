@@ -105,3 +105,16 @@ Results are append-only. Do not record synthetic tests as physical validation.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
+
+## Integration additions (2026-11-03, feature/full-system-integration)
+
+Test IDs never change. Host runs (`make -C testing/host`) use synthetic input
+on a computer; they are not on-target or hardware results.
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| S4-U23 | encoder distance into terrain: alignment, run change, invalid cases | IF-15, FR5 | auto (host) | `testing/subsystem4/test_odometry.c` | 12 checks pass |
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-03 | S4-U23 | `ebb59a5` | host (gcc) | PASS (12/12) | `../integration/logs/2026-11-03_host-suites.txt` | host only; S4-U03..U22 remain on-target only |

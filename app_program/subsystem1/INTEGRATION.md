@@ -1,7 +1,9 @@
 # Subsystem 1 integration contract
 
-Status: implementation-ready boundary; final MQTT and cross-subsystem values
-remain unapproved. This document records proposals and review questions. It is
+Status (2026-11-03): connected. The adapter sequence below is implemented in
+`mqtt_service.c` and `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`, with
+subsystem 2's adapters. Final MQTT and cross-subsystem values remain
+unapproved. This document records proposals and review questions. It is
 not an agreed decision and must not be copied into `docs/decisions.md` until
 the named owners agree.
 

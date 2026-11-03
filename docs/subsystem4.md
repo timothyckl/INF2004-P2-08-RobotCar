@@ -1,6 +1,6 @@
 # Subsystem 4: IMU terrain sensing
 
-Subsystem 4 is a standalone LSM303DLHC accelerometer service for the Pico W.
+Subsystem 4 is the LSM303DLHC accelerometer service for the Pico W.
 It performs startup identity/configuration checks, stationary calibration,
 terrain state processing, candidate impact detection, bounded fault recovery,
 and mutex-protected status publication. It does not command the motors or
@@ -78,10 +78,12 @@ missing distance during the active ascent invalidates the height. Valid hump
 heights update a run maximum; local sensor recovery retains it, while an
 explicit new-run reset clears it.
 
-The standalone task intentionally injects no distance because encoder ownership
-belongs to Motion Control. It can detect a hump, but its height and maximum
-remain invalid until an agreed integration interface supplies timestamp-aligned
-distance increments.
+Encoder ownership stays with Motion Control. Each IMU sample takes the forward
+distance since the previous Motion Control status (`s4_odometry.c`,
+`s2_distance_delta()`), used only when that status was captured within 20 ms
+of the sample. A `run_id` change (the controller's NEW_RUN at START) resets
+the run maximum. Without a valid aligned distance the height stays invalid.
+Heights are provisional estimates until compared with measured humps.
 
 ## Builds and tests
 
@@ -123,8 +125,8 @@ evidence table are in `testing/subsystem4/TEST_LOG.md`.
   wrap-safe only for intervals shorter than one full wrap period.
 - Runtime thresholds are fixed provisional constants. Calibration evidence and
   agreed acceptance criteria are required before final tuning.
-- Integration still needs a controller-owned run/reset contract, an
-  encoder-distance interface from Motion Control, and agreed event delivery.
-- The legacy S3 message buffer and event flag are still created so the starter
-  code builds unchanged. Subsystem 4 does not consume them; remove them only in
-  a coordinated integration change.
+- Integrated 2026-11-03: distance and the new-run reset come from Motion
+  Control (IF-15). Terrain results reach the console and
+  `subsystem4_get_status()`; the agreed telemetry codec has no terrain fields
+  yet, and the controller treats terrain as report-only.
+- The legacy S3 message buffer and event flag were removed with the starter.

@@ -28,3 +28,18 @@ Add a new row for every run. Never edit or delete old rows.
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
 | YYYY-MM-DD | INT-01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
+
+## Integration additions (2026-11-03)
+
+INT-01 and INT-02 are retired with the starter interfaces IF-01 to IF-05.
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| INT-03 | Line Sensor publishes IF-06 every 10 ms | IF-06 | auto | `subsystem3_test.c` (TEST=1) | ≥80 samples per second, latest ≤50 ms old |
+| INT-04 | line following end to end | IF-06, D1 | manual | robot on a straight then curved line | follows; STOP stops within 20 ms of the flag |
+| INT-05 | barcode turn at the junction | IF-06, IF-07 | manual | each command A..D | correct manoeuvre once |
+| INT-06 | obstacle scan, bypass and reacquire | IF-11..IF-14 | manual | known obstacle on the line | bypasses and resumes; faults safely when blocked |
+| INT-07 | MQTT commands and telemetry | IF-08..IF-10 | manual | broker on the LAN | as S1-H01..H03 |
+| INT-08 | hump distance into S4 | IF-15 | manual | ramp of known height | height valid, compared with measurement |
+
+No on-target or hardware integration run has been recorded yet.

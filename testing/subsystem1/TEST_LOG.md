@@ -57,3 +57,21 @@ Reproduce the host run with `run_host.ps1` as documented in
 The new bridge and the existing logic modules also pass ARM GCC 10.3.1
 syntax checking for Cortex-M0+ with strict C99 warnings. No full firmware,
 Pico W, broker, RTOS concurrency or physical STOP timing was exercised.
+
+## Integration additions (2026-11-03, feature/full-system-integration)
+
+Test IDs never change. Host runs (`make -C testing/host`) use synthetic input
+on a computer; they are not on-target or hardware results.
+
+Retired with the starter LED / IF-05 compatibility task: S1-U01, S1-U02,
+S1-U03.
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| S1-H01 | MQTT START/STOP/RESET reach the controller | IF-08, IF-09 | manual | `NET=lwip MQTT=1`; publish to the command topic | STOP latches; START only from Ready |
+| S1-H02 | telemetry published every second | IF-10 | manual | subscribe to the telemetry topic | 8-byte frames, 1 s apart |
+| S1-H03 | WiFi/broker loss does not move the robot | safety | manual | drop WiFi while stopped and while running | no START; STOP still works |
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-03 | S1-U04..U07 | `ebb59a5` | host (gcc) | PASS | `../integration/logs/2026-11-03_host-suites.txt` | host only |

@@ -1,9 +1,12 @@
 # Buddy 1: independent communication logic
 
 These modules are a first implementation for isolated testing. They do not
-start networking or create controller objects. The old GP19 LED activity is
-disabled; a sleeping compatibility task remains temporarily because subsystem
-4 still refers to starter interface IF-05. The existing subsystem 1 self-test
+start networking or create controller objects. **Integration status
+(2026-11-03):** `mqtt_service.c` now owns the one bridge instance and is called
+from the WiFi service task's MQTT client (`mqtt_utk.c`): commands go to the
+controller through subsystem 2's adapters, telemetry is published every
+second. The IF-05 compatibility task was retired. Broker tests are pending
+(S1-H01..H03). The existing subsystem 1 self-test
 also runs four communication logic groups when built with `TEST=1`.
 
 The service-task integration boundary and the exact questions for Buddy 2,

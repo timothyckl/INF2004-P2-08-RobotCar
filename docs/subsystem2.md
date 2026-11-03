@@ -77,7 +77,6 @@ wheel's encoder. `motion_config.h` now follows the pin mapping.
 |---|---|---|---|
 | controller | 14 | 1 | waits on `controller_flags`, watchdog 10 ms |
 | motion | 15 | 1 | 10 ms cyclic handler, plus an immediate wake-up on STOP |
-| producer_task (starter) | 15 | 1 | 300 ms, kept until subsystem 3 stops using it |
 
 The kernel tick is 10 ms (`CNF_TIMER_PERIOD`), so 10 ms and 20 ms are the
 only exact periods. 10 ms halves the worst-case STOP latency and gives
@@ -129,9 +128,13 @@ States: Initialising, Ready, Running, Stopped, Fault.
   confirmed still.
 - Remote START/RESET older than 2 s are EXPIRED; a repeated request ID is a
   DUPLICATE. Nothing else (including WiFi reconnection) clears STOP.
-- Running holds the demo script (forward 500 mm, left 90 deg, forward 500 mm)
-  when `S2_DEMO_SCRIPT` is 1. Line following, barcode manoeuvre, scan and plan,
-  bypass and line reacquisition are marked TODO in `run_step()`.
+- Running runs the mission substates (`controller_logic.h`): FOLLOW (a leased
+  `motion_drive()` renewed every cycle from S3's IF-06 steering), NAVIGATE
+  (barcode turns, once per `nav_id`), SCAN (HAZARD stops the wheels and asks
+  S5 to scan), BYPASS (S5's plan segments) and REACQUIRE (bounded search,
+  align, heading check). START in mission mode also needs a fresh valid line.
+  The Week 10 demo script still runs instead when `S2_DEMO_SCRIPT` is 1.
+  Tuning is in `controller_config.h`; see `docs/integration.md`.
 
 ## Motion API (`motion_api.h`)
 
@@ -166,7 +169,7 @@ Controller task only. Results appear in `motion_get_status()`.
 | Option | File | Default | Effect |
 |---|---|---|---|
 | `S2_HW_TEST` | `task_motion.h` | 0 | 1: encoder print, motors off; 2: also spins motors; 3: S2-H04 full-speed diagnostic only; 4: S2-H05 watchdog check. Tasks not started. Never commit non-zero |
-| `S2_DEMO_SCRIPT` | `task_controller.h` | 1 | Running performs the demo script |
+| `S2_DEMO_SCRIPT` | `task_controller.h` | 0 | 1: Running performs the demo script instead of the mission |
 | `S2_DEMO_AUTOSTART` | `task_controller.h` | 0 | Local START 5 s after Ready. The robot moves by itself |
 | `S2_DEMO_LOG` | `task_controller.h` | 0 | Console status and STOP latency every 500 ms |
 
@@ -189,28 +192,15 @@ controller's init (3 s) and result (20 s) limits. The tables in
 
 ## Removing the starter
 
-The starter producer (IF-01, IF-02) is still built and started. Removing it
-breaks:
-
-- `app_program/subsystem3/task_consumer.c` (Edmund's branch and main): it
-  includes `subsystem2.h` for `SAMPLE_MSG`, waits on `mbx_samples`, and
-  returns blocks with `tk_rel_mpf(mpf_samples, ...)` and
-  `tk_sig_sem(sem_slots, 1)`. It would no longer link.
-- `app_program/subsystem4/task_monitor.c` on main and on the S1 and S5
-  branches reads `sem_slots` / `mpf_samples` with `tk_ref_sem` /
-  `tk_ref_mpf`. Khang's branch has already removed this.
-- `subsystem2_test.c` S2-U01/S2-U02 (mine; delete with the producer).
-- `app_main.c` comments describing IF-01/IF-02 (shared file).
-
-Edmund needs to delete `task_consumer.c` and its `mbx_samples` mailbox
-creation and start-up from `subsystem3.c`/`subsystem3.h`, or replace them with
-his real line-sensor task, in the same merge that removes the producer from
-subsystem 2. TEAM.md section 5 then drops IF-01 and IF-02.
+Done on 2026-11-03 (`feature/full-system-integration`): the producer, its
+semaphore and memory pool, S2-U01/S2-U02 and IF-01/IF-02 were removed in the
+same change that replaced subsystem 3's consumer with its Line Sensor task.
 
 ## Known limitations
 
 - S2-U01 to S2-U53 passed on the Pico W (2026-11-02, `806cd45`); S2-U54 to
-  S2-U56 and the watchdog and ramp have not run on the robot yet.
+  S2-U66, the watchdog, the ramp, the speed lease and the mission substates
+  have not run on the robot yet (S2-U20..U66 logic passes on the host).
 - **S2-H04 is open:** the CPU hung with both motors at 100%. The ramp and the
   watchdog limit the risk but the cause is not diagnosed; run S2-H04
   (`S2_HW_TEST` 3) and S2-H05 (4) next.

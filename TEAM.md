@@ -4,11 +4,11 @@ Group **P2-8**. Ownership below comes from `docs/AAI08_Design_Review.pdf`
 and `docs/AAI08_PostTri1.pdf`. The latter records subsequent design decisions
 and outstanding validation.
 
-Some starter examples still run beside the subsystem implementations. Pin,
-task, interface and object entries marked *example* describe that starter code,
-not the planned robot subsystems. Update them as each implementation replaces
-the example. Keep this file current so five people can work in one firmware
-image without resource conflicts.
+The starter examples have been retired; every entry below describes the
+integrated robot firmware (branch `feature/full-system-integration`). Keep
+this file current so five people can work in one firmware image without
+resource conflicts. Software integration is not hardware validation:
+`docs/integration.md` lists what still has to be shown on the robot.
 
 A **subsystem** is one student's part of the product, with its own folder.
 It may contain several tasks and own several peripherals (see section 3).
@@ -131,14 +131,15 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | not initialised by the current Pico W startup |
+| I2C0 | | | not initialised; placeholder pins GP20/GP21 are never configured (`i2c_cnf_sysdep.h` refuses claimed pins) |
 | I2C1 | S4 | `s4_imu_task` | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | no application owner | RP2040 ADC pin initialisation disabled; GP26 is S3's barcode DO (digital), GP27 S3's barcode AO (unused), GP28 an S2 encoder input |
 | PWM slice 4 | S2 | Motion Control task (`motion`) | GP8 / GP9 |
 | PWM slice 5 | S2 | Motion Control task (`motion`) | GP10 / GP11 |
-| PWM slice 6 channel A | S5 | Obstacle Scan (task not yet created) | GP12 |
+| PWM slice 6 channel A | S5 | Obstacle Scan task (`obstacle_scan`) | GP12 |
+| GPIO edge interrupt (IO_IRQ_BANK0) | S2 dispatcher (`drv_gpio_irq`) | callbacks per pin: S2 encoders (GP7, GP0), S3 barcode (GP26), S5 ECHO (GP5) | one callback per pin |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -159,30 +160,34 @@ What students *can* do:
 - **Send or receive data over the network** by adding code that *runs
   inside the service task*. The MQTT client is in
   `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`. It publishes a heartbeat
-  today. A "cloud / reporting" subsystem would add a kernel object
-  (e.g. a message buffer) that application tasks fill. The MQTT code then
-  reads it with `TMO_POL` (never blocking) and publishes it.
-  Because this changes shared library code, **agree it with the team and
-  the instructor first**, and record it as an interface in section 5.
-  It needs the `NET=lwip MQTT=1` build (README section 3).
+  and calls subsystem 1's hooks (`app_program/subsystem1/mqtt_service.c`):
+  commands from the command topic go to the controller through subsystem
+  2's non-blocking adapters, and a telemetry snapshot is published every
+  second (IF-08 to IF-10 below). This shared-library change was made at the
+  integration owner's direction (`docs/decisions.md`); further changes
+  still need **team and instructor agreement**. It needs the
+  `NET=lwip MQTT=1` build (README section 3).
 
 ## 4. Task priorities
 
 1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
 change it only by team agreement. Write down every task you create.
 
-The table below is the starter's allocation, not the robot's final priorities.
 The design orders application work as Vehicle Controller, Motion Control,
-Obstacle Scan, Line Sensor, IMU/Terrain, then Wireless Comms. Numeric priorities
-and affinities remain to be reconciled with this port's kernel service tasks.
+Obstacle Scan, Line Sensor, IMU/Terrain, then Wireless Comms. The bands keep
+the starter's order, so Obstacle Scan (20) runs below Line Sensor (16): a
+known deviation, acceptable because ECHO edges are timestamped in the
+interrupt, not by the task (`docs/integration.md`). Wireless Comms runs in
+the kernel's WiFi task (4), above all application tasks; its hooks never
+wait.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 12–13 | led_task – 12 – any (sleeping IF-05 compatibility stub, no GPIO) |
-| 2 | 14–15 | `controller` – 14 – core 1; `motion` – 15 – core 1; *example:* producer_task – 15 – core 1 |
-| 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
-| 4 | 18–19 | `s4_imu_task` – 18 – any |
-| 5 | 20–21 | none yet: the scan engine has no task (`scan_lifecycle.c`) |
+| 1 | 12–13 | none: runs in the kernel WiFi task `cyw43_utk_task` |
+| 2 | 14–15 | `controller` – 14 – core 1; `motion` – 15 – core 1 (10 ms cyclic) |
+| 3 | 16–17 | `line_sensor` – 16 – core 0 (10 ms cyclic) |
+| 4 | 18–19 | `s4_imu_task` – 18 – any (10 ms delay loop) |
+| 5 | 20–21 | `obstacle_scan` – 20 – any (10 ms cyclic) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
@@ -194,29 +199,21 @@ sends to it or waits on it. Agree on the data format before coding.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
-| IF-01 | S2 → S3 | mailbox (owned by S3) | `mbx_samples` | `SAMPLE_MSG` in `subsystem2.h` | *example* |
-| IF-02 | S3 → S2 | semaphore + fixed memory pool (owned by S2) | `sem_slots`, `mpf_samples` | receiver returns the block, then 1 slot | *example* |
-| IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
-| IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
-| IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
-| IF-06 | | | | | |
+| IF-01 to IF-05 | | starter examples | | retired 2026-11-03 with the starter tasks | — |
+| IF-06 | S3 → S2 | snapshot under S3's mutex, read with `TMO_POL` | `s3_line_get()` | `s3_line_status_t` (`subsystem3.h`): steering, line, flags, event counters, `nav_cmd` + `nav_id` | integration owner; S3/S2 review pending |
+| IF-07 | S2 → S3 | robot_state flag + latched STOP | `s2_get_robot_state()`, `safety_flags` | `S2_RS_NAV_AUTHORISED` (FOLLOW only); STOP discards staged barcode commands | integration owner; review pending |
+| IF-08 | S1 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_REMOTE_STOP` via `controller_raise_remote_stop()` | S2 proposal; S1 review pending |
+| IF-09 | S1 → S2 | message buffer (owned by S2) | `remote_q` | `s2_remote_cmd_t` START/RESET via `controller_send_remote_command()` | S2 proposal; S1 review pending |
+| IF-10 | S2 → S1 | snapshot under state_mutex (`TMO_POL`) | `robot_read_telemetry()` | provisional 8-byte codec (`telemetry_encoder.h`) | S1 proposal; review pending |
+| IF-11 | S2 → S5 | message buffer (owned by S2) | `scan_q` | `s2_scan_cmd_t`: REQUEST, AUTHORISE, STOP_CONFIRM, CANCEL, STOP | S2 proposal; S5 review pending |
+| IF-12 | S5 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_HAZARD`, `CTRL_FLG_SCAN_FAULT` | S2 proposal; S5 review pending |
+| IF-13 | S5 → S2 | snapshot under S5's mutex (`TMO_POL`) | `scan_task_get()` | `scan_task_status_t`: forward verdict, result, `bypass_plan_t` | integration owner; review pending |
+| IF-14 | S2 → S5 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE | integration owner; review pending |
+| IF-15 | S2 → S4 | status under motion mutex | `motion_get_status()` + `s2_distance_delta()` | forward distance per IMU sample; `run_id` change = new run | S2 proposal; S4 review pending |
+| IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
 
-Status after merging all five subsystems (2026-11-03):
-
-- IF-01, IF-02: still active between subsystem 2's legacy producer and
-  subsystem 3's starter consumer; INT-01 remains in `subsystem3_test.c`.
-- IF-03: subsystem 4 still creates `mbf_summary` and `flg_events`, and the
-  consumer still sends with `TMO_POL`, but no task receives them since
-  subsystem 4 replaced its monitor. INT-02's check was removed with it.
-- IF-04, IF-05: no longer used; subsystem 4 neither reads `app_stats` nor
-  controls `tid_led`. Subsystem 1 still runs a sleeping `led_task` for IF-05,
-  but no other subsystem references `tid_led` now.
-- Robot interfaces are still proposals, not agreements: subsystem 2's
-  `subsystem2.h` and `docs/subsystem2.md` (`controller_flags`, `safety_flags`,
-  `remote_q`, scan and navigation messages, the subsystem 1 adapter),
-  subsystem 1's `PROPOSAL.md` and `INTEGRATION.md`, and subsystem 5's scan
-  engine ports. None is connected between subsystems yet. Record each here as
-  IF-06 onward once both owners agree.
+The controller logic copies the IF-06 and IF-13 constants it uses; a
+mismatch fails the build (`task_controller.c`).
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -226,19 +223,19 @@ Each interface is tested by at least one integration test
 Limits are set in `config/config.h`. If the team needs more, raise the
 limit there. The numbers below are counted from the integrated code for the
 normal build; `TEST=1` adds one subsystem 2 event flag and message buffer.
-Kernel driver objects are not included.
+Kernel driver objects (I2C, ADC, serial) are not included.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | 1 | 3 | 1 | 1 | |
-| Semaphore | 16 | | 1 | | | |
-| Event flag | 16 | | 2 | | 1 | |
-| Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | 2 | 1 | 1 | |
-| Message buffer | 12 | | 2 | | 1 | |
-| Fixed memory pool | 12 | | 1 | | | |
+| Task | 32 | | 2 | 1 | 1 | 1 |
+| Semaphore | 16 | | | | | |
+| Event flag | 16 | | 2 | | | |
+| Mailbox | 12 | | | | | |
+| Mutex | 12 | | 2 | 1 | 1 | 1 |
+| Message buffer | 12 | | 3 | | | |
+| Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | 1 | | | |
+| Cyclic handler | 12 | | 1 | 1 | | 1 |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

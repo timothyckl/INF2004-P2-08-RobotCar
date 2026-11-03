@@ -10,8 +10,9 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
   records later decisions and open validation. Use the later decisions where
   they revise the initial design. `TEAM.md` maps members to subsystem folders.
 - `docs/decisions.md` records agreed resolutions to tribunal gaps and implementation issues (currently subsystem 5). All members must record new agreed decisions there, labelled by subsystem—not unresolved proposals.
-- Distinguish planned robot behaviour from the starter examples still in the
-  firmware. Do not present proposed timing, data widths or test criteria as
+- The starter examples have been retired; `docs/integration.md` records the
+  integrated architecture and what remains unvalidated. Do not present
+  proposed timing, data widths, calibration values or test criteria as
   validated results.
 - The Vehicle Controller authorises movement/recovery; only Motion Control
   writes motor PWM. Preserve latched STOP and stop-before-scan. Network APIs
@@ -89,9 +90,9 @@ per-pin ownership claims and must match it; change both together.
 Configuration constraints:
 
 - Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
-  carry the right encoder. The `#error` guard in `config/config_device.h` does
-  not currently enforce this (`BOARD_UART0_FREE` is always defined), so check
-  the build options.
+  carry the right encoder. The makefile refuses `CRASH_REPORT=1` and
+  `CONSOLE=uart`, and `kernel/sysdepend/pico_rp2040/hw_setting.c` and
+  `config/config_device.h` fail to compile if UART0 would claim the pins.
 - Disable or reassign the demo liveness LED from GP16.
 - Keep RP2040 ADC pin initialisation disabled on GP26 to GP28: GP26 is the
   barcode sensor's digital output and GP28 carries the left encoder. GP17 and

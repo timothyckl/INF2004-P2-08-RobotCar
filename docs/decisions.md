@@ -193,3 +193,51 @@ module_run (void)
 
 /* End of file. */
 ```
+
+## Integration — all subsystems (integration owner: Dalton)
+
+Agreed in the Phase 3 integration brief of 2026-11-03 (decisions D1 to
+D4). Interface details built on these, and every provisional value, are in
+`docs/integration.md`; they still need review by each subsystem owner.
+
+### 1. Continuous motion for line following (D1)
+
+Motion Control keeps sole ownership of motor PWM. Line following uses its
+existing Speed command, exposed as `motion_drive(left, right)` and bounded by
+`MC_SPEED_MAX_MM_S`. Each Speed command is a lease of `MC_SPEED_LEASE_MS`: the
+Vehicle Controller renews it every cycle, and without renewal Motion Control
+brakes by itself (STOPPED, reason `MOTION_STOP_LEASE`). Latched STOP rejects it
+like every other motion command.
+
+### 2. Line Sensor to Vehicle Controller (D2, IF-06)
+
+Subsystem 3 publishes one snapshot (`s3_line_get()`, its own mutex, read
+without waiting) with steering, line state, wrapping event counters and the
+offered navigation command with a unique `nav_id`. The controller executes
+each `nav_id` at most once. Subsystem 3 offers a command only at a junction,
+while robot_state authorises navigation and STOP is clear. The side barcode
+sensor is never a line input.
+
+### 3. HC-SR04 supply (D3)
+
+The documented 3V3 wiring is kept: it holds ECHO within the Pico's input
+level, but the datasheet specifies 5 V and ranging at 3V3 is unvalidated.
+Firmware applies the agreed timeout, invalid-reading and fault rules
+(subsystem 5 decision 3) whatever the supply. Any wiring change needs team
+review first.
+
+### 4. UART0 on the encoder pins (D4)
+
+Builds that would give GP0/GP1 to UART0 are refused: the makefile rejects
+`CRASH_REPORT=1` and `CONSOLE=uart`, and `hw_setting.c` and
+`config_device.h` fail to compile if UART0 would claim the pins. I2C0, which
+is never started, has placeholder pins GP20/GP21 with a compile-time check
+against the claimed pins.
+
+### 5. Network hook in the shared MQTT client
+
+Subsystem 1's service bridge runs inside `cyw43_utk_task`, called from
+`lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c` (a shared-library change made
+at the integration owner's direction; TEAM.md section 3 still asks for
+instructor agreement). Command receipt times use the controller's clock
+(`s2_clock_ms()`). A WiFi or broker loss produces no controller input.

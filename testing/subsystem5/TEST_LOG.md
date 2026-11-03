@@ -127,3 +127,20 @@ No Pico W executions have been recorded. Build verification does not count as su
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
+
+## Integration additions (2026-11-03, feature/full-system-integration)
+
+Test IDs never change. Host runs (`make -C testing/host`) use synthetic input
+on a computer; they are not on-target or hardware results.
+
+Now executable (definitions above): S5-U19..U24, S5-U25, S5-U26, S5-U28,
+S5-U36, S5-U37. New:
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | four segments, approach, align, search within bound |
+| S5-U54 | nothing in range ahead is not an obstacle | D5 | auto | `test_planning.c` | NO_OBSTACLE, no plan |
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-03 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `ebb59a5` | host (gcc) | PASS (30/30) | `../integration/logs/2026-11-03_host-suites.txt` | host only; not on the Pico W |

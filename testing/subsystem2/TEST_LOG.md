@@ -163,3 +163,27 @@ wheel and motor 2 (GP10/GP11) on the left; encoder 1 (GP7/GP28) is left and
 encoder 2 (GP0/GP1) right. The 2026-11-02 rows above call motor 2 "right".
 The motor result stands (motor 2 needs negative duty); the encoder direction
 must be measured again.
+
+## Integration additions (2026-11-03, feature/full-system-integration)
+
+Test IDs never change. Host runs (`make -C testing/host`) use synthetic input
+on a computer; they are not on-target or hardware results.
+
+Retired with the starter producer: S2-U01, S2-U02.
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| S2-U57 | unrenewed speed command brakes | D1 speed lease | auto | `test_motion.c` | STOPPED, reason `MOTION_STOP_LEASE`, no fault |
+| S2-U58 | renewed speed holds; STOP is not a lease stop | D1 | auto | `test_motion.c` | speeds held; STOP reason 0 |
+| S2-U59 | speed command bounds | D1 | auto | `test_motion.c` | out-of-range refused, output kept |
+| S2-U60 | START needs a fresh valid line | design review, IF-06 | auto | `test_controller.c` | invalid/stale/missing line rejected |
+| S2-U61 | follow steers; stale line holds, then faults | IF-06 | auto | `test_controller.c` | drive 75/225 for +500; hold; Fault(LINE) |
+| S2-U62 | barcode command once per nav_id | IF-06, IF-07 | auto | `test_controller.c` | turns once; rejected manoeuvre faults |
+| S2-U63 | hazard: scan, plan, bypass, search, align | IF-11..IF-14 | auto | `test_controller.c` | full path back to FOLLOW, STOP never latched |
+| S2-U64 | scan outcomes | IF-11, IF-13 | auto | `test_controller.c` | CLEAR resumes; NO_ROUTE / limit faults |
+| S2-U65 | reacquisition bounds and heading | S5 decision 9 | auto | `test_controller.c` | 5 s, distance and 15° limits fault |
+| S2-U66 | STOP preempts every mission mode | latched STOP | auto | `test_controller.c` | Stopped from every mode; S5 told |
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-03 | S2-U20..U35, U41..U53, U55..U66 | `ebb59a5` | host (gcc) | PASS (41/41) | `../integration/logs/2026-11-03_host-suites.txt` | host only; also clean under UBSan |

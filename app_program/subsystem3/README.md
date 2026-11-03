@@ -1,10 +1,15 @@
 # Subsystem 3: Edmund's robot foundation
 
-This is host-tested base logic, not hardware-tested robot firmware.
-The existing consumer example is preserved because Subsystems 2 and 4 still
-depend on its mailbox/statistics interfaces. The new modules compile through
-the existing flat source wildcard, but no robot task calls them yet. No GPIO,
-interrupt, motor PWM, shared configuration or teammate code is changed.
+This is host-tested logic, not hardware-tested robot firmware.
+
+**Integration status (2026-11-03).** `task_line.c` now runs these modules on
+the robot: a 10 ms Line Sensor task reads GP16 (front left) and GP6 (front
+right) for `s3_track`, takes GP26 (side barcode) edges through subsystem 2's
+GPIO dispatcher for `s3_scan`/`s3_bar`, stages commands with `s3_nav`, and
+publishes IF-06 (`subsystem3.h`) to the Vehicle Controller. The starter
+consumer was retired. Pins, polarity and timing assumptions are in
+`s3_config.h`; geometry, polarity and the printed symbology still need the
+S3-H01..H04 checks (`docs/integration.md`).
 
 ## Modules
 
