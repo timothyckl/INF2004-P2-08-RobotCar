@@ -31,6 +31,9 @@
  *   once with zero duty. Motion commands are rejected while STOP is set.
  * - A new motion command replaces the current one only while STOP is
  *   clear. A replaced command gets no DONE.
+ * - Speed holds its wheel speeds for speed_lease_ms from the latest Speed
+ *   command; a newer Speed command renews it. Without renewal it enters
+ *   Stopping and reports STOPPED with reason MOTION_STOP_LEASE.
  * - Stopping brakes until both wheels are still for still_ms, then
  *   reports DONE (target reached) or STOPPED (stop), and returns to Idle.
  *   No confirmation within stop_limit_ms is Fault(STOP_TIMEOUT).
@@ -85,6 +88,7 @@ typedef struct
     uint32_t   enc_invalid_max; /* consecutive invalid inputs allowed */
     uint32_t   speed_window;    /* 1..MOTION_WINDOW_MAX steps */
     int32_t    duty_step_max;   /* largest |duty| increase per step, > 0 */
+    uint32_t   speed_lease_ms;  /* Speed command life without renewal, > 0 */
 } motion_cfg_t;
 
 /** Inputs sampled by the wrapper each period. */
@@ -146,6 +150,7 @@ typedef struct
 
     /* stopping */
     uint8_t        pending_type;
+    uint8_t        pending_reason;  /* 0, or MOTION_STOP_LEASE */
     uint16_t       pending_id;
     uint32_t       stop_start_us;
 

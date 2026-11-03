@@ -15,8 +15,8 @@
  * A queued command can still be rejected by Motion Control (for example
  * while STOP is latched); the result appears in motion_get_status().
  *
- * Units: mm and millidegrees. Turns are in place. Speeds come from
- * motion_config.h (UNMEASURED).
+ * Units: mm and millidegrees. Turns are in place. Move and turn speeds
+ * come from motion_config.h (UNMEASURED); motion_drive() takes its own.
  *
  * Status (motion_get_status, motion_stop_confirmed) may be read from any
  * task; it is copied under a mutex with priority inheritance.
@@ -54,6 +54,8 @@
 #define MOTION_REJ_STALE        0x81u   /* ID not newer than the last */
 #define MOTION_REJ_PARAM        0x82u   /* parameter out of range */
 #define MOTION_REJ_STATE        0x83u   /* not allowed in this state */
+#define MOTION_STOP_LEASE       0x84u   /* STOPPED reason: a speed command
+                                           was not renewed in time */
 
 /* motion_status_t.flags */
 #define MOTION_ST_VALID         0x01u   /* encoders healthy */
@@ -85,6 +87,14 @@ ER       motion_turn_right (uint32_t angle_mdeg);
 ER       motion_stop (void);
 ER       motion_reset (void);       /* leave Fault; wheels must be still */
 ER       motion_new_run (void);     /* Idle only: zero pose, run_id + 1 */
+
+/* Line following: hold these wheel speeds (mm/s, forward positive,
+   |speed| <= MC_SPEED_MAX_MM_S) for at most MC_SPEED_LEASE_MS. The
+   Vehicle Controller renews it every cycle while following; if renewals
+   stop (controller stalled, queue full), Motion Control brakes on its own
+   and reports STOPPED with reason MOTION_STOP_LEASE. Rejected while STOP
+   is latched, like every other motion command. */
+ER       motion_drive (int16_t left_mm_s, int16_t right_mm_s);
 uint16_t motion_last_command_id (void);
 
 ER       motion_get_status (motion_status_t * p_status);

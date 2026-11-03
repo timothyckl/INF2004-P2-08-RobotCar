@@ -21,7 +21,7 @@
 
 #include "../app.h"
 
-#define S2_CMD_SPEED    1u  /* hold per-wheel speeds until replaced */
+#define S2_CMD_SPEED    1u  /* hold per-wheel speeds for one lease */
 #define S2_CMD_MOVE     2u  /* drive a signed distance, then stop */
 #define S2_CMD_TURN     3u  /* rotate in place by a signed angle */
 #define S2_CMD_STOP     4u  /* brake and confirm stop */
@@ -70,6 +70,11 @@ IMPORT ID motion_q;
    otherwise. Returns false, leaving *p_cmd unchanged, if out of range. */
 bool motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
                       s2_motion_cmd_t * p_cmd);
+
+/* Build one SPEED command. Returns false, leaving *p_cmd unchanged, if
+   either speed is above MC_SPEED_MAX_MM_S in magnitude. */
+bool motion_api_make_speed (int16_t left_mm_s, int16_t right_mm_s,
+                            uint16_t cmd_id, s2_motion_cmd_t * p_cmd);
 
 #endif /* MOTION_CMD_H */
 

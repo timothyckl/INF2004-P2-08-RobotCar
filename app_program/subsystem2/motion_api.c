@@ -16,6 +16,7 @@ static uint16_t g_next_id = 1u;     /* Vehicle Controller task only */
 static uint16_t g_last_id = 0u;
 
 static ER motion_send (uint8_t cmd, int32_t value);
+static ER motion_queue (s2_motion_cmd_t * p_cmd);
 
 ER
 motion_move_forward (uint16_t distance_mm)
@@ -59,6 +60,19 @@ ER
 motion_new_run (void)
 {
     return (motion_send(S2_CMD_NEW_RUN, 0));
+}
+
+ER
+motion_drive (int16_t left_mm_s, int16_t right_mm_s)
+{
+    s2_motion_cmd_t c;
+
+    if (!motion_api_make_speed(left_mm_s, right_mm_s, g_next_id, &c))
+    {
+        return (E_PAR);
+    }
+
+    return (motion_queue(&c));
 }
 
 uint16_t
@@ -123,25 +137,57 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
     return (true);
 }
 
+bool
+motion_api_make_speed (int16_t left_mm_s, int16_t right_mm_s,
+                       uint16_t cmd_id, s2_motion_cmd_t * p_cmd)
+{
+    s2_motion_cmd_t c = {0};
+    int32_t const   l = left_mm_s;
+    int32_t const   r = right_mm_s;
+
+    if ((NULL == p_cmd) || (l > MC_SPEED_MAX_MM_S) || (l < -MC_SPEED_MAX_MM_S)
+        || (r > MC_SPEED_MAX_MM_S) || (r < -MC_SPEED_MAX_MM_S))
+    {
+        return (false);
+    }
+
+    c.cmd                = S2_CMD_SPEED;
+    c.cmd_id             = cmd_id;
+    c.u.speed.left_mm_s  = left_mm_s;
+    c.u.speed.right_mm_s = right_mm_s;
+    *p_cmd               = c;
+
+    return (true);
+}
+
 static ER
 motion_send (uint8_t cmd, int32_t value)
 {
     s2_motion_cmd_t c;
-    SYSTIM          tim;
 
     if (!motion_api_make(cmd, value, g_next_id, &c))
     {
         return (E_PAR);
     }
 
+    return (motion_queue(&c));
+}
+
+/* Stamp and send one built command; its ID becomes the last one only if
+   it was queued. */
+static ER
+motion_queue (s2_motion_cmd_t * p_cmd)
+{
+    SYSTIM tim;
+
     if (motion_q <= 0)
     {
         return (E_OBJ);
     }
 
-    c.time_ms = (tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u;
+    p_cmd->time_ms = (tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u;
 
-    ER const er = tk_snd_mbf(motion_q, &c, (INT)sizeof(c), TMO_POL);
+    ER const er = tk_snd_mbf(motion_q, p_cmd, (INT)sizeof(*p_cmd), TMO_POL);
 
     if (er < E_OK)
     {

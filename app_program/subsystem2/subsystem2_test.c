@@ -712,6 +712,12 @@ EXPORT void subsystem2_test(void)
 		   "duty ramp limits increases only");
 	TEST_CHECK("S2-U56", test_motion_ramp_stall(),
 		   "ramp cannot cause a false stall");
+	TEST_CHECK("S2-U57", test_motion_lease(),
+		   "unrenewed speed command brakes (lease)");
+	TEST_CHECK("S2-U58", test_motion_lease_renew(),
+		   "renewed speed holds; STOP is not a lease stop");
+	TEST_CHECK("S2-U59", test_motion_drive_api(),
+		   "speed command bounds (motion_drive)");
 
 #if S2_HW_TEST
 	hw_test();

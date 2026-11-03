@@ -1,7 +1,7 @@
 /**
  * @file test_motion.h
- * @brief Subsystem 2 Motion Control unit cases S2-U20..S2-U35, S2-U55,
- *        S2-U56 (TEST=1).
+ * @brief Subsystem 2 Motion Control unit cases S2-U20..S2-U35 and
+ *        S2-U55..S2-U59 (TEST=1).
  */
 #ifndef TEST_MOTION_H
 #define TEST_MOTION_H
@@ -26,6 +26,9 @@ bool test_motion_odometry (void);       /* S2-U34 */
 bool test_motion_api (void);            /* S2-U35 */
 bool test_motion_ramp (void);           /* S2-U55 */
 bool test_motion_ramp_stall (void);     /* S2-U56 */
+bool test_motion_lease (void);          /* S2-U57 */
+bool test_motion_lease_renew (void);    /* S2-U58 */
+bool test_motion_drive_api (void);      /* S2-U59 */
 
 #endif /* TEST_MOTION_H */
 

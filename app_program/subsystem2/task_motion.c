@@ -70,7 +70,8 @@ static const motion_cfg_t g_motion_cfg =
     MC_ENC_ERRORS_MAX,
     MC_ENC_INVALID_MAX,
     MC_SPEED_WINDOW,
-    MC_DUTY_STEP_MAX
+    MC_DUTY_STEP_MAX,
+    MC_SPEED_LEASE_MS
 };
 
 static void     motion_task (INT stacd, void * exinf);

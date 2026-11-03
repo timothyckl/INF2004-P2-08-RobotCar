@@ -66,7 +66,9 @@ static motion_cfg_t const g_cfg =
     2u,         /* enc_errors_max */
     3u,         /* enc_invalid_max */
     2u,         /* speed_window */
-    DRV_MOTOR_DUTY_MAX / 20     /* duty_step_max, as MC_DUTY_STEP_MAX */
+    DRV_MOTOR_DUTY_MAX / 20,    /* duty_step_max, as MC_DUTY_STEP_MAX */
+    2000u       /* speed_lease_ms: long, so cases that hold a Speed command
+                   for up to 1.5 s are unchanged; S2-U57 tests expiry */
 };
 
 static void
@@ -850,6 +852,98 @@ test_motion_ramp_stall (void)
     return (b_free && (t_level > 0u) && (f >= 0)
             && sim_fault(p_s, MOTION_FAULT_STALL)
             && ((p_s->log[f].t_us - t_level) >= (g_cfg.stall_ms * 1000u)));
+}
+
+/* A fresh started model whose Speed lease is lease_ms. */
+static sim_t *
+sim_lease (uint32_t lease_ms)
+{
+    sim_t *      p_s = sim_new(true);
+    motion_cfg_t cfg = g_cfg;
+
+    cfg.speed_lease_ms = lease_ms;
+    (void)motion_init(&p_s->m, &cfg);
+    motion_output_clear(&p_s->out);
+    motion_start(&p_s->m, true, &p_s->out);
+
+    return (p_s);
+}
+
+/* S2-U57: a Speed command that is not renewed brakes by itself. */
+bool
+test_motion_lease (void)
+{
+    sim_t *        p_s = sim_lease(100u);
+    uint16_t const a   = sim_cmd(p_s, S2_CMD_SPEED, 200, 200);
+
+    sim_run(p_s, 10);                   /* 100 ms: lease not yet over */
+
+    bool const b_held = (MOTION_SPEED == motion_state(&p_s->m))
+                        && (p_s->out.duty_l > 0) && (p_s->out.duty_r > 0);
+
+    sim_run(p_s, 2);                    /* past 100 ms: brakes at once */
+
+    bool const b_brake = (MOTION_STOPPING == motion_state(&p_s->m))
+                         && (0 == p_s->out.duty_l) && (0 == p_s->out.duty_r);
+    int32_t const s = sim_until(p_s, MOTION_EVT_STOPPED, a, 300u);
+
+    return (b_held && b_brake && (s >= 0)
+            && (MOTION_STOP_LEASE == p_s->log[s].ev.reason)
+            && (MOTION_IDLE == motion_state(&p_s->m))
+            && (sim_find(p_s, MOTION_EVT_FAULT, 0u) < 0));
+}
+
+/* S2-U58: renewals keep Speed running past one lease; an explicit STOP
+   is reported as a plain STOPPED, not a lease expiry. */
+bool
+test_motion_lease_renew (void)
+{
+    sim_t * p_s = sim_lease(100u);
+
+    for (uint32_t i = 0u; i < 50u; i++)  /* 500 ms of 10 ms renewals */
+    {
+        (void)sim_cmd(p_s, S2_CMD_SPEED, 150, 250);
+        sim_step(p_s);
+    }
+
+    motion_status_t o;
+
+    motion_get_status_logic(&p_s->m, &o);
+
+    bool const b_run = (MOTION_SPEED == motion_state(&p_s->m))
+                       && (abs_i(o.left_mm_s - 150) <= 20)
+                       && (abs_i(o.right_mm_s - 250) <= 20)
+                       && (sim_find(p_s, MOTION_EVT_STOPPED, 0u) < 0);
+    uint16_t const st = sim_cmd(p_s, S2_CMD_STOP, 0, 0);
+    int32_t const  s  = sim_until(p_s, MOTION_EVT_STOPPED, st, 300u);
+
+    return (b_run && (s >= 0) && (0u == p_s->log[s].ev.reason));
+}
+
+/* S2-U59: Speed commands are built only within MC_SPEED_MAX_MM_S. */
+bool
+test_motion_drive_api (void)
+{
+    s2_motion_cmd_t c;
+    s2_motion_cmd_t keep = {0};
+
+    keep.cmd_id = 55u;
+
+    bool const b_build =
+        motion_api_make_speed(MC_SPEED_MAX_MM_S, -MC_SPEED_MAX_MM_S, 9u, &c)
+        && (S2_CMD_SPEED == c.cmd) && (9u == c.cmd_id)
+        && (MC_SPEED_MAX_MM_S == c.u.speed.left_mm_s)
+        && (-MC_SPEED_MAX_MM_S == c.u.speed.right_mm_s);
+    bool const b_refuse =
+        (!motion_api_make_speed(MC_SPEED_MAX_MM_S + 1, 0, 9u, &keep))
+        && (!motion_api_make_speed(0, -MC_SPEED_MAX_MM_S - 1, 9u, &keep))
+        && (!motion_api_make_speed(0, 0, 9u, NULL))
+        && (55u == keep.cmd_id);
+    bool const b_public =
+        (E_PAR == motion_drive(MC_SPEED_MAX_MM_S + 1, 0))
+        && (E_PAR == motion_drive(0, INT16_MIN));
+
+    return (b_build && b_refuse && b_public);
 }
 
 #endif /* APP_TEST */

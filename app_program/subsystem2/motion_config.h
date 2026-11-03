@@ -60,6 +60,11 @@
 #define MC_MOVE_SPEED_MM_S      200
 #define MC_TURN_SPEED_MM_S      150
 
+/* Speed (line-following) command lease. The controller renews it every
+   10 ms cycle; 100 ms is 10 missed renewals before Motion Control brakes
+   by itself. UNMEASURED: check against controller timing on the robot. */
+#define MC_SPEED_LEASE_MS       100u
+
 /* Stop confirmation. AGREED: 100 ms still, give up after 2 s.
    UNMEASURED: the "still" speed threshold, to calibrate. */
 #define MC_STILL_MM_S           10u

@@ -81,6 +81,7 @@ motion_init (motion_t * p_m, motion_cfg_t const * p_cfg)
         || (p_cfg->speed_window < 1u)
         || (p_cfg->speed_window > MOTION_WINDOW_MAX)
         || (p_cfg->speed_max_mm_s <= 0) || (p_cfg->duty_step_max <= 0)
+        || (0u == p_cfg->speed_lease_ms)
         || (!pid_init(&m.pid_l, &p_cfg->pid))
         || (!pid_init(&m.pid_r, &p_cfg->pid))
         || (!pid_init(&m.pid_diff, &p_cfg->straight_pid)))
@@ -169,8 +170,9 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
             }
             else if (MOTION_STOPPING == p_m->state)
             {
-                p_m->pending_type = MOTION_EVT_STOPPED;
-                p_m->pending_id   = id;
+                p_m->pending_type   = MOTION_EVT_STOPPED;
+                p_m->pending_reason = 0u;   /* an explicit STOP */
+                p_m->pending_id     = id;
             }
             else
             {
@@ -430,9 +432,10 @@ enter_fault (motion_t * p_m, uint8_t reason, motion_output_t * p_out)
 static void
 enter_stopping (motion_t * p_m, uint8_t type, uint16_t id, uint32_t now_us)
 {
-    p_m->state         = MOTION_STOPPING;
-    p_m->pending_type  = type;
-    p_m->pending_id    = id;
+    p_m->state          = MOTION_STOPPING;
+    p_m->pending_type   = type;
+    p_m->pending_reason = 0u;
+    p_m->pending_id     = id;
     p_m->stop_start_us = now_us;
     p_m->duty_l        = 0;
     p_m->duty_r        = 0;
@@ -718,6 +721,20 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
             /* Still travelling. */
         }
     }
+    else if (MOTION_SPEED == p_m->state)
+    {
+        /* start_us is renewed by every accepted Speed command. */
+        if ((now - p_m->start_us)
+            > (p_m->cfg.speed_lease_ms * US_PER_MS))
+        {
+            enter_stopping(p_m, MOTION_EVT_STOPPED, p_m->cmd_id, now);
+            p_m->pending_reason = MOTION_STOP_LEASE;
+        }
+    }
+    else
+    {
+        /* Not a timed motion state. */
+    }
 
     if (is_moving(p_m->state))
     {
@@ -741,7 +758,8 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
         if (p_m->b_still)
         {
             p_m->state = MOTION_IDLE;
-            emit(p_m, p_out, p_m->pending_type, 0u, p_m->pending_id);
+            emit(p_m, p_out, p_m->pending_type, p_m->pending_reason,
+                 p_m->pending_id);
         }
         else if ((now - p_m->stop_start_us)
                  > (p_m->cfg.stop_limit_ms * US_PER_MS))
