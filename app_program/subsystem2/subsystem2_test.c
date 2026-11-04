@@ -256,13 +256,15 @@ static bool test_encoder_step(void)
 	uint32_t const rise = DRV_GPIO_IRQ_EDGE_RISE;
 	uint32_t const fall = DRV_GPIO_IRQ_EDGE_FALL;
 
-	return (drv_encoder_step(rise, false) == 1) &&
-	       (drv_encoder_step(rise, true) == -1) &&
-	       (drv_encoder_step(fall, true) == 1) &&
-	       (drv_encoder_step(fall, false) == -1) &&
-	       (drv_encoder_step(rise | fall, false) == 0) &&
-	       (drv_encoder_step(rise | fall, true) == 0) &&
-	       (drv_encoder_step(0u, true) == 0);
+	return (drv_encoder_step(rise, true, false) == 1) &&
+	       (drv_encoder_step(rise, true, true) == -1) &&
+	       (drv_encoder_step(fall, false, true) == 1) &&
+	       (drv_encoder_step(fall, false, false) == -1) &&
+	       (drv_encoder_step(rise | fall, false, true) == 2) &&
+	       (drv_encoder_step(rise | fall, true, false) == 2) &&
+	       (drv_encoder_step(rise | fall, false, false) == -2) &&
+	       (drv_encoder_step(rise | fall, true, true) == -2) &&
+	       (drv_encoder_step(0u, false, true) == 0);
 }
 
 /* S2-U19: snapshot rejects NULL; idle counts do not change */

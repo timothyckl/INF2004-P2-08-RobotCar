@@ -116,13 +116,13 @@ drv_encoder_snapshot (drv_encoder_snapshot_t * p_snap)
 /**
  * @brief x2 quadrature decode of one A interrupt.
  *
- * With A leading B, A rises while B is low and falls while B is high.
- * Both edges in one interrupt means an edge pair was serviced late: the
- * direction cannot be known, so it counts nothing (the caller records an
- * error).
+ * With A leading B, A rises while B is low and falls while B is high. If
+ * both edge bits are pending, the current A level identifies whether rise
+ * or fall was latest; both steps have the direction derived from that edge.
+ * More than one coalesced pair may undercount but cannot reverse the sign.
  */
 int32_t
-drv_encoder_step (uint32_t events, bool b_level_b)
+drv_encoder_step (uint32_t events, bool b_level_a, bool b_level_b)
 {
     uint32_t const edges = events & DRV_ENCODER_EDGES;
     int32_t        step  = 0;
@@ -135,9 +135,20 @@ drv_encoder_step (uint32_t events, bool b_level_b)
     {
         step = b_level_b ? 1 : -1;
     }
+    else if (DRV_ENCODER_EDGES == edges)
+    {
+        if (b_level_a)
+        {
+            step = b_level_b ? -2 : 2;
+        }
+        else
+        {
+            step = b_level_b ? 2 : -2;
+        }
+    }
     else
     {
-        /* No edge, or both edges: not decodable. */
+        /* No edge. */
     }
 
     return (step);
@@ -156,8 +167,11 @@ drv_encoder_isr (uint32_t gpio, uint32_t events, uint32_t now_us)
             continue;
         }
 
-        bool const    b_level_b = (0u != (levels & (1u << g_encoder_hw[e].pin_b)));
-        int32_t const step      = drv_encoder_step(events, b_level_b);
+        bool const b_level_a =
+            (0u != (levels & (UINT32_C(1) << g_encoder_hw[e].pin_a)));
+        bool const b_level_b =
+            (0u != (levels & (UINT32_C(1) << g_encoder_hw[e].pin_b)));
+        int32_t const step = drv_encoder_step(events, b_level_a, b_level_b);
 
         g_seq = g_seq + 1u;
         drv_encoder_barrier();

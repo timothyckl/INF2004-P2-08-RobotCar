@@ -9,10 +9,12 @@
  * (A) / GP28 (B). Keep the GP28 battery-sense jumper open and keep the ADC
  * driver disabled on GP26 through GP28.
  *
- * Decoding (x2): an interrupt on both edges of A only; B's level at that
- * moment gives the direction. This doubles the resolution of rising-edge
- * counting while taking half the interrupts of full x4 decoding (both
- * edges of A and B), which keeps the combined GPIO interrupt load down
+ * Decoding (x2): an interrupt on both edges of A only; A and B levels at
+ * that moment give the direction. If RP2040 has latched both A edge bits
+ * before service, the current A level identifies the latest edge and the
+ * pair is counted as two steps. This doubles the resolution of rising-edge
+ * counting while taking half the interrupts of full x4 decoding (both edges
+ * of A and B), which keeps the combined GPIO interrupt load down
  * (AAI08_PostTri1). Counts per wheel revolution = 2 x A pulses per rev.
  *
  * Counts are free-running uint32_t, +1 when A leads B, wrapping, as
@@ -51,9 +53,10 @@ typedef struct
 ER drv_encoder_init (void);
 ER drv_encoder_snapshot (drv_encoder_snapshot_t * p_snap);
 
-/* Pure x2 decode used by the interrupt; exposed for unit tests.
-   Returns +1, -1, or 0 (no edge, or both edges: not decodable). */
-int32_t drv_encoder_step (uint32_t events, bool b_level_b);
+/* Pure x2 decode used by the interrupt; exposed for unit tests. A single
+   edge returns +1/-1. A coalesced rise+fall pair returns +2/-2 based on the
+   current A/B levels. No edge returns 0. */
+int32_t drv_encoder_step (uint32_t events, bool b_level_a, bool b_level_b);
 
 #endif /* DRV_ENCODER_H */
 

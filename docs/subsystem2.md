@@ -229,8 +229,10 @@ subsystem 2. TEAM.md section 5 then drops IF-01 and IF-02.
 - Move does not slow down near the target, so overshoot depends on braking.
 - Turns use encoder odometry only (the IMU has no gyroscope), so wheel slip
   shows up directly as angle error.
-- The encoder decoder cannot tell direction if both A edges arrive before the
-  interrupt runs; it counts an error instead (fault after 2 in one period).
+- The encoder decoder uses the current A/B levels when both A edge bits were
+  latched before the shared interrupt runs. It recovers the direction and
+  counts the pair as two steps. More than one coalesced pair may undercount,
+  so interrupt load still requires physical validation.
 - Telemetry `link_up` is left false for S1 to fill, and S1's callback does
   not pass a request ID yet, so the adapter numbers commands itself.
 - HAZARD is treated as STOP until Scan and Plan exists.

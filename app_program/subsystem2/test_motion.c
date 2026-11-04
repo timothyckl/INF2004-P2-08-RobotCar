@@ -302,9 +302,19 @@ test_motion_speed (void)
     sim_run(p_s, 100);
     motion_get_status_logic(&p_s->m, &o);
 
-    return (b_sign && (MOTION_SPEED == motion_state(&p_s->m))
-            && (abs_i(o.left_mm_s - 200) <= 20)
-            && (abs_i(o.right_mm_s - 100) <= 20));
+    bool ok = b_sign && (MOTION_SPEED == motion_state(&p_s->m))
+              && (abs_i(o.left_mm_s - 200) <= 20)
+              && (abs_i(o.right_mm_s - 100) <= 20);
+
+    (void)sim_cmd(p_s, S2_CMD_SPEED, 0, 100);
+    sim_step(p_s);
+    ok = ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
+
+    (void)sim_cmd(p_s, S2_CMD_SPEED, 100, 0);
+    sim_step(p_s);
+    ok = ok && (p_s->out.duty_l > 0) && (0 == p_s->out.duty_r);
+
+    return (ok);
 }
 
 bool

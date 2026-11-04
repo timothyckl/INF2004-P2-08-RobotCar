@@ -45,6 +45,10 @@ decision 1 and the pin mapping of 2026-11-03.
   before the GPIO remap and must be reconfirmed on the new pins.
 - `MC_COUNTS_PER_REV` is provisionally 1330 with x2 decoding: the median of
   the single hand-turned revolutions. A 10-revolution count will replace it.
+- RP2040 latches rising and falling GPIO edge events independently. A
+  coalesced A rise+fall pair is decoded from the current A/B levels as two
+  steps instead of being recorded as an encoder error. Invalid snapshots and
+  genuinely undecodable events retain the Motion Control safety fault.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
@@ -68,9 +72,27 @@ therefore maps WHITE/WHITE to straight, BLACK/WHITE to a left correction,
 WHITE/BLACK to a right correction, and BLACK/BLACK to STOP.
 
 The initial 70 mm/s outer-wheel and 35 mm/s inner-wheel targets were reduced
-first to 40/20 mm/s and then to 30/15 mm/s on 2026-11-04 at Edmund's request.
-These speeds, the 50 ms report interval and the 200 ms stale-report stop remain
-provisional safety values, not validated performance or acceptance criteria.
+to 40/20 mm/s on 2026-11-04. A subsequent 30/15 mm/s target did not reduce the
+observed physical speed and the controller entered Fault, so neither target is
+a validated minimum. These speeds, the 50 ms report interval and the 200 ms
+stale-report stop remain provisional safety values, not validated performance
+or acceptance criteria.
+After the physical speed remained too high despite lower speed targets, Edmund
+requested a much slower trial. The dedicated line-follow profile now caps the
+Motion Control speed PID output at 20% PWM; normal firmware retains the full
+range. This is a provisional safety ceiling, not a measured minimum duty or a
+substitute for validating encoder feedback and tuning the speed PID.
+Because the sensors classified left and right surfaces correctly but the
+20/40 mm/s arc did not produce a reliable left correction, Edmund requested a
+stronger correction. The inside wheel target is now 0 mm/s (brake) while the
+outside wheel remains at 40 mm/s. Motion Control clears a wheel's PID history
+and duty when its speed target becomes zero so an earlier integral term cannot
+continue driving the braked wheel.
+Physical testing then showed that the left/right actuator responses were
+reversed even though the IR classifications were correct. At Edmund's request,
+the Vehicle Controller wheel commands are swapped: `LEFT` drives the left wheel
+and brakes the right, while `RIGHT` brakes the left wheel and drives the right.
+The GP6/GP16 sensor identities and the BLACK/WHITE decision table are unchanged.
 Edmund also requested a supervised continuous trial with no automatic run-time
 limit.
 The Robo Pico GP20 programmable button is debounced and routed through the

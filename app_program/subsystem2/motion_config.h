@@ -15,6 +15,10 @@
 #include "drv_encoder.h"
 #include "drv_motor.h"
 
+#ifndef S3_LINE_FOLLOW_TEST
+#define S3_LINE_FOLLOW_TEST 0
+#endif
+
 /* Control period. The kernel tick is 10 ms (config.h CNF_TIMER_PERIOD),
    so 10 or 20 ms are the only exact choices. 10 ms: one odometry update
    per subsystem 4 IMU sample, and half the worst-case STOP latency. */
@@ -50,6 +54,16 @@
 #define MC_SPEED_MAX_MM_S       400         /* UNMEASURED: below no-load max */
 #define MC_SPEED_WINDOW         4u          /* speed over the last 4 periods */
 
+/* The supervised line-follow profile uses an uncalibrated speed loop. Limit
+   its authority so missing encoder feedback cannot drive the motors to full
+   power. Normal firmware retains the full driver range. UNMEASURED: validate
+   the minimum starting duty and tune the PID before increasing this limit. */
+#if S3_LINE_FOLLOW_TEST
+#define MC_CONTROL_DUTY_MAX     ((DRV_MOTOR_DUTY_MAX * 20) / 100)
+#else
+#define MC_CONTROL_DUTY_MAX     DRV_MOTOR_DUTY_MAX
+#endif
+
 /* Straight-line PID on the left/right distance difference: mm in, mm/s
    out. UNMEASURED gains, x PID_GAIN_SCALE, per 10 ms sample. */
 #define MC_STRAIGHT_KP          2048        /* 2.0 (mm/s) per mm */
@@ -67,7 +81,7 @@
 #define MC_STOP_LIMIT_MS        2000u
 
 /* Faults. UNMEASURED. */
-#define MC_STALL_DUTY           ((DRV_MOTOR_DUTY_MAX * 9) / 10)
+#define MC_STALL_DUTY           ((MC_CONTROL_DUTY_MAX * 9) / 10)
 #define MC_STALL_MS             500u        /* longer than spin-up */
 #define MC_TIMEOUT_FACTOR       2u          /* x expected time ... */
 #define MC_TIMEOUT_EXTRA_MS     1000u       /* ... + this */

@@ -113,10 +113,23 @@ There is no automatic run-time limit. Its verified sensor mapping is:
 
 It also stops if reports become invalid or stale, a queue/API operation fails,
 or the GP20 button is pressed while running. The
-outer/straight speed is 30 mm/s and the inner correction speed is 15 mm/s;
-these are provisional commands, not measured wheel speeds. Keep the wheels
-raised for the first run because the motor polarity, encoder polarity and PID
-tuning still require physical validation.
+outer/straight speed is 40 mm/s. During a correction, the inside wheel is
+braked at 0 mm/s while the other wheel remains at 40 mm/s. Physical testing
+showed the original actuator response was reversed, so `LEFT` now drives the
+left wheel and brakes the right wheel; `RIGHT` brakes the left wheel and drives
+the right wheel. The sensor labels and BLACK/WHITE decision table are unchanged.
+The earlier 30/15 mm/s target did not reduce the observed physical speed and
+the controller entered Fault. These are provisional commands, not measured
+wheel speeds. Keep the wheels raised for the first run because the motor
+polarity, encoder polarity and PID tuning still require physical validation.
+
+The dedicated line-follow image also limits Motion Control to 20% PWM. This
+provisional ceiling prevents an uncalibrated speed loop or missing encoder
+feedback from increasing the motors to full power. A zero wheel target clears
+that wheel's PID history and applies the motor driver's brake state. If the
+outside motor cannot start at 20%, Motion Control reports a stall fault and
+stops; do not increase the ceiling until the encoder counts and measured wheel
+speeds are verified.
 
 WHITE/WHITE is ambiguous: it means centred for the current sensor placement,
 but it can also mean the car has completely lost the line. Supervise the whole

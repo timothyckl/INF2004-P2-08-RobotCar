@@ -459,6 +459,18 @@ start_motion (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
 
     if (S2_CMD_SPEED == p_cmd->cmd)
     {
+        if (0 == p_cmd->u.speed.left_mm_s)
+        {
+            pid_reset(&p_m->pid_l);
+            p_m->duty_l = 0;
+        }
+
+        if (0 == p_cmd->u.speed.right_mm_s)
+        {
+            pid_reset(&p_m->pid_r);
+            p_m->duty_r = 0;
+        }
+
         p_m->state = MOTION_SPEED;
         p_m->tgt_l = p_cmd->u.speed.left_mm_s;
         p_m->tgt_r = p_cmd->u.speed.right_mm_s;

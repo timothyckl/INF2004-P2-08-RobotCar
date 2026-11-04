@@ -35,8 +35,8 @@
 #endif
 
 #if S3_LINE_FOLLOW_TEST
-#define CTRL_LINE_BASE_MM_S        30
-#define CTRL_LINE_INNER_MM_S       15
+#define CTRL_LINE_BASE_MM_S        40
+#define CTRL_LINE_INNER_MM_S        0
 #define CTRL_LINE_TIMEOUT_MS      200u
 #define CTRL_LINE_BUTTON_PIN       20u
 #define CTRL_LINE_BUTTON_MASK      (UINT32_C(1) << CTRL_LINE_BUTTON_PIN)
@@ -499,8 +499,16 @@ line_button_step (s2_robot_state_t const * p_state,
         }
         else
         {
-            tm_printf((UB *)"[S2] GP20: ignored while controller state=%u\n",
-                      (UINT)p_state->state);
+            tm_printf((UB *)"[S2] GP20: ignored; controller state=%u"
+                      " fault=%u, status_ok=%u flags=0x%x,"
+                      " motion state=%u fault=%u, speed=%d/%d mm/s\n",
+                      (UINT)p_state->state, (UINT)p_state->fault,
+                      (UINT)p_input->b_status_ok,
+                      (UINT)p_input->status.flags,
+                      (UINT)p_input->status.state,
+                      (UINT)p_input->status.fault,
+                      (INT)p_input->status.left_mm_s,
+                      (INT)p_input->status.right_mm_s);
         }
     }
 }
@@ -556,13 +564,13 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
         }
         else if (S2_LINE_LEFT == report.position)
         {
-            er = motion_set_speeds(CTRL_LINE_INNER_MM_S,
-                                   CTRL_LINE_BASE_MM_S);
+            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+                                   CTRL_LINE_INNER_MM_S);
         }
         else if (S2_LINE_RIGHT == report.position)
         {
-            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
-                                   CTRL_LINE_INNER_MM_S);
+            er = motion_set_speeds(CTRL_LINE_INNER_MM_S,
+                                   CTRL_LINE_BASE_MM_S);
         }
         else
         {

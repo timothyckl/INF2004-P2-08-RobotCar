@@ -54,7 +54,8 @@ static volatile bool     g_b_off_due  = false;
 static const motion_cfg_t g_motion_cfg =
 {
     {MC_COUNTS_PER_REV, MC_WHEEL_CIRC_UM, MC_TRACK_MM},
-    {MC_PID_KP, MC_PID_KI, MC_PID_KD, -DRV_MOTOR_DUTY_MAX, DRV_MOTOR_DUTY_MAX},
+    {MC_PID_KP, MC_PID_KI, MC_PID_KD,
+     -MC_CONTROL_DUTY_MAX, MC_CONTROL_DUTY_MAX},
     {MC_STRAIGHT_KP, MC_STRAIGHT_KI, MC_STRAIGHT_KD,
      -MC_SPEED_MAX_MM_S, MC_SPEED_MAX_MM_S},
     MC_SPEED_MAX_MM_S,
