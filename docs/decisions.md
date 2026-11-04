@@ -68,10 +68,11 @@ therefore maps WHITE/WHITE to straight, BLACK/WHITE to a left correction,
 WHITE/BLACK to a right correction, and BLACK/BLACK to STOP.
 
 The initial 70 mm/s outer-wheel and 35 mm/s inner-wheel targets were reduced
-to 40 mm/s and 20 mm/s on 2026-11-04 at Edmund's request. These speeds, the
-50 ms report interval and the 200 ms stale-report stop remain provisional
-safety values, not validated performance or acceptance criteria. Edmund also
-requested a supervised continuous trial with no automatic run-time limit.
+first to 40/20 mm/s and then to 30/15 mm/s on 2026-11-04 at Edmund's request.
+These speeds, the 50 ms report interval and the 200 ms stale-report stop remain
+provisional safety values, not validated performance or acceptance criteria.
+Edmund also requested a supervised continuous trial with no automatic run-time
+limit.
 The Robo Pico GP20 programmable button is debounced and routed through the
 Vehicle Controller: a press starts, a press while running latches STOP, and a
 later press performs the controller RESET/START sequence.

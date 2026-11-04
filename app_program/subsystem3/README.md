@@ -113,7 +113,7 @@ There is no automatic run-time limit. Its verified sensor mapping is:
 
 It also stops if reports become invalid or stale, a queue/API operation fails,
 or the GP20 button is pressed while running. The
-outer/straight speed is 40 mm/s and the inner correction speed is 20 mm/s;
+outer/straight speed is 30 mm/s and the inner correction speed is 15 mm/s;
 these are provisional commands, not measured wheel speeds. Keep the wheels
 raised for the first run because the motor polarity, encoder polarity and PID
 tuning still require physical validation.

@@ -35,8 +35,8 @@
 #endif
 
 #if S3_LINE_FOLLOW_TEST
-#define CTRL_LINE_BASE_MM_S        40
-#define CTRL_LINE_INNER_MM_S       20
+#define CTRL_LINE_BASE_MM_S        30
+#define CTRL_LINE_INNER_MM_S       15
 #define CTRL_LINE_TIMEOUT_MS      200u
 #define CTRL_LINE_BUTTON_PIN       20u
 #define CTRL_LINE_BUTTON_MASK      (UINT32_C(1) << CTRL_LINE_BUTTON_PIN)
