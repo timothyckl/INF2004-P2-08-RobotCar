@@ -48,12 +48,12 @@ bool s3_ir_normalize(s3_calibration_t const * p_cal, uint8_t levels,
  * Returns true only when the current candidate has settled.
  */
 bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required);
-/** Caller supplies all eight decisions after checking sensor geometry. */
+/** Caller supplies all four decisions after checking sensor geometry. */
 s3_line_t s3_ir_line(uint8_t mask,
                      s3_line_t const decisions[S3_IR_PATTERNS]);
 /** Verified two-sensor geometry for the supervised line-follow trial:
  * neither sensor on black is centred, left black needs a left correction,
- * right black needs a right correction, and both black is a stop marker.
+ * right black needs a right correction, and both black is a crossing.
  */
 s3_line_t s3_ir_follow_decision(uint8_t black_mask);
 

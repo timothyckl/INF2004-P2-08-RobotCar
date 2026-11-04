@@ -417,6 +417,14 @@ note_result (motion_t * p_m, uint8_t type, uint8_t reason, uint16_t id)
 static void
 enter_fault (motion_t * p_m, uint8_t reason, motion_output_t * p_out)
 {
+    p_out->fault_state    = (uint8_t)p_m->state;
+    p_out->fault_reason   = reason;
+    p_out->fault_duty_l   = p_m->duty_l;
+    p_out->fault_duty_r   = p_m->duty_r;
+    p_out->fault_speed_l  = p_m->speed_l;
+    p_out->fault_speed_r  = p_m->speed_r;
+    p_out->stalled_wheels = (p_m->b_stall_l ? MOTION_STALL_LEFT : 0u)
+                            | (p_m->b_stall_r ? MOTION_STALL_RIGHT : 0u);
     p_m->state  = MOTION_FAULT;
     p_m->fault  = reason;
     p_m->duty_l = 0;

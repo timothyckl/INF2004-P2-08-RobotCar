@@ -78,6 +78,8 @@ static void     motion_task (INT stacd, void * exinf);
 static void     motion_cyclic (void * exinf);
 static void     read_input (motion_input_t * p_in);
 static void     apply_duty (int32_t duty_l, int32_t duty_r);
+static void     log_fault (motion_input_t const * p_input,
+                           motion_output_t const * p_output);
 static void     raise_fault (motion_output_t const * p_out);
 static void     publish_status (void);
 static uint32_t now_ms (void);
@@ -260,6 +262,12 @@ motion_task (INT stacd, void * exinf)
             g_off_us    = in_w(TIMER_TIMERAWL);  /* duties now zero */
             g_b_off_due = false;
         }
+
+        if (out.b_raise_fault)
+        {
+            log_fault(&in, &out);
+        }
+
         raise_fault(&out);
         publish_status();
     }
@@ -308,6 +316,43 @@ apply_duty (int32_t duty_l, int32_t duty_r)
                         (0 != MC_LEFT_MOTOR_INVERT) ? -duty_l : duty_l);
     (void)drv_motor_set(MC_RIGHT_MOTOR,
                         (0 != MC_RIGHT_MOTOR_INVERT) ? -duty_r : duty_r);
+}
+
+static void
+log_fault (motion_input_t const * p_input,
+           motion_output_t const * p_output)
+{
+    tm_printf((UB *)"[S2] motion fault=%u from state=%u; valid=%u; "
+                      "stalled L/R=%u/%u; prior PWM duty=%d/%d; "
+                      "speed=%d/%d mm/s; "
+                      "counts=%u/%u errors=%u/%u\n",
+              (UINT)p_output->fault_reason, (UINT)p_output->fault_state,
+              (UINT)p_input->b_counts_valid,
+              (UINT)(0u != (p_output->stalled_wheels & MOTION_STALL_LEFT)),
+              (UINT)(0u != (p_output->stalled_wheels & MOTION_STALL_RIGHT)),
+              (INT)p_output->fault_duty_l, (INT)p_output->fault_duty_r,
+              (INT)p_output->fault_speed_l, (INT)p_output->fault_speed_r,
+              (UINT)p_input->count_l, (UINT)p_input->count_r,
+              (UINT)p_input->errors_l, (UINT)p_input->errors_r);
+
+    if ((MOTION_FAULT_STALL == p_output->fault_reason)
+        && (0u != (p_output->stalled_wheels & MOTION_STALL_LEFT)))
+    {
+        tm_printf((UB *)"[S2] LEFT stall/no feedback: check wheel and "
+                          "encoder 2 GP7/GP28\n");
+    }
+
+    if ((MOTION_FAULT_STALL == p_output->fault_reason)
+        && (0u != (p_output->stalled_wheels & MOTION_STALL_RIGHT)))
+    {
+#if S3_LINE_FOLLOW_TEST
+        tm_printf((UB *)"[S2] RIGHT stall/no feedback: check wheel and "
+                          "encoder 1 GP0/GP1\n");
+#else
+        tm_printf((UB *)"[S2] RIGHT stall/no feedback: check wheel and "
+                          "encoder 1 GP26/GP27; disconnect IR AO from GP26\n");
+#endif
+    }
 }
 
 /* The controller treats this bit like STOP (Step 4). */

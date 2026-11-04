@@ -91,6 +91,11 @@ make -C build_make TEST=1 S3_LINE_TEST=1 CRASH_REPORT=0 -j8
 Flash the generated `_test_s3line.uf2`. This profile starts only Subsystems 2
 and 3 and loads the verified digital polarity from firmware: LOW is WHITE and
 HIGH is BLACK for both sensors. It does not repeat the four calibration prompts.
+It also selects the currently installed trial drivetrain: left motor on motor 1
+(GP8/GP9), right motor on motor 2 (GP10/GP11), left encoder on GP7/GP28 and
+right encoder on GP0/GP1. This exception applies only to `_test_s3line.uf2`;
+normal/full-system builds retain the integrated pin map. Never enable UART0 or
+`CRASH_REPORT=1` with this trial wiring.
 It waits for Motion Control to become ready, then continuously reports fresh
 line positions while STOP remains latched. Place the car on the track and press
 the Robo Pico programmable button on GP20 to start. Press GP20 again to stop;
@@ -109,7 +114,15 @@ There is no automatic run-time limit. Its verified sensor mapping is:
 | WHITE | WHITE | straight |
 | BLACK | WHITE | left correction |
 | WHITE | BLACK | right correction |
-| BLACK | BLACK | STOP |
+| BLACK | BLACK | bounded crossing straight |
+
+The crossing remains straight for at most 750 ms. If one sensor remains black
+for 600 ms, the Vehicle Controller changes from the normal correction to an
+on-the-spot pivot in the remembered correction direction. WHITE/WHITE resumes
+straight following; the opposite single-black observation resumes correction;
+BLACK/BLACK enters crossing. A search that lasts 1500 ms without recovery and
+a crossing that remains BLACK/BLACK for 750 ms both latch STOP. These timing
+values are provisional and require track testing.
 
 It also stops if reports become invalid or stale, a queue/API operation fails,
 or the GP20 button is pressed while running. The
@@ -132,8 +145,11 @@ stops; do not increase the ceiling until the encoder counts and measured wheel
 speeds are verified.
 
 WHITE/WHITE is ambiguous: it means centred for the current sensor placement,
-but it can also mean the car has completely lost the line. Supervise the whole
-run and keep a hand near GP20; do not use this as an unattended line follower.
+but it can also mean the car has completely lost the line. The remembered
+direction search handles a correction that remains on one black sensor; it
+cannot prove that an arbitrary WHITE/WHITE reading is on the track. Supervise
+the whole run and keep a hand near GP20; do not use this as an unattended line
+follower.
 
 ## Save every serial line
 

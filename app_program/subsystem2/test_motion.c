@@ -499,10 +499,16 @@ test_motion_stall (void)
 
     bool const b_early = (sim_find(p_s, MOTION_EVT_FAULT, 0u) < 0);
     int32_t const f = sim_until(p_s, MOTION_EVT_FAULT, 0u, 150u);
+    bool const b_diag = (MOTION_FAULT_STALL == p_s->out.fault_reason)
+                        && ((uint8_t)MOTION_SPEED == p_s->out.fault_state)
+                        && (MOTION_STALL_LEFT == p_s->out.stalled_wheels)
+                        && (p_s->out.fault_duty_l >= g_cfg.stall_duty)
+                        && (0 == p_s->out.fault_speed_l);
 
     sim_step(p_s);
 
-    return (b_early && (f >= 0) && sim_fault(p_s, MOTION_FAULT_STALL)
+    return (b_early && b_diag && (f >= 0)
+            && sim_fault(p_s, MOTION_FAULT_STALL)
             && ((p_s->log[f].t_us - t0) >= 500000u)
             && (0 == p_s->out.duty_l) && (0 == p_s->out.duty_r));
 }

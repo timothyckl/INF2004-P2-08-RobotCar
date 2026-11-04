@@ -52,6 +52,8 @@
 
 #define MOTION_WINDOW_MAX   8u      /* speed window limit, periods */
 #define MOTION_EVENTS_MAX   4u      /* events one call can produce */
+#define MOTION_STALL_LEFT   0x01u
+#define MOTION_STALL_RIGHT  0x02u
 #define MOTION_TURN_MAX_MDEG ((int32_t)MOTION_ANGLE_MAX_MDEG)
 
 typedef enum
@@ -111,8 +113,15 @@ typedef struct
 {
     int32_t        duty_l;
     int32_t        duty_r;
+    int32_t        fault_duty_l;  /* exact values immediately before Fault */
+    int32_t        fault_duty_r;
+    int32_t        fault_speed_l;
+    int32_t        fault_speed_r;
     motion_event_t events[MOTION_EVENTS_MAX];
     uint8_t        n_events;
+    uint8_t        fault_state;
+    uint8_t        fault_reason;
+    uint8_t        stalled_wheels; /* MOTION_STALL_* mask */
     bool           b_raise_fault;   /* raise the controller FAULT bit */
 } motion_output_t;
 

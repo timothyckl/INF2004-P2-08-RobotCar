@@ -4,10 +4,12 @@
  *
  * Hardware: TT motors with two-channel Hall encoders (confirmed on the
  * robot; part number and datasheet unknown, so counts per revolution are
- * provisionally measured by test S2-H03). The agreed mapping is encoder 1 =
- * right motor 1 = GP26 (A) / GP27 (B), and encoder 2 = left motor 2 = GP7
- * (A) / GP28 (B). Keep the GP28 battery-sense jumper open and keep the ADC
- * driver disabled on GP26 through GP28.
+ * provisionally measured by test S2-H03). The normal mapping is encoder 1 =
+ * right wheel = GP26 (A) / GP27 (B), and encoder 2 = left wheel = GP7 (A) /
+ * GP28 (B). The dedicated S3 line-follow test instead reads encoder 1 from
+ * the installed GP0/GP1 pair; subsystem 4 and UART0 are disabled in that
+ * profile. Keep the GP28 battery-sense jumper open and keep the ADC driver
+ * disabled on GP26 through GP28.
  *
  * Decoding (x2): an interrupt on both edges of A only; A and B levels at
  * that moment give the direction. If RP2040 has latched both A edge bits
@@ -36,8 +38,8 @@
 
 typedef enum
 {
-    DRV_ENCODER_1 = 0,  /* right wheel (motor 1), GP26/GP27 */
-    DRV_ENCODER_2,      /* left wheel (motor 2), GP7/GP28 */
+    DRV_ENCODER_1 = 0,  /* right wheel; pins selected by build profile */
+    DRV_ENCODER_2,      /* left wheel, GP7/GP28 */
     DRV_ENCODER_COUNT
 } drv_encoder_id_t;
 

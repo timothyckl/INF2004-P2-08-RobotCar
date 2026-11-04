@@ -19,6 +19,7 @@
 #include "task_controller.h"
 
 #include "controller_logic.h"
+#include "line_control.h"
 #include "motion_cmd.h"
 #include "robot_state.h"
 #include "task_motion.h"
@@ -37,7 +38,12 @@
 #if S3_LINE_FOLLOW_TEST
 #define CTRL_LINE_BASE_MM_S        40
 #define CTRL_LINE_INNER_MM_S        0
+#define CTRL_LINE_SEARCH_MM_S       30
 #define CTRL_LINE_TIMEOUT_MS      200u
+#define CTRL_LINE_START_GRACE_MS  200u
+#define CTRL_LINE_CROSSING_MS     750u
+#define CTRL_LINE_CORRECTION_MS   600u
+#define CTRL_LINE_SEARCH_MS      1500u
 #define CTRL_LINE_BUTTON_PIN       20u
 #define CTRL_LINE_BUTTON_MASK      (UINT32_C(1) << CTRL_LINE_BUTTON_PIN)
 #define CTRL_LINE_DEBOUNCE_MS       30u
@@ -70,7 +76,20 @@ typedef struct
     bool     b_restart_pending;
 } ctrl_line_button_t;
 
+typedef struct
+{
+    line_control_t        control;
+    uint32_t              last_report_ms;
+    uint32_t              running_since_ms;
+    uint8_t               position;
+    line_control_action_t last_action;
+    bool                  b_have_report;
+    bool                  b_running;
+    bool                  b_action_sent;
+} ctrl_line_runtime_t;
+
 static ctrl_line_button_t g_line_button;
+static ctrl_line_runtime_t g_line_runtime;
 #endif
 
 static void     controller_task (INT stacd, void * exinf);
@@ -82,10 +101,16 @@ static uint32_t now_ms (void);
 #if S3_LINE_FOLLOW_TEST
 static ER       line_button_init (void);
 static bool     line_button_press_event (uint32_t now);
+static void     line_button_request_reset (s2_robot_state_t const * p_state);
 static void     line_button_step (s2_robot_state_t const * p_state,
                                   ctrl_input_t const * p_input);
 static void     line_step (s2_robot_state_t const * p_state,
                            ctrl_input_t const * p_input);
+static void     line_reset (uint32_t now);
+static bool     line_apply_action (line_control_action_t action);
+static void     line_log_mode (line_control_mode_t old_mode,
+                               line_control_mode_t new_mode,
+                               line_control_action_t action);
 #endif
 
 /**
@@ -436,6 +461,35 @@ line_button_press_event (uint32_t now)
 }
 
 static void
+line_button_request_reset (s2_robot_state_t const * p_state)
+{
+    bool const b_wheels_stopped =
+        (0u != (p_state->flags & S2_RS_STOPPED));
+
+    if (!b_wheels_stopped)
+    {
+        tm_printf((UB *)"[S2] GP20: RESET waiting; wheels not stopped\n");
+    }
+    else if (s2_local_command(S2_REMOTE_RESET))
+    {
+        g_line_button.b_restart_pending = true;
+
+        if (S2_SYS_FAULT == p_state->state)
+        {
+            tm_printf((UB *)"[S2] GP20: FAULT RESET requested before restart\n");
+        }
+        else
+        {
+            tm_printf((UB *)"[S2] GP20: RESET requested before restart\n");
+        }
+    }
+    else
+    {
+        tm_printf((UB *)"[S2] GP20: RESET request failed\n");
+    }
+}
+
+static void
 line_button_step (s2_robot_state_t const * p_state,
                   ctrl_input_t const * p_input)
 {
@@ -485,17 +539,10 @@ line_button_step (s2_robot_state_t const * p_state,
                 tm_printf((UB *)"[S2] GP20: STOP request failed\n");
             }
         }
-        else if (S2_SYS_STOPPED == p_state->state)
+        else if ((S2_SYS_STOPPED == p_state->state)
+                 || (S2_SYS_FAULT == p_state->state))
         {
-            if (s2_local_command(S2_REMOTE_RESET))
-            {
-                g_line_button.b_restart_pending = true;
-                tm_printf((UB *)"[S2] GP20: RESET requested before restart\n");
-            }
-            else
-            {
-                tm_printf((UB *)"[S2] GP20: RESET request failed\n");
-            }
+            line_button_request_reset(p_state);
         }
         else
         {
@@ -516,72 +563,202 @@ line_button_step (s2_robot_state_t const * p_state,
 static void
 line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 {
-    static uint32_t last_report_ms = 0u;
-    static bool b_have_report = false;
     s2_line_report_t report;
-    bool b_new_report = false;
+    bool const b_system_running = (S2_SYS_RUNNING == p_state->state);
     bool b_report_valid = true;
+    line_control_action_t action;
+    line_control_mode_t old_mode;
+    line_control_mode_t new_mode;
+
+    if (b_system_running && (!g_line_runtime.b_running))
+    {
+        line_reset(p_input->now_ms);
+        g_line_runtime.b_running = true;
+        g_line_runtime.running_since_ms = p_input->now_ms;
+    }
 
     while (tk_rcv_mbf(line_q, &report, TMO_POL)
            == (INT)sizeof(s2_line_report_t))
     {
-        bool const b_this_valid = (report.position <= S2_LINE_STOP)
-            && (0u == report.reserved[0]) && (0u == report.reserved[1])
+        bool const b_this_valid = b_system_running
+            && (report.position <= S2_LINE_STOP)
+            && (0u == report.reserved[0])
+            && (0u == report.reserved[1])
             && (0u == report.reserved[2])
             && ((p_input->now_ms - report.captured_ms)
                 <= S2_LINE_MAX_AGE_MS);
 
-        b_new_report = true;
-        b_report_valid = b_report_valid && b_this_valid;
-
-        if (b_this_valid)
+        if (b_system_running)
         {
-            last_report_ms = report.captured_ms;
-            b_have_report = true;
+            b_report_valid = b_report_valid && b_this_valid;
+
+            if (b_this_valid)
+            {
+                g_line_runtime.last_report_ms = report.captured_ms;
+                g_line_runtime.position = report.position;
+                g_line_runtime.b_have_report = true;
+            }
         }
     }
 
-    if (S2_SYS_RUNNING != p_state->state)
+    if (!b_system_running)
     {
+        if (g_line_runtime.b_running)
+        {
+            line_reset(p_input->now_ms);
+        }
         return;
     }
 
-    if ((!b_report_valid) || (!b_have_report)
-        || ((p_input->now_ms - last_report_ms) > CTRL_LINE_TIMEOUT_MS))
+    if (!b_report_valid)
     {
+        tm_printf((UB *)"[S2] line: invalid report; STOP\n");
         (void)s2_line_stop();
         return;
     }
 
-    if (b_new_report)
+    if (!g_line_runtime.b_have_report)
     {
-        ER er = E_PAR;
+        if ((p_input->now_ms - g_line_runtime.running_since_ms)
+            > CTRL_LINE_START_GRACE_MS)
+        {
+            tm_printf((UB *)"[S2] line: no report after START; STOP\n");
+            (void)s2_line_stop();
+        }
+        return;
+    }
 
-        if (S2_LINE_CENTER == report.position)
+    if ((p_input->now_ms - g_line_runtime.last_report_ms)
+        > CTRL_LINE_TIMEOUT_MS)
+    {
+        tm_printf((UB *)"[S2] line: stale report; STOP\n");
+        (void)s2_line_stop();
+        return;
+    }
+
+    old_mode = line_control_mode(&g_line_runtime.control);
+    action = line_control_step(&g_line_runtime.control,
+                               g_line_runtime.position,
+                               p_input->now_ms);
+    new_mode = line_control_mode(&g_line_runtime.control);
+    line_log_mode(old_mode, new_mode, action);
+
+    if ((!g_line_runtime.b_action_sent)
+        || (action != g_line_runtime.last_action))
+    {
+        if (!line_apply_action(action))
         {
-            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
-                                   CTRL_LINE_BASE_MM_S);
-        }
-        else if (S2_LINE_LEFT == report.position)
-        {
-            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
-                                   CTRL_LINE_INNER_MM_S);
-        }
-        else if (S2_LINE_RIGHT == report.position)
-        {
-            er = motion_set_speeds(CTRL_LINE_INNER_MM_S,
-                                   CTRL_LINE_BASE_MM_S);
+            tm_printf((UB *)"[S2] line: motion command failed; STOP\n");
+            (void)s2_line_stop();
         }
         else
         {
-            (void)s2_line_stop();
-            return;
+            g_line_runtime.last_action = action;
+            g_line_runtime.b_action_sent = true;
         }
+    }
+}
 
-        if (E_OK != er)
+static void
+line_reset (uint32_t now)
+{
+    line_control_cfg_t const cfg =
+    {
+        CTRL_LINE_CROSSING_MS,
+        CTRL_LINE_CORRECTION_MS,
+        CTRL_LINE_SEARCH_MS
+    };
+
+    (void)line_control_init(&g_line_runtime.control, &cfg, now);
+    g_line_runtime.last_report_ms = now;
+    g_line_runtime.running_since_ms = now;
+    g_line_runtime.position = S2_LINE_STOP;
+    g_line_runtime.last_action = LINE_CONTROL_ACTION_STOP;
+    g_line_runtime.b_have_report = false;
+    g_line_runtime.b_running = false;
+    g_line_runtime.b_action_sent = false;
+}
+
+static bool
+line_apply_action (line_control_action_t action)
+{
+    ER er = E_PAR;
+
+    switch (action)
+    {
+        case LINE_CONTROL_ACTION_STRAIGHT:
+            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+                                   CTRL_LINE_BASE_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_CORRECT_LEFT:
+            er = motion_set_speeds(CTRL_LINE_INNER_MM_S,
+                                   CTRL_LINE_BASE_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_CORRECT_RIGHT:
+            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+                                   CTRL_LINE_INNER_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_PIVOT_LEFT:
+            er = motion_set_speeds(-CTRL_LINE_SEARCH_MM_S,
+                                   CTRL_LINE_SEARCH_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_PIVOT_RIGHT:
+            er = motion_set_speeds(CTRL_LINE_SEARCH_MM_S,
+                                   -CTRL_LINE_SEARCH_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_STOP:
+            er = s2_line_stop() ? E_OK : E_OBJ;
+        break;
+
+        default:
+            er = E_PAR;
+        break;
+    }
+
+    return (E_OK == er);
+}
+
+static void
+line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
+               line_control_action_t action)
+{
+    if (old_mode != new_mode)
+    {
+        if (LINE_CONTROL_MODE_CROSSING == new_mode)
         {
-            (void)s2_line_stop();
+            tm_printf((UB *)"[S2] line: BOTH BLACK; crossing straight\n");
         }
+        else if (LINE_CONTROL_MODE_SEARCH == new_mode)
+        {
+            static UB const left[] = "LEFT";
+            static UB const right[] = "RIGHT";
+            UB const * p_direction =
+                (LINE_CONTROL_ACTION_PIVOT_LEFT == action)
+                    ? left : right;
+
+            tm_printf((UB *)"[S2] line: correction persisted; "
+                              "pivoting %s\n", p_direction);
+        }
+        else if (LINE_CONTROL_MODE_FOLLOW == new_mode)
+        {
+            tm_printf((UB *)"[S2] line: normal following resumed\n");
+        }
+        else
+        {
+            tm_printf((UB *)"[S2] line: invalid recovery mode; STOP\n");
+        }
+    }
+
+    if ((LINE_CONTROL_ACTION_STOP == action)
+        && ((!g_line_runtime.b_action_sent)
+            || (LINE_CONTROL_ACTION_STOP != g_line_runtime.last_action)))
+    {
+        tm_printf((UB *)"[S2] line: recovery bound exceeded; STOP\n");
     }
 }
 #endif

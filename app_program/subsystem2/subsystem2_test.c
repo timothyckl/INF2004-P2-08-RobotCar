@@ -27,6 +27,7 @@
 #include "motion_config.h"
 #include "test_motion.h"
 #include "test_controller.h"
+#include "test_line_control.h"
 #include "s2_bridge.h"
 #include "../test_report.h"
 
@@ -305,7 +306,7 @@ static bool test_remote_make(void)
 	       (keep.request_id == 99u) && (keep.reserved[2] == 3u);
 }
 
-/* S2-U57: line report accepts only the four agreed positions. */
+/* S2-U57: line report accepts only the agreed positions. */
 static bool test_line_make(void)
 {
 	s2_line_report_t report;
@@ -322,7 +323,7 @@ static bool test_line_make(void)
 		     (report.reserved[2] == 0u) && ok;
 	}
 
-	return ok && !s2_line_make(4u, 0u, &keep) &&
+	return ok && !s2_line_make(5u, 0u, &keep) &&
 	       !s2_line_make(S2_LINE_CENTER, 0u, NULL) &&
 	       (keep.captured_ms == 99u) && (keep.position == 98u) &&
 	       (keep.reserved[2] == 3u);
@@ -740,6 +741,10 @@ EXPORT void subsystem2_test(void)
 		   "ramp cannot cause a false stall");
 	TEST_CHECK("S2-U57", test_line_make(),
 		   "line report accepts only agreed positions");
+	TEST_CHECK("S2-U58", test_line_control_crossing(),
+		   "both-black crossing is straight and bounded");
+	TEST_CHECK("S2-U59", test_line_control_search(),
+		   "persistent correction uses bounded remembered-direction search");
 
 #if S2_HW_TEST
 	hw_test();

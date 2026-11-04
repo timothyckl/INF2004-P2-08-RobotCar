@@ -93,7 +93,7 @@ Define a test here before running it. Test IDs never change.
 | Counts per wheel rev, right (x2) | S2-H03 | 1307 | 1332 | 1257 | 1330 (as left) | 2026-11-04, measured on `de808dc` |
 | Wheel circumference (um) | roll 10 revs on the floor, measure, divide by 10 | | | | | |
 | Track width (mm) | wheel contact centre to centre | | | | | |
-| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | configured left (encoder 2, GP7/GP28) yes; right (encoder 1, GP26/GP27) no; repeat after GPIO remap | Earlier signs measured on 2026-11-04, `de808dc`; new pins not yet physically revalidated |
+| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | S3 line profile: left no (recheck); right yes | The 2026-11-05 straight-line log reported right speed -114 mm/s and a decreasing GP0/GP1 count while forward was commanded; this sign is inverted only in the line-test profile |
 | Left/right motor needs negative duty to go forward? | S2-H01 (bench) | | | | motor 1 (right wheel) no, motor 2 (left wheel) yes | 2026-11-02, `9f43bc3`; wheels per pin mapping 2026-11-03 |
 | Still threshold (mm/s) | robot at rest: largest speed reading over 10 s, plus margin | | | | | |
 | Interrupt rate at full speed (edges/s per wheel) | S2-H04 | | | | | |

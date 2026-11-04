@@ -94,6 +94,14 @@ fixed.
 | GP27 | S2 | ENC1_B, motor 1 encoder; ADC pin initialisation disabled |
 | GP28 | S2 | ENC2_B, motor 2 encoder; battery-sense jumper open |
 
+Dedicated test-profile exception (Edmund, 2026-11-05): only the
+`S3_LINE_FOLLOW_TEST` image follows the current installed trial wiring. It uses
+GP0/GP1 for the right encoder, GP7/GP28 for the left encoder, motor 1 for the
+left wheel and motor 2 for the right wheel. That image does not start subsystem
+4 and prohibits UART0. Normal and full-system images retain the table above;
+subsystem 4's future replacement pins must be agreed and recorded before this
+exception can become an integrated mapping.
+
 ## 3. Peripherals
 
 **Subsystems, tasks and peripherals are three different things:**
@@ -191,7 +199,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
 | IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
 | IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
-| IF-06 | S3 â†’ S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
+| IF-06 | S3 â†’ S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).

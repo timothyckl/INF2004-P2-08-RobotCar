@@ -457,7 +457,7 @@ s3_test_line_position (s3_line_t line, uint8_t * p_position)
     }
     else if (S3_LINE_JUNCTION == line)
     {
-        *p_position = S2_LINE_STOP;
+        *p_position = S2_LINE_BOTH_BLACK;
     }
     else
     {
@@ -493,6 +493,12 @@ s3_test_line_name (uint8_t position)
         static UB const stop[] = "STOP";
 
         p_name = stop;
+    }
+    else if (S2_LINE_BOTH_BLACK == position)
+    {
+        static UB const crossing[] = "CROSSING";
+
+        p_name = crossing;
     }
     else
     {

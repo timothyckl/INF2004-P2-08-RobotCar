@@ -50,6 +50,21 @@ decision 1 and the pin mapping of 2026-11-03.
   steps instead of being recorded as an encoder error. Invalid snapshots and
   genuinely undecodable events retain the Motion Control safety fault.
 
+### 5. Dedicated subsystem 3 installed-wiring profile (2026-11-05)
+
+Edmund approved a build-profile exception for the supervised line-follow trial.
+Only `S3_LINE_FOLLOW_TEST` uses the currently installed wiring: motor 1 drives
+the physical left wheel, motor 2 drives the physical right wheel, encoder 2 on
+GP7/GP28 measures the left wheel, and encoder 1 on GP0/GP1 measures the right
+wheel. Subsystem 4 is not started and UART0 is disabled in this image. The motor
+inversions reproduce the previously observed forward motion but remain
+provisional until checked with the wheels raised.
+
+Normal and integrated firmware retain decisions 1 and 4. This exception does
+not assign replacement subsystem 4 pins and cannot become the integrated
+mapping until those pins are agreed, checked against the hardware references
+and recorded in `TEAM.md`.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
@@ -100,8 +115,41 @@ Vehicle Controller: a press starts, a press while running latches STOP, and a
 later press performs the controller RESET/START sequence.
 Because WHITE/WHITE is also possible after completely losing the line, this
 two-sensor rule remains a supervised test until line-loss detection or
-additional evidence resolves that ambiguity. BLACK/BLACK, invalid or stale
-sensor reports, failed delivery, and controller/motion faults still stop it.
+additional evidence resolves that ambiguity. Invalid or stale sensor reports,
+failed delivery, and controller/motion faults still stop it.
+
+On 2026-11-04 Edmund approved the first bounded recovery revision. This revises
+BLACK/BLACK from an immediate STOP to straight travel for at most 750 ms so the
+car can cross a wide line or junction. A single-black correction that persists
+for 600 ms changes to an on-the-spot pivot in that remembered correction
+direction. WHITE/WHITE resumes straight following, an opposite single-black
+observation resumes normal correction, and BLACK/BLACK enters the crossing
+state. A crossing that remains BLACK/BLACK for 750 ms or a pivot search that
+lasts 1500 ms latches STOP. These times and the 30 mm/s pivot target are
+provisional safety values requiring physical calibration; they are not validated
+performance criteria. The policy is owned by the Vehicle Controller and only
+Motion Control writes PWM.
+
+This revision does not claim general line-loss detection. WHITE/WHITE remains
+ambiguous with only two sensors, so the pivot is triggered only by a persistent
+single-black correction. Reliable recovery from an arbitrary WHITE/WHITE loss
+still requires extra evidence such as the agreed encoder corridor and heading.
+
+The Vehicle Controller drains and discards `line_q` observations whenever it is
+not Running. Subsystem 3 publishes continuously, so retaining reports while
+Ready or Stopped fills the bounded queue and makes the next START consume stale
+observations. Only reports drained while Running may update the active line
+state; invalid or stale Running reports still latch STOP.
+
+On 2026-11-04 Edmund requested recovery from the GP20 line-test stall indication.
+In the dedicated line-follow test, pressing GP20 while the Vehicle Controller is
+in Fault now requests RESET only after the encoder status confirms both wheels
+have been stopped for 100 ms. The controller retains the latched STOP during
+reset, waits for Motion Control to return healthy, and only then issues the
+pending START. The motor-stall detector remains enabled; a one-shot diagnostic
+records the indicated left/right stalled wheel, preceding PWM duty, encoder
+speed, counts and decode errors so recurring hardware or calibration faults are
+not hidden by automatic recovery.
 
 Repeated successful calibration on 2026-11-04 established LOW on white and
 HIGH on black for both front modules. The dedicated line-test image stores that

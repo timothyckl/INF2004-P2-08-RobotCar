@@ -246,8 +246,10 @@ the `_s3hw` suffix; see `app_program/subsystem3/README.md`.
 `S3_CAL_TEST=1` selects the separate guided polarity-calibration profile and
 adds `_s3cal`. Do not combine it with `S3_HW_TEST=1`.
 `S3_LINE_TEST=1` selects the supervised, GP20 START/STOP integration trial and
-adds `_s3line`. It has no automatic run-time limit. Do not combine any two
-S3-specific test profiles.
+adds `_s3line`. It has no automatic run-time limit. This profile alone uses the
+temporary installed drivetrain documented in `TEAM.md`, including the right
+encoder on GP0/GP1; subsystem 4 and UART0 are unavailable in this image. Do not
+combine any two S3-specific test profiles.
 `S4_HW_TEST=1` similarly adds subsystem 4's live IMU start-up check and the
 `_s4hw` image suffix; see `docs/subsystem4.md`.
 
