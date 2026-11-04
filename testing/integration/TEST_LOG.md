@@ -46,3 +46,5 @@ INT-01 and INT-02 are retired with the starter interfaces IF-01 to IF-05.
 |---|---|---|---|---|---|---|
 | 2026-11-04 | host suites (all subsystems) | `1573b62` | host (gcc) | PASS | `logs/2026-11-04_host-suites.txt` | S1-U04..U07, S2 41/41, S3 656 + 38 checks, S4 12 checks, S5 30/30; host only |
 | 2026-11-04 | INT-03 | `1573b62` | Dalton | PASS | `logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W; IR sensors connected |
+| 2026-11-04 | host suites (all subsystems) | `1cd5330` | host (gcc) | PASS | `logs/2026-11-04_host-suites-2.txt` | host only |
+| 2026-11-04 | INT-03 | `1cd5330` | Dalton | PASS | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W |

@@ -188,3 +188,5 @@ Retired with the starter producer: S2-U01, S2-U02.
 |---|---|---|---|---|---|---|
 | 2026-11-03 | S2-U20..U35, U41..U53, U55..U66 | `ebb59a5` | host (gcc) | PASS (41/41) | `../integration/logs/2026-11-03_host-suites.txt` | host only; also clean under UBSan |
 | 2026-11-04 | S2-U03..U63 | `1573b62` | Dalton | PASS (61 observed) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W. S2-U64 line cut mid-word; S2-U65, S2-U66 and the subsystem2 SUMMARY not printed: USB console ring (4 KB) full, output dropped (`usb_console.c`). U64..U66 not observed on target (host PASS); re-run after the console fix |
+| 2026-11-04 | S2-U03..U66 | `1cd5330` (partial, uncommitted) | Dalton | PASS (64/64) | `../integration/logs/2026-11-04_target-selftest-2.txt` | first run with the console flow control (S4 overrun fix only); console dropped 0 bytes |
+| 2026-11-04 | S2-U03..U66 | `1cd5330` | Dalton | PASS (64/64) | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W; console dropped 0 bytes |

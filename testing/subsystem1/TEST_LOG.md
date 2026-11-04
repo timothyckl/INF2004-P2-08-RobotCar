@@ -76,3 +76,4 @@ S1-U03.
 |---|---|---|---|---|---|---|
 | 2026-11-03 | S1-U04..U07 | `ebb59a5` | host (gcc) | PASS | `../integration/logs/2026-11-03_host-suites.txt` | host only |
 | 2026-11-04 | S1-U04..U07 | `1573b62` | Dalton | PASS (4/4) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W |
+| 2026-11-04 | S1-U04..U07 | `1cd5330` | Dalton | PASS (4/4) | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W; console dropped 0 bytes |
