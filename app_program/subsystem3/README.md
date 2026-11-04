@@ -4,7 +4,7 @@ The current hardware stage verifies only the two front digital IR sensors:
 
 - front-left DOUT: GP6;
 - front-right DOUT: GP16;
-- side barcode DOUT: GP26, deliberately excluded from steering and this test.
+- side barcode DOUT: GP4, deliberately excluded from steering and this test.
 
 `s3_ir_gpio` configures GP16 and GP6 as SIO inputs, disables their output
 drivers, and reads both pins into a two-bit mask. It does not enable internal
@@ -19,8 +19,9 @@ present for the other starter subsystems.
 ## On-car raw input monitor
 
 1. Connect both sensor modules to 3V3 and a common ground. From behind the
-   robot, the left DOUT is GP6 and the right DOUT is GP16. The right AOUT is
-   connected to GP17 but remains unused; do not use AOUT for this test.
+   robot, the left DOUT is GP6 and the right DOUT is GP16. GP17 is unused;
+   connect only DOUT for this test. Keep the Grove GP26 contact beside GP6
+   disconnected because GP26 belongs to motor 1's encoder.
 2. Build the dedicated monitor with `TEST=1`, `S3_HW_TEST=1`, and
    `CRASH_REPORT=0`:
 
