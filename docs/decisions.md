@@ -8,12 +8,12 @@ _No decisions recorded yet._
 
 ### 1. Encoder and IMU pins
 
-The left wheel encoder uses GP7 (A) / GP28 (B) and the right wheel encoder
-GP0 (A) / GP1 (B), agreed with Khang (subsystem 4) on 2026-11-02 to match the
+The wheel encoders use GP7 (A) / GP28 (B) and GP0 (A) / GP1 (B), agreed with Khang (subsystem 4) on 2026-11-02 to match the
 robot's wiring. The team pin mapping of 2026-11-03 then put the IMU on I2C1 at
 GP2 (SDA1) / GP3 (SCL1) and confirmed the wheels: motor 1 (GP8/GP9) drives the
-right wheel and motor 2 (GP10/GP11) the left. Consequence: `CRASH_REPORT=1`
-(UART0 on GP0/GP1) cannot be used.
+right wheel and motor 2 (GP10/GP11) the left. Which encoder is on which
+wheel is decision 4. Consequence: `CRASH_REPORT=1` (UART0 on GP0/GP1)
+cannot be used.
 
 ### 2. PWM block reset
 
@@ -29,6 +29,23 @@ period, and is armed only outside `TEST=1` and bench builds; a hung or starved
 Motion Control task resets the chip, which stops the motors. Motion Control
 ramps duty increases (full scale in 200 ms, provisional); decreases, STOP and
 Fault are never ramped.
+
+### 4. Encoder sides, signs and counts per revolution (2026-11-04)
+
+Measured on the bench (S2-H01 and S2-H03, `testing/subsystem2/TEST_LOG.md`)
+and agreed by the subsystem 2 owner. Revises the encoder sides in
+decision 1 and the pin mapping of 2026-11-03.
+
+- Motor 1 drives encoder 1 and motor 2 drives encoder 2. With motor 1 on
+  the right wheel, encoder 1 (GP7/GP28) is the right encoder and encoder 2
+  (GP0/GP1) the left. The wiring is unchanged; `motion_config.h`,
+  `AGENTS.md` and `TEAM.md` were corrected. Before this, each wheel's speed
+  loop read the other wheel's encoder.
+- Going forward, the right encoder counts up and the left counts down
+  (`MC_LEFT_ENC_INVERT 1`, `MC_RIGHT_ENC_INVERT 0`).
+- `MC_COUNTS_PER_REV` is 1330 (x2 decode), provisional: the median of single
+  hand-turned revolutions (1231 to 1450). The earlier 40 was a guess. A
+  10-revolution count replaces it.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 

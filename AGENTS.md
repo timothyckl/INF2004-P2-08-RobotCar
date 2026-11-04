@@ -80,8 +80,8 @@ per-pin ownership claims and must match it; change both together.
 | Front-left line sensor | DO / AO | GP16 / GP17 | GPIO input / unused | Line Sensor: left line guide; AO connected, not used |
 | Front-right line sensor | DO | GP6 | GPIO input | Line Sensor: right line guide; AO not connected |
 | Side barcode sensor | DO / AO | GP26 / GP27 | GPIO input / unused | Line Sensor: barcode only, never steering; AO connected, not used |
-| Left wheel encoder (encoder 1) | ENC1_A / ENC1_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
-| Right wheel encoder (encoder 2) | ENC2_A / ENC2_B | GP0 / GP1 | GPIO interrupts | Motion Control; requires `CRASH_REPORT=0` |
+| Right wheel encoder (encoder 1) | ENC1_A / ENC1_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
+| Left wheel encoder (encoder 2) | ENC2_A / ENC2_B | GP0 / GP1 | GPIO interrupts | Motion Control; requires `CRASH_REPORT=0` |
 | Motor 1 (right wheel) | M1A_PWM / M1B_PWM | GP8 (forward) / GP9 (backward) | PWM | Motion Control only |
 | Motor 2 (left wheel) | M2A_PWM / M2B_PWM | GP10 (backward) / GP11 (forward) | PWM | Motion Control only |
 | SG90 servo | SERVO_PWM | GP12 | PWM | Obstacle Scan; power from the servo header V+ |
@@ -90,12 +90,12 @@ per-pin ownership claims and must match it; change both together.
 Configuration constraints:
 
 - Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
-  carry the right encoder. The makefile refuses `CRASH_REPORT=1` and
+  carry the left encoder. The makefile refuses `CRASH_REPORT=1` and
   `CONSOLE=uart`, and `kernel/sysdepend/pico_rp2040/hw_setting.c` and
   `config/config_device.h` fail to compile if UART0 would claim the pins.
 - Disable or reassign the demo liveness LED from GP16.
 - Keep RP2040 ADC pin initialisation disabled on GP26 to GP28: GP26 is the
-  barcode sensor's digital output and GP28 carries the left encoder. GP17 and
+  barcode sensor's digital output and GP28 carries the right encoder. GP17 and
   GP27 carry analogue outputs that the current logic does not use.
 - GP13, GP14, GP15 and GP18 to GP22 are unused.
 - The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently

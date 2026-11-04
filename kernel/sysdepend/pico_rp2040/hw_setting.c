@@ -74,7 +74,7 @@ LOCAL const UW module_tbl[] = {
  * Setup pin functions Tadle
  */
 #if !BOARD_UART0_FREE
-/* GP0/GP1 carry the right wheel encoder on this robot (AGENTS.md). */
+/* GP0/GP1 carry a wheel encoder on this robot (AGENTS.md). */
 #error "Encoder inputs on GP0/GP1 require UART0 to be disabled or relocated"
 #endif
 

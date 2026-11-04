@@ -29,7 +29,7 @@
 #define DEVCNF_USE_ADC		1		// A/D conversion device
 #define DEVCNF_USE_IIC		1		// I2C communication device
 
-/* GP0/GP1 carry the right wheel encoder (AGENTS.md), so the boot code
+/* GP0/GP1 carry a wheel encoder (AGENTS.md), so the boot code
    must leave them alone. sysdef.h defaults BOARD_UART0_FREE to 0, so test
    its value, not only whether it is defined. */
 #if defined(_PICO_RP2040_) \

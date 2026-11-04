@@ -56,8 +56,8 @@ The authoritative GPIO mapping is `AGENTS.md`, section *Agreed pin mapping*;
 the claims below must match it. The proposed robot wiring is in
 `docs/AAI08_Design_Review.pdf` section 2. The rows below follow the team pin
 mapping of 2026-11-03, which records the assembled robot (`docs/decisions.md`,
-subsystem 2, decision 1): the wheel encoders use GP7/GP28 (left) and GP0/GP1
-(right), the IMU uses I2C1 on GP2/GP3, the HC-SR04 GP4/GP5, the servo GP12,
+subsystem 2, decision 1): the wheel encoders use GP7/GP28 (right) and GP0/GP1
+(left; subsystem 2, decision 4), the IMU uses I2C1 on GP2/GP3, the HC-SR04 GP4/GP5, the servo GP12,
 and the line and barcode sensors GP6, GP16, GP17, GP26 and GP27. Because GP0/GP1 carry an encoder, building with
 `CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. The kernel ADC driver is
 enabled, but its RP2040 pin initialisation stays disabled on GP26 to GP28 so it
@@ -73,14 +73,14 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | S2 | ENC2_A, right encoder (GPIO interrupt); `CRASH_REPORT=1` prohibited |
-| GP1 | S2 | ENC2_B, right encoder; `CRASH_REPORT=1` prohibited |
+| GP0 | S2 | ENC2_A, left encoder (GPIO interrupt); `CRASH_REPORT=1` prohibited |
+| GP1 | S2 | ENC2_B, left encoder; `CRASH_REPORT=1` prohibited |
 | GP2 | S4 | IMU SDA1 (I2C1) |
 | GP3 | S4 | IMU SCL1 (I2C1) |
 | GP4 | S5 | HC-SR04 TRIG |
 | GP5 | S5 | HC-SR04 ECHO; input level must not exceed Pico limits |
 | GP6 | S3 | front-right line sensor DO |
-| GP7 | S2 | ENC1_A, left encoder (GPIO interrupt) |
+| GP7 | S2 | ENC1_A, right encoder (GPIO interrupt) |
 | GP8 | S2 | M1A motor 1 PWM (slice 4A), right wheel forward |
 | GP9 | S2 | M1B motor 1 PWM (slice 4B), right wheel backward |
 | GP10 | S2 | M2A motor 2 PWM (slice 5A), left wheel backward |
@@ -98,7 +98,7 @@ fixed.
 | GP22 | | |
 | GP26 | S3 | side barcode sensor DO (ADC0 capable, used as digital) |
 | GP27 | S3 | side barcode sensor AO (ADC1 capable; connected, unused) |
-| GP28 | S2 | ENC1_B, left encoder; battery-sense jumper open |
+| GP28 | S2 | ENC1_B, right encoder; battery-sense jumper open |
 
 ## 3. Peripherals
 

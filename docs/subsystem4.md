@@ -17,7 +17,7 @@ authorise movement.
 | Accelerometer address | `0x19` |
 | Magnetometer address | `0x1E` |
 | Accelerometer mode | 100 Hz, XYZ, +/-2 g, high resolution, BDU |
-| Console constraint | S4 no longer uses UART0 pins; project wiring still assigns GP0/GP1 to the right encoder |
+| Console constraint | S4 no longer uses UART0 pins; project wiring still assigns GP0/GP1 to a wheel encoder |
 
 Before power-up, verify that the assembled module provides external SDA/SCL
 pull-ups to 3V3; the LSM303DLHC I2C interface requires pull-ups and the RP2040

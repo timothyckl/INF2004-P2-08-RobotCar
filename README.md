@@ -222,7 +222,7 @@ UART output *is* sent at once, even inside the crash handler. So when you
 need to know why the Pico crashed or froze, build with `CRASH_REPORT=1`,
 connect a USB-serial adapter (adapter RX → GP0, adapter GND → GND), and read
 it at 115200 baud. Normal `tm_printf` output on USB works the same with
-either setting. On this robot GP0/GP1 carry the right wheel encoder
+either setting. On this robot GP0/GP1 carry a wheel encoder
 (`TEAM.md` section 2), so the makefile refuses `CRASH_REPORT=1` and
 `CONSOLE=uart` (`docs/decisions.md`, integration decision 4). Use the USB
 console; for a crash, add prints before the failing step instead.
