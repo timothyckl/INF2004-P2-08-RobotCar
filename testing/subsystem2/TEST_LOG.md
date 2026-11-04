@@ -89,14 +89,14 @@ Define a test here before running it. Test IDs never change.
 
 | Quantity | Method | Trial 1 | Trial 2 | Trial 3 | Value used | Date / commit |
 |---|---|---|---|---|---|---|
-| Counts per wheel rev, left (x2) | S2-H03, one hand-turned rev | | | | | |
-| Counts per wheel rev, right (x2) | S2-H03 | | | | | |
+| Counts per wheel rev, left (x2) | S2-H03, one hand-turned rev | 1336 | 1336 | 1324 | 1330 (provisional: median of all single revs, 1231..1450; repeat with 10 revs) | 2026-11-04, measured on `de808dc` |
+| Counts per wheel rev, right (x2) | S2-H03 | 1307 | 1332 | 1257 | 1330 (as left) | 2026-11-04, measured on `de808dc` |
 | Wheel circumference (um) | roll 10 revs on the floor, measure, divide by 10 | | | | | |
 | Track width (mm) | wheel contact centre to centre | | | | | |
-| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | to re-measure: the 2026-11-02 reading assumed encoder 2 was on motor 2's wheel | |
+| Left/right encoder counts down going forward? | S2-H01 (bench) | | | | left (encoder 2, GP0/GP1) yes; right (encoder 1, GP7/GP28) no. Motor 1 drives encoder 1, motor 2 encoder 2 (S2 decision 4) | 2026-11-04, measured on `de808dc` |
 | Left/right motor needs negative duty to go forward? | S2-H01 (bench) | | | | motor 1 (right wheel) no, motor 2 (left wheel) yes | 2026-11-02, `9f43bc3`; wheels per pin mapping 2026-11-03 |
 | Still threshold (mm/s) | robot at rest: largest speed reading over 10 s, plus margin | | | | | |
-| Interrupt rate at full speed (edges/s per wheel) | S2-H04 | | | | | |
+| Interrupt rate at full speed (edges/s per wheel) | S2-H04 | right 5424 / left 5240 (alone) | right 5355 / left 5271 (alone) | right 5313 / left 5243 (both) | about 5.2k to 5.4k A edges/s per wheel, about 10.6k/s together | 2026-11-04, measured on `de808dc` |
 
 ## PID tuning
 
@@ -190,3 +190,9 @@ Retired with the starter producer: S2-U01, S2-U02.
 | 2026-11-04 | S2-U03..U63 | `1573b62` | Dalton | PASS (61 observed) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W. S2-U64 line cut mid-word; S2-U65, S2-U66 and the subsystem2 SUMMARY not printed: USB console ring (4 KB) full, output dropped (`usb_console.c`). U64..U66 not observed on target (host PASS); re-run after the console fix |
 | 2026-11-04 | S2-U03..U66 | `1cd5330` (partial, uncommitted) | Dalton | PASS (64/64) | `../integration/logs/2026-11-04_target-selftest-2.txt` | first run with the console flow control (S4 overrun fix only); console dropped 0 bytes |
 | 2026-11-04 | S2-U03..U66 | `1cd5330` | Dalton | PASS (64/64) | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W; console dropped 0 bytes |
+| 2026-11-04 | S2-U03..U66 | `de808dc` | Dalton | PASS (64/64) | `logs/2026-11-04_s2-h03.txt`, `logs/2026-11-04_s2-h01-h02.txt`, `logs/2026-11-04_s2-h04.txt`, `logs/2026-11-04_s2-h05.txt` | in each bench image (`S2_HW_TEST` 1..4) |
+| 2026-11-04 | S2-H03 | `de808dc` | Dalton | PASS | `logs/2026-11-04_s2-h03.txt`, `logs/2026-11-04_s2-h01-h02.txt` | Mode 1, motors coasting, GP28 jumper open. Each wheel moves only its own encoder; forward and back revolutions give opposite signs and similar counts (1231..1450 per hand-turned rev); errors stay 0. Forward: encoder 1 counts up, encoder 2 down. Counts per rev ~1330, not the configured 40 |
+| 2026-11-04 | S2-H01 | `de808dc` | Dalton | PASS | `logs/2026-11-04_s2-h01-h02.txt` | Mode 2, wheels off the ground. Motor 1 = right wheel: +30% forward, M1A LED. Motor 2 = left wheel: +30% backward, M2A LED (left motor inverted, as configured). **Motor 1 drives encoder 1 and motor 2 encoder 2**: `motion_config.h` paired each motor with the other wheel's encoder. Fixed in the next commit (S2 decision 4) |
+| 2026-11-04 | S2-H02 | `de808dc` | Dalton | PASS | `logs/2026-11-04_s2-h01-h02.txt` | Brake holds the wheel stiff by hand; coast spins freely (counts run on after drive stops) |
+| 2026-11-04 | S2-H04 | `de808dc` | Dalton | FAIL | `logs/2026-11-04_s2-h04.txt`, `logs/2026-11-04_s2-h01-h02.txt` | **No CPU hang** (the 2026-11-02 failure did not recur): every step in mode 3 and mode 2 printed "done" and braked, and both runs finished. Fails the 0-error criterion: mode 3 had 1 decode error per encoder (enc1 in H04a, enc2 in H04c); mode 2 had 2 on enc2 while motor 2 braked. Below the Motion Control fault limit (`MC_ENC_ERRORS_MAX` 2 per 10 ms). Rates in the calibration table |
+| 2026-11-04 | S2-H05 | `de808dc` | Dalton | PASS | `logs/2026-11-04_s2-h05.txt` | Mode 4. Motor 1 stopped at reset; `[S2] previous reset: WATCHDOG` on 9 consecutive cycles. Last line before each reset: "100 ms since last kick", within the 200 ms `MC_WATCHDOG_MS`. Exact reset time not measured: queued USB lines are lost at reset |
