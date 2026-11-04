@@ -15,7 +15,6 @@
 #define S4_LSM303_CTRL1_100HZ_XYZ     0x57u
 #define S4_LSM303_CTRL4_BDU_HR_2G     0x88u
 #define S4_LSM303_STATUS_DATA_READY    0x08u
-#define S4_LSM303_STATUS_OVERRUN       0x80u
 #define S4_LSM303_AUTO_INCREMENT       0x80u
 
 static ER s4_lsm303_configure(s4_lsm303_driver_t const * p_driver);
@@ -146,17 +145,15 @@ s4_lsm303_read_acceleration (s4_lsm303_driver_t const * p_driver,
                                          S4_LSM303_STATUS_A_REG,
                                          &status, 1u);
         if ((E_OK == error) &&
-            (0u != (status & S4_LSM303_STATUS_OVERRUN)))
-        {
-            error = E_IO;
-        }
-        else if ((E_OK == error) &&
-                 (0u == (status & S4_LSM303_STATUS_DATA_READY)))
+            (0u == (status & S4_LSM303_STATUS_DATA_READY)))
         {
             error = E_BUSY;
         }
         else if (E_OK == error)
         {
+            /* An overrun (ZYXOR) is not an error: new data overwrote
+               unread data (datasheet 7.1.8), so the output registers
+               hold the newest set. Reading them clears the flags. */
             error = s4_lsm303_read_registers(
                 p_driver->device_id, S4_LSM303_ACCEL_ADDRESS,
                 S4_LSM303_OUT_X_L_A_REG | S4_LSM303_AUTO_INCREMENT,

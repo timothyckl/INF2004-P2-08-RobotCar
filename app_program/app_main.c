@@ -43,6 +43,9 @@
  */
 
 #include "app.h"
+#if APP_TEST
+#include "test_report.h"	/* TEST_DRAIN, TEST_DROPPED */
+#endif
 
 /*
  * Create and start one task (declared in app.h for every subsystem).
@@ -121,7 +124,12 @@ EXPORT INT usermain(void)
 	subsystem2_test();
 	subsystem3_test();
 	subsystem4_test();
+	TEST_DRAIN();		/* subsystem 5 prints without test_report.h */
 	scan_lifecycle_test();
+	TEST_DRAIN();
+	/* Non-zero means lines are missing from this log: re-run it. */
+	tm_printf((UB*)"[TEST] console dropped %d bytes\n",
+		  (INT)TEST_DROPPED());
 	tm_printf((UB*)"[TEST] === test run end ===\n");
 #endif
 

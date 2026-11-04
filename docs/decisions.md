@@ -57,8 +57,8 @@ physical orientation must be recorded before validation.
 Use integer milligravity and millimetre units. Confirm ascent, descent, and
 return-to-level over consecutive samples before reporting a hump. A direct
 ascent-to-level transition is incomplete. Treat repeated invalid samples,
-stale timestamps, unstable calibration, I2C failures, and data overruns as
-faults. Local recovery closes and revalidates the sensor and recalibrates,
+stale timestamps, unstable calibration, and I2C failures as faults; a data
+overrun is not a fault (decision 6). Local recovery closes and revalidates the sensor and recalibrates,
 while retaining the run maximum; only an explicit new-run reset clears it.
 
 ### 4. Experimental measurements
@@ -81,6 +81,26 @@ the live startup check only with `TEST=1 S4_HW_TEST=1` and connected hardware.
 A successful cross-build is not a passed on-board or physical test. Record the
 commit, wiring, mounting, reference instruments, serial log, raw observations,
 and repeated measurements before marking a hardware case passed.
+
+### 6. Overrun, turn-on and sample period (2026-11-04)
+
+Agreed by the subsystem 4 owner after the first on-target S4-H01 runs
+(`testing/subsystem4/TEST_LOG.md`, 2026-11-04). Revises the overrun clause
+of decision 3.
+
+- A data overrun (STATUS_REG_A ZYXOR) is not an error. The datasheet
+  (7.1.8) defines it as new data overwriting unread data, so the driver
+  reads the newest sample. Treating it as a fault had made every restart
+  fault on its first read, because the sensor keeps sampling while closed.
+- A failed read is one invalid sample. The fault comes only after
+  `S4_INVALID_SAMPLE_LIMIT` consecutive invalid samples.
+- After each open, the first `S4_TURN_ON_SAMPLES` (7) samples are discarded:
+  turn-on time is 7/ODR in high-resolution mode (datasheet Table 8).
+- A cyclic handler wakes the IMU task every `S4_SAMPLE_PERIOD_MS`, as in
+  subsystems 3 and 5. `tk_dly_tsk()` adds one timer tick, so the previous
+  10 ms delay sampled at about 50 Hz.
+- A calibration fault prints the measured span per axis, as evidence for
+  S4-H03.
 
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 

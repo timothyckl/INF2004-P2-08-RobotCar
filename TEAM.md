@@ -186,7 +186,7 @@ wait.
 | 1 | 12–13 | none: runs in the kernel WiFi task `cyw43_utk_task` |
 | 2 | 14–15 | `controller` – 14 – core 1; `motion` – 15 – core 1 (10 ms cyclic) |
 | 3 | 16–17 | `line_sensor` – 16 – core 0 (10 ms cyclic) |
-| 4 | 18–19 | `s4_imu_task` – 18 – any (10 ms delay loop) |
+| 4 | 18–19 | `s4_imu_task` – 18 – any (10 ms cyclic) |
 | 5 | 20–21 | `obstacle_scan` – 20 – any (10 ms cyclic) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
@@ -235,7 +235,7 @@ Kernel driver objects (I2C, ADC, serial) are not included.
 | Message buffer | 12 | | 3 | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | 1 | 1 | | 1 |
+| Cyclic handler | 12 | | 1 | 1 | 1 | 1 |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

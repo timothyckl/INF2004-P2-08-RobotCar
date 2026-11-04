@@ -19,7 +19,7 @@ evidence that the robot works.
 | `controller` | S2 | 14, core 1 | flag wait, at most 10 ms | Mission states, STOP latch, authorisation |
 | `motion` | S2 | 15, core 1 | 10 ms cyclic | Only writer of motor PWM; encoders, PID, watchdog kick |
 | `line_sensor` | S3 | 16, core 0 | 10 ms cyclic | IR line tracking, barcode capture, IF-06 |
-| `s4_imu_task` | S4 | 18, any | 10 ms delay | LSM303DLHC on I2C1, terrain, highest hump |
+| `s4_imu_task` | S4 | 18, any | 10 ms cyclic | LSM303DLHC on I2C1, terrain, highest hump |
 | `obstacle_scan` | S5 | 20, any | 10 ms cyclic | HC-SR04, servo, forward monitor, scan, plan |
 | `cyw43_utk_task` | kernel (S1 hooks) | 4 | event driven | WiFi, MQTT, S1 service bridge |
 

@@ -18,11 +18,18 @@
 #define S4_CONFIRMATION_SAMPLES     4u
 #define S4_INVALID_SAMPLE_LIMIT     3u
 
+/* Samples discarded after each open: turn-on time is 7/ODR in normal and
+   high-resolution mode (LSM303DLHC datasheet, Table 8). */
+#define S4_TURN_ON_SAMPLES          7u
+
 static s4_terrain_config_t s4_runtime_config(void);
 static uint32_t s4_capture_time_us(void);
 static void s4_mark_sensor_error(s4_terrain_context_t * p_context,
                                  uint32_t capture_time_us);
+static void s4_mark_invalid_read(s4_terrain_context_t * p_context,
+                                 uint32_t capture_time_us);
 static void s4_report_events(s4_terrain_result_t const * p_result);
+static void s4_retry_wait(void);
 static void s4_process_sample(s4_terrain_context_t * p_terrain,
                               s4_odometry_t * p_odometry,
                               s4_terrain_sample_t const * p_sample);
@@ -37,6 +44,7 @@ s4_imu_task (INT start_code,
     s4_terrain_sample_t sample = {0};
     s4_odometry_t odometry;
     ER error;
+    uint8_t turn_on_count = 0u;
 
     (void) start_code;
     (void) p_exinf;
@@ -58,17 +66,22 @@ s4_imu_task (INT start_code,
                           error);
                 s4_mark_sensor_error(&terrain, s4_capture_time_us());
                 (void) s4_status_publish(&terrain.result);
-                (void) tk_dly_tsk(S4_RETRY_PERIOD_MS);
+                s4_retry_wait();
                 continue;
             }
 
             tm_printf((UB *) "s4: LSM303DLHC ready; calibrating\n");
+            turn_on_count = S4_TURN_ON_SAMPLES;
         }
 
         error = s4_lsm303_read_acceleration(&driver,
                                             s4_capture_time_us(),
                                             &sample);
-        if (E_OK == error)
+        if ((E_OK == error) && (turn_on_count > 0u))
+        {
+            turn_on_count--;    /* still settling: not a usable sample */
+        }
+        else if (E_OK == error)
         {
             s4_process_sample(&terrain, &odometry, &sample);
             s4_report_events(&terrain.result);
@@ -76,7 +89,9 @@ s4_imu_task (INT start_code,
         }
         else if (E_BUSY != error)
         {
-            s4_mark_sensor_error(&terrain, s4_capture_time_us());
+            /* One failed read is one invalid sample: the terrain logic
+               faults after S4_INVALID_SAMPLE_LIMIT in a row. */
+            s4_mark_invalid_read(&terrain, s4_capture_time_us());
             (void) s4_status_publish(&terrain.result);
         }
         else
@@ -88,12 +103,27 @@ s4_imu_task (INT start_code,
         {
             tm_printf((UB *) "s4: terrain fault %u; sensor restart\n",
                       (UINT) terrain.result.fault);
+            if (S4_TERRAIN_FAULT_CALIBRATION == terrain.result.fault)
+            {
+                /* Measured stationary spread, for S4-H03. */
+                tm_printf((UB *) "s4: calibration span x %d y %d z %d mg"
+                          " (limit %u) after %u samples\n",
+                          (INT) (terrain.calibration_max_x -
+                                 terrain.calibration_min_x),
+                          (INT) (terrain.calibration_max_y -
+                                 terrain.calibration_min_y),
+                          (INT) (terrain.calibration_max_z -
+                                 terrain.calibration_min_z),
+                          (UINT) S4_CALIBRATION_SPAN_MG,
+                          (UINT) terrain.calibration_count);
+            }
             (void) s4_lsm303_close(&driver);
-            (void) tk_dly_tsk(S4_RETRY_PERIOD_MS);
+            s4_retry_wait();
         }
         else
         {
-            (void) tk_dly_tsk(S4_SAMPLE_PERIOD_MS);
+            /* Woken every S4_SAMPLE_PERIOD_MS by subsystem4.c. */
+            (void) tk_slp_tsk(TMO_FEVR);
         }
     }
 }
@@ -166,6 +196,28 @@ s4_mark_sensor_error (s4_terrain_context_t * p_context,
     {
         s4_terrain_process(p_context, &invalid_sample, 0u, false);
     }
+}
+
+static void
+s4_mark_invalid_read (s4_terrain_context_t * p_context,
+                      uint32_t capture_time_us)
+{
+    s4_terrain_sample_t invalid_sample =
+    {
+        .capture_time_us = capture_time_us,
+        .b_valid = false
+    };
+
+    s4_terrain_process(p_context, &invalid_sample, 0u, false);
+}
+
+/* Waits before reopening the sensor, then discards the sample wakeups
+   queued meanwhile so that sampling resumes at the normal period. */
+static void
+s4_retry_wait (void)
+{
+    (void) tk_dly_tsk(S4_RETRY_PERIOD_MS);
+    (void) tk_can_wup(TSK_SELF);
 }
 
 static void
