@@ -1,0 +1,60 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: calibration span x 525 y 259 z 140 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: calibration span x 88 y 88 z 45 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+wifi: joining "SINGTEL-SYBAU" ...
+wifi: link status -> joined AP, waiting for IP (1)
+wifi: link status -> joined AP, no IP yet (2)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 143 y 116 z 96 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+wifi: link up, ip=172.20.10.2
+mqtt: connected to 172.20.10.3
+mqtt: subscribed to p2-08/p2-08-car-01/command
+s4: stationary calibration complete
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 0"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 1"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 2"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 3"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 4"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 5"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 6"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 7"
+s4: candidate impact detected
+s4: hump complete; run maximum 0 mm (provisional estimate)
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 8"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 9"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 10"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 11"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 12"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 13"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 14"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 15"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 16"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 17"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 18"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 19"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 20"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 21"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 22"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 23"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 24"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 25"
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 26"
+s4: hump complete; run maximum 0 mm (provisional estimate)
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 27"
