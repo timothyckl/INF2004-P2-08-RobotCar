@@ -42,4 +42,7 @@ INT-01 and INT-02 are retired with the starter interfaces IF-01 to IF-05.
 | INT-07 | MQTT commands and telemetry | IF-08..IF-10 | manual | broker on the LAN | as S1-H01..H03 |
 | INT-08 | hump distance into S4 | IF-15 | manual | ramp of known height | height valid, compared with measurement |
 
-No on-target or hardware integration run has been recorded yet.
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-04 | host suites (all subsystems) | `1573b62` | host (gcc) | PASS | `logs/2026-11-04_host-suites.txt` | S1-U04..U07, S2 41/41, S3 656 + 38 checks, S4 12 checks, S5 30/30; host only |
+| 2026-11-04 | INT-03 | `1573b62` | Dalton | PASS | `logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W; IR sensors connected |

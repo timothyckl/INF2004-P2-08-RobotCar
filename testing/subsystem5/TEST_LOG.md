@@ -144,3 +144,4 @@ S5-U36, S5-U37. New:
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
 | 2026-11-03 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `ebb59a5` | host (gcc) | PASS (30/30) | `../integration/logs/2026-11-03_host-suites.txt` | host only; not on the Pico W |
+| 2026-11-04 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `1573b62` | Dalton | PASS (30/30) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W |

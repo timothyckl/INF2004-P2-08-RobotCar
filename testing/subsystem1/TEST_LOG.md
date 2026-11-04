@@ -75,3 +75,4 @@ S1-U03.
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
 | 2026-11-03 | S1-U04..U07 | `ebb59a5` | host (gcc) | PASS | `../integration/logs/2026-11-03_host-suites.txt` | host only |
+| 2026-11-04 | S1-U04..U07 | `1573b62` | Dalton | PASS (4/4) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W |
