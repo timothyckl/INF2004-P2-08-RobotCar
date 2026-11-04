@@ -47,6 +47,26 @@ decision 1 and the pin mapping of 2026-11-03.
   hand-turned revolutions (1231 to 1450). The earlier 40 was a guess. A
   10-revolution count replaces it.
 
+### 5. Encoder decode errors at full speed (2026-11-04)
+
+Agreed by the subsystem 2 owner after S2-H04 on `de808dc` and `aa9979f`
+(`testing/subsystem2/TEST_LOG.md`). Revises the S2-H04 pass criterion, which
+was zero decode errors.
+
+- A decode error is a rise and a fall of A pending in one interrupt
+  (`drv_encoder.c`): the interrupt was serviced more than half an A period
+  late, about 190 us at 5k counts/s. It loses 2 counts and moves nothing
+  else. Errors rose with both motors running and at the brake step.
+- S2-H04 passes if every step prints "done" and brakes, the lost counts
+  (2 per error) stay at or below 0.1% of each step's counts, the step
+  including its 2 s braked print, and no 100 ms print shows more than
+  `MC_ENC_ERRORS_MAX` new errors. 0.1% is 0.5 mm on a 500 mm move,
+  against the 20 mm accuracy target.
+- Observed on `aa9979f`: worst step H04c, 8 errors on encoder 2 in about
+  25,600 counts (0.06% lost); never more than 1 per 100 ms print.
+- Re-check under MQTT and full-system load. If the limit is exceeded,
+  find the interrupt latency source instead of relaxing it again.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 _No decisions recorded yet._
