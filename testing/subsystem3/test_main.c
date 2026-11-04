@@ -26,29 +26,32 @@ static void test_ir(void)
     uint8_t mask = 0U;
     s3_line_t const decisions[S3_IR_PATTERNS] =
     {
-        S3_LINE_LOST, S3_LINE_LEFT, S3_LINE_STRAIGHT, S3_LINE_UNKNOWN,
-        S3_LINE_RIGHT, S3_LINE_UNKNOWN, S3_LINE_UNKNOWN, S3_LINE_JUNCTION
+        S3_LINE_UNKNOWN, S3_LINE_LEFT,
+        S3_LINE_RIGHT, S3_LINE_STRAIGHT
     };
 
     check(!s3_ir_normalize(&calibration, 0U, &mask), "uncalibrated");
     for (uint8_t black = 0U; black < S3_IR_PATTERNS; ++black)
     {
-        check(s3_ir_calibrate(&calibration, black ^ 7U, black),
+        uint8_t const white = black ^ (S3_IR_PATTERNS - 1u);
+
+        check(s3_ir_calibrate(&calibration, white, black),
               "all polarity combinations calibrate");
         for (uint8_t levels = 0U; levels < S3_IR_PATTERNS; ++levels)
         {
             check(s3_ir_normalize(&calibration, levels, &mask),
                   "normalization accepted");
-            check(mask == ((levels ^ black) ^ 7U),
+            check(mask == ((levels ^ black) ^
+                           (S3_IR_PATTERNS - 1u)),
                   "all normalized patterns");
         }
     }
 
-    check(!s3_ir_calibrate(&calibration, 0U, 6U), "stuck sensor");
+    check(!s3_ir_calibrate(&calibration, 0U, 2U), "stuck sensor");
     check(!calibration.valid, "failed recalibration invalidates");
-    check(!s3_ir_calibrate(NULL, 0U, 7U), "null calibration");
+    check(!s3_ir_calibrate(NULL, 0U, 3U), "null calibration");
     check(!s3_ir_normalize(NULL, 0U, &mask), "null normalizer");
-    check(!s3_ir_calibrate(&calibration, 8U, 7U), "invalid bits");
+    check(!s3_ir_calibrate(&calibration, 4U, 3U), "invalid bits");
     check(!s3_ir_filter(&filter, 1U, 3U), "filter first sample");
     check(!s3_ir_filter(&filter, 1U, 3U), "filter second sample");
     check(s3_ir_filter(&filter, 1U, 3U), "filter settled");
@@ -65,8 +68,18 @@ static void test_ir(void)
         check(s3_ir_line(idx, decisions) == decisions[idx],
               "configured line table");
     }
-    check(S3_LINE_UNKNOWN == s3_ir_line(8U, decisions), "invalid mask");
+    check(S3_LINE_UNKNOWN == s3_ir_line(4U, decisions), "invalid mask");
     check(S3_LINE_UNKNOWN == s3_ir_line(0U, NULL), "missing line table");
+    check(S3_LINE_STRAIGHT == s3_ir_follow_decision(0U),
+          "centred white-white drives straight");
+    check(S3_LINE_LEFT == s3_ir_follow_decision(S3_IR_LEFT_MASK),
+          "left black requests left correction");
+    check(S3_LINE_RIGHT == s3_ir_follow_decision(S3_IR_RIGHT_MASK),
+          "right black requests right correction");
+    check(S3_LINE_JUNCTION == s3_ir_follow_decision(3U),
+          "both black requests stop");
+    check(S3_LINE_UNKNOWN == s3_ir_follow_decision(4U),
+          "invalid follow mask rejected");
 }
 
 static void feed_symbol(s3_capture_t * p_capture, uint16_t pattern,

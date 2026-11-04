@@ -1,12 +1,14 @@
-/** @file s3_ir.h Digital IR calibration and configurable line decisions. */
+/** @file s3_ir.h Two-sensor IR calibration and line decisions. */
 #ifndef S3_IR_H
 #define S3_IR_H
 
 #include <stdbool.h>
 #include <stdint.h>
 
-#define S3_IR_COUNT 3U
-#define S3_IR_PATTERNS 8U
+#define S3_IR_COUNT       2u
+#define S3_IR_PATTERNS    4u
+#define S3_IR_LEFT_MASK   UINT8_C(1)
+#define S3_IR_RIGHT_MASK  UINT8_C(2)
 
 typedef enum
 {
@@ -32,7 +34,8 @@ typedef struct
     bool    ready;
 } s3_filter_t;
 
-/** Bits 0..2 identify sensors, not physical left/centre/right positions.
+/** Bit 0 is the front-left sensor and bit 1 is the front-right sensor.
+ * The side barcode sensor is deliberately excluded from this interface.
  * Calibration observations must be stable readings on known surfaces.
  * Failed calibration invalidates the previous result.
  */
@@ -48,6 +51,11 @@ bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required);
 /** Caller supplies all eight decisions after checking sensor geometry. */
 s3_line_t s3_ir_line(uint8_t mask,
                      s3_line_t const decisions[S3_IR_PATTERNS]);
+/** Verified two-sensor geometry for the supervised line-follow trial:
+ * neither sensor on black is centred, left black needs a left correction,
+ * right black needs a right correction, and both black is a stop marker.
+ */
+s3_line_t s3_ir_follow_decision(uint8_t black_mask);
 
 #endif /* S3_IR_H */
 

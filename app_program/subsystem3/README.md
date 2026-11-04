@@ -1,87 +1,170 @@
-# Subsystem 3: Edmund's robot foundation
+# Subsystem 3: line sensing and barcode foundation
 
-This is host-tested base logic, not hardware-tested robot firmware.
-The existing consumer example is preserved because Subsystems 2 and 4 still
-depend on its mailbox/statistics interfaces. The new modules compile through
-the existing flat source wildcard, but no robot task calls them yet. No GPIO,
-interrupt, motor PWM, shared configuration or teammate code is changed.
+The current hardware stage verifies only the two front digital IR sensors:
 
-## Modules
+- front-left DOUT: GP6;
+- front-right DOUT: GP16;
+- side barcode DOUT: GP26, deliberately excluded from steering and this test.
 
-- `s3_ir`: digital calibration from stable white/black observations, polarity
-  normalization, consecutive-sample filtering and an eight-entry line table.
-  Bits identify sensor channels; the physical role of each must be confirmed.
-  A failed calibration invalidates the result. An unsettled filter must produce
-  UNKNOWN to the caller, not reuse a previous steering decision.
-- `s3_bar`: bounded timestamped edge capture, explicit timeout polling and
-  a configurable nine-element, one-payload-symbol framed decoder prototype.
-  It requires sentinel/gap/payload/gap/sentinel (29 runs). Width windows,
-  sentinel and alphabet are supplied by the caller; NONE are calibrated defaults.
-  Input is normalized black/white, starting at the first black run. Begin/finish
-  boundaries and surrounding quiet zones must be verified by the future scanner.
-  Ambiguous widths, invalid gaps/framing, duplicate dictionary matches,
-  overflow and timeout are rejected. Reverse travel, multiple payload characters,
-  automatic framing, adaptive speed compensation and checksums are not implemented.
-  The prototype format must be checked against the printed course barcode before
-  selecting an alphabet. Tests deliberately use synthetic patterns.
-- `s3_nav`: example A/B/C/D mapping to left/right/straight/U-turn, one pending
-  request, duplicate scan suppression, age expiry and STOP cancellation. A request
-  is held until an authorised junction. No turn angles or motor actions are set.
+`s3_ir_gpio` configures GP16 and GP6 as SIO inputs, disables their output
+drivers, and reads both pins into a two-bit mask. It does not enable internal
+pull resistors or assume whether white produces a high or low signal.
+`s3_ir` calibrates the raw polarity from stable white and black observations.
 
-## Simulated-input tests (Windows PowerShell)
+Subsystem 3 never writes motor PWM. In the line-test integration profile it
+sends line positions to the Vehicle Controller, and only Motion Control writes
+PWM. The existing consumer task and its mailbox/statistics interfaces remain
+present for the other starter subsystems.
 
-From the project root, with GCC on PATH:
+## On-car raw input monitor
+
+1. Connect both sensor modules to 3V3 and a common ground. From behind the
+   robot, the left DOUT is GP6 and the right DOUT is GP16. The right AOUT is
+   connected to GP17 but remains unused; do not use AOUT for this test.
+2. Build the dedicated monitor with `TEST=1`, `S3_HW_TEST=1`, and
+   `CRASH_REPORT=0`:
+
+   ```text
+   make -C build_make TEST=1 S3_HW_TEST=1 CRASH_REPORT=0 -j8
+   ```
+
+3. Flash the generated `_test_s3hw.uf2` and open the serial console. This
+   profile starts only the Subsystem 3 sensor monitor; the other application
+   subsystems and their output are suppressed.
+4. Cover and uncover either sensor with a finger and watch its raw DOUT value.
+   The monitor continues at 10 Hz until the Pico is reset.
+
+Example raw diagnostic output:
+
+```text
+s3 raw: left=0 right=1
+```
+
+`left` is GP6 and `right` is GP16, using robot-relative sides viewed from
+behind. A value of `0` is LOW and `1` is HIGH. This
+stage does not label readings as white or black and does not advance into a
+calibration prompt. If a value never changes, check that sensor's threshold
+adjustment, DOUT wiring, power, ground, and mounting height.
+
+A normal `TEST=1` build without either S3-specific option reports the hardware
+checks as blocked and runs the regular subsystem tests instead.
+
+## Guided digital calibration
+
+Keep the raw monitor available for wiring checks. For polarity calibration,
+build the separate calibration profile:
+
+```text
+make -C build_make TEST=1 S3_CAL_TEST=1 CRASH_REPORT=0 -j8
+```
+
+Flash the generated `_test_s3cal.uf2`. Follow four independent prompts:
+
+1. left sensor over white;
+2. left sensor over black;
+3. right sensor over white;
+4. right sensor over black.
+
+Only the named sensor needs to be positioned for each prompt. Hold it still at
+its normal operating height. Each observation uses 50 samples and is accepted
+when at least 45 agree. Both sensors must be stable and must change digital
+level between white and black. A failed sequence repeats automatically.
+
+After S3-H01 through S3-H03 pass, the monitor continuously labels each input
+as `WHITE` or `BLACK`, reporting changes immediately and unchanged readings
+once per second. Calibration is held in RAM and is repeated after a reset.
+
+This learns DOUT polarity; it cannot adjust the module's comparator threshold.
+Use the raw monitor and the physical potentiometer to obtain a clean transition
+before running calibration.
+
+## Button-controlled line-follow bench trial
+
+Only run this after S3-H01 through S3-H03 pass. Raise the wheels clear of the
+floor and build:
+
+```text
+make -C build_make TEST=1 S3_LINE_TEST=1 CRASH_REPORT=0 -j8
+```
+
+Flash the generated `_test_s3line.uf2`. This profile starts only Subsystems 2
+and 3 and loads the verified digital polarity from firmware: LOW is WHITE and
+HIGH is BLACK for both sensors. It does not repeat the four calibration prompts.
+It waits for Motion Control to become ready, then continuously reports fresh
+line positions while STOP remains latched. Place the car on the track and press
+the Robo Pico programmable button on GP20 to start. Press GP20 again to stop;
+after the wheels stop, another press resets and starts a new run. The input is
+active-low and debounced for 30 ms by the Vehicle Controller.
+
+The saved value is polarity, not an optical threshold. The modules' physical
+potentiometers retain their comparator thresholds. If a sensor module or its
+wiring changes, rerun `S3_CAL_TEST=1`, verify the new WHITE/BLACK levels, and
+update the saved constants before using the line profile again.
+
+There is no automatic run-time limit. Its verified sensor mapping is:
+
+| Left | Right | Request |
+|---|---|---|
+| WHITE | WHITE | straight |
+| BLACK | WHITE | left correction |
+| WHITE | BLACK | right correction |
+| BLACK | BLACK | STOP |
+
+It also stops if reports become invalid or stale, a queue/API operation fails,
+or the GP20 button is pressed while running. The
+outer/straight speed is 70 mm/s and the inner correction speed is 35 mm/s;
+these are provisional commands, not measured wheel speeds. Keep the wheels
+raised for the first run because the motor polarity, encoder polarity and PID
+tuning still require physical validation.
+
+WHITE/WHITE is ambiguous: it means centred for the current sensor placement,
+but it can also mean the car has completely lost the line. Supervise the whole
+run and keep a hand near GP20; do not use this as an unattended line follower.
+
+## Save every serial line
+
+Close VS Code Serial Monitor first because only one program can own COM4, then
+run the logger from the project root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File testing/subsystem3/capture_serial.ps1 -Port COM4
+```
+
+It displays every received line and writes it immediately, with a host
+timestamp, under `testing/subsystem3/logs/`. Start the logger first and then
+reset the Pico if the boot messages must be included. Press Ctrl+C to close the
+port and finish the log. Change `-Port` if Windows assigns a different COM
+number.
+
+## Host tests
+
+From the project root, with GCC on `PATH`:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
 ```
 
-The runner builds in the system temporary directory and removes its executable.
-It checks calibration/polarity, filtering, all configured line patterns, barcode
-framing and failures, timer wrap, command staging, duplicates, expiry and STOP.
-These tests do not establish barcode read success, line-tracking accuracy,
-sampling rates, voltage compatibility or RTOS timing on the robot.
+These tests cover two-sensor calibration, polarity normalization, filtering,
+the verified four-state steering table, and the existing synthetic
+barcode/navigation foundation. They do not verify
+wiring, optical distance, surface contrast, ambient-light immunity, sampling
+performance, line following, motor behaviour, or the printed course barcode.
 
-## Integration sequence
+## Existing software foundation
 
-1. Read the IR module, comparator, Pico W and carrier datasheets before GPIO work.
-   Reconcile AGENTS.md's agreed pins with TEAM.md's still-unclaimed starter rows.
-   Confirm sensor models, digital output levels, roles, mounting and polarity.
-   Digital comparator calibration is not ADC threshold calibration.
-2. Add a GPIO adapter and sensor task only after those checks. Feed stable known
-   white/black observations into `s3_ir_calibrate`; do not guess polarity.
-3. Fill the eight-entry line table from the actual track/sensor geometry. Keep
-   ambiguous patterns UNKNOWN. A table entry alone is not validated junction
-   detection: agree junction recognition/debounce and controller handshaking.
-4. Capture barcode edges through the team's shared interrupt dispatcher. Keep
-   decoding in the owning task; do not share capture state with an ISR/core
-   without an agreed bounded queue. Feed raw edges, not line-filtered samples.
-   Poll timeout without edges. Verify quiet zones/framing before finishing.
-5. Confirm symbology and A-D mapping using the course materials. Supply measured
-   width windows/alphabet; test at stated speeds and lighting conditions. Replace
-   this decoder prototype if the printed format differs.
-6. Agree the controller message format, queue ownership, junction event and
-   acknowledgement with Dalton. Stage each validated scan once with a unique ID.
-   Call `s3_nav_take` each iteration with the controller's latched STOP state.
-   The controller must reject stale/unauthorised requests and remains the final
-   movement authority. Stop or reset also clears in-progress barcode capture.
-7. Agree original-line reacquisition evidence with Timothy. This base does not
-   claim to recognise the original line after a bypass.
+- `s3_bar` provides bounded edge capture, timeout handling, and a configurable
+  synthetic one-symbol decoder. Its framing, width windows, alphabet, reverse
+  travel, and speed tolerance are not validated against the course barcode.
+- `s3_nav` provides the current synthetic A/B/C/D command mapping, duplicate
+  suppression, expiry, STOP cancellation, and controller-authority gating. It
+  contains no motor actions or validated turn angles.
 
-All state is caller-owned, zero-initialised and single-task-owned. A non-null
-pointer must refer to a valid object/array of the declared size. Time differences
-must be less than one 32-bit wrap (about 71 minutes in microseconds); select
-timeouts far below that. Scan IDs identify scans, not symbols: seeing the same
-letter at a later barcode is legitimate. Only the last accepted ID is remembered;
-the adapter must not replay older scans. Do not stage while STOP is latched.
+Before barcode integration, confirm the printed symbology and measured timing,
+keep raw edge capture separate from filtered steering samples, and use the
+team's shared GPIO interrupt dispatcher. Barcode state must be task-owned or
+passed through an agreed bounded queue; do not share mutable capture state with
+an ISR or another core without concurrency protection.
 
-## GitHub handoff
-
-This downloaded workspace has no Git metadata. No branch, commit or push has
-been made. In an actual clone, create `feature/subsystem3-ir-line-barcode`, copy
-these additions, run the host tests and firmware build, then commit only the
-Subsystem 3 additions. Shared startup/task wiring requires team agreement.
-
-IR means infrared; GPIO means general-purpose input/output; RTOS means real-time
-operating system; PWM means pulse-width modulation. New C uses C99, fixed-width
-data, explicit bounds, module prefixes, guarded headers and BARR-C brace style.
+Line following should be added only after both front sensors pass the physical
+white/black test. Steering requests must go through the Vehicle Controller;
+only Motion Control may write motor PWM.

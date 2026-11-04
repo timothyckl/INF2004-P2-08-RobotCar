@@ -11,7 +11,8 @@ bool s3_ir_calibrate(s3_calibration_t * p_cal, uint8_t white_levels,
     {
         valid = (white_levels < S3_IR_PATTERNS) &&
                 (black_levels < S3_IR_PATTERNS) &&
-                ((white_levels ^ black_levels) == (S3_IR_PATTERNS - 1U));
+                ((white_levels ^ black_levels) ==
+                 (S3_IR_PATTERNS - 1u));
         p_cal->valid = valid;
         p_cal->black_levels = black_levels;
     }
@@ -29,9 +30,9 @@ bool s3_ir_normalize(s3_calibration_t const * p_cal, uint8_t levels,
         valid = p_cal->valid && (levels < S3_IR_PATTERNS);
         if (valid)
         {
-            /* Only the three sensor bits are retained. */
+            /* Only the two front line-sensor bits are retained. */
             *p_black_mask = (uint8_t)((~(levels ^ p_cal->black_levels)) &
-                                      (S3_IR_PATTERNS - 1U));
+                                      (S3_IR_PATTERNS - 1u));
         }
     }
 
@@ -90,6 +91,20 @@ s3_line_t s3_ir_line(uint8_t mask,
     }
 
     return result;
+}
+
+s3_line_t
+s3_ir_follow_decision (uint8_t black_mask)
+{
+    static s3_line_t const decisions[S3_IR_PATTERNS] =
+    {
+        S3_LINE_STRAIGHT,
+        S3_LINE_LEFT,
+        S3_LINE_RIGHT,
+        S3_LINE_JUNCTION
+    };
+
+    return (s3_ir_line(black_mask, decisions));
 }
 
 /** End of file. */
