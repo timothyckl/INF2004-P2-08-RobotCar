@@ -81,3 +81,16 @@ S1-U03.
 | 2026-11-04 | S1-H01 | — | Dalton | INVALID | `logs/2026-11-04_s1-mqtt-attempt2-foreign-firmware.txt` | Board was running a different image (S3/S2 bounded line-follow test mode), not this branch's MQTT build. Not a result for S1-H01 |
 | 2026-11-04 | S1-H01 | `aa9979f` (as above) | Dalton | FAIL | `logs/2026-11-04_s1-mqtt.txt` | WiFi link up, ip 10.214.80.101; broker configured at 10.214.80.224:1883. Every connect attempt returned status 256 (lwIP `MQTT_CONNECT_DISCONNECTED`: the TCP connection to the broker failed or closed, not a broker refusal). Controller stayed Ready with STOP latched throughout. Check the broker listens on the LAN, not only localhost, and the host firewall allows 1883 |
 | 2026-11-04 | S1-H02 | — | Dalton | NOT RUN | `logs/2026-11-04_s1-telemetry-attempt1.txt`, `logs/2026-11-04_s1-telemetry.txt` | Both subscriber captures are empty: no broker connection, so no telemetry was published |
+
+Note, 2026-11-04: the earlier status 256 failures had two causes on the
+broker laptop, not in the firmware: it was not on the robot's network, and
+no broker was running (mosquitto 2.x without a config listens on localhost
+only). The bench broker now runs with `listener 1883 0.0.0.0` and
+`allow_anonymous true`, on the private hotspot only. The Pico W radio is
+2.4 GHz only (Pico W datasheet), so the hotspot must offer 2.4 GHz.
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-04 | S1-H01 | `eca059e`, `NET=lwip MQTT=1` | Dalton | FAIL | `logs/2026-11-04_s1-mqtt-2.txt` | Pixel_1232 hotspot had moved to 5 GHz (laptop on channel 44): every join "SSID not found". Not a firmware fault. Changed to an iPhone hotspot on 2.4 GHz (channel 6) |
+| 2026-11-04 | S1-H01 | `eca059e`, `NET=lwip MQTT=1`; local `wifi_secrets.h`: iPhone hotspot, broker 172.20.10.3 | Dalton | PARTIAL | `logs/2026-11-04_s1-mqtt-3.txt`, `logs/2026-11-04_s1-telemetry-3.txt` | Joined (ip 172.20.10.2), connected and subscribed. START, STOP, RESET, START sent by `mosquitto_pub`; telemetry shows each took effect: START ran, STOP stopped the wheels and held them still for 11 s, RESET then START began a new run. Not shown: START refused outside Ready (no START sent while Stopped), and the controller states, because the console capture was stopped early (ends at "hb 11", before the commands). **Finding:** START was accepted with the robot held in the air; S2-U60 expects START refused without a fresh valid line. Cause not yet found. Robot still driving (wheels in the air) when the capture ended |
+| 2026-11-04 | S1-H02 | as above | Dalton | FAIL | `logs/2026-11-04_s1-telemetry-3.txt` | 45 frames, all 8 bytes, version 1, flags consistent with the commands (still/moving, distance valid after START). While stopped: robot time steps exactly 1000 ms, no frame lost, but broker arrival bunched (3 frames at 15:49:51). While the wheels turned: frames lost, robot-time gaps of 8, 2, 2, 5, 2, 2 and 2 s (about 16 frames missing). Link-up flag (0x04) never set |
