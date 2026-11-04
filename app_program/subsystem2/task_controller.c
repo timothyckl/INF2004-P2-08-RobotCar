@@ -234,10 +234,15 @@ demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in)
     if ((p_in->now_ms - last_ms) >= CTRL_LOG_MS)
     {
         last_ms = p_in->now_ms;
+        /* line: ok (snapshot read), CTRL_LINE_* flags and sample age,
+           the inputs to the START line check. */
         tm_printf((UB *)"[S2] state %d fault %d motion %d dist %d mm"
-                  " flags 0x%x\n", (INT)p_st->state, (INT)p_st->fault,
+                  " flags 0x%x line ok %d 0x%x age %d ms\n",
+                  (INT)p_st->state, (INT)p_st->fault,
                   (INT)p_st->motion_state, (INT)p_st->run_distance_mm,
-                  (INT)p_st->flags);
+                  (INT)p_st->flags, (INT)p_in->line.b_ok,
+                  (INT)p_in->line.flags,
+                  (INT)(p_in->now_ms - p_in->line.captured_ms));
 
         if (s2_stop_timing(&latch_us, &off_us))
         {
