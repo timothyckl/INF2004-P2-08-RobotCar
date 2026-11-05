@@ -181,7 +181,7 @@ After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
 
 ---
 
-## 3. Build options: `SMP`, `CONSOLE`, `WIFI`, `TEST`, `CRASH_REPORT`
+## 3. Build options: `SMP`, `CONSOLE`, `WIFI`, `TEST`, diagnostics
 
 `make` on its own uses the defaults. To build differently, put options
 after `make`. They can be combined in any order:
@@ -191,6 +191,7 @@ make -j8                          # defaults: SMP=1 CONSOLE=usb_cdc WIFI=cyw43 T
 make SMP=0 -j8                    # single-core build
 make WIFI=none -j8                # radio off
 make TEST=1 -j8                   # firmware with the subsystem self-tests
+make TEST=1 S3_IR_DIAG=1 -j8      # print live IR sensor colours for 60 s
 make NET=lwip MQTT=1 -j8          # WiFi + MQTT commands and telemetry (see below)
 ```
 
@@ -212,6 +213,7 @@ the next plain `make` goes back to the defaults.
 | `CONSOLE` | **`usb_cdc`**, `uart` | where `tm_printf` output goes. `usb_cdc` = USB cable; `uart` = UART0 only (GP0 TX / GP1 RX, needs a USB-serial adapter) | `_usb_cdc` / `_uart` | `TM_CONSOLE_USB_CDC` |
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
+| `S3_IR_DIAG` | **`0`**, `1` | With `TEST=1`, prints normalised left, right and barcode sensor readings for 60 seconds | `_s3irdiag` / *(nothing)* | `S3_IR_DIAGNOSTIC` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
 **Why `CRASH_REPORT` exists.** USB output is not sent the moment you call
@@ -229,6 +231,11 @@ console; for a crash, add prints before the failing step instead.
 
 `S4_HW_TEST=1` (only with `TEST=1`) adds subsystem 4's live IMU start-up check
 and the `_s4hw` image suffix; see `docs/subsystem4.md`.
+
+`S3_IR_DIAG=1` (only with `TEST=1`) reads the digital comparator outputs on
+GP16 (front-left), GP6 (front-right) and GP26 (side barcode). It prints once
+per second and whenever a reading changes. The diagnostic runs for 60 seconds;
+reset the Pico W to run it again. It does not enable motor movement.
 
 **MQTT.** `make NET=lwip MQTT=1 -j8` needs `config/wifi_secrets.h` (copy
 `config/wifi_secrets.example.h`; it is ignored by Git, never commit it).

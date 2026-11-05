@@ -91,6 +91,20 @@ ifeq ($(TEST),1)
 TEST_SUFFIX := _test
 endif
 
+# S3_IR_DIAG=1 prints the three normalised IR sensor readings during the
+# on-target test run. It is opt-in because periodic console output can affect
+# timing measurements in unrelated tests.
+S3_IR_DIAG ?= 0
+ifneq ($(filter $(S3_IR_DIAG),0 1),$(S3_IR_DIAG))
+$(error Unknown S3_IR_DIAG '$(S3_IR_DIAG)'; use 0 or 1)
+endif
+ifeq ($(S3_IR_DIAG),1)
+ifneq ($(TEST),1)
+$(error S3_IR_DIAG=1 requires TEST=1)
+endif
+S3_IR_DIAG_SUFFIX := _s3irdiag
+endif
+
 # S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
 S4_HW_TEST ?= 0
 ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
@@ -133,7 +147,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -194,6 +208,7 @@ CFLAGS  += -DCNF_SMP=1
 ASFLAGS += -DCNF_SMP=1
 endif
 CFLAGS  += -DAPP_TEST=$(TEST)
+CFLAGS  += -DS3_IR_DIAGNOSTIC=$(S3_IR_DIAG)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
 ifeq ($(CRASH_REPORT),0)
@@ -227,7 +242,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))
