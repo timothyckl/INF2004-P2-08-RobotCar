@@ -7,18 +7,27 @@
 #ifndef S3_CONFIG_H
 #define S3_CONFIG_H
 
-/* Agreed pins (AGENTS.md): two front line sensors and the side barcode
- * sensor. The barcode sensor is never a line-following input. GP17 and
- * GP27 (analogue outputs) are not configured. Front-right AO must stay
- * unconnected: Robo Pico Grove 5 shares GP6 with GP26. */
-#define S3_PIN_FRONT_LEFT       16U
-#define S3_PIN_FRONT_RIGHT      6U
-#define S3_PIN_BARCODE          26U
+/* Active ZIP wiring selected on 2026-11-06: front AOUT signals use ADC0
+ * and ADC1; the side barcode DOUT is the only digital S3 input. */
+#define S3_ADC_FRONT_LEFT       0
+#define S3_ADC_FRONT_RIGHT      1
+#define S3_PIN_BARCODE          16U
+#define S3_BARCODE_BLACK_HIGH   1U
 
-/* GPIO level over black, per sensor, as s3_ir black_levels (bit 0 front
- * left, bit 1 front right, bit 2 barcode). Documented as 1 = black for
- * all three; NOT yet verified on the robot (S3-H01). */
-#define S3_IR_BLACK_LEVELS      0x07U
+/* Bench-derived starting values from the ZIP. They are provisional until
+ * the assembled robot is re-measured at its final sensor height. */
+#define S3_LEFT_INITIAL_WHITE       136U
+#define S3_LEFT_MINIMUM_WHITE        96U
+#define S3_LEFT_MAXIMUM_WHITE       168U
+#define S3_LEFT_BLACK_MARGIN         32U
+#define S3_LEFT_WHITE_MARGIN         20U
+#define S3_LEFT_BLACK_REFERENCE    1500U
+#define S3_RIGHT_INITIAL_WHITE      180U
+#define S3_RIGHT_MINIMUM_WHITE      100U
+#define S3_RIGHT_MAXIMUM_WHITE      300U
+#define S3_RIGHT_BLACK_MARGIN       500U
+#define S3_RIGHT_WHITE_MARGIN       350U
+#define S3_RIGHT_BLACK_REFERENCE   3300U
 
 /* Sampling period: the kernel tick (10 ms), within the design's 20 ms. */
 #define S3_PERIOD_MS            10U

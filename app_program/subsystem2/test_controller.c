@@ -136,6 +136,7 @@ h_new (bool b_script)
     p_h->in.line.b_ok           = true;
     p_h->in.line.captured_ms    = H_T0_MS;
     p_h->in.line.flags          = CTRL_LINE_VALID;
+    p_h->in.line.position       = LINE_CONTROL_POSITION_STRAIGHT;
     ctrl_init(&p_h->c, &cfg, H_T0_MS);
 
     return (p_h);
@@ -635,21 +636,22 @@ test_ctrl_follow (void)
 {
     h_t * p_h = h_mission();
 
-    p_h->in.line.steer_permille = 500;              /* line to the left */
+    p_h->in.line.position = LINE_CONTROL_POSITION_LEFT;
+    p_h->in.line.strength = 100u;
     h_tick(p_h, 10u);
 
     bool const b_left = h_mode(p_h, S2_MODE_FOLLOW)
                         && (CTRL_ACT_DRIVE == p_h->out.action)
-                        && (75 == p_h->out.drive_l)
-                        && (225 == p_h->out.drive_r)
+                        && (32 == p_h->out.drive_l)
+                        && (40 == p_h->out.drive_r)
                         && (!p_h->c.b_waiting);
     uint32_t const acts = p_h->n_act;
 
-    p_h->in.line.steer_permille = -500;
+    p_h->in.line.position = LINE_CONTROL_POSITION_RIGHT;
     h_tick(p_h, 10u);
 
-    bool const b_right = (225 == p_h->out.drive_l)
-                         && (75 == p_h->out.drive_r)
+    bool const b_right = (40 == p_h->out.drive_l)
+                         && (32 == p_h->out.drive_r)
                          && (p_h->n_act == (acts + 1u));
     s2_robot_state_t st;
 
@@ -675,6 +677,48 @@ test_ctrl_follow (void)
 
     return (b_left && b_right && b_auth && b_hold && b_stale
             && fault_is(p_h, S2_FAULT_LINE));
+}
+
+/* S2-U67: sustained side input uses the strong curve, its hold is bounded,
+   and a junction that never clears becomes a line fault. */
+bool
+test_ctrl_line_policy (void)
+{
+    h_t * p_h = h_mission();
+
+    p_h->in.line.position = LINE_CONTROL_POSITION_LEFT;
+    p_h->in.line.strength = 100u;
+    h_tick(p_h, 10u);
+    h_tick(p_h, CTRL_LINE_CURVE_ENTRY_MS);
+
+    bool const b_curve = (5 == p_h->out.drive_l)
+                         && (35 == p_h->out.drive_r);
+
+    p_h->in.line.position = LINE_CONTROL_POSITION_STRAIGHT;
+    h_tick(p_h, CTRL_LINE_LEFT_HOLD_MS - 1u);
+
+    bool const b_hold = (5 == p_h->out.drive_l)
+                        && (35 == p_h->out.drive_r);
+
+    h_tick(p_h, 1u);
+
+    bool const b_release = (40 == p_h->out.drive_l)
+                           && (40 == p_h->out.drive_r);
+
+    p_h = h_mission();
+    p_h->in.line.position = LINE_CONTROL_POSITION_JUNCTION;
+    h_tick(p_h, 10u);
+    h_tick(p_h, CTRL_LINE_JUNCTION_MS);
+
+    bool const b_cross = (LINE_CONTROL_MODE_CROSSING
+                          == line_control_mode(&p_h->c.line_control))
+                         && (40 == p_h->out.drive_l)
+                         && (40 == p_h->out.drive_r);
+
+    h_tick(p_h, CTRL_LINE_CROSSING_MS);
+
+    return b_curve && b_hold && b_release && b_cross
+           && fault_is(p_h, S2_FAULT_LINE);
 }
 
 /* S2-U62: a barcode command runs once per nav_id at its junction. */

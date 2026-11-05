@@ -37,6 +37,12 @@ typedef char ctrl_copies_match[((CTRL_LINE_VALID == S3_ST_VALID)
     && (CTRL_LINE_SEEN == S3_ST_SEEN)
     && (CTRL_SIDE_LEFT == S3_TRACK_SIDE_LEFT)
     && (CTRL_SIDE_RIGHT == S3_TRACK_SIDE_RIGHT)
+    && (LINE_CONTROL_POSITION_UNKNOWN == (uint8_t)S3_LINE_UNKNOWN)
+    && (LINE_CONTROL_POSITION_STRAIGHT == (uint8_t)S3_LINE_STRAIGHT)
+    && (LINE_CONTROL_POSITION_LEFT == (uint8_t)S3_LINE_LEFT)
+    && (LINE_CONTROL_POSITION_RIGHT == (uint8_t)S3_LINE_RIGHT)
+    && (LINE_CONTROL_POSITION_LOST == (uint8_t)S3_LINE_LOST)
+    && (LINE_CONTROL_POSITION_JUNCTION == (uint8_t)S3_LINE_JUNCTION)
     && (S2_NAV_LEFT == (uint8_t)S3_NAV_LEFT)
     && (S2_NAV_RIGHT == (uint8_t)S3_NAV_RIGHT)
     && (S2_NAV_STRAIGHT == (uint8_t)S3_NAV_STRAIGHT)
@@ -279,6 +285,8 @@ read_line (ctrl_line_t * p_line)
         p_line->captured_ms    = st.captured_ms;
         p_line->steer_permille = st.steer_permille;
         p_line->flags          = st.flags;
+        p_line->position       = st.line;
+        p_line->strength       = st.strength;
         p_line->last_side      = st.last_side;
         p_line->nav_cmd        = st.nav_cmd;
         p_line->nav_id         = st.nav_id;

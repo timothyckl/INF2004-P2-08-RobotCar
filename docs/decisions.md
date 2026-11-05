@@ -69,7 +69,24 @@ was zero decode errors.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
-_No decisions recorded yet._
+### 1. Analogue front sensors and barcode remap (2026-11-06)
+
+The team selected the wiring contained in Edmund's supplied ZIP for the
+integrated robot: front-left AOUT uses ADC0/GP26, front-right AOUT uses
+ADC1/GP27, and the side barcode DOUT uses GP16. Both front DOUT wires and the
+barcode AOUT wire are disconnected. ADC2/GP28 remains disabled for the right
+encoder and ADC3/GP29 remains disabled for the Pico W radio.
+
+The Line Sensor task filters both 12-bit channels independently, adapts only
+their white baselines, applies hysteresis, and publishes a 0..100 side
+contrast strength. With the selected straddle geometry, both-white is the
+centred observation and does not time out as LOST; physical removal from the
+line is therefore not distinguishable from a centred line using these two
+front readings alone. The Vehicle Controller retains movement authority. It
+uses the ZIP's provisional 40 mm/s straight profile, strength-scaled gentle
+corrections, 5/35 mm/s sustained curves, and bounded crossing/exit state
+machine. All thresholds, speeds and times are bench-derived starting values;
+they are not validated course acceptance results.
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 

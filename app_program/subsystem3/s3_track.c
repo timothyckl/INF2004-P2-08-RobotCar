@@ -66,8 +66,9 @@ void s3_track_update(s3_track_t * p_track, s3_track_cfg_t const * p_cfg,
     uint8_t events = 0U;
 
     /* Raw history first: loss and fault timing must not wait for the
-     * debounce filter. */
-    if (0U != front)
+     * debounce filter.  With straddle geometry, both-white is the expected
+     * centred observation and therefore counts as seeing the line. */
+    if ((0U != front) || (S3_LINE_STRAIGHT == p_cfg->decisions[0U]))
     {
         p_track->last_black_ms = now_ms;
 

@@ -91,6 +91,31 @@ ifeq ($(TEST),1)
 TEST_SUFFIX := _test
 endif
 
+# S2_LOG=1 enables the Vehicle Controller's periodic diagnostic line. It is
+# opt-in because console formatting runs in the controller task.
+S2_LOG ?= 0
+ifneq ($(filter $(S2_LOG),0 1),$(S2_LOG))
+$(error Unknown S2_LOG '$(S2_LOG)'; use 0 or 1)
+endif
+ifeq ($(S2_LOG),1)
+S2_LOG_SUFFIX := _s2log
+endif
+
+# LINE_ONLY=1 is a diagnostic profile for isolated line-follow testing. It
+# leaves WiFi, MQTT, the controller, motion and line sensing enabled, but the
+# application does not initialise or start obstacle scanning. The suffix and
+# boot warning prevent this reduced-safety image from resembling production.
+LINE_ONLY ?= 0
+ifneq ($(filter $(LINE_ONLY),0 1),$(LINE_ONLY))
+$(error Unknown LINE_ONLY '$(LINE_ONLY)'; use 0 or 1)
+endif
+ifeq ($(LINE_ONLY),1)
+ifeq ($(TEST),1)
+$(error LINE_ONLY=1 cannot be combined with TEST=1)
+endif
+LINE_ONLY_SUFFIX := _lineonly
+endif
+
 # S3_IR_DIAG=1 prints the three normalised IR sensor readings during the
 # on-target test run. It is opt-in because periodic console output can affect
 # timing measurements in unrelated tests.
@@ -147,7 +172,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(S2_LOG_SUFFIX)$(LINE_ONLY_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -208,6 +233,8 @@ CFLAGS  += -DCNF_SMP=1
 ASFLAGS += -DCNF_SMP=1
 endif
 CFLAGS  += -DAPP_TEST=$(TEST)
+CFLAGS  += -DS2_DEMO_LOG=$(S2_LOG)
+CFLAGS  += -DAPP_LINE_ONLY=$(LINE_ONLY)
 CFLAGS  += -DS3_IR_DIAGNOSTIC=$(S3_IR_DIAG)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
@@ -242,7 +269,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-s2log$(S2_LOG)-lineonly$(LINE_ONLY)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

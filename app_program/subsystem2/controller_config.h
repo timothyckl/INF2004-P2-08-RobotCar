@@ -11,9 +11,26 @@
 
 #include "motion_config.h"
 
-/* Line following. UNMEASURED: base speed, search speed, how far to drive
-   to clear a junction for a STRAIGHT command. */
-#define CTRL_FOLLOW_SPEED_MM_S  150
+/* ZIP line-follow profile. These bench-derived values remain provisional
+   until they are validated on the final course and sensor height. */
+#define CTRL_FOLLOW_SPEED_MM_S       40
+#define CTRL_LINE_CORRECT_MIN_MM_S   32
+#define CTRL_LINE_CORRECT_MAX_MM_S   38
+#define CTRL_LINE_CURVE_INNER_MM_S    5
+#define CTRL_LINE_CURVE_OUTER_MM_S   35
+#define CTRL_LINE_STRENGTH_MAX      100U
+#define CTRL_LINE_CURVE_ENTRY_MS    200U
+#define CTRL_LINE_LEFT_HOLD_MS      250U
+#define CTRL_LINE_RIGHT_HOLD_MS     150U
+#define CTRL_LINE_JUNCTION_MS       100U
+#define CTRL_LINE_CROSSING_MS      1500U
+#define CTRL_LINE_EXIT_MIN_MS       600U
+#define CTRL_LINE_EXIT_CENTER_MS    100U
+#define CTRL_LINE_EXIT_SIDE_MS      150U
+#define CTRL_LINE_EXIT_LIMIT_MS    2500U
+
+/* Search speed and the STRAIGHT barcode-command crossing distance remain
+   independent of ordinary line following. */
 #define CTRL_SEARCH_SPEED_MM_S  100
 #define CTRL_JUNCTION_CROSS_MM  60u
 

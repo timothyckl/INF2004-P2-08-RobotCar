@@ -2,6 +2,11 @@
 #include "s3_ir.h"
 #include <stddef.h>
 
+#define S3_IR_FILTER_DIVISOR      2U
+#define S3_IR_ADAPTATION_SAMPLES  8U
+
+static uint16_t s3_ir_threshold(uint16_t baseline, uint16_t margin);
+
 bool s3_ir_calibrate(s3_calibration_t * p_cal, uint8_t white_levels,
                      uint8_t black_levels)
 {
@@ -77,6 +82,158 @@ bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required)
     }
 
     return settled;
+}
+
+bool
+s3_ir_adaptive_init (s3_ir_adaptive_t * p_state,
+                     s3_ir_adaptive_config_t const * p_config)
+{
+    bool b_valid = false;
+
+    if ((NULL != p_state) && (NULL != p_config))
+    {
+        b_valid = (p_config->minimum_white <= p_config->initial_white)
+                  && (p_config->initial_white <= p_config->maximum_white)
+                  && (p_config->maximum_white <= S3_IR_ADC_MAX)
+                  && (p_config->white_margin < p_config->black_margin)
+                  && (0U != p_config->black_margin)
+                  && (p_config->maximum_white
+                      <= (S3_IR_ADC_MAX - p_config->black_margin));
+
+        p_state->config = *p_config;
+        p_state->white_baseline = p_config->initial_white;
+        p_state->filtered = p_config->initial_white;
+        p_state->threshold = s3_ir_threshold(p_config->initial_white,
+                                             p_config->black_margin);
+        p_state->adaptation_count = 0U;
+        p_state->b_black = false;
+        p_state->b_valid = b_valid;
+    }
+
+    return b_valid;
+}
+
+bool
+s3_ir_adaptive_update (s3_ir_adaptive_t * p_state, uint16_t sample)
+{
+    if ((NULL == p_state) || (!p_state->b_valid)
+        || (sample > S3_IR_ADC_MAX))
+    {
+        return false;
+    }
+
+    if (sample > p_state->filtered)
+    {
+        uint16_t const difference = sample - p_state->filtered;
+
+        p_state->filtered += (uint16_t)((difference + 1U)
+                                       / S3_IR_FILTER_DIVISOR);
+    }
+    else
+    {
+        uint16_t const difference = p_state->filtered - sample;
+
+        p_state->filtered -= (uint16_t)((difference + 1U)
+                                       / S3_IR_FILTER_DIVISOR);
+    }
+
+    p_state->threshold = s3_ir_threshold(p_state->white_baseline,
+                                         p_state->config.black_margin);
+    uint16_t const release = s3_ir_threshold(p_state->white_baseline,
+                                             p_state->config.white_margin);
+
+    if (p_state->b_black)
+    {
+        if (p_state->filtered <= release)
+        {
+            p_state->b_black = false;
+        }
+    }
+    else if (p_state->filtered >= p_state->threshold)
+    {
+        p_state->b_black = true;
+    }
+    else
+    {
+        /* The reading remains on the white side of the threshold. */
+    }
+
+    if (!p_state->b_black)
+    {
+        p_state->adaptation_count++;
+
+        if (p_state->adaptation_count >= S3_IR_ADAPTATION_SAMPLES)
+        {
+            if ((p_state->filtered > p_state->white_baseline)
+                && (p_state->white_baseline < p_state->config.maximum_white))
+            {
+                p_state->white_baseline++;
+            }
+            else if ((p_state->filtered < p_state->white_baseline)
+                     && (p_state->white_baseline
+                         > p_state->config.minimum_white))
+            {
+                p_state->white_baseline--;
+            }
+            else
+            {
+                /* The baseline is settled or held at a configured limit. */
+            }
+
+            p_state->adaptation_count = 0U;
+            p_state->threshold = s3_ir_threshold(
+                p_state->white_baseline, p_state->config.black_margin);
+        }
+    }
+    else
+    {
+        p_state->adaptation_count = 0U;
+    }
+
+    return p_state->b_black;
+}
+
+uint8_t
+s3_ir_adaptive_strength (s3_ir_adaptive_t const * p_state,
+                         uint16_t black_reference)
+{
+    uint8_t strength = 0U;
+
+    if ((NULL != p_state) && p_state->b_valid
+        && (black_reference > p_state->white_baseline)
+        && (p_state->filtered > p_state->white_baseline))
+    {
+        uint16_t const difference = p_state->filtered
+                                    - p_state->white_baseline;
+        uint16_t const span = black_reference - p_state->white_baseline;
+
+        if (difference >= span)
+        {
+            strength = UINT8_C(100);
+        }
+        else
+        {
+            uint32_t const scaled = ((uint32_t)difference * UINT32_C(100))
+                                    + ((uint32_t)span / UINT32_C(2));
+
+            strength = (uint8_t)(scaled / (uint32_t)span);
+        }
+    }
+
+    return strength;
+}
+
+static uint16_t
+s3_ir_threshold (uint16_t baseline, uint16_t margin)
+{
+    uint16_t threshold = S3_IR_ADC_MAX;
+
+    if (baseline <= (S3_IR_ADC_MAX - margin))
+    {
+        threshold = baseline + margin;
+    }
+
+    return threshold;
 }
 
 s3_line_t s3_ir_line(uint8_t mask,

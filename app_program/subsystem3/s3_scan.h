@@ -1,7 +1,7 @@
 /** @file s3_scan.h Side barcode sensor: edges in, decoded symbols out.
  *
  * Pure logic on top of s3_bar. The owning task feeds timestamped edges of
- * the side barcode sensor (GP26, normalised: true = black) and polls it
+ * the side barcode sensor (GP16, normalised: true = black) and polls it
  * every sample period. A capture starts at a white-to-black edge and ends
  * after quiet_us of white. Width windows are derived from each capture
  * (midway between its narrowest and widest run), so a steady change in

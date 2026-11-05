@@ -77,9 +77,9 @@ per-pin ownership claims and must match it; change both together.
 | GY-511 / LSM303DLHC IMU | SDA / SCL | GP2 / GP3 | I2C1 | IMU/Terrain; power from 3V3 |
 | HC-SR04 | TRIG | GP4 | GPIO output | Obstacle Scan generates the trigger pulse |
 | HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; currently powered from 3V3, see below |
-| Front-left line sensor | DO / AO | GP16 / GP17 | GPIO input / unused | Line Sensor: left line guide; AO connected, not used |
-| Front-right line sensor | DO | GP6 | GPIO input | Line Sensor: right line guide; AO not connected |
-| Side barcode sensor | DO / AO | GP26 / GP27 | GPIO input / unused | Line Sensor: barcode only, never steering; AO connected, not used |
+| Front-left line sensor | AO | GP26 | ADC0 | Line Sensor: left line guide; DOUT disconnected |
+| Front-right line sensor | AO | GP27 | ADC1 | Line Sensor: right line guide; DOUT disconnected |
+| Side barcode sensor | DOUT | GP16 | GPIO input / interrupt | Line Sensor: barcode only, never steering; AOUT disconnected |
 | Right wheel encoder (encoder 1) | ENC1_A / ENC1_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
 | Left wheel encoder (encoder 2) | ENC2_A / ENC2_B | GP0 / GP1 | GPIO interrupts | Motion Control; requires `CRASH_REPORT=0` |
 | Motor 1 (right wheel) | M1A_PWM / M1B_PWM | GP8 (forward) / GP9 (backward) | PWM | Motion Control only |
@@ -94,9 +94,10 @@ Configuration constraints:
   `CONSOLE=uart`, and `kernel/sysdepend/pico_rp2040/hw_setting.c` and
   `config/config_device.h` fail to compile if UART0 would claim the pins.
 - Disable or reassign the demo liveness LED from GP16.
-- Keep RP2040 ADC pin initialisation disabled on GP26 to GP28: GP26 is the
-  barcode sensor's digital output and GP28 carries the right encoder. GP17 and
-  GP27 carry analogue outputs that the current logic does not use.
+- Enable RP2040 ADC pin initialisation only for ADC0/GP26 and ADC1/GP27, which
+  carry the two front sensors' analogue outputs. Keep ADC2/GP28 disabled
+  because GP28 carries the right encoder, and keep ADC3/GP29 disabled because
+  it is reserved for the Pico W radio.
 - GP13, GP14, GP15 and GP18 to GP22 are unused.
 - The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently
   powered from 3V3 (team pin mapping, 2026-11-03). That wiring is outside the

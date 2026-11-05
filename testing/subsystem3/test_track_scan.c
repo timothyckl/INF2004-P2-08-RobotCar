@@ -108,6 +108,16 @@ static void test_track_lost_fault(void)
     s3_track_default_cfg(&cfg);
     check(s3_track_init(&track, &cfg, now), "init near timer wrap");
 
+    out = track_run(&track, &cfg, 0U, 200U, &now, &events);
+    check((!out.lost) && out.valid && (S3_LINE_STRAIGHT == out.line),
+          "centred straddle does not become lost");
+
+    /* Exercise the generic loss timer with a geometry in which both-white
+     * is not a valid centred decision. */
+    cfg.decisions[0U] = S3_LINE_UNKNOWN;
+    events = 0U;
+    check(s3_track_init(&track, &cfg, now), "non-straddle config valid");
+
     out = track_run(&track, &cfg, 0U, 149U, &now, &events);
     check((!out.lost) && (0U == events), "not lost before lost_ms");
     out = track_run(&track, &cfg, 0U, 1U, &now, &events);

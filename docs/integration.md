@@ -25,7 +25,7 @@ evidence that the robot works.
 
 Start-up: every `subsystemN_init()` creates objects (STOP is latched at
 creation), then every `subsystemN_start()` starts tasks. Subsystem 2 creates
-the shared GPIO dispatcher in its init, so S3 (GP26) and S5 (GP5) can register
+the shared GPIO dispatcher in its init, so S3 (GP16) and S5 (GP5) can register
 in their start. The robot never moves at boot: START must arrive over MQTT
 (or from the optional, default-off `S2_DEMO_AUTOSTART`).
 
@@ -33,8 +33,8 @@ in their start. The robot never moves at boot: START must arrive over MQTT
 
 | Path | Mechanism | Code |
 |---|---|---|
-| IR sensors → S3 → controller → Motion → motors | GPIO_IN read every 10 ms → `s3_track` → IF-06 snapshot → FOLLOW renews `motion_drive()` → `motion_logic` → `drv_motor` | `task_line.c`, `controller_logic.c` (`follow`), `task_motion.c` |
-| Barcode → decoder → nav command → manoeuvre | GP26 edges (dispatcher) → ring → `s3_scan` → `s3_bar_decode` → `s3_nav_stage`/`take` at a junction → IF-06 `nav_cmd`/`nav_id` → NAVIGATE turn or move | `task_line.c`, `controller_logic.c` (`navigate`) |
+| IR sensors → S3 → controller → Motion → motors | ADC0/GP26 and ADC1/GP27 every 10 ms → adaptive thresholds → `s3_track` → IF-06 snapshot → FOLLOW policy renews `motion_drive()` → `motion_logic` → `drv_motor` | `task_line.c`, `controller_logic.c` (`follow`), `task_motion.c` |
+| Barcode → decoder → nav command → manoeuvre | GP16 edges (dispatcher) → ring → `s3_scan` → `s3_bar_decode` → `s3_nav_stage`/`take` at a junction → IF-06 `nav_cmd`/`nav_id` → NAVIGATE turn or move | `task_line.c`, `controller_logic.c` (`navigate`) |
 | Ultrasonic → hazard → scan → plan → bypass → reacquire | forward monitor every 65 ms → `CTRL_FLG_HAZARD` → SCAN (`motion_stop`, `scan_q`) → `scan_engine` sweep → `bypass_plan` → BYPASS segments → REACQUIRE | `scan_task.c`, `scan_engine.c`, `bypass_plan.c`, `controller_logic.c` |
 | IMU → terrain → status | I2C1 every 10 ms → `s4_terrain_process` → `subsystem4_get_status()` | `task_imu.c`, `terrain_logic.c` |
 | Encoders → odometry → Motion and S4 | dispatcher ISR → `drv_encoder` snapshot → `motion_logic` pose → `motion_get_status()` → `s4_odometry` | `task_motion.c`, `s4_odometry.c` |
@@ -73,7 +73,7 @@ does not act on terrain results; the design makes them report-only.
 | Found 100 ms, search 5 s / plan distance, heading 15° | `controller_config.h` | AGREED (S5 decision 9) |
 | Speed lease 100 ms | `motion_config.h` | UNMEASURED |
 | IR polarity 1 = black (all three) | `s3_config.h` | documented, not verified (S3-H01) |
-| Straddle geometry table, filter 2 samples, lost 1.5 s, fault 2 s, steer 500 ‰ | `s3_track.c` | UNMEASURED; geometry to confirm |
+| Straddle geometry table, filter 2 samples, fault 2 s, steer 500 ‰ | `s3_track.c` | UNMEASURED; both-white is centred and cannot also prove loss |
 | Code 39 `*`, A..D patterns; run max 400 ms, quiet 250 ms | `s3_config.h` | assumed symbology; confirm with course barcodes |
 | Navigation command age 5 s | `s3_config.h` | UNMEASURED |
 | Servo 1500 µs + 10 µs/°, ±60° | `drv_servo.c` | Tower Pro SG90 sheet; calibrate (S5-U47) |
@@ -84,10 +84,11 @@ does not act on terrain results; the design makes them report-only.
 
 ## 5. Known deviations and limitations
 
-- **Straddle geometry.** With both front sensors on white when centred, "both
-  white" is also the centred reading, so a long straight can raise LOST. The
-  controller then rotates towards the last side until the line is under a
-  sensor again. Measure sensor spacing and line width before relying on it.
+- **Straddle geometry.** Both front sensors read white when the black line is
+  centred between them. Firmware therefore treats both-white as STRAIGHT and
+  cannot distinguish a centred line from a completely missing line using
+  these two front readings alone. Measure sensor spacing and line width and
+  validate the behaviour on every course curve before relying on it.
 - **No echo is invalid, not clear** (S5 decision 3, S5-U23): with nothing
   within about 4 m ahead, the forward monitor requests a stop, which starts a
   scan. Unless the course always has a reflector in range, the team should
@@ -103,8 +104,8 @@ does not act on terrain results; the design makes them report-only.
 - **Priorities.** Obstacle Scan (20) runs below Line Sensor (16), the
   reverse of the design order. ECHO timing comes from the interrupt.
 - **HC-SR04 at 3V3.** Outside the datasheet's 5 V; unvalidated.
-- **Front-right AO** must stay unconnected: Robo Pico Grove 5 shares GP6
-  with the barcode DO on GP26.
+- **Analogue line thresholds** came from bench observations in the supplied
+  ZIP and still require validation at the final sensor height and course.
 - **Telemetry** carries only the provisional 8-byte codec (section 2).
 - **Hump height** is invalid until a distance is valid, and is an
   unvalidated estimate (S4 decision 4); there is no gyroscope.
@@ -139,15 +140,16 @@ Requirements from `docs/Project Description.pdf` and the design review FRs.
 | HC-SR04 at 3V3 | Deferred by decision D3: wiring kept, unvalidated |
 | Documentation | Implemented (this file, TEAM.md, decisions.md, README) |
 | Motion API lacked continuous drive | Implemented and host-tested (lease) |
-| Demo IR logic (GP26 as line sensor) | Not adopted; our S3 never uses GP26 for steering (host-tested) |
+| Analogue IR logic from supplied ZIP | Adapted to IF-06 and the integrated controller; physical validation pending |
 | Fine scan, request expiry, packed formats | Deferred: not required for a first robot run; listed in §5 |
 
 ## 8. Hardware tests still required
 
 In order, wheels off the ground first:
 
-1. IR: polarity on white/black per sensor, sensor spacing against line width,
-   steering truth table at speed (S3-H01..H03); front-right AO disconnected.
+1. IR: analogue values on white/black per front sensor, barcode polarity,
+   sensor spacing against line width, and steering truth table at speed
+   (S3-H01..H03); both front DOUT wires and barcode AOUT disconnected.
 2. Encoders and motors: counts per revolution, direction, PID tuning
    (S2-H01..H05 in `testing/subsystem2/TEST_LOG.md`).
 3. Line following on straight and curved track; speed lease and STOP latency

@@ -712,6 +712,8 @@ EXPORT void subsystem2_test(void)
 		   "reacquisition bounded; heading checked");
 	TEST_CHECK("S2-U66", test_ctrl_mission_stop(),
 		   "STOP preempts every mission mode");
+	TEST_CHECK("S2-U67", test_ctrl_line_policy(),
+		   "strong curves and junction bounds");
 
 #if S2_HW_TEST
 	hw_test();

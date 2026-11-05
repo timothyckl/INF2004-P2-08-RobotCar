@@ -1,7 +1,7 @@
 /**
  * @file test_controller.h
  * @brief Subsystem 2 Vehicle Controller unit cases S2-U41..S2-U53 and
- *        S2-U60..S2-U66 (TEST=1).
+ *        S2-U60..S2-U67 (TEST=1).
  *        S2-U51's kernel half is in subsystem2_test.c.
  */
 #ifndef TEST_CONTROLLER_H
@@ -29,6 +29,7 @@ bool test_ctrl_bypass (void);           /* S2-U63 */
 bool test_ctrl_scan_outcomes (void);    /* S2-U64 */
 bool test_ctrl_reacquire (void);        /* S2-U65 */
 bool test_ctrl_mission_stop (void);     /* S2-U66 */
+bool test_ctrl_line_policy (void);      /* S2-U67 */
 
 #endif /* TEST_CONTROLLER_H */
 

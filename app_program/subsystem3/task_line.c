@@ -3,7 +3,7 @@
  * Every S3_PERIOD_MS a cyclic handler wakes the task, which:
  *   1. moves barcode edges from the interrupt ring into s3_scan;
  *   2. finishes or expires a barcode capture, staging decoded commands;
- *   3. samples the two front sensors in one GPIO_IN read and runs
+ *   3. samples the two front analogue sensors and runs
  *      s3_track (debounce, decision table, loss, fault, steering);
  *   4. offers a staged command at a junction (s3_nav_take) when robot_state
  *      authorises navigation and STOP is clear;
@@ -11,7 +11,7 @@
  * It only reports. The Vehicle Controller decides and Motion Control alone
  * drives the motors (AGENTS.md).
  *
- * Barcode edges come from subsystem 2's shared GPIO dispatcher on GP26.
+ * Barcode edges come from subsystem 2's shared GPIO dispatcher on GP16.
  * The interrupt only timestamps the new level into a single-producer,
  * single-consumer ring; DMB barriers order it for either core.
  */
@@ -19,6 +19,7 @@
 
 #include "s3_config.h"
 #include "s3_ir.h"
+#include "s3_ir_gpio.h"
 #include "s3_nav.h"
 #include "s3_scan.h"
 #include "s3_track.h"
@@ -27,10 +28,6 @@
 
 #define S3_LINE_CORE        TP_PRC1     /* core 0, with the dispatcher */
 #define S3_PUBLISH_TMO_MS   2           /* readers copy, never hold long */
-#define S3_FRONT_LEFT_BIT   0x01U       /* s3_ir bit order */
-#define S3_FRONT_RIGHT_BIT  0x02U
-#define S3_BARCODE_BIT      0x04U
-
 static ID               g_line_tid = 0;
 static ID               g_line_cyc = 0;
 static ID               g_line_mtx = 0;
@@ -53,9 +50,9 @@ static s3_symbol_t const g_alphabet[4] =
 static void     line_task(INT stacd, void * p_exinf);
 static void     line_cyclic(void * p_exinf);
 static void     line_edge_isr(uint32_t gpio, uint32_t events, uint32_t now_us);
-static void     line_input(uint32_t pin);
 static void     line_barrier(void);
 static uint8_t  line_barcode_level(void);
+static bool     line_barcode_black(uint8_t level);
 static uint32_t line_now_ms(void);
 static bool     line_navigation_allowed(bool * p_stopped);
 
@@ -87,9 +84,13 @@ ER s3_line_create(void)
 /** @brief Configure the sensor inputs, then start the task and clock. */
 ER s3_line_start(void)
 {
-    line_input(S3_PIN_FRONT_LEFT);
-    line_input(S3_PIN_FRONT_RIGHT);
-    line_input(S3_PIN_BARCODE);
+    ER const input_er = s3_ir_gpio_init();
+
+    if (input_er < E_OK)
+    {
+        return input_er;
+    }
+
     g_isr_level = line_barcode_level();
 
     ER const er = drv_gpio_irq_register(S3_PIN_BARCODE,
@@ -144,7 +145,24 @@ ER s3_line_get(s3_line_status_t * p_status)
 
 static void line_task(INT stacd, void * p_exinf)
 {
-    s3_calibration_t cal = {0};
+    static s3_ir_adaptive_config_t const left_config =
+    {
+        S3_LEFT_INITIAL_WHITE,
+        S3_LEFT_MINIMUM_WHITE,
+        S3_LEFT_MAXIMUM_WHITE,
+        S3_LEFT_BLACK_MARGIN,
+        S3_LEFT_WHITE_MARGIN
+    };
+    static s3_ir_adaptive_config_t const right_config =
+    {
+        S3_RIGHT_INITIAL_WHITE,
+        S3_RIGHT_MINIMUM_WHITE,
+        S3_RIGHT_MAXIMUM_WHITE,
+        S3_RIGHT_BLACK_MARGIN,
+        S3_RIGHT_WHITE_MARGIN
+    };
+    s3_ir_adaptive_t left_state = {0};
+    s3_ir_adaptive_t right_state = {0};
     s3_track_cfg_t   track_cfg;
     s3_track_t       track;
     s3_scan_t        scan;
@@ -156,19 +174,15 @@ static void line_task(INT stacd, void * p_exinf)
     };
     uint32_t scan_id = 0U;
     bool     b_was_stopped = true;
+    bool     b_adc_fault = false;
 
     (void)stacd;
     (void)p_exinf;
 
     s3_track_default_cfg(&track_cfg);
 
-    /* Polarity is configured, not measured (S3-H01): a failed
-     * calibration or track set-up would leave the sensors unusable, so
-     * publish a latched fault instead of guessing. */
-    bool const b_ready = s3_ir_calibrate(&cal,
-                                         (uint8_t)(~S3_IR_BLACK_LEVELS
-                                                   & (S3_IR_PATTERNS - 1U)),
-                                         S3_IR_BLACK_LEVELS)
+    bool const b_ready = s3_ir_adaptive_init(&left_state, &left_config)
+                         && s3_ir_adaptive_init(&right_state, &right_config)
                          && s3_track_init(&track, &track_cfg, line_now_ms());
 
     s3_scan_init(&scan);
@@ -204,13 +218,8 @@ static void line_task(INT stacd, void * p_exinf)
             line_barrier();
             g_edge_tail = (idx + 1U) % S3_EDGE_RING_SIZE;
 
-            uint8_t norm = 0U;
-
-            if (s3_ir_normalize(&cal, (uint8_t)(lvl << 2U), &norm)
-                && (S3_SCAN_ERROR == s3_scan_edge(&scan, &scan_cfg,
-                                                 (0U != (norm
-                                                         & S3_BARCODE_BIT)),
-                                                 t_us)))
+            if (S3_SCAN_ERROR == s3_scan_edge(&scan, &scan_cfg,
+                                              line_barcode_black(lvl), t_us))
             {
                 st.barcode_errors = (uint8_t)(st.barcode_errors + 1U);
             }
@@ -243,19 +252,28 @@ static void line_task(INT stacd, void * p_exinf)
             /* Nothing finished, or a single crossing bar. */
         }
 
-        /* 3. Front sensors: one register read samples both at once. */
-        UW const levels = in_w(GPIO_IN);
-        uint8_t  raw = 0U;
+        /* 3. Front sensors: read both 12-bit ADC channels, then classify
+         * them with independent adaptive white baselines. */
+        s3_ir_adc_sample_t sample = {0U, 0U};
+        ER const adc_er = s3_ir_gpio_read_analog(&sample);
 
-        raw |= (0U != (levels & (1UL << S3_PIN_FRONT_LEFT)))
-               ? S3_FRONT_LEFT_BIT : 0U;
-        raw |= (0U != (levels & (1UL << S3_PIN_FRONT_RIGHT)))
-               ? S3_FRONT_RIGHT_BIT : 0U;
-        raw |= (0U != (levels & (1UL << S3_PIN_BARCODE)))
-               ? S3_BARCODE_BIT : 0U;
-
-        if (b_ready && s3_ir_normalize(&cal, raw, &black))
+        if (adc_er < E_OK)
         {
+            b_adc_fault = true;
+        }
+
+        if (b_ready && (!b_adc_fault))
+        {
+            if (s3_ir_adaptive_update(&left_state, sample.left))
+            {
+                black |= S3_IR_LEFT_MASK;
+            }
+
+            if (s3_ir_adaptive_update(&right_state, sample.right))
+            {
+                black |= S3_IR_RIGHT_MASK;
+            }
+
             s3_track_update(&track, &track_cfg, black, now_ms, &out);
         }
 
@@ -293,8 +311,29 @@ static void line_task(INT stacd, void * p_exinf)
         /* 5. Publish. */
         st.captured_ms    = now_ms;
         st.seq++;
-        st.steer_permille = out.steer_permille;
+        uint8_t strength = 0U;
+
+        if (S3_LINE_LEFT == out.line)
+        {
+            strength = s3_ir_adaptive_strength(&left_state,
+                                               S3_LEFT_BLACK_REFERENCE);
+        }
+        else if (S3_LINE_RIGHT == out.line)
+        {
+            strength = s3_ir_adaptive_strength(&right_state,
+                                               S3_RIGHT_BLACK_REFERENCE);
+        }
+        else
+        {
+            /* Centred and junction observations have no steering strength. */
+        }
+
+        st.steer_permille = (S3_LINE_LEFT == out.line)
+                            ? (int16_t)((uint16_t)strength * 10U)
+                            : ((S3_LINE_RIGHT == out.line)
+                               ? (int16_t)(-((int16_t)strength * 10)) : 0);
         st.line           = (uint8_t)out.line;
+        st.strength       = strength;
         st.last_side      = out.last_side;
         st.flags          = (uint8_t)((out.valid ? S3_ST_VALID : 0U)
                             | (out.lost ? S3_ST_LOST : 0U)
@@ -303,7 +342,7 @@ static void line_task(INT stacd, void * p_exinf)
                             | (out.fault ? S3_ST_FAULT : 0U)
                             | ((0U != (black & S3_TRACK_FRONT_BITS))
                                ? S3_ST_SEEN : 0U)
-                            | ((0U != (black & S3_BARCODE_BIT))
+                            | (line_barcode_black(line_barcode_level())
                                ? S3_ST_BAR_BLACK : 0U));
 
         if (tk_loc_mtx(g_line_mtx, S3_PUBLISH_TMO_MS) >= E_OK)
@@ -359,15 +398,6 @@ static void line_edge_isr(uint32_t gpio, uint32_t events, uint32_t now_us)
     }
 }
 
-/* Inputs with the pad pull-up: the LM393 output is open collector, and a
- * disconnected module then reads black, which s3_track reports as FAULT. */
-static void line_input(uint32_t pin)
-{
-    (void)gpio_set_pin(pin, GPIO_MODE_IN);
-    clr_w(GPIO(pin), GPIO_PDE);
-    set_w(GPIO(pin), GPIO_PUE);
-}
-
 /* Orders ring accesses as seen by the other core (ARMv6-M DMB). */
 static void line_barrier(void)
 {
@@ -376,7 +406,16 @@ static void line_barrier(void)
 
 static uint8_t line_barcode_level(void)
 {
-    return (0U != (in_w(GPIO_IN) & (1UL << S3_PIN_BARCODE))) ? 1U : 0U;
+    return s3_ir_gpio_read_barcode() ? 1U : 0U;
+}
+
+static bool line_barcode_black(uint8_t level)
+{
+#if S3_BARCODE_BLACK_HIGH
+    return (0U != level);
+#else
+    return (0U == level);
+#endif
 }
 
 static uint32_t line_now_ms(void)

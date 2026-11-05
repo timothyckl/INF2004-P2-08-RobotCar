@@ -10,6 +10,7 @@
 #include "subsystem3.h"
 #include "s3_config.h"
 #include "s3_ir.h"
+#include "s3_ir_gpio.h"
 #include "../test_report.h"
 
 #if APP_TEST
@@ -22,13 +23,8 @@
 #define S3_IR_DIAG_PERIOD_MS        100U
 #define S3_IR_DIAG_HEARTBEAT        10U
 #define S3_IR_DIAG_SAMPLES          600U
-#define S3_IR_DIAG_FRONT_LEFT_BIT   0x01U
-#define S3_IR_DIAG_FRONT_RIGHT_BIT  0x02U
-#define S3_IR_DIAG_BARCODE_BIT      0x04U
 
 static void s3_ir_diagnostic(void);
-static uint8_t s3_ir_read_levels(void);
-static char const * s3_ir_surface(uint8_t black_mask, uint8_t sensor_bit);
 #endif
 
 EXPORT void subsystem3_test(void)
@@ -68,44 +64,55 @@ EXPORT void subsystem3_test(void)
 }
 
 #if S3_IR_DIAGNOSTIC
-/** Print live, normalised readings without changing the production snapshot. */
+/** Print live ADC readings without changing the production snapshot. */
 static void s3_ir_diagnostic(void)
 {
-    s3_calibration_t calibration = {0};
-    uint8_t previous_black = S3_IR_PATTERNS;
-    bool const b_ready = s3_ir_calibrate(
-        &calibration,
-        (uint8_t)(~S3_IR_BLACK_LEVELS & (S3_IR_PATTERNS - 1U)),
-        S3_IR_BLACK_LEVELS);
+    s3_ir_adaptive_config_t const left_config =
+    {
+        S3_LEFT_INITIAL_WHITE, S3_LEFT_MINIMUM_WHITE,
+        S3_LEFT_MAXIMUM_WHITE, S3_LEFT_BLACK_MARGIN,
+        S3_LEFT_WHITE_MARGIN
+    };
+    s3_ir_adaptive_config_t const right_config =
+    {
+        S3_RIGHT_INITIAL_WHITE, S3_RIGHT_MINIMUM_WHITE,
+        S3_RIGHT_MAXIMUM_WHITE, S3_RIGHT_BLACK_MARGIN,
+        S3_RIGHT_WHITE_MARGIN
+    };
+    s3_ir_adaptive_t left = {0};
+    s3_ir_adaptive_t right = {0};
+    bool const b_ready = s3_ir_adaptive_init(&left, &left_config)
+                         && s3_ir_adaptive_init(&right, &right_config);
 
     tm_printf((UB *)"[S3 IR] diagnostic start: 60 seconds; "
               "move white and black under each sensor\n");
 
     for (uint16_t sample = 0U; sample < S3_IR_DIAG_SAMPLES; sample++)
     {
-        uint8_t black_mask = 0U;
-        uint8_t const raw_levels = s3_ir_read_levels();
-        bool const b_valid = b_ready
-                             && s3_ir_normalize(&calibration, raw_levels,
-                                                &black_mask);
+        s3_ir_adc_sample_t adc = {0U, 0U};
+        ER const er = s3_ir_gpio_read_analog(&adc);
+        bool const b_valid = b_ready && (E_OK == er);
 
-        if (b_valid
-            && ((black_mask != previous_black)
-                || (0U == (sample % S3_IR_DIAG_HEARTBEAT))))
+        if (b_valid)
         {
-            tm_printf((UB *)"[S3 IR] left=%s right=%s barcode=%s "
-                      "mask=0x%02x\n",
-                      s3_ir_surface(black_mask,
-                                    S3_IR_DIAG_FRONT_LEFT_BIT),
-                      s3_ir_surface(black_mask,
-                                    S3_IR_DIAG_FRONT_RIGHT_BIT),
-                      s3_ir_surface(black_mask, S3_IR_DIAG_BARCODE_BIT),
-                      (UINT)black_mask);
-            previous_black = black_mask;
+            bool const b_left = s3_ir_adaptive_update(&left, adc.left);
+            bool const b_right = s3_ir_adaptive_update(&right, adc.right);
+
+            if ((0U == (sample % S3_IR_DIAG_HEARTBEAT))
+                || b_left || b_right)
+            {
+                tm_printf((UB *)"[S3 IR] adc=%u/%u filtered=%u/%u "
+                          "threshold=%u/%u black=%u/%u barcode=%u\n",
+                          (UINT)adc.left, (UINT)adc.right,
+                          (UINT)left.filtered, (UINT)right.filtered,
+                          (UINT)left.threshold, (UINT)right.threshold,
+                          (UINT)b_left, (UINT)b_right,
+                          (UINT)s3_ir_gpio_read_barcode());
+            }
         }
         else if (!b_valid)
         {
-            tm_printf((UB *)"[S3 IR] ERROR invalid polarity configuration\n");
+            tm_printf((UB *)"[S3 IR] ERROR ADC read/configuration %d\n", er);
         }
         else
         {
@@ -116,43 +123,6 @@ static void s3_ir_diagnostic(void)
     }
 
     tm_printf((UB *)"[S3 IR] diagnostic complete; reset to run again\n");
-}
-
-/** Read the three comparator outputs in the subsystem's bit order. */
-static uint8_t s3_ir_read_levels(void)
-{
-    UW const gpio_levels = in_w(GPIO_IN);
-    uint8_t levels = 0U;
-
-    if (0U != (gpio_levels & (1UL << S3_PIN_FRONT_LEFT)))
-    {
-        levels |= S3_IR_DIAG_FRONT_LEFT_BIT;
-    }
-
-    if (0U != (gpio_levels & (1UL << S3_PIN_FRONT_RIGHT)))
-    {
-        levels |= S3_IR_DIAG_FRONT_RIGHT_BIT;
-    }
-
-    if (0U != (gpio_levels & (1UL << S3_PIN_BARCODE)))
-    {
-        levels |= S3_IR_DIAG_BARCODE_BIT;
-    }
-
-    return levels;
-}
-
-/** Convert one bit of the normalised black mask to a console label. */
-static char const * s3_ir_surface(uint8_t black_mask, uint8_t sensor_bit)
-{
-    char const * p_surface = "WHITE";
-
-    if (0U != (black_mask & sensor_bit))
-    {
-        p_surface = "BLACK";
-    }
-
-    return p_surface;
 }
 #endif
 

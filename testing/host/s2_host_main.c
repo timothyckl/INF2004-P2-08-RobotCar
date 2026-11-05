@@ -64,6 +64,7 @@ static host_case_t const g_cases[] =
     {"S2-U64", test_ctrl_scan_outcomes},
     {"S2-U65", test_ctrl_reacquire},
     {"S2-U66", test_ctrl_mission_stop},
+    {"S2-U67", test_ctrl_line_policy},
 };
 
 int

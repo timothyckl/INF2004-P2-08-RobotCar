@@ -191,6 +191,8 @@ make -j8                          # defaults: SMP=1 CONSOLE=usb_cdc WIFI=cyw43 T
 make SMP=0 -j8                    # single-core build
 make WIFI=none -j8                # radio off
 make TEST=1 -j8                   # firmware with the subsystem self-tests
+make S2_LOG=1 -j8                 # print controller diagnostics every 500 ms
+make LINE_ONLY=1 -j8              # diagnostic line following; no obstacle task
 make TEST=1 S3_IR_DIAG=1 -j8      # print live IR sensor colours for 60 s
 make NET=lwip MQTT=1 -j8          # WiFi + MQTT commands and telemetry (see below)
 ```
@@ -213,6 +215,8 @@ the next plain `make` goes back to the defaults.
 | `CONSOLE` | **`usb_cdc`**, `uart` | where `tm_printf` output goes. `usb_cdc` = USB cable; `uart` = UART0 only (GP0 TX / GP1 RX, needs a USB-serial adapter) | `_usb_cdc` / `_uart` | `TM_CONSOLE_USB_CDC` |
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
+| `S2_LOG` | **`0`**, `1` | Prints controller state, fault, motion state, distance and line status every 500 ms | `_s2log` / *(nothing)* | `S2_DEMO_LOG` (1 or 0) |
+| `LINE_ONLY` | **`0`**, `1` | Diagnostic profile that keeps line following and motion but does not initialise or start obstacle scanning; cannot be combined with `TEST=1` | `_lineonly` / *(nothing)* | `APP_LINE_ONLY` (1 or 0) |
 | `S3_IR_DIAG` | **`0`**, `1` | With `TEST=1`, prints normalised left, right and barcode sensor readings for 60 seconds | `_s3irdiag` / *(nothing)* | `S3_IR_DIAGNOSTIC` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
@@ -232,10 +236,22 @@ console; for a crash, add prints before the failing step instead.
 `S4_HW_TEST=1` (only with `TEST=1`) adds subsystem 4's live IMU start-up check
 and the `_s4hw` image suffix; see `docs/subsystem4.md`.
 
-`S3_IR_DIAG=1` (only with `TEST=1`) reads the digital comparator outputs on
-GP16 (front-left), GP6 (front-right) and GP26 (side barcode). It prints once
-per second and whenever a reading changes. The diagnostic runs for 60 seconds;
+`S3_IR_DIAG=1` (only with `TEST=1`) reads the front analogue outputs on
+ADC0/GP26 (left), ADC1/GP27 (right), and the side barcode digital output on
+GP16. It prints once per second. The diagnostic runs for 60 seconds;
 reset the Pico W to run it again. It does not enable motor movement.
+
+`S2_LOG=1` enables a controller diagnostic line every 500 ms. Use it for
+bench diagnosis, then return to `S2_LOG=0` for timing tests because console
+formatting executes in the controller task.
+
+`LINE_ONLY=1` is only for isolated line-follow testing. The HC-SR04 and servo
+task is not started, so invalid or missing echoes cannot request a scan, but
+the robot also has no obstacle protection. The boot console prints a warning
+and the image name contains `_lineonly`. This profile may still use WiFi and
+MQTT. Flash it over USB first; afterwards the Pico W can run from a power bank
+while commands travel over WiFi. Keep an immediate way to remove power because
+dashboard STOP depends on the hotspot, broker and WiFi link remaining up.
 
 **MQTT.** `make NET=lwip MQTT=1 -j8` needs `config/wifi_secrets.h` (copy
 `config/wifi_secrets.example.h`; it is ignored by Git, never commit it).

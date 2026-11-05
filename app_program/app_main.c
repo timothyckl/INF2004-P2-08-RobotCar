@@ -99,19 +99,28 @@ EXPORT INT usermain(void)
 	tm_printf((UB*)"single-core build\n");
 #endif
 
+#if APP_LINE_ONLY
+	tm_printf((UB *)"WARNING: LINE_ONLY=1; obstacle detection and scanning"
+		  " are disabled.\n");
+#endif
+
 	/* Phase 1: every subsystem creates its kernel objects */
 	CHECK(subsystem1_init(), "subsystem1_init");
 	CHECK(subsystem2_init(), "subsystem2_init");
 	CHECK(subsystem3_init(), "subsystem3_init");
 	CHECK(subsystem4_init(), "subsystem4_init");
+#if !APP_LINE_ONLY
 	CHECK(scan_lifecycle_init(), "scan_lifecycle_init");
+#endif
 
 	/* Phase 2: every subsystem starts its tasks */
 	CHECK(subsystem1_start(), "subsystem1_start");
 	CHECK(subsystem2_start(), "subsystem2_start");
 	CHECK(subsystem3_start(), "subsystem3_start");
 	CHECK(subsystem4_start(), "subsystem4_start");
+#if !APP_LINE_ONLY
 	CHECK(scan_lifecycle_start(), "scan_lifecycle_start");
+#endif
 
 	tm_printf((UB*)"all subsystems started\n\n");
 
@@ -124,9 +133,11 @@ EXPORT INT usermain(void)
 	subsystem2_test();
 	subsystem3_test();
 	subsystem4_test();
+#if !APP_LINE_ONLY
 	TEST_DRAIN();		/* subsystem 5 prints without test_report.h */
 	scan_lifecycle_test();
 	TEST_DRAIN();
+#endif
 	/* Non-zero means lines are missing from this log: re-run it. */
 	tm_printf((UB*)"[TEST] console dropped %d bytes\n",
 		  (INT)TEST_DROPPED());

@@ -34,7 +34,7 @@
 #define S3_PRI_LINE		16	/* priority band 16-17 (TEAM.md) */
 
 #define S3_ST_VALID		0x01u	/* line decision settled, usable */
-#define S3_ST_LOST		0x02u	/* no front sensor black for lost_ms */
+#define S3_ST_LOST		0x02u	/* non-straddle loss timeout */
 #define S3_ST_JUNCTION		0x04u	/* settled decision is a junction */
 #define S3_ST_FAULT		0x08u	/* both black too long; latched */
 #define S3_ST_SEEN		0x10u	/* a front sensor sees black now */
@@ -48,6 +48,7 @@ typedef struct
 	int16_t  steer_permille; /* +left/-right, |x| <= 1000; 0 unless VALID */
 	uint8_t  line;		/* s3_line_t (s3_ir.h) */
 	uint8_t  flags;		/* S3_ST_* */
+	uint8_t  strength;	/* side contrast, 0..100; zero otherwise */
 	uint8_t  last_side;	/* S3_TRACK_SIDE_* (s3_track.h) */
 	uint8_t  nav_cmd;	/* S3_NAV_* = S2_NAV_* values, with nav_id */
 	uint8_t  last_symbol;	/* last decoded barcode symbol, 0 if none */

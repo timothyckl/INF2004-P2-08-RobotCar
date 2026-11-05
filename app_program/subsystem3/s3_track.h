@@ -7,10 +7,10 @@
  *
  * Output per sample: the settled line decision, a steering request for the
  * Vehicle Controller (permille, positive turns left) and events.
- * - LOST: no front sensor has seen black for lost_ms. With the default
- *   straddle geometry "both white" is also the centred reading, so a long
- *   straight can raise LOST; the controller's bounded search then finds
- *   the line again (see docs/decisions.md, subsystem 3).
+ * - LOST: no front sensor has seen black for lost_ms, only for a geometry
+ *   whose table does not define both-white as STRAIGHT.  The active straddle
+ *   geometry defines both-white as centred, so it cannot infer loss from
+ *   that observation alone and does not raise a false LOST on long straights.
  * - FAULT: both sensors black for fault_ms (robot lifted, or a module
  *   unpowered: its pulled-up output reads black). Latched until init.
  * - JUNCTION: the settled decision became JUNCTION.
@@ -24,8 +24,8 @@
 
 #include "s3_ir.h"
 
-#define S3_TRACK_LEFT_BIT       0x01U   /* front-left, GP16 */
-#define S3_TRACK_RIGHT_BIT      0x02U   /* front-right, GP6 */
+#define S3_TRACK_LEFT_BIT       0x01U   /* front-left, ADC0/GP26 */
+#define S3_TRACK_RIGHT_BIT      0x02U   /* front-right, ADC1/GP27 */
 #define S3_TRACK_FRONT_BITS     0x03U
 
 #define S3_TRACK_EV_LOST        0x01U

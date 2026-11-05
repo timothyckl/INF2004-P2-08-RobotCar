@@ -11,7 +11,6 @@
 #define CTRL_QUARTER_MDEG   90000u
 #define CTRL_HALF_MDEG      180000u
 #define CTRL_FULL_MDEG      360000
-#define CTRL_PERMILLE       1000
 
 static void enter (ctrl_t * p_c, uint8_t state, uint32_t now_ms);
 static void latch (ctrl_t * p_c, ctrl_output_t * p_out);
@@ -59,6 +58,10 @@ static void reacquire_step (ctrl_t * p_c, ctrl_input_t const * p_in,
 static void turn (ctrl_t * p_c, ctrl_output_t * p_out, int32_t mdeg);
 static int32_t clamp_speed (ctrl_t const * p_c, int32_t speed);
 static int32_t wrap_mdeg (int32_t mdeg);
+static bool line_reset (ctrl_t * p_c, uint32_t now_ms);
+static int32_t line_correction_speed (uint8_t strength);
+static bool line_apply (ctrl_t * p_c, ctrl_output_t * p_out,
+                        line_control_action_t action, uint8_t strength);
 
 /** @brief Boot state: Initialising with STOP latched. */
 void
@@ -74,6 +77,7 @@ ctrl_init (ctrl_t * p_c, ctrl_cfg_t const * p_cfg, uint32_t now_ms)
     *p_c        = zero;
     p_c->cfg    = *p_cfg;
     p_c->b_stop = true;
+    (void)line_reset(p_c, now_ms);
     enter(p_c, S2_SYS_INITIALISING, now_ms);
 }
 
@@ -563,6 +567,11 @@ enter_mode (ctrl_t * p_c, uint8_t mode, uint32_t now_ms)
 {
     p_c->mode          = mode;
     p_c->mode_since_ms = now_ms;
+
+    if (S2_MODE_FOLLOW == mode)
+    {
+        (void)line_reset(p_c, now_ms);
+    }
 }
 
 static void
@@ -685,17 +694,96 @@ follow (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
     }
     else if (b_fresh && (0u != (p_line->flags & CTRL_LINE_VALID)))
     {
-        /* Positive steer turns left: slow the left wheel. */
-        int32_t const v = p_c->cfg.mission.follow_mm_s;
-        int32_t const s = p_line->steer_permille;
+        /* task_controller.c verifies that IF-06 and line-control position
+         * values match before this bounded enum conversion is compiled. */
+        line_control_position_t const position =
+            (line_control_position_t)p_line->position;
+        line_control_action_t const action = line_control_step(
+            &p_c->line_control, position, p_in->now_ms);
 
-        drive(p_c, p_out, (v * (CTRL_PERMILLE - s)) / CTRL_PERMILLE,
-              (v * (CTRL_PERMILLE + s)) / CTRL_PERMILLE);
+        if (!line_apply(p_c, p_out, action, p_line->strength))
+        {
+            fault(p_c, S2_FAULT_LINE, p_in->now_ms, p_out);
+        }
     }
     else
     {
         drive(p_c, p_out, 0, 0);    /* unsettled or stale: hold still */
     }
+}
+
+static bool
+line_reset (ctrl_t * p_c, uint32_t now_ms)
+{
+    line_control_cfg_t const cfg =
+    {
+        CTRL_LINE_CURVE_ENTRY_MS,
+        CTRL_LINE_LEFT_HOLD_MS,
+        CTRL_LINE_RIGHT_HOLD_MS,
+        CTRL_LINE_JUNCTION_MS,
+        CTRL_LINE_CROSSING_MS,
+        CTRL_LINE_EXIT_MIN_MS,
+        CTRL_LINE_EXIT_CENTER_MS,
+        CTRL_LINE_EXIT_SIDE_MS,
+        CTRL_LINE_EXIT_LIMIT_MS
+    };
+
+    return line_control_init(&p_c->line_control, &cfg, now_ms);
+}
+
+static int32_t
+line_correction_speed (uint8_t strength)
+{
+    uint32_t const bounded = (strength <= CTRL_LINE_STRENGTH_MAX)
+                             ? strength : CTRL_LINE_STRENGTH_MAX;
+    uint32_t const range = CTRL_LINE_CORRECT_MAX_MM_S
+                           - CTRL_LINE_CORRECT_MIN_MM_S;
+    uint32_t const reduction = ((bounded * range)
+                                + (CTRL_LINE_STRENGTH_MAX / 2U))
+                               / CTRL_LINE_STRENGTH_MAX;
+
+    return CTRL_LINE_CORRECT_MAX_MM_S - (int32_t)reduction;
+}
+
+static bool
+line_apply (ctrl_t * p_c, ctrl_output_t * p_out,
+            line_control_action_t action, uint8_t strength)
+{
+    bool b_valid = true;
+    int32_t const correction = line_correction_speed(strength);
+
+    switch (action)
+    {
+        case LINE_CONTROL_ACTION_STRAIGHT:
+            drive(p_c, p_out, CTRL_FOLLOW_SPEED_MM_S,
+                  CTRL_FOLLOW_SPEED_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_CORRECT_LEFT:
+            drive(p_c, p_out, correction, CTRL_FOLLOW_SPEED_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_CORRECT_RIGHT:
+            drive(p_c, p_out, CTRL_FOLLOW_SPEED_MM_S, correction);
+        break;
+
+        case LINE_CONTROL_ACTION_CURVE_LEFT:
+            drive(p_c, p_out, CTRL_LINE_CURVE_INNER_MM_S,
+                  CTRL_LINE_CURVE_OUTER_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_CURVE_RIGHT:
+            drive(p_c, p_out, CTRL_LINE_CURVE_OUTER_MM_S,
+                  CTRL_LINE_CURVE_INNER_MM_S);
+        break;
+
+        case LINE_CONTROL_ACTION_STOP:
+        default:
+            b_valid = false;
+        break;
+    }
+
+    return b_valid;
 }
 
 static void

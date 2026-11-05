@@ -2,22 +2,26 @@
 
 This is host-tested logic, not hardware-tested robot firmware.
 
-**Integration status (2026-11-03).** `task_line.c` now runs these modules on
-the robot: a 10 ms Line Sensor task reads GP16 (front left) and GP6 (front
-right) for `s3_track`, takes GP26 (side barcode) edges through subsystem 2's
-GPIO dispatcher for `s3_scan`/`s3_bar`, stages commands with `s3_nav`, and
-publishes IF-06 (`subsystem3.h`) to the Vehicle Controller. The starter
-consumer was retired. Pins, polarity and timing assumptions are in
-`s3_config.h`; geometry, polarity and the printed symbology still need the
-S3-H01..H04 checks (`docs/integration.md`).
+**Integration status (2026-11-06).** `task_line.c` runs a 10 ms Line Sensor
+task. It reads front-left AOUT through ADC0/GP26 and front-right AOUT through
+ADC1/GP27, classifies them with independent adaptive white baselines and
+hysteresis, and reads side-barcode DOUT on GP16 through subsystem 2's shared
+GPIO dispatcher. It publishes IF-06 (`subsystem3.h`) to the Vehicle Controller,
+which remains the movement authority. Both front DOUT wires and barcode AOUT
+are disconnected in this mapping. Thresholds, geometry and the printed
+symbology still require S3-H01..H04 (`docs/integration.md`).
 
 ## Modules
 
-- `s3_ir`: digital calibration from stable white/black observations, polarity
-  normalization, consecutive-sample filtering and an eight-entry line table.
-  Bits identify sensor channels; the physical role of each must be confirmed.
-  A failed calibration invalidates the result. An unsettled filter must produce
-  UNKNOWN to the caller, not reuse a previous steering decision.
+- `s3_ir`: bounded 12-bit adaptive classification for each front analogue
+  channel, with hysteresis and a 0..100 side contrast strength. It also keeps
+  the consecutive-sample filter and line decision table used by `s3_track`.
+- `s3_ir_gpio`: opens the kernel ADC device, reads ADC0/ADC1 synchronously and
+  reads the GP16 barcode input. ADC read failure is latched as an S3 fault
+  until the line task restarts.
+- `s3_track`: both-white is STRAIGHT, one black sensor selects that side and
+  both-black is a junction. Because centred and missing line are both-white,
+  this geometry cannot infer line loss from those readings alone.
 - `s3_bar`: bounded timestamped edge capture, explicit timeout polling and
   a configurable nine-element, one-payload-symbol framed decoder prototype.
   It requires sentinel/gap/payload/gap/sentinel (29 runs). Width windows,
@@ -49,15 +53,13 @@ sampling rates, voltage compatibility or RTOS timing on the robot.
 
 ## Integration sequence
 
-1. Read the IR module, comparator, Pico W and carrier datasheets before GPIO work.
-   Reconcile AGENTS.md's agreed pins with TEAM.md's still-unclaimed starter rows.
-   Confirm sensor models, digital output levels, roles, mounting and polarity.
-   Digital comparator calibration is not ADC threshold calibration.
-2. Add a GPIO adapter and sensor task only after those checks. Feed stable known
-   white/black observations into `s3_ir_calibrate`; do not guess polarity.
-3. Fill the eight-entry line table from the actual track/sensor geometry. Keep
-   ambiguous patterns UNKNOWN. A table entry alone is not validated junction
-   detection: agree junction recognition/debounce and controller handshaking.
+1. Keep the wiring aligned with `AGENTS.md` and `TEAM.md`. Do not connect a
+   sensor output to another claimed GPIO.
+2. Record raw ADC values for each front sensor on white and black, then validate
+   the provisional limits and margins in `s3_config.h` under course lighting.
+3. Confirm the straddle spacing and truth table. Both-white must remain centred
+   through every curve; both-black must be a real junction before the bounded
+   crossing logic is accepted.
 4. Capture barcode edges through the team's shared interrupt dispatcher. Keep
    decoding in the owning task; do not share capture state with an ISR/core
    without an agreed bounded queue. Feed raw edges, not line-filtered samples.
@@ -80,12 +82,11 @@ timeouts far below that. Scan IDs identify scans, not symbols: seeing the same
 letter at a later barcode is legitimate. Only the last accepted ID is remembered;
 the adapter must not replay older scans. Do not stage while STOP is latched.
 
-## GitHub handoff
+## Git handoff
 
-This downloaded workspace has no Git metadata. No branch, commit or push has
-been made. In an actual clone, create `feature/subsystem3-ir-line-barcode`, copy
-these additions, run the host tests and firmware build, then commit only the
-Subsystem 3 additions. Shared startup/task wiring requires team agreement.
+Run the host suites and a Pico W build before committing. Record hardware
+measurements in `testing/subsystem3/TEST_LOG.md`; do not replace the historical
+digital-comparator rows because they remain evidence for the former mapping.
 
 IR means infrared; GPIO means general-purpose input/output; RTOS means real-time
 operating system; PWM means pulse-width modulation. New C uses C99, fixed-width

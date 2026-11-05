@@ -29,6 +29,7 @@ S1_SRC  := $(APP)/subsystem1/command_parser.c \
 
 S2_SRC  := $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/controller_logic.c \
+           $(APP)/subsystem2/line_control.c \
            $(APP)/subsystem2/pid.c \
            $(APP)/subsystem2/odometry.c \
            $(APP)/subsystem2/motion_api.c \

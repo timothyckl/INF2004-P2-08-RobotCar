@@ -48,6 +48,7 @@
 #include <stdint.h>
 
 #include "motion_api.h"
+#include "line_control.h"
 #include "subsystem2.h"
 
 /** What the wrapper must ask Motion Control to do (motion API call). */
@@ -88,6 +89,8 @@ typedef struct
     uint32_t captured_ms;
     int16_t  steer_permille;    /* + = left */
     uint8_t  flags;             /* CTRL_LINE_* */
+    uint8_t  position;          /* line_control_position_t */
+    uint8_t  strength;          /* 0..100 for side observations */
     uint8_t  last_side;         /* CTRL_SIDE_* or 0 */
     uint8_t  nav_cmd;           /* S2_NAV_* or 0 */
     uint32_t nav_id;
@@ -200,6 +203,7 @@ typedef struct
     uint32_t   last_nav_id;
     bool       b_have_nav;
     uint32_t   line_good_ms;    /* last time IF-06 was fresh */
+    line_control_t line_control; /* curve and junction policy */
     uint32_t   scan_id;         /* active request */
     bool       b_scan_granted;  /* STOP_CONFIRM + AUTHORISE sent */
     ctrl_scan_t plan;           /* copy of the accepted plan */
