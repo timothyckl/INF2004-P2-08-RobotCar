@@ -741,10 +741,10 @@ EXPORT void subsystem2_test(void)
 		   "ramp cannot cause a false stall");
 	TEST_CHECK("S2-U57", test_line_make(),
 		   "line report accepts only agreed positions");
-	TEST_CHECK("S2-U58", test_line_control_crossing(),
-		   "both-black crossing is straight and bounded");
-	TEST_CHECK("S2-U59", test_line_control_search(),
-		   "persistent correction uses bounded remembered-direction search");
+	TEST_CHECK("S2-U58", test_line_control_lost(),
+		   "white-white loss recovery is bounded");
+	TEST_CHECK("S2-U59", test_line_control_curve(),
+		   "persistent correction becomes a curve without pivoting");
 
 #if S2_HW_TEST
 	hw_test();

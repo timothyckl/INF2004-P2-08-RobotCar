@@ -111,26 +111,33 @@ There is no automatic run-time limit. Its verified sensor mapping is:
 
 | Left | Right | Request |
 |---|---|---|
-| WHITE | WHITE | straight |
+| WHITE | WHITE | bounded lost-line recovery, then STOP |
 | BLACK | WHITE | left correction |
 | WHITE | BLACK | right correction |
-| BLACK | BLACK | bounded crossing straight |
+| BLACK | BLACK | centred straight |
 
-The crossing remains straight for at most 750 ms. If one sensor remains black
-for 600 ms, the Vehicle Controller changes from the normal correction to an
-on-the-spot pivot in the remembered correction direction. WHITE/WHITE resumes
-straight following; the opposite single-black observation resumes correction;
-BLACK/BLACK enters crossing. A search that lasts 1500 ms without recovery and
-a crossing that remains BLACK/BLACK for 750 ms both latch STOP. These timing
-values are provisional and require track testing.
+BLACK/BLACK is the normal centred state, so this two-front-sensor trial cannot
+distinguish a junction from an ordinary line and continues straight through
+both. If one sensor remains black for 250 ms, the controller applies the
+sustained curve command. WHITE/WHITE searches in the most recently observed
+direction only if that direction was seen within 500 ms. The search lasts at
+most 800 ms before requesting STOP. These values are provisional and require
+repeated track testing.
 
 It also stops if reports become invalid or stale, a queue/API operation fails,
-or the GP20 button is pressed while running. The
-outer/straight speed is 40 mm/s. During a correction, the inside wheel is
-braked at 0 mm/s while the other wheel remains at 40 mm/s. Physical testing
-showed the original actuator response was reversed, so `LEFT` now drives the
-left wheel and brakes the right wheel; `RIGHT` brakes the left wheel and drives
-the right wheel. The sensor labels and BLACK/WHITE decision table are unchanged.
+or the GP20 button is pressed while running. The supervised USB-logging profile
+allows at most 500 ms between line reports. The
+outer/straight speed is 45 mm/s. During an ordinary correction, the inside
+wheel slows to 38 mm/s while the other wheel remains at 45 mm/s. `LEFT` slows
+the left wheel and drives the right wheel; `RIGHT` drives the left wheel and
+slows the right wheel. This gentler 7 mm/s difference reduces left-right
+hunting around the BLACK/BLACK centred state. A direct LEFT-to-RIGHT or
+RIGHT-to-LEFT reversal commands straight until the new direction remains
+stable for 100 ms. After a LEFT observation persists for 250 ms, the sustained
+curve target becomes -10/45 mm/s to compensate for the physically weaker LEFT
+turn. A sustained RIGHT curve remains 45/0 mm/s. The sensor labels and
+GPIO assignments are unchanged; the decision table above reflects the new
+on-line mounting geometry.
 The earlier 30/15 mm/s target did not reduce the observed physical speed and
 the controller entered Fault. These are provisional commands, not measured
 wheel speeds. Keep the wheels raised for the first run because the motor
@@ -144,12 +151,10 @@ outside motor cannot start at 20%, Motion Control reports a stall fault and
 stops; do not increase the ceiling until the encoder counts and measured wheel
 speeds are verified.
 
-WHITE/WHITE is ambiguous: it means centred for the current sensor placement,
-but it can also mean the car has completely lost the line. The remembered
-direction search handles a correction that remains on one black sensor; it
-cannot prove that an arbitrary WHITE/WHITE reading is on the track. Supervise
-the whole run and keep a hand near GP20; do not use this as an unattended line
-follower.
+WHITE/WHITE now unambiguously means that neither front sensor sees the line.
+Recovery still relies on recent direction history and cannot guarantee that a
+branch is the intended route. Supervise the whole run and keep a hand near
+GP20; do not use this as an unattended line follower.
 
 ## Save every serial line
 

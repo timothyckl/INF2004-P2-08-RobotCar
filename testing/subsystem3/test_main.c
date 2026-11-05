@@ -70,14 +70,14 @@ static void test_ir(void)
     }
     check(S3_LINE_UNKNOWN == s3_ir_line(4U, decisions), "invalid mask");
     check(S3_LINE_UNKNOWN == s3_ir_line(0U, NULL), "missing line table");
-    check(S3_LINE_STRAIGHT == s3_ir_follow_decision(0U),
-          "centred white-white drives straight");
+    check(S3_LINE_LOST == s3_ir_follow_decision(0U),
+          "white-white means line lost");
     check(S3_LINE_LEFT == s3_ir_follow_decision(S3_IR_LEFT_MASK),
           "left black requests left correction");
     check(S3_LINE_RIGHT == s3_ir_follow_decision(S3_IR_RIGHT_MASK),
           "right black requests right correction");
-    check(S3_LINE_JUNCTION == s3_ir_follow_decision(3U),
-          "both black requests stop");
+    check(S3_LINE_STRAIGHT == s3_ir_follow_decision(3U),
+          "black-black drives straight");
     check(S3_LINE_UNKNOWN == s3_ir_follow_decision(4U),
           "invalid follow mask rejected");
 }

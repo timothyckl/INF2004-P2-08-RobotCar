@@ -98,10 +98,10 @@ s3_ir_follow_decision (uint8_t black_mask)
 {
     static s3_line_t const decisions[S3_IR_PATTERNS] =
     {
-        S3_LINE_STRAIGHT,
+        S3_LINE_LOST,
         S3_LINE_LEFT,
         S3_LINE_RIGHT,
-        S3_LINE_JUNCTION
+        S3_LINE_STRAIGHT
     };
 
     return (s3_ir_line(black_mask, decisions));

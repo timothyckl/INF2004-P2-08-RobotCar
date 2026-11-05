@@ -92,7 +92,7 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 #define S2_LINE_CENTER          0u
 #define S2_LINE_LEFT            1u
 #define S2_LINE_RIGHT           2u
-#define S2_LINE_BOTH_BLACK      3u
+#define S2_LINE_LOST            3u
 #define S2_LINE_STOP            4u
 #define S2_LINE_MAX_AGE_MS      100u
 #define S2_LINE_Q_BYTES         48

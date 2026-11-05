@@ -1,6 +1,6 @@
 /**
  * @file line_control.h
- * @brief Pure line-following and bounded recovery policy.
+ * @brief Pure two-sensor line-following and bounded recovery policy.
  */
 #ifndef LINE_CONTROL_H
 #define LINE_CONTROL_H
@@ -12,8 +12,7 @@ typedef enum
 {
     LINE_CONTROL_MODE_INVALID = 0,
     LINE_CONTROL_MODE_FOLLOW,
-    LINE_CONTROL_MODE_CROSSING,
-    LINE_CONTROL_MODE_SEARCH
+    LINE_CONTROL_MODE_LOST_RECOVERY
 } line_control_mode_t;
 
 typedef enum
@@ -22,15 +21,16 @@ typedef enum
     LINE_CONTROL_ACTION_STRAIGHT,
     LINE_CONTROL_ACTION_CORRECT_LEFT,
     LINE_CONTROL_ACTION_CORRECT_RIGHT,
-    LINE_CONTROL_ACTION_PIVOT_LEFT,
-    LINE_CONTROL_ACTION_PIVOT_RIGHT
+    LINE_CONTROL_ACTION_CURVE_LEFT,
+    LINE_CONTROL_ACTION_CURVE_RIGHT
 } line_control_action_t;
 
 typedef struct
 {
-    uint32_t crossing_limit_ms;
-    uint32_t correction_limit_ms;
-    uint32_t search_limit_ms;
+    uint32_t curve_entry_ms;
+    uint32_t lost_limit_ms;
+    uint32_t direction_memory_ms;
+    uint32_t direction_change_ms;
 } line_control_cfg_t;
 
 typedef struct
@@ -39,8 +39,12 @@ typedef struct
     line_control_mode_t mode;
     uint32_t            mode_since_ms;
     uint32_t            correction_since_ms;
+    uint32_t            last_direction_ms;
+    uint32_t            pending_since_ms;
     uint8_t             last_correction;
+    uint8_t             pending_correction;
     bool                b_correction_active;
+    bool                b_pending_correction;
     bool                b_valid;
 } line_control_t;
 

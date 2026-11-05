@@ -9,8 +9,8 @@
 
 #if APP_TEST
 
-bool test_line_control_crossing(void);
-bool test_line_control_search(void);
+bool test_line_control_lost(void);
+bool test_line_control_curve(void);
 
 #endif
 

@@ -16,8 +16,7 @@ typedef enum
     S3_LINE_STRAIGHT,
     S3_LINE_LEFT,
     S3_LINE_RIGHT,
-    S3_LINE_LOST,
-    S3_LINE_JUNCTION
+    S3_LINE_LOST
 } s3_line_t;
 
 typedef struct
@@ -51,9 +50,9 @@ bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required);
 /** Caller supplies all four decisions after checking sensor geometry. */
 s3_line_t s3_ir_line(uint8_t mask,
                      s3_line_t const decisions[S3_IR_PATTERNS]);
-/** Verified two-sensor geometry for the supervised line-follow trial:
- * neither sensor on black is centred, left black needs a left correction,
- * right black needs a right correction, and both black is a crossing.
+/** Two-sensor on-line geometry for the supervised line-follow trial:
+ * both sensors on black is centred, left black needs a left correction,
+ * right black needs a right correction, and neither black is lost.
  */
 s3_line_t s3_ir_follow_decision(uint8_t black_mask);
 

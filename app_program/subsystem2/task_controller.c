@@ -36,14 +36,16 @@
 #endif
 
 #if S3_LINE_FOLLOW_TEST
-#define CTRL_LINE_BASE_MM_S        40
-#define CTRL_LINE_INNER_MM_S        0
-#define CTRL_LINE_SEARCH_MM_S       30
-#define CTRL_LINE_TIMEOUT_MS      200u
+#define CTRL_LINE_BASE_MM_S        45
+#define CTRL_LINE_CORRECT_MM_S     38
+#define CTRL_LINE_LEFT_CURVE_MM_S -10
+#define CTRL_LINE_RIGHT_CURVE_MM_S  0
+#define CTRL_LINE_TIMEOUT_MS      500u
 #define CTRL_LINE_START_GRACE_MS  200u
-#define CTRL_LINE_CROSSING_MS     750u
-#define CTRL_LINE_CORRECTION_MS   600u
-#define CTRL_LINE_SEARCH_MS      1500u
+#define CTRL_LINE_CURVE_ENTRY_MS  250u
+#define CTRL_LINE_LOST_LIMIT_MS   800u
+#define CTRL_LINE_DIRECTION_MEMORY_MS 500u
+#define CTRL_LINE_DIRECTION_CHANGE_MS 100u
 #define CTRL_LINE_BUTTON_PIN       20u
 #define CTRL_LINE_BUTTON_MASK      (UINT32_C(1) << CTRL_LINE_BUTTON_PIN)
 #define CTRL_LINE_DEBOUNCE_MS       30u
@@ -664,9 +666,10 @@ line_reset (uint32_t now)
 {
     line_control_cfg_t const cfg =
     {
-        CTRL_LINE_CROSSING_MS,
-        CTRL_LINE_CORRECTION_MS,
-        CTRL_LINE_SEARCH_MS
+        CTRL_LINE_CURVE_ENTRY_MS,
+        CTRL_LINE_LOST_LIMIT_MS,
+        CTRL_LINE_DIRECTION_MEMORY_MS,
+        CTRL_LINE_DIRECTION_CHANGE_MS
     };
 
     (void)line_control_init(&g_line_runtime.control, &cfg, now);
@@ -692,23 +695,23 @@ line_apply_action (line_control_action_t action)
         break;
 
         case LINE_CONTROL_ACTION_CORRECT_LEFT:
-            er = motion_set_speeds(CTRL_LINE_INNER_MM_S,
+            er = motion_set_speeds(CTRL_LINE_CORRECT_MM_S,
                                    CTRL_LINE_BASE_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_CORRECT_RIGHT:
             er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
-                                   CTRL_LINE_INNER_MM_S);
+                                   CTRL_LINE_CORRECT_MM_S);
         break;
 
-        case LINE_CONTROL_ACTION_PIVOT_LEFT:
-            er = motion_set_speeds(-CTRL_LINE_SEARCH_MM_S,
-                                   CTRL_LINE_SEARCH_MM_S);
+        case LINE_CONTROL_ACTION_CURVE_LEFT:
+            er = motion_set_speeds(CTRL_LINE_LEFT_CURVE_MM_S,
+                                   CTRL_LINE_BASE_MM_S);
         break;
 
-        case LINE_CONTROL_ACTION_PIVOT_RIGHT:
-            er = motion_set_speeds(CTRL_LINE_SEARCH_MM_S,
-                                   -CTRL_LINE_SEARCH_MM_S);
+        case LINE_CONTROL_ACTION_CURVE_RIGHT:
+            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+                                   CTRL_LINE_RIGHT_CURVE_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_STOP:
@@ -729,20 +732,15 @@ line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
 {
     if (old_mode != new_mode)
     {
-        if (LINE_CONTROL_MODE_CROSSING == new_mode)
-        {
-            tm_printf((UB *)"[S2] line: BOTH BLACK; crossing straight\n");
-        }
-        else if (LINE_CONTROL_MODE_SEARCH == new_mode)
+        if (LINE_CONTROL_MODE_LOST_RECOVERY == new_mode)
         {
             static UB const left[] = "LEFT";
             static UB const right[] = "RIGHT";
             UB const * p_direction =
-                (LINE_CONTROL_ACTION_PIVOT_LEFT == action)
-                    ? left : right;
+                (LINE_CONTROL_ACTION_CURVE_LEFT == action) ? left : right;
 
-            tm_printf((UB *)"[S2] line: correction persisted; "
-                              "pivoting %s\n", p_direction);
+            tm_printf((UB *)"[S2] line: WHITE/WHITE; searching %s\n",
+                      p_direction);
         }
         else if (LINE_CONTROL_MODE_FOLLOW == new_mode)
         {
@@ -754,11 +752,26 @@ line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
         }
     }
 
+    if (((LINE_CONTROL_ACTION_CURVE_LEFT == action)
+         || (LINE_CONTROL_ACTION_CURVE_RIGHT == action))
+        && (LINE_CONTROL_MODE_FOLLOW == new_mode)
+        && ((!g_line_runtime.b_action_sent)
+            || (action != g_line_runtime.last_action)))
+    {
+        static UB const left[] = "LEFT";
+        static UB const right[] = "RIGHT";
+        UB const * p_direction =
+            (LINE_CONTROL_ACTION_CURVE_LEFT == action) ? left : right;
+
+        tm_printf((UB *)"[S2] line: sustained %s; strong curve\n",
+                  p_direction);
+    }
+
     if ((LINE_CONTROL_ACTION_STOP == action)
         && ((!g_line_runtime.b_action_sent)
             || (LINE_CONTROL_ACTION_STOP != g_line_runtime.last_action)))
     {
-        tm_printf((UB *)"[S2] line: recovery bound exceeded; STOP\n");
+        tm_printf((UB *)"[S2] line: lost/recovery failed; STOP\n");
     }
 }
 #endif

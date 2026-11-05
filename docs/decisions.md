@@ -157,6 +157,111 @@ digital polarity in firmware and skips guided calibration at boot. The separate
 calibration image remains the validation path after any sensor or wiring change;
 the firmware value does not replace adjustment of the modules' potentiometers.
 
+### 3. Progressive curve following (2026-11-05)
+
+Edmund approved a curve-following revision after physically confirming that
+straight following, left/right correction, sensor classification and
+BLACK/BLACK straight crossing work on the laboratory track. This supersedes
+the earlier 0 mm/s inside-wheel correction and the 600 ms pivot search.
+
+The forward target remains 40 mm/s. Physical testing of the initial 40/30
+single-black correction showed that it could lose ordinary curves before the
+150 ms sustained-curve transition, while the post-junction 40/0 curve worked.
+The inside wheel is therefore braked at a 0 mm/s target immediately for every
+single-black observation while the outside target remains 40 mm/s. The 150 ms
+classification is retained only to distinguish a sustained loop curve for the
+bounded junction-exit memory; it no longer changes wheel speeds. The controller
+keeps this strong correction for as long as that sensor remains black and does
+not pivot or stop merely because the track has a long curve.
+
+The first 40/20 curve trial could turn but lost the line halfway through, after
+which WHITE/WHITE caused premature 40/40 straight travel. Because WHITE/WHITE
+is both the centred pattern and the two-sensor lost-line pattern, the revised
+policy remembers a sustained curve for 100 ms after WHITE/WHITE first appears.
+It then resumes 40/40 if neither sensor reacquires black, which bounds the
+previous-direction assumption. BLACK/BLACK remains straight crossing for at
+most 750 ms. The 0 mm/s inside-wheel target, 150 ms sustained-curve marker and
+100 ms hold are provisional until repeated physical trials are recorded.
+
+The loop trial then showed a separate junction-exit failure: the first
+single-black observation after BLACK/BLACK could be the incoming branch. A
+directional probe incorrectly steered the vehicle back onto that branch. A
+subsequent 250 ms straight-exit trial was too short and also showed that brief
+BLACK/BLACK observations occur on ordinary tight curves. The controller now
+qualifies BLACK/BLACK for 100 ms before declaring a junction. During this
+qualification it retains the preceding curve command, so a brief observation
+does not suppress ordinary curve steering. A confirmed junction drives 40/40,
+and its first clear observation starts a bounded 600 ms 40/40 exit. Sensor
+steering resumes when that window expires. The 100 ms and 600 ms values are
+provisional until repeated physical trials confirm both normal-curve tracking
+and clearance of the incoming branch.
+
+After that junction revision, Edmund requested that the line-following
+forward/outside-wheel target increase from 40 mm/s to 45 mm/s. The inside-wheel
+target initially remained 0 mm/s during corrections and curves. Junction
+timing and all other steering decisions remained unchanged.
+
+The 45 mm/s trial logs then showed correct repeated LEFT classifications and
+curve actions, but physical LEFT turns still dropped to straight partway
+through while the equivalent RIGHT loop completed. Ordinary corrections remain
+0/45 or 45/0. A sustained LEFT curve now commands -10/45 mm/s and retains that
+direction for 300 ms through WHITE/WHITE; the working sustained RIGHT curve
+remains 45/0 mm/s with its 100 ms hold. This asymmetric compensation and the
+45 mm/s target are provisional until the complete track is physically retested.
+
+The next physical run confirmed normal left and right curves, but either loop
+could intermittently select a side branch after its junction. A fixed 600 ms
+exit can expire while one sensor still sees that branch. The exit therefore
+keeps 45/45 mm/s for at least 600 ms and then requires WHITE/WHITE to remain
+stable for 100 ms before normal steering resumes. Later logs showed that merely
+ignoring a side observation could still carry the vehicle off the forward
+route: after the 600 ms minimum, LEFT black therefore requests a RIGHT
+correction and RIGHT black requests a LEFT correction, steering away from the
+side branch. Either observation resets the centred-stability interval. The exit
+stops at 1500 ms if it cannot establish the centred pattern, preserving a
+bounded recovery.
+
+The same run recorded `stale report; STOP` between otherwise valid changing S3
+observations. USB serial logging can delay the supervised test task beyond its
+original 200 ms watchdog. The dedicated line-test profile now permits 500 ms
+between reports; at 45 mm/s this still bounds unobserved travel to 22.5 mm.
+Production timing remains subject to measured scheduling and stopping tests.
+
+### 4. Two-front-sensor on-line geometry trial (2026-11-05)
+
+Edmund changed the physical mounting so both front sensors reliably observe
+black while centred on the normal line; the left-side sensor remains reserved
+for barcode capture. For this supervised trial, BLACK/BLACK now means centred
+straight, BLACK/WHITE requests LEFT, WHITE/BLACK requests RIGHT, and
+WHITE/WHITE means lost. This removes the previous ambiguity in which
+WHITE/WHITE could mean either centred or completely off-track.
+
+Because BLACK/BLACK is now the ordinary centred pattern, the two front sensors
+cannot independently identify a junction. The trial therefore continues
+straight through BLACK/BLACK and removes the junction confirmation and exit
+states. This is suitable for testing straight-through track following but does
+not close the project's future junction-detection requirement.
+
+When WHITE/WHITE follows a steering observation no more than 500 ms old, the
+controller searches using that most recent direction for at most 800 ms. It
+requests STOP when no recent direction exists or the bound expires. The
+existing 45 mm/s target, 150 ms sustained-curve transition, -10/45 mm/s
+sustained LEFT target, 45/0 mm/s sustained RIGHT target and 500 ms report
+watchdog remain provisional.
+
+### 5. Gentler centred-line correction trial (2026-11-05)
+
+After the front sensors were repositioned over the line, Edmund observed the
+vehicle alternating LEFT and RIGHT while trying to regain BLACK/BLACK. The
+first 30/45 mm/s reduction still produced excessive steering on a straight.
+The ordinary single-black correction therefore uses a 38 mm/s inside-wheel
+target and a 45 mm/s outside-wheel target instead of braking the inside wheel
+to 0 mm/s. The straight target remains 45/45 mm/s. An opposite-direction
+observation must remain stable for 100 ms before the controller changes from
+LEFT to RIGHT or RIGHT to LEFT; it requests straight during confirmation. The
+sustained-curve transition increases from 150 ms to 250 ms. Existing strong
+curve targets remain unchanged pending separate physical curve testing.
+
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
 ### 1. Standalone ownership and wiring
