@@ -51,12 +51,12 @@ and then fail once they are combined, and two outputs driving the same pin
 against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
-The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2;
-this table still reflects the starter. Reconcile that wiring with the actual
-board and datasheets before configuring hardware. In particular, the planned
-IMU uses GP0/GP1 (conflicts with UART crash reporting), and the encoders use
-GP26–GP28 (conflicts with the sample ADC driver). No hardware configuration
-has been changed here.
+The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2. The
+authoritative assignment is the agreed pin mapping in `AGENTS.md`: IMU I2C0 on
+GP0/GP1, ultrasonic GP2/GP3, IR sensors GP4/GP16/GP6, motor 1 encoder GP26/GP27,
+motor 2 encoder GP7/GP28, motors GP8-GP11, and servo GP15. UART0 crash output
+must remain disabled because GP0/GP1 carry I2C0. Reconcile any other wiring
+with the actual board and datasheets before configuring hardware.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -67,32 +67,40 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP2 | | |
-| GP3 | | |
-| GP4 | | |
-| GP5 | | |
-| GP6 | | |
-| GP7 | | |
-| GP8 | | |
-| GP9 | | |
-| GP10 | | |
-| GP11 | | |
+| GP0 | S4 | IMU SDA0 (I2C0); `CRASH_REPORT=1` prohibited |
+| GP1 | S4 | IMU SCL0 (I2C0); `CRASH_REPORT=1` prohibited |
+| GP2 | S5 | HC-SR04 TRIG |
+| GP3 | S5 | HC-SR04 ECHO through a 5 V-to-3.3 V level shifter |
+| GP4 | S3 | IR sensor 1 DOUT (side barcode sensor) |
+| GP5 | | unused |
+| GP6 | S3 | IR sensor 3 DOUT (front-left viewed from behind); its Grove GP26 contact remains disconnected |
+| GP7 | S2 | ENC2_A, motor 2 encoder (GPIO interrupt) |
+| GP8 | S2 | M1A motor 1 PWM (slice 4A) |
+| GP9 | S2 | M1B motor 1 PWM (slice 4B) |
+| GP10 | S2 | M2A motor 2 PWM (slice 5A) |
+| GP11 | S2 | M2B motor 2 PWM (slice 5B) |
 | GP12 | | |
 | GP13 | | |
 | GP14 | | |
-| GP15 | | |
-| GP16 | | |
-| GP17 | | |
+| GP15 | S5 | SG90 servo PWM (slice 7B) |
+| GP16 | S3 | IR sensor 2 DOUT (front-right viewed from behind); demo liveness LED must not use this pin |
+| GP17 | | unused |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
-| GP20 | | |
+| GP20 | S2 | Robo Pico programmable button; active-low START/STOP in line test |
 | GP21 | | |
 | GP22 | | |
-| GP26 | | (ADC0 capable) |
-| GP27 | | (ADC1 capable) |
-| GP28 | | (ADC2 capable) |
+| GP26 | S2 | ENC1_A, motor 1 encoder; ADC pin initialisation disabled |
+| GP27 | S2 | ENC1_B, motor 1 encoder; ADC pin initialisation disabled |
+| GP28 | S2 | ENC2_B, motor 2 encoder; battery-sense jumper open |
+
+Dedicated test-profile exception (Edmund, 2026-11-05): only the
+`S3_LINE_FOLLOW_TEST` image follows the current installed trial wiring. It uses
+GP0/GP1 for the right encoder, GP7/GP28 for the left encoder, motor 1 for the
+left wheel and motor 2 for the right wheel. That image does not start subsystem
+4 and prohibits UART0. Normal and full-system images retain the table above;
+subsystem 4's future replacement pins must be agreed and recorded before this
+exception can become an integrated mapping.
 
 ## 3. Peripherals
 
@@ -125,12 +133,12 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | |
+| I2C0 | S4 | IMU task | GP0 (SDA0), GP1 (SCL0) |
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | GP26–GP28 |
-| PWM slices (list) | | | |
+| ADC | | | Pin initialisation disabled on encoder pins GP26-GP28 |
+| PWM slices (list) | S2: slices 4, 5; S5: slice 7 | Motion Control; Obstacle Scan | GP8-GP11; GP15 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -191,7 +199,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
 | IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
 | IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
-| IF-06 | | | | | |
+| IF-06 | S3 â†’ S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -208,7 +216,7 @@ limit there. The numbers below are the example's usage.
 | Event flag | 16 | | | | 1 | |
 | Mailbox | 12 | | | 1 | | |
 | Mutex | 12 | | | 1 | | |
-| Message buffer | 12 | | | | 1 | |
+| Message buffer | 12 | | 3 | | 1 | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
 | Cyclic handler | 12 | 1 | | | | |
