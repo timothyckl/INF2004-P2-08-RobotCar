@@ -5,9 +5,13 @@ platform and micro T-Kernel 3.0. The project must follow a line, decode navigati
 barcodes, detect humps and report the highest peak, profile and bypass obstacles,
 reacquire the original line, and report telemetry over WiFi/MQTT.
 
-The firmware currently contains the RTOS starter examples, not these robot
-features. It runs on **both cores** of the Pico W's RP2040, with a USB serial
-console and the WiFi driver built in.
+The firmware integrates all five subsystems into one mission (line following,
+barcode turns, hump monitoring, obstacle scan and bypass, line reacquisition,
+MQTT commands and telemetry); `docs/integration.md` describes it. It builds
+and its logic passes host tests, but it has **not yet run on the robot**:
+calibration values are provisional and the hardware tests in
+`docs/integration.md` section 8 are still to be done. It runs on **both cores** of the Pico W's RP2040, with a
+USB serial console and the WiFi driver built in.
 
 Project references in `docs/`:
 - `Project Description.pdf` — mission and subsystem requirements.
@@ -139,8 +143,7 @@ screen /dev/ttyACM0 115200            # Linux
 ```
 
 On Windows, use PuTTY or the VS Code *Serial Monitor* on the new COM port.
-You should see the task reports. Connect an LED with a 330 Ω resistor from
-**GP19** to GND to see subsystem 1's LED blink.
+You should see the task reports.
 
 **2.5 Write your own code**
 
@@ -151,10 +154,8 @@ subfolders, is compiled automatically.
   every subsystem's `subsystemN_init()` (create kernel objects), then every
   `subsystemN_start()` (start tasks). Read its comments first.
 - **One folder per student:** `app_program/subsystem1/` … `subsystem5/`.
-  Subsystems 1–4 hold a working example, one task each (LED, producer,
-  consumer, monitor). Together they use the main micro T-Kernel APIs and
-  pass data between subsystems. Subsystem 5 is an empty template.
-  Replace the examples with your own subsystems.
+  Each holds that subsystem's implementation; `TEAM.md` sections 4 to 6
+  list its tasks, interfaces and kernel objects.
 - `subsystemN.h` is that subsystem's public interface: the object IDs and
   data formats the other subsystems may use.
 - `app.h` holds the definitions shared by the whole team.
@@ -170,16 +171,17 @@ between subsystems in **`TEAM.md`**, and record every test in **`testing/`**
 the subsystem tests at power-up. Short videos of tests and demos are shared
 as unlisted YouTube links, listed in **`videos/`**.
 
-Pins: use **GP0–GP22 and GP26–GP28**. GP0/GP1 are free unless your team
-builds with `CRASH_REPORT=1` (section 3), which needs them. Never use
-GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico W's
-on-board LED is also on the radio, so use an external LED instead.
+Pins: the robot's wiring is in `AGENTS.md`, section *Agreed pin mapping*,
+which is the authoritative GPIO reference. GP0/GP1 carry the right wheel
+encoder, so build with `CRASH_REPORT=0` and `CONSOLE=usb_cdc` (section 3).
+Never use GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico
+W's on-board LED is also on the radio, so use an external LED instead.
 
 After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
 
 ---
 
-## 3. Build options: `SMP`, `CONSOLE`, `WIFI`, `TEST`, `CRASH_REPORT`
+## 3. Build options: `SMP`, `CONSOLE`, `WIFI`, `TEST`, diagnostics
 
 `make` on its own uses the defaults. To build differently, put options
 after `make`. They can be combined in any order:
@@ -187,17 +189,20 @@ after `make`. They can be combined in any order:
 ```sh
 make -j8                          # defaults: SMP=1 CONSOLE=usb_cdc WIFI=cyw43 TEST=0 CRASH_REPORT=0
 make SMP=0 -j8                    # single-core build
-make CONSOLE=uart WIFI=none -j8   # no USB console, radio off (no Pico SDK needed)
+make WIFI=none -j8                # radio off
 make TEST=1 -j8                   # firmware with the subsystem self-tests
-make CRASH_REPORT=1 -j8           # also see crash reports, on GP0/GP1 (uses those pins)
+make S2_LOG=1 -j8                 # print controller diagnostics every 500 ms
+make LINE_ONLY=1 -j8              # diagnostic line following; no obstacle task
+make TEST=1 S3_IR_DIAG=1 -j8      # print live IR sensor colours for 60 s
+make NET=lwip MQTT=1 -j8          # WiFi + MQTT commands and telemetry (see below)
 ```
 
 To set several options at once, list them all, separated by spaces. For
-example, to track down a crash in the test build while running on one core only:
+example, the test build running on one core only:
 
 ```sh
-make SMP=0 TEST=1 CRASH_REPORT=1 -j8
-#  -> build_make/mtk3pico_smp0_usb_cdc_wifi_crash_test.uf2
+make SMP=0 TEST=1 -j8
+#  -> build_make/mtk3pico_smp0_usb_cdc_wifi_test.uf2
 ```
 
 Any option you leave out keeps its default (here `CONSOLE=usb_cdc` and
@@ -210,6 +215,9 @@ the next plain `make` goes back to the defaults.
 | `CONSOLE` | **`usb_cdc`**, `uart` | where `tm_printf` output goes. `usb_cdc` = USB cable; `uart` = UART0 only (GP0 TX / GP1 RX, needs a USB-serial adapter) | `_usb_cdc` / `_uart` | `TM_CONSOLE_USB_CDC` |
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
+| `S2_LOG` | **`0`**, `1` | Prints controller state, fault, motion state, distance and line status every 500 ms | `_s2log` / *(nothing)* | `S2_DEMO_LOG` (1 or 0) |
+| `LINE_ONLY` | **`0`**, `1` | Diagnostic profile that keeps line following and motion but does not initialise or start obstacle scanning; cannot be combined with `TEST=1` | `_lineonly` / *(nothing)* | `APP_LINE_ONLY` (1 or 0) |
+| `S3_IR_DIAG` | **`0`**, `1` | With `TEST=1`, prints normalised left, right and barcode sensor readings for 60 seconds | `_s3irdiag` / *(nothing)* | `S3_IR_DIAGNOSTIC` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
 **Why `CRASH_REPORT` exists.** USB output is not sent the moment you call
@@ -220,8 +228,42 @@ UART output *is* sent at once, even inside the crash handler. So when you
 need to know why the Pico crashed or froze, build with `CRASH_REPORT=1`,
 connect a USB-serial adapter (adapter RX → GP0, adapter GND → GND), and read
 it at 115200 baud. Normal `tm_printf` output on USB works the same with
-either setting. If a subsystem has claimed GP0/GP1 in `TEAM.md`, unplug that
-hardware before using `CRASH_REPORT=1`.
+either setting. On this robot GP0/GP1 carry a wheel encoder
+(`TEAM.md` section 2), so the makefile refuses `CRASH_REPORT=1` and
+`CONSOLE=uart` (`docs/decisions.md`, integration decision 4). Use the USB
+console; for a crash, add prints before the failing step instead.
+
+`S4_HW_TEST=1` (only with `TEST=1`) adds subsystem 4's live IMU start-up check
+and the `_s4hw` image suffix; see `docs/subsystem4.md`.
+
+`S3_IR_DIAG=1` (only with `TEST=1`) reads the front analogue outputs on
+ADC0/GP26 (left), ADC1/GP27 (right), and the side barcode digital output on
+GP16. It prints once per second. The diagnostic runs for 60 seconds;
+reset the Pico W to run it again. It does not enable motor movement.
+
+`S2_LOG=1` enables a controller diagnostic line every 500 ms. Use it for
+bench diagnosis, then return to `S2_LOG=0` for timing tests because console
+formatting executes in the controller task.
+
+`LINE_ONLY=1` is only for isolated line-follow testing. The HC-SR04 and servo
+task is not started, so invalid or missing echoes cannot request a scan, but
+the robot also has no obstacle protection. The boot console prints a warning
+and the image name contains `_lineonly`. This profile may still use WiFi and
+MQTT. Flash it over USB first; afterwards the Pico W can run from a power bank
+while commands travel over WiFi. Keep an immediate way to remove power because
+dashboard STOP depends on the hotspot, broker and WiFi link remaining up.
+
+**MQTT.** `make NET=lwip MQTT=1 -j8` needs `config/wifi_secrets.h` (copy
+`config/wifi_secrets.example.h`; it is ignored by Git, never commit it).
+Commands (`START`, `STOP`, `RESET`) are read from `p2-08/p2-08-car-01/command`
+and telemetry is published to `p2-08/p2-08-car-01/telemetry`; both are
+subsystem 1's proposed topics and can be overridden in `wifi_secrets.h`
+(`S1_MQTT_COMMAND_TOPIC`, `S1_MQTT_TELEMETRY_TOPIC`). Without WiFi the robot
+stays stopped: START only comes over MQTT.
+
+**Host tests.** `make -C testing/host` builds and runs every subsystem's
+pure-logic cases with the computer's `gcc` (no board needed). They test the
+logic with synthetic input; they are not evidence that the robot works.
 
 The options are part of the image name, e.g.
 `mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build

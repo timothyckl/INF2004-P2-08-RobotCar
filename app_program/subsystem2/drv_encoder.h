@@ -1,0 +1,61 @@
+/**
+ * @file drv_encoder.h
+ * @brief Subsystem 2 quadrature wheel-encoder driver.
+ *
+ * Hardware: TT motors with two-channel Hall encoders (confirmed on the
+ * robot; part number and datasheet unknown, so counts per revolution are
+ * UNVERIFIED until test S2-H03). Wiring as on the robot (bench
+ * 2026-11-02): encoder 1 = GP7 (A) / GP28 (B), encoder 2 = GP0 (A) /
+ * GP1 (B). S2-H01 (2026-11-04) put encoder 1 on the right wheel (motor 1)
+ * and encoder 2 on the left (motor 2); GP0/GP1 need CRASH_REPORT=0. Keep the GP28
+ * battery-sense jumper open.
+ *
+ * Decoding (x2): an interrupt on both edges of A only; B's level at that
+ * moment gives the direction. This doubles the resolution of rising-edge
+ * counting while taking half the interrupts of full x4 decoding (both
+ * edges of A and B), which keeps the combined GPIO interrupt load down
+ * (AAI08_PostTri1). Counts per wheel revolution = 2 x A pulses per rev.
+ *
+ * Counts are free-running uint32_t, +1 when A leads B, wrapping, as
+ * odom_count_delta() expects. Which sign is "forward" depends on the
+ * wiring; Motion Control maps it.
+ *
+ * Concurrency: only the dispatcher interrupt (one core) writes the counts.
+ * drv_encoder_snapshot() is a lock-free sequence read: it never stops
+ * the interrupt, and retries if an update happened during the copy, so it
+ * is safe from either core and the ISR never waits.
+ */
+#ifndef DRV_ENCODER_H
+#define DRV_ENCODER_H
+
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "../app.h"
+
+typedef enum
+{
+    DRV_ENCODER_1 = 0,  /* right wheel (motor 1), GP7/GP28 */
+    DRV_ENCODER_2,      /* left wheel (motor 2), GP0/GP1 */
+    DRV_ENCODER_COUNT
+} drv_encoder_id_t;
+
+/** One consistent copy of both encoders. */
+typedef struct
+{
+    uint32_t count[DRV_ENCODER_COUNT];      /* +1 per A edge, A leading */
+    uint32_t edge_us[DRV_ENCODER_COUNT];    /* time of last counted edge */
+    uint32_t errors[DRV_ENCODER_COUNT];     /* edges that could not be
+                                               decoded (both A edges seen) */
+} drv_encoder_snapshot_t;
+
+ER drv_encoder_init (void);
+ER drv_encoder_snapshot (drv_encoder_snapshot_t * p_snap);
+
+/* Pure x2 decode used by the interrupt; exposed for unit tests.
+   Returns +1, -1, or 0 (no edge, or both edges: not decodable). */
+int32_t drv_encoder_step (uint32_t events, bool b_level_b);
+
+#endif /* DRV_ENCODER_H */
+
+/* End of file. */
