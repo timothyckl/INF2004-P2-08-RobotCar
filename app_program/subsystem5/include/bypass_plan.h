@@ -1,6 +1,7 @@
 /**
  * @file bypass_plan.h
- * @brief Bypass route from one coarse profile (pure logic).
+ * @brief Bypass route from one coarse or refined profile (pure logic).
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Input: the nine coarse medians, index 0 = -60 degrees (right) to index 8
  * = +60 degrees (left), forward at index 4 (decision 4: positive = left).
@@ -26,6 +27,7 @@
 #include <stdint.h>
 
 #define BYPASS_PLAN_ANGLES      (9u)
+#define BYPASS_PLAN_FINE_ANGLES (25u)
 #define BYPASS_PLAN_SEGMENTS    (4u)
 
 #define BYPASS_PLAN_TURN        (1u)    /* value: mdeg, positive = left */
@@ -86,6 +88,15 @@ typedef struct
 bool bypass_plan_make (uint16_t const * p_distances,
                        bypass_plan_config_t const * p_config,
                        bypass_plan_t * p_plan);
+
+/**
+ * Plan from a 5-degree profile. Coarse positions (multiples of 15 degrees)
+ * must be present; only selected fine positions need readings. A route needs
+ * both fine readings at its first observed obstacle edge.
+ */
+bool bypass_plan_make_fine (uint16_t const * p_distances,
+                            bypass_plan_config_t const * p_config,
+                            bypass_plan_t * p_plan);
 
 #endif /* BYPASS_PLAN_H */
 

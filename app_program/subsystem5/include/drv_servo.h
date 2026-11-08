@@ -1,6 +1,7 @@
 /**
  * @file drv_servo.h
  * @brief SG90 servo on GP12, PWM slice 6 channel A (AGENTS.md, TEAM.md).
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * 50 Hz frame with a 1 us tick (125 MHz clk_sys / 125, TOP 19999).
  * Pulse = 1500 us + 10 us per degree, positive = left. The Tower Pro SG90

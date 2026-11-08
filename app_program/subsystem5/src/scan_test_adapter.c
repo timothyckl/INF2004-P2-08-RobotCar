@@ -1,6 +1,7 @@
 /**
  * @file scan_test_adapter.c
  * @brief Translation between test fixtures and production scan logic.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  */
 #include "../include/scan_test_adapter.h"
 
@@ -60,7 +61,7 @@ scan_test_reset (test_interface_port_t const * p_port,
         scan_test_time_now_us,
         scan_test_publish
     };
-    scan_engine_config_t scan_config = {0u, 0u};
+    scan_engine_config_t scan_config = {0u, 0u, 0u};
 
     g_test_port.p_now_us = NULL;
     g_test_port.p_emit   = NULL;
@@ -74,6 +75,7 @@ scan_test_reset (test_interface_port_t const * p_port,
     {
         scan_config.settling_us = p_config->settling_us;
         scan_config.hazard_mm   = p_config->hazard_mm;
+        scan_config.depth_mm    = p_config->depth_mm;
     }
 
     scan_engine_reset(&g_scan_engine, &scan_port, &scan_config);

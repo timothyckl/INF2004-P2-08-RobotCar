@@ -1,6 +1,7 @@
 /**
  * @file obstacle_test.c
  * @brief Pico W obstacle-scanning test runner.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * S5-U01 and S5-U02 are retired. Cases start at S5-U03.
  * Source: testing/subsystem5/TEST_LOG.md.

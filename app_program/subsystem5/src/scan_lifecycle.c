@@ -1,6 +1,7 @@
 /**
  * @file scan_lifecycle.c
  * @brief Application lifecycle compatibility hooks for obstacle scanning.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Production scan logic is implemented in focused modules and exercised
  * through injected test ports. scan_task.c binds it to the servo, the

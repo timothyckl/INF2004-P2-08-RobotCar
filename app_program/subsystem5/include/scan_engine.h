@@ -1,6 +1,7 @@
 /**
  * @file scan_engine.h
  * @brief Safety-gated obstacle scan sequencing.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  */
 #ifndef SCAN_ENGINE_H
 #define SCAN_ENGINE_H
@@ -38,6 +39,7 @@ typedef struct
 /** Coarse scan: -60 to +60 degrees in 15 degree steps (decision 4). */
 #define SCAN_ENGINE_ANGLES      (9u)
 #define SCAN_ENGINE_SAMPLES     (3u)
+#define SCAN_ENGINE_FINE_MAX    (16u)
 
 /** Observable actions requested by the state machine. */
 typedef enum
@@ -81,6 +83,7 @@ typedef struct
 {
     uint32_t settling_us;
     uint16_t hazard_mm;
+    uint16_t depth_mm;       /* provisional obstacle-depth assumption */
 } scan_engine_config_t;
 
 /**
@@ -88,9 +91,9 @@ typedef struct
  *
  * DISTANCE outputs carry each angle's median of three valid samples
  * (b_asserted true). PLAN with b_asserted true reports that the whole
- * coarse profile was published; the caller then plans the bypass. FAULT
- * reports three consecutive invalid attempts, stuck ECHO or the 15 s scan
- * limit; the scan is then invalid and the servo returns forward.
+ * coarse and selected fine profile was published; the caller then plans the
+ * bypass. FAULT reports three consecutive invalid attempts, stuck ECHO or
+ * the 15 s scan limit; the scan is then invalid and the servo returns forward.
  */
 typedef struct
 {
@@ -103,14 +106,19 @@ typedef struct
     uint32_t             trigger_us;
     uint32_t             rise_us;
     uint16_t             samples[SCAN_ENGINE_SAMPLES];
+    uint16_t             coarse_mm[SCAN_ENGINE_ANGLES];
+    int16_t              fine_angles[SCAN_ENGINE_FINE_MAX];
     uint8_t              sample_count;
     uint8_t              invalid_count;
     uint8_t              angle_index;
+    uint8_t              fine_count;
+    uint8_t              fine_index;
     bool                 b_has_request;
     bool                 b_is_authorised;
     bool                 b_is_stopped;
     bool                 b_is_scanning;
     bool                 b_awaiting_clearance;
+    bool                 b_fine_scanning;
     bool                 b_trigger_started;
     bool                 b_has_trigger;
     bool                 b_capture_open;

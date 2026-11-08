@@ -1,6 +1,7 @@
 /**
  * @file test_interface.h
  * @brief Subsystem 5 Pico W unit-test interfaces, not a wire format.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Inputs describe decoded events. Native integer containers here do not set
  * packed field widths. The fixture does not drive sensor, servo or controller
@@ -70,6 +71,7 @@ typedef struct
 {
     uint32_t settling_us;
     uint16_t hazard_mm;
+    uint16_t depth_mm;
 } test_interface_config_t;
 
 /**

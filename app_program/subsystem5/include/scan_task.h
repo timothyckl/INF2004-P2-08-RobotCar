@@ -1,6 +1,7 @@
 /**
  * @file scan_task.h
  * @brief Obstacle Scan task and its interface to the Vehicle Controller.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Inputs from the controller arrive on scan_q (owned by subsystem 2,
  * s2_scan_cmd_t in subsystem2.h): REQUEST, AUTHORISE, STOP_CONFIRM,

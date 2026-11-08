@@ -1,6 +1,7 @@
 /**
  * @file scan_lifecycle.h
  * @brief Shared application declarations for obstacle scanning.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Cross-subsystem objects and messages remain intentionally absent until
  * their contracts are agreed with the controller, motion and line owners.

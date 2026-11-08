@@ -1,6 +1,7 @@
 /**
  * @file forward_monitor.h
  * @brief Forward clearance verdict while the vehicle moves (pure logic).
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Source: obstacle-scanning decision 3. One forward reading every 65 ms;
  * an unsafe, invalid or stale reading requests a stop immediately, with no

@@ -13,6 +13,20 @@ All test cases execute on the **Raspberry Pi Pico W**, not on the build computer
 - Automated logic cases run through `scan_lifecycle_test()` in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
 - Real sensor, servo, RTOS/ISR and integration cases require separate on-board measurements. No motor or servo movement is enabled by this test scaffold.
 
+### Host simulation evidence (2026-11-08)
+
+`make -C testing/host s5` passed 37/37 synthetic cases, including the cases below. The same source cross-built for the Pico W with `TEST=1 CRASH_REPORT=0`; no on-device execution or physical clearance was verified.
+
+| ID | Host check | Result |
+|---|---|---|
+| S5-U55 | Three consecutive invalid forward echoes fault; a valid echo resets the count. | Passed in host simulation. |
+| S5-U56 | A scan plan waits for a fresh, safe forward reading. | Passed in host simulation. |
+| S5-U57 | An unstarted request expires after 2 s. | Passed in host simulation. |
+| S5-U58 | A busy request cannot replace the active scan. | Passed in host simulation. |
+| S5-U59 | Coarse obstacle edges receive two intermediate 5° readings before forward clearance. | Passed in host simulation. |
+| S5-U60 | The refined profile selects the shorter observed side and resolves a tie to the left. | Passed in host simulation. |
+| S5-U61 | Missing or inconsistent fine edges and a second observed obstacle yield no route; missing coarse data is invalid. | Passed in host simulation. |
+
 Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source and adapter only for `TEST=1`. Normal firmware excludes them. The subsystem build compiles project-authored subsystem 5 C as C99 with strict warnings treated as errors. It also runs `tools/check_subsystem5_barr_c.py` for mechanically enforceable BARR-C:2018 rules; semantic rules still require review.
 
 1. Build with `make -C build_make TEST=1 -j8`, following the SDK/toolchain setup in the project README. `make -C testing/subsystem5/unit_tests` forwards to the same firmware build; it does not run a native executable.

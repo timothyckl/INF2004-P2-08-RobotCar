@@ -9,6 +9,7 @@
 #include "../include/test_fixture.h"
 #include "../include/test_runner.h"
 #include "../include/test_subject.h"
+#include "../../../../app_program/subsystem5/include/scan_engine.h"
 
 #include <stddef.h>
 
@@ -38,6 +39,9 @@ static bool test_capture_coarse (test_interface_api_t const * p_api);
 
 /** A fresh unsafe forward reading cannot release a completed profile. */
 static bool test_capture_clearance (test_interface_api_t const * p_api);
+
+/** Coarse range transitions are refined at five-degree steps. */
+static bool test_capture_fine_edges (test_interface_api_t const * p_api);
 
 /** S5-U28: a scan that runs past 15 s faults. */
 static bool test_capture_limit (test_interface_api_t const * p_api);
@@ -83,6 +87,8 @@ test_capture_run (test_interface_api_t const * p_api)
          test_capture_coarse},
         {"S5-U56", "plan waits for safe forward clearance",
          test_capture_clearance},
+        {"S5-U59", "coarse edges receive five-degree samples",
+         test_capture_fine_edges},
         {"S5-U28", "scan past 15 s faults", test_capture_limit}
     };
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
@@ -356,10 +362,68 @@ test_capture_clearance (test_interface_api_t const * p_api)
 }
 
 static bool
+test_capture_fine_edges (test_interface_api_t const * p_api)
+{
+    uint16_t const coarse_mm[SCAN_ENGINE_ANGLES] =
+    {
+        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+    };
+    int16_t const expected_angles[4] = {-25, -20, 20, 25};
+    bool b_angles = true;
+    uint32_t fine_seen = 0u;
+
+    test_subject_start(p_api, 0u);
+    test_capture_authorise(p_api);
+
+    for (uint32_t sample = 0u; sample < 27u; sample++)
+    {
+        (void) test_capture_await(p_api, 70u);
+        test_capture_echo(p_api, g_capture_rise_us
+                          + test_capture_width(coarse_mm[sample / 3u]));
+    }
+
+    bool const b_no_early_plan = test_subject_no_plan();
+
+    for (uint32_t sample = 0u; sample < 12u; sample++)
+    {
+        uint32_t const distance_mm = ((sample / 3u) == 0u)
+                                     || ((sample / 3u) == 2u)
+                                     ? 410u : 3000u;
+
+        (void) test_capture_await(p_api, 70u);
+        test_capture_echo(p_api, g_capture_rise_us
+                          + test_capture_width(distance_mm));
+    }
+
+    for (uint32_t index = 0u; index < test_fixture_size(); index++)
+    {
+        test_interface_output_t const * const p_output =
+            &test_fixture_record(index)->output;
+
+        if ((TEST_INTERFACE_DISTANCE == p_output->kind)
+            && ((p_output->angle_deg % 15) != 0))
+        {
+            b_angles = b_angles && (fine_seen < 4u)
+                       && (expected_angles[fine_seen] == p_output->angle_deg);
+            fine_seen++;
+        }
+    }
+
+    (void) test_capture_await(p_api, 70u);
+    test_capture_echo(p_api, g_capture_rise_us
+                      + test_capture_width(850u));
+
+    return (b_no_early_plan && b_angles && (4u == fine_seen)
+            && (40u == test_fixture_count(TEST_INTERFACE_TRIGGER))
+            && (1u == test_fixture_count(TEST_INTERFACE_PLAN))
+            && (!test_fixture_overflowed()));
+}
+
+static bool
 test_capture_limit (test_interface_api_t const * p_api)
 {
     /* 2 s settling per angle cannot finish nine angles inside 15 s. */
-    test_interface_config_t const slow = {2000000u, 200u};
+    test_interface_config_t const slow = {2000000u, 200u, 200u};
     uint32_t elapsed_ms = 0u;
 
     test_fixture_reset(0u);

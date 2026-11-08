@@ -1,6 +1,7 @@
 /**
  * @file drv_ultrasonic.c
  * @brief HC-SR04 driver (see drv_ultrasonic.h).
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  */
 #include "../include/drv_ultrasonic.h"
 

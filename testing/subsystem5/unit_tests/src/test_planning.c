@@ -37,6 +37,12 @@ static bool test_planning_segments (test_interface_api_t const * p_api);
 /** S5-U54: nothing in range ahead is not an obstacle. */
 static bool test_planning_clear (test_interface_api_t const * p_api);
 
+/** S5-U60: refined edge readings decide the shorter safe side. */
+static bool test_planning_fine_edges (test_interface_api_t const * p_api);
+
+/** S5-U61: incomplete or inconsistent edge readings yield no route. */
+static bool test_planning_fine_reject (test_interface_api_t const * p_api);
+
 void
 test_planning_run (test_interface_api_t const * p_api)
 {
@@ -53,7 +59,11 @@ test_planning_run (test_interface_api_t const * p_api)
         {"S5-U53", "plan segments, search bound and align",
          test_planning_segments},
         {"S5-U54", "nothing ahead in range is no obstacle",
-         test_planning_clear}
+         test_planning_clear},
+        {"S5-U60", "fine edge chooses shorter side",
+         test_planning_fine_edges},
+        {"S5-U61", "missing or inconsistent edge has no route",
+         test_planning_fine_reject}
     };
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
 
@@ -240,6 +250,90 @@ test_planning_clear (test_interface_api_t const * p_api)
 
     return ((!bypass_plan_make(open, &g_planning_config, &plan))
             && (BYPASS_PLAN_NO_OBSTACLE == plan.result));
+}
+
+static bool
+test_planning_fine_edges (test_interface_api_t const * p_api)
+{
+    uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
+    uint16_t const coarse[BYPASS_PLAN_ANGLES] =
+    {
+        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+    };
+    bypass_plan_t plan;
+
+    (void) p_api;
+
+    for (uint32_t index = 0u; index < BYPASS_PLAN_ANGLES; index++)
+    {
+        profile[index * 3u] = coarse[index];
+    }
+
+    profile[7] = 3000u;  /* -25 degrees: right beam passes the edge. */
+    profile[8] = 410u;   /* -20 degrees: right beam hits the edge. */
+    profile[16] = 410u;  /* +20 degrees: left beam hits the edge. */
+    profile[17] = 410u;  /* +25 degrees: left edge reaches farther. */
+
+    bool const b_right = bypass_plan_make_fine(profile, &g_planning_config,
+                                                &plan)
+                         && (BYPASS_PLAN_RIGHT == plan.side)
+                         && (plan.search_mm <= g_planning_config.search_max_mm);
+
+    profile[17] = 3000u;  /* Equal observed edges: left wins a tie. */
+
+    bool const b_tie = bypass_plan_make_fine(profile, &g_planning_config,
+                                              &plan)
+                       && (BYPASS_PLAN_LEFT == plan.side);
+
+    return (b_right && b_tie);
+}
+
+static bool
+test_planning_fine_reject (test_interface_api_t const * p_api)
+{
+    uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
+    uint16_t const coarse[BYPASS_PLAN_ANGLES] =
+    {
+        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+    };
+    bypass_plan_t plan;
+
+    (void) p_api;
+
+    for (uint32_t index = 0u; index < BYPASS_PLAN_ANGLES; index++)
+    {
+        profile[index * 3u] = coarse[index];
+    }
+
+    bool const b_missing = (!bypass_plan_make_fine(profile,
+                                                    &g_planning_config,
+                                                    &plan))
+                           && (BYPASS_PLAN_NO_ROUTE == plan.result);
+
+    profile[7] = 410u;   /* A far blocked ray after a nearer open ray. */
+    profile[8] = 3000u;
+
+    bool const b_inconsistent = (!bypass_plan_make_fine(profile,
+                                                         &g_planning_config,
+                                                         &plan))
+                                && (BYPASS_PLAN_NO_ROUTE == plan.result);
+
+    profile[7] = 3000u;
+    profile[8] = 410u;
+    profile[3] = 410u;   /* Another obstacle beyond the first right gap. */
+
+    bool const b_second_obstacle = (!bypass_plan_make_fine(
+                                      profile, &g_planning_config, &plan))
+                                   && (BYPASS_PLAN_NO_ROUTE == plan.result);
+
+    profile[12] = 0u;    /* Missing coarse forward measurement is invalid. */
+
+    bool const b_invalid = (!bypass_plan_make_fine(profile,
+                                                    &g_planning_config,
+                                                    &plan))
+                           && (BYPASS_PLAN_INVALID == plan.result);
+
+    return (b_missing && b_inconsistent && b_second_obstacle && b_invalid);
 }
 
 /* End of file. */

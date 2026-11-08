@@ -1,6 +1,7 @@
 /**
  * @file scan_task.c
  * @brief Obstacle Scan task: forward monitoring, scans and bypass plans.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Every 10 ms a cyclic handler wakes the task, which:
  *   1. passes scan_q commands from the controller to the scan engine;
@@ -54,7 +55,7 @@ static scan_task_status_t g_task_status;    /* guarded by g_task_mtx */
 /* Scan task only. */
 static scan_task_status_t g_work;
 static scan_engine_t      g_engine;
-static uint16_t           g_profile[BYPASS_PLAN_ANGLES];
+static uint16_t           g_profile[BYPASS_PLAN_FINE_ANGLES];
 static forward_monitor_t  g_monitor;
 static uint32_t           g_monitor_since_us;
 static uint32_t           g_capture_us;
@@ -133,7 +134,8 @@ scan_task_start (void)
     scan_engine_port_t const   port   = {scan_task_now_us,
                                          scan_task_publish};
     scan_engine_config_t const config = {g_task_settling_us,
-                                         g_task_hazard_mm};
+                                         g_task_hazard_mm,
+                                         g_task_plan_config.depth_mm};
     ER er = drv_servo_init();
 
     if (E_OK == er)
@@ -367,9 +369,11 @@ scan_task_publish (scan_engine_output_t const * p_output)
 
         case SCAN_ENGINE_DISTANCE:
         {
-            int32_t const index = ((int32_t) p_output->angle_deg + 60) / 15;
+            int32_t const angle = (int32_t)p_output->angle_deg + 60;
+            int32_t const index = angle / 5;
 
-            if ((index >= 0) && (index < (int32_t) BYPASS_PLAN_ANGLES))
+            if ((angle >= 0) && ((angle % 5) == 0)
+                && (index < (int32_t)BYPASS_PLAN_FINE_ANGLES))
             {
                 g_profile[index] = p_output->distance_mm;
             }
@@ -378,8 +382,8 @@ scan_task_publish (scan_engine_output_t const * p_output)
         break;
 
         case SCAN_ENGINE_PLAN:
-            (void) bypass_plan_make(g_profile, &g_task_plan_config,
-                                    &g_work.plan);
+            (void) bypass_plan_make_fine(g_profile, &g_task_plan_config,
+                                         &g_work.plan);
             g_work.result_us = scan_task_now_us();
 
             if (BYPASS_PLAN_OK == g_work.plan.result)
@@ -436,7 +440,7 @@ scan_task_command (s2_scan_cmd_t const * p_cmd)
                 g_work.result     = SCAN_TASK_RESULT_NONE;
                 g_work.plan       = cleared;
 
-                for (uint32_t index = 0u; index < BYPASS_PLAN_ANGLES;
+                for (uint32_t index = 0u; index < BYPASS_PLAN_FINE_ANGLES;
                      index++)
                 {
                     g_profile[index] = 0u;

@@ -1,6 +1,7 @@
 /**
  * @file drv_ultrasonic.h
  * @brief HC-SR04 driver: TRIG on GP4, ECHO on GP5 (AGENTS.md).
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Datasheet (docs/datasheets/HCSR04-datasheet.pdf): a TRIG high pulse of
  * at least 10 us starts a measurement; ECHO is then high for the

@@ -1,6 +1,7 @@
 /**
  * @file range_measurement.c
  * @brief HC-SR04 echo-duration conversion.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Source: docs/datasheets/HCSR04-datasheet.pdf and obstacle-scanning
  * decision 3 in docs/decisions.md.

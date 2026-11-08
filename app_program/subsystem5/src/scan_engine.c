@@ -1,10 +1,10 @@
 /**
  * @file scan_engine.c
  * @brief Safety-gated obstacle scan sequencing.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Source: obstacle-scanning decisions 3, 4, 6 and 8 in docs/decisions.md.
- * Coarse angles only: the 5 degree fine refinement (planned S5-U27) is
- * not implemented.
+ * Coarse angles are refined at 5 degrees around observed obstacle edges.
  */
 #include "../include/scan_engine.h"
 
@@ -60,6 +60,9 @@ static void scan_engine_complete (scan_engine_t * p_engine, bool b_valid,
 
 /** Publish the angle's median, then move on or finish the profile. */
 static void scan_engine_next_angle (scan_engine_t * p_engine);
+
+/** Choose five-degree samples inside each observed coarse edge interval. */
+static void scan_engine_prepare_fine (scan_engine_t * p_engine);
 
 /** Report a fault and invalidate the scan. */
 static void scan_engine_fail (scan_engine_t * p_engine);
@@ -243,6 +246,7 @@ scan_engine_abort (scan_engine_t * p_engine)
     p_engine->b_is_stopped      = false;
     p_engine->b_is_scanning     = false;
     p_engine->b_awaiting_clearance = false;
+    p_engine->b_fine_scanning   = false;
     p_engine->b_trigger_started = false;
     p_engine->b_capture_open    = false;
     p_engine->sample_count      = 0u;
@@ -287,10 +291,13 @@ scan_engine_try_start (scan_engine_t * p_engine)
 
             p_engine->b_is_scanning       = true;
             p_engine->b_awaiting_clearance = false;
+            p_engine->b_fine_scanning     = false;
             p_engine->b_trigger_started   = false;
             p_engine->b_has_trigger       = false;
             p_engine->b_capture_open      = false;
             p_engine->angle_index         = 0u;
+            p_engine->fine_count          = 0u;
+            p_engine->fine_index          = 0u;
             p_engine->sample_count        = 0u;
             p_engine->invalid_count       = 0u;
             p_engine->settling_started_us = started_us;
@@ -486,38 +493,77 @@ scan_engine_complete (scan_engine_t * p_engine, bool b_valid,
 static void
 scan_engine_next_angle (scan_engine_t * p_engine)
 {
+    uint16_t const distance_mm = scan_engine_median(p_engine->samples);
+
     (void) scan_engine_publish(p_engine, SCAN_ENGINE_DISTANCE,
-                               scan_engine_angle(p_engine),
-                               scan_engine_median(p_engine->samples), true);
+                               scan_engine_angle(p_engine), distance_mm, true);
 
     p_engine->sample_count = 0u;
-    p_engine->angle_index++;
 
-    if (SCAN_ENGINE_ANGLES <= p_engine->angle_index)
+    if (p_engine->b_fine_scanning)
     {
-        /* Return forward, settle and measure fresh clearance before a plan. */
-        p_engine->b_awaiting_clearance = true;
+        p_engine->fine_index++;
 
-        if (scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
-                                g_scan_forward_angle_deg, 0u, true))
+        if (p_engine->fine_index >= p_engine->fine_count)
         {
-            p_engine->settling_started_us = p_engine->port.p_time_now_us();
-        }
-        else
-        {
-            scan_engine_fail(p_engine);
+            p_engine->b_awaiting_clearance = true;
         }
     }
-    else if (scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
-                                 scan_engine_angle(p_engine), 0u, true))
+    else
+    {
+        p_engine->coarse_mm[p_engine->angle_index] = distance_mm;
+        p_engine->angle_index++;
+
+        if (p_engine->angle_index >= SCAN_ENGINE_ANGLES)
+        {
+            scan_engine_prepare_fine(p_engine);
+            p_engine->b_fine_scanning = (p_engine->fine_count > 0u);
+            p_engine->b_awaiting_clearance = !p_engine->b_fine_scanning;
+        }
+    }
+
+    /* Return forward, settle and measure fresh clearance before a plan. */
+    if (scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
+                            scan_engine_angle(p_engine), 0u, true))
     {
         p_engine->settling_started_us = p_engine->port.p_time_now_us();
     }
     else
     {
-        scan_engine_abort(p_engine);
+        scan_engine_fail(p_engine);
     }
 
+}
+
+static void
+scan_engine_prepare_fine (scan_engine_t * p_engine)
+{
+    uint32_t const pass_mm =
+        (uint32_t)p_engine->coarse_mm[SCAN_ENGINE_ANGLES / 2u]
+        + (uint32_t)p_engine->config.depth_mm;
+
+    p_engine->fine_count = 0u;
+    p_engine->fine_index = 0u;
+
+    for (uint8_t index = 0u; index < (SCAN_ENGINE_ANGLES - 1u); index++)
+    {
+        bool const b_first_blocked = (p_engine->coarse_mm[index] <= pass_mm);
+        bool const b_next_blocked =
+            (p_engine->coarse_mm[index + 1u] <= pass_mm);
+
+        if (b_first_blocked != b_next_blocked)
+        {
+            int16_t const base_deg = (int16_t)(g_scan_first_angle_deg
+                                     + ((int16_t)index * g_scan_step_deg));
+
+            p_engine->fine_angles[p_engine->fine_count] =
+                (int16_t)(base_deg + 5);
+            p_engine->fine_count++;
+            p_engine->fine_angles[p_engine->fine_count] =
+                (int16_t)(base_deg + 10);
+            p_engine->fine_count++;
+        }
+    }
 }
 
 static void
@@ -536,8 +582,16 @@ scan_engine_angle (scan_engine_t const * p_engine)
 
     if (!p_engine->b_awaiting_clearance)
     {
-        angle_deg = (int16_t) (g_scan_first_angle_deg
-                    + ((int16_t) p_engine->angle_index * g_scan_step_deg));
+        if (p_engine->b_fine_scanning)
+        {
+            angle_deg = p_engine->fine_angles[p_engine->fine_index];
+        }
+        else
+        {
+            angle_deg = (int16_t) (g_scan_first_angle_deg
+                        + ((int16_t) p_engine->angle_index
+                           * g_scan_step_deg));
+        }
     }
 
     return (angle_deg);

@@ -1,6 +1,7 @@
 /**
  * @file scan_test_adapter.h
  * @brief On-target test binding for obstacle scan logic.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  */
 #ifndef SCAN_TEST_ADAPTER_H
 #define SCAN_TEST_ADAPTER_H

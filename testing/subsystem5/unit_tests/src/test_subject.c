@@ -33,7 +33,7 @@ void
 test_subject_start (test_interface_api_t const * p_api, uint32_t time_us)
 {
     /* These values exercise logic; they are not servo calibration evidence. */
-    test_interface_config_t const config = {1000u, 200u};
+    test_interface_config_t const config = {1000u, 200u, 200u};
 
     test_fixture_reset(time_us);
     p_api->p_reset_fixture(test_fixture_ports(), &config);
