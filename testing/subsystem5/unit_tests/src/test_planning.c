@@ -43,6 +43,12 @@ static bool test_planning_fine_edges (test_interface_api_t const * p_api);
 /** S5-U61: incomplete or inconsistent edge readings yield no route. */
 static bool test_planning_fine_reject (test_interface_api_t const * p_api);
 
+/** S5-U62: observed rays give an explicitly estimated shape and clearance. */
+static bool test_planning_profile (test_interface_api_t const * p_api);
+
+/** S5-U63: missing one edge leaves shape fields unknown. */
+static bool test_planning_partial_profile (test_interface_api_t const * p_api);
+
 void
 test_planning_run (test_interface_api_t const * p_api)
 {
@@ -63,7 +69,11 @@ test_planning_run (test_interface_api_t const * p_api)
         {"S5-U60", "fine edge chooses shorter side",
          test_planning_fine_edges},
         {"S5-U61", "missing or inconsistent edge has no route",
-         test_planning_fine_reject}
+         test_planning_fine_reject},
+        {"S5-U62", "observed span and plan clearance estimate",
+         test_planning_profile},
+        {"S5-U63", "missing edge keeps shape unknown",
+         test_planning_partial_profile}
     };
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
 
@@ -334,6 +344,83 @@ test_planning_fine_reject (test_interface_api_t const * p_api)
                            && (BYPASS_PLAN_INVALID == plan.result);
 
     return (b_missing && b_inconsistent && b_second_obstacle && b_invalid);
+}
+
+static bool
+test_planning_profile (test_interface_api_t const * p_api)
+{
+    uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
+    uint16_t const coarse[BYPASS_PLAN_ANGLES] =
+    {
+        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+    };
+    bypass_plan_t plan;
+
+    (void) p_api;
+
+    for (uint32_t index = 0u; index < BYPASS_PLAN_ANGLES; index++)
+    {
+        profile[index * 3u] = coarse[index];
+    }
+
+    profile[7] = 3000u;
+    profile[8] = 410u;
+    profile[16] = 410u;
+    profile[17] = 410u;
+
+    bool const b_plan = bypass_plan_make_fine(profile, &g_planning_config,
+                                               &plan);
+
+    return (b_plan && (BYPASS_PLAN_RIGHT == plan.side)
+            && (50u == plan.estimated_min_clearance_mm)
+            && (400u == plan.profile.forward_mm)
+            && (400u == plan.profile.nearest_observed_mm)
+            && plan.profile.b_left_edge && plan.profile.b_right_edge
+            && plan.profile.b_shape_estimated
+            && (173u == plan.profile.left_extent_mm)
+            && (140u == plan.profile.right_extent_mm)
+            && (313u == plan.profile.observed_width_mm)
+            && (16 == plan.profile.centre_offset_mm));
+}
+
+static bool
+test_planning_partial_profile (test_interface_api_t const * p_api)
+{
+    uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
+    uint16_t const coarse[BYPASS_PLAN_ANGLES] =
+    {
+        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+    };
+    bypass_plan_t plan;
+
+    (void) p_api;
+
+    for (uint32_t index = 0u; index < BYPASS_PLAN_ANGLES; index++)
+    {
+        profile[index * 3u] = coarse[index];
+    }
+
+    profile[7] = 3000u;
+    profile[8] = 410u;
+
+    bool const b_plan = bypass_plan_make_fine(profile, &g_planning_config,
+                                               &plan);
+    bool const b_unknown_shape = (BYPASS_PLAN_RIGHT == plan.side)
+                                 && plan.profile.b_right_edge
+                                 && (!plan.profile.b_left_edge)
+                                 && (!plan.profile.b_shape_estimated)
+                                 && (0u == plan.profile.observed_width_mm)
+                                 && (0 == plan.profile.centre_offset_mm);
+
+    bypass_plan_config_t invalid_config = g_planning_config;
+
+    invalid_config.range_max_mm = 4001u;
+
+    bool const b_range_guard = (!bypass_plan_make_fine(profile,
+                                                       &invalid_config, &plan))
+                               && (BYPASS_PLAN_INVALID == plan.result);
+
+    return (b_plan && b_unknown_shape && b_range_guard);
 }
 
 /* End of file. */

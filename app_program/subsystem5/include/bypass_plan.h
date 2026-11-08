@@ -26,8 +26,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "scan_profile.h"
+
 #define BYPASS_PLAN_ANGLES      (9u)
-#define BYPASS_PLAN_FINE_ANGLES (25u)
+#define BYPASS_PLAN_FINE_ANGLES SCAN_PROFILE_ANGLES
 #define BYPASS_PLAN_SEGMENTS    (4u)
 
 #define BYPASS_PLAN_TURN        (1u)    /* value: mdeg, positive = left */
@@ -75,6 +77,9 @@ typedef struct
     int32_t               align_mdeg;     /* turn once the line is found */
     uint16_t              obstacle_mm;    /* forward distance */
     uint16_t              lateral_mm;     /* sideways step */
+    uint16_t              estimated_min_clearance_mm; /* configured target,
+                                                        not physical proof */
+    scan_profile_t    profile;        /* observed rays, if fine scan */
 } bypass_plan_t;
 
 /**
@@ -92,7 +97,8 @@ bool bypass_plan_make (uint16_t const * p_distances,
 /**
  * Plan from a 5-degree profile. Coarse positions (multiples of 15 degrees)
  * must be present; only selected fine positions need readings. A route needs
- * both fine readings at its first observed obstacle edge.
+ * both fine readings at its first observed obstacle edge. The returned
+ * profile contains ray-based estimates, with explicit unknown-edge flags.
  */
 bool bypass_plan_make_fine (uint16_t const * p_distances,
                             bypass_plan_config_t const * p_config,

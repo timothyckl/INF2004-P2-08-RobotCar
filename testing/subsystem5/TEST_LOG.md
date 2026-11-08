@@ -15,7 +15,7 @@ All test cases execute on the **Raspberry Pi Pico W**, not on the build computer
 
 ### Host simulation evidence (2026-11-08)
 
-`make -C testing/host s5` passed 37/37 synthetic cases, including the cases below. The same source cross-built for the Pico W with `TEST=1 CRASH_REPORT=0`; no on-device execution or physical clearance was verified.
+`make -C testing/host s5` passed 39/39 synthetic cases, including the cases below. The same source cross-built for the Pico W with `TEST=1 CRASH_REPORT=0`; no on-device execution or physical clearance was verified for these changes.
 
 | ID | Host check | Result |
 |---|---|---|
@@ -26,6 +26,8 @@ All test cases execute on the **Raspberry Pi Pico W**, not on the build computer
 | S5-U59 | Coarse obstacle edges receive two intermediate 5° readings before forward clearance. | Passed in host simulation. |
 | S5-U60 | The refined profile selects the shorter observed side and resolves a tie to the left. | Passed in host simulation. |
 | S5-U61 | Missing or inconsistent fine edges and a second observed obstacle yield no route; missing coarse data is invalid. | Passed in host simulation. |
+| S5-U62 | Refined rays produce an observed span, centre offset and a labelled planning-clearance estimate. | Passed in host simulation. |
+| S5-U63 | Missing one edge keeps the shape unknown; an out-of-range configuration is rejected. | Passed in host simulation. |
 
 Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source and adapter only for `TEST=1`. Normal firmware excludes them. The subsystem build compiles project-authored subsystem 5 C as C99 with strict warnings treated as errors. It also runs `tools/check_subsystem5_barr_c.py` for mechanically enforceable BARR-C:2018 rules; semantic rules still require review.
 
@@ -158,6 +160,8 @@ S5-U36, S5-U37. New:
 | S5-U56 | final forward clearance after a scan | D4, D6 | auto | `test_capture.c` | no plan before a fresh safe forward reading; an unsafe reading faults without a plan |
 | S5-U57 | request expiry | D7 | auto | `test_safety.c` | an unstarted request remains valid through 2 s, then faults and cannot start from late authorisation |
 | S5-U58 | busy and invalid request IDs | D7 | auto | `test_safety.c` | zero ID is refused; a second request cannot replace the active one |
+| S5-U62 | observed profile and planning-clearance estimate | D5; FR6, FR7 | auto | `test_planning.c` | ray span/centre and explicitly modelled clearance, with no claim of physical width |
+| S5-U63 | incomplete profile and range guard | D3, D5; FR6 | auto | `test_planning.c` | missing edge keeps shape unknown; nominal 4 m maximum bounds the geometry |
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
