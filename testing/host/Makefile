@@ -91,7 +91,11 @@ s5:
 	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s5_logic $(STUBS) $(S5_SRC)
 	$(OUT)/s5_logic | tee $(OUT)/s5.txt
 	@! grep -qE " (FAIL|BLOCKED) " $(OUT)/s5.txt
+	$(CC) $(STRICT) -DAPP_TEST=1 -Istubs -o $(OUT)/s5_view \
+	    $(APP)/subsystem5/src/scan_telemetry.c s5_telemetry_test.c
+	$(OUT)/s5_view
+	$(CC) $(STRICT) -fsyntax-only s5_telemetry_header_check.c
 
 clean:
 	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic $(OUT)/s3_track \
-	    $(OUT)/s4_logic $(OUT)/s5_logic
+	    $(OUT)/s4_logic $(OUT)/s5_logic $(OUT)/s5_view

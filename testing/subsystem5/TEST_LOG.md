@@ -29,6 +29,12 @@ All test cases execute on the **Raspberry Pi Pico W**, not on the build computer
 | S5-U62 | Refined rays produce an observed span, centre offset and a labelled planning-clearance estimate. | Passed in host simulation. |
 | S5-U63 | Missing one edge keeps the shape unknown; an out-of-range configuration is rejected. | Passed in host simulation. |
 
+The host-only `s5_view` check also covers the IF-17 decoded getter: non-blocking
+failure leaves output unchanged; fresh, stale, pending, plan and incomplete
+profile states carry distinct validity flags. A compile check includes the S1
+and S5 public telemetry headers together. These checks do not execute on the
+Pico W and do not validate the future S1 wire format.
+
 Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source and adapter only for `TEST=1`. Normal firmware excludes them. The subsystem build compiles project-authored subsystem 5 C as C99 with strict warnings treated as errors. It also runs `tools/check_subsystem5_barr_c.py` for mechanically enforceable BARR-C:2018 rules; semantic rules still require review.
 
 1. Build with `make -C build_make TEST=1 -j8`, following the SDK/toolchain setup in the project README. `make -C testing/subsystem5/unit_tests` forwards to the same firmware build; it does not run a native executable.

@@ -26,6 +26,7 @@
 #define SCAN_TASK_FLAG_MONITORING   (0x01u)    /* forward readings live */
 #define SCAN_TASK_FLAG_SCANNING     (0x02u)
 #define SCAN_TASK_FLAG_HAZARD       (0x04u)    /* verdict is not SAFE */
+#define SCAN_TASK_FLAG_REQUEST_PENDING (0x08u)
 
 #define SCAN_TASK_RESULT_NONE       (0u)
 #define SCAN_TASK_RESULT_PLAN       (1u)       /* plan is usable */
@@ -41,6 +42,7 @@ typedef struct
     uint32_t      request_id;   /* request the result belongs to */
     uint32_t      result_us;    /* native clock when PLAN or CLEAR was made */
     uint16_t      forward_mm;   /* latest valid forward range, 0 if none */
+    uint16_t      forward_age_ms; /* latest attempt's age, saturated */
     uint8_t       verdict;      /* forward_monitor_verdict_t */
     uint8_t       flags;        /* SCAN_TASK_FLAG_* */
     uint8_t       result;       /* SCAN_TASK_RESULT_* for request_id */

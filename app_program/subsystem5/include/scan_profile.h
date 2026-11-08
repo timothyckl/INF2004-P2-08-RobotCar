@@ -33,7 +33,7 @@ typedef struct
 
 /**
  * Lateral offsets are relative to the sensor's forward axis: left positive.
- * The observed span is a lower-bound ray estimate, not the obstacle's full
+ * The observed span is a ray-based estimate, not the obstacle's full
  * physical width. Values are meaningful only with their corresponding flags.
  */
 typedef struct

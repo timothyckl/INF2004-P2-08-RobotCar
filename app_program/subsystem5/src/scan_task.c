@@ -330,11 +330,20 @@ scan_task_main (INT stacd, void * p_exinf)
         g_work.verdict     = (uint8_t) verdict;
         g_work.forward_mm  = g_monitor.b_is_valid ? g_monitor.distance_mm
                                                   : 0u;
+
+        uint32_t const age_ms = g_monitor.b_has_sample
+                                ? ((now_us - g_monitor.sample_us) / 1000u)
+                                : UINT16_MAX;
+
+        g_work.forward_age_ms = (age_ms <= UINT16_MAX)
+                                ? (uint16_t)age_ms : UINT16_MAX;
         g_work.flags       = (uint8_t) (
             (g_engine.b_is_scanning ? SCAN_TASK_FLAG_SCANNING
                                     : SCAN_TASK_FLAG_MONITORING)
             | ((FORWARD_MONITOR_SAFE != verdict) ? SCAN_TASK_FLAG_HAZARD
-                                                 : 0u));
+                                                 : 0u)
+            | (g_engine.b_has_request ? SCAN_TASK_FLAG_REQUEST_PENDING
+                                      : 0u));
 
         if (tk_loc_mtx(g_task_mtx, SCAN_TASK_PUBLISH_MS) >= E_OK)
         {

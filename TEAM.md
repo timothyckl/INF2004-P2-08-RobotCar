@@ -212,6 +212,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-14 | S2 → S5 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE | integration owner; review pending |
 | IF-15 | S2 → S4 | status under motion mutex | `motion_get_status()` + `s2_distance_delta()` | forward distance per IMU sample; `run_id` change = new run | S2 proposal; S4 review pending |
 | IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
+| IF-17 | S5 → S1 | decoded snapshot under S5's mutex (`TMO_POL`) | `scan_telemetry_get()` | `scan_telemetry_t`: range/verdict, scan outcome, observed shape and labelled clearance estimate; no wire format | S5 implementation; S1 mapping review pending |
 
 The controller logic copies the IF-06 and IF-13 constants it uses; a
 mismatch fails the build (`task_controller.c`).

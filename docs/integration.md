@@ -108,7 +108,9 @@ does not act on terrain results; the design makes them report-only.
 - **HC-SR04 at 3V3.** Outside the datasheet's 5 V; unvalidated.
 - **Analogue line thresholds** came from bench observations in the supplied
   ZIP and still require validation at the final sensor height and course.
-- **Telemetry** carries only the provisional 8-byte codec (section 2).
+- **Telemetry** carries only the provisional 8-byte codec (section 2). S5
+  exposes a decoded, kernel-free `scan_telemetry_get()` view for S1 (IF-17),
+  but S1 has not mapped its fields into the final wire format.
 - **Hump height** is invalid until a distance is valid, and is an
   unvalidated estimate (S4 decision 4); there is no gyroscope.
 
