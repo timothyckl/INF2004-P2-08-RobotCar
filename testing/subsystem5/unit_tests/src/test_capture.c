@@ -36,6 +36,9 @@ static bool test_capture_retry (test_interface_api_t const * p_api);
 /** S5-U26: a complete coarse scan covers -60..60 in 15 degree steps. */
 static bool test_capture_coarse (test_interface_api_t const * p_api);
 
+/** A fresh unsafe forward reading cannot release a completed profile. */
+static bool test_capture_clearance (test_interface_api_t const * p_api);
+
 /** S5-U28: a scan that runs past 15 s faults. */
 static bool test_capture_limit (test_interface_api_t const * p_api);
 
@@ -78,6 +81,8 @@ test_capture_run (test_interface_api_t const * p_api)
          test_capture_retry},
         {"S5-U26", "coarse scan angles and three samples",
          test_capture_coarse},
+        {"S5-U56", "plan waits for safe forward clearance",
+         test_capture_clearance},
         {"S5-U28", "scan past 15 s faults", test_capture_limit}
     };
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
@@ -293,7 +298,11 @@ test_capture_coarse (test_interface_api_t const * p_api)
                           g_capture_rise_us + test_capture_width(850u));
     }
 
-    test_fixture_advance(1000u, p_api);
+    bool const b_held = test_subject_no_plan();
+    bool const b_forward_trigger = test_capture_await(p_api, 70u);
+
+    test_capture_echo(p_api,
+                      g_capture_rise_us + test_capture_width(850u));
 
     for (uint32_t index = 0u; index < test_fixture_size(); index++)
     {
@@ -312,13 +321,37 @@ test_capture_coarse (test_interface_api_t const * p_api)
     test_fixture_record_t const * const p_last =
         test_fixture_record(test_fixture_size() - 1u);
 
-    return (b_angles && (75 == expected)
-            && (27u == test_fixture_count(TEST_INTERFACE_TRIGGER))
+    return (b_angles && (75 == expected) && b_held && b_forward_trigger
+            && (28u == test_fixture_count(TEST_INTERFACE_TRIGGER))
             && (1u == test_fixture_count(TEST_INTERFACE_PLAN))
             && (0u == test_fixture_count(TEST_INTERFACE_FAULT))
             && (NULL != p_last)
             && (TEST_INTERFACE_SERVO == p_last->output.kind)
             && (0 == p_last->output.angle_deg)
+            && (!test_fixture_overflowed()));
+}
+
+static bool
+test_capture_clearance (test_interface_api_t const * p_api)
+{
+    test_subject_start(p_api, 0u);
+    test_capture_authorise(p_api);
+
+    for (uint32_t sample = 0u; sample < 27u; sample++)
+    {
+        (void) test_capture_await(p_api, 70u);
+        test_capture_echo(p_api,
+                          g_capture_rise_us + test_capture_width(850u));
+    }
+
+    bool const b_held = test_subject_no_plan();
+
+    (void) test_capture_await(p_api, 70u);
+    test_capture_echo(p_api,
+                      g_capture_rise_us + test_capture_width(170u));
+
+    return (b_held && test_subject_no_plan()
+            && (1u == test_fixture_count(TEST_INTERFACE_FAULT))
             && (!test_fixture_overflowed()));
 }
 

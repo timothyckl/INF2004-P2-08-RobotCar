@@ -109,6 +109,7 @@ typedef struct
     bool                 b_is_authorised;
     bool                 b_is_stopped;
     bool                 b_is_scanning;
+    bool                 b_awaiting_clearance;
     bool                 b_trigger_started;
     bool                 b_has_trigger;
     bool                 b_capture_open;

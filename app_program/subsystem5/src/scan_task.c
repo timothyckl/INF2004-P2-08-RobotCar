@@ -263,6 +263,11 @@ scan_task_main (INT stacd, void * p_exinf)
             {
                 forward_monitor_reset(&g_monitor);
                 g_monitor_since_us = now_us;
+                if (g_engine.b_has_trigger)
+                {
+                    g_capture_us = g_engine.trigger_us;
+                    gb_capture_used = true;
+                }
             }
 
             scan_task_forward_step(now_us);

@@ -141,6 +141,7 @@ S5-U36, S5-U37. New:
 | S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | four segments, approach, align, search within bound |
 | S5-U54 | nothing in range ahead is not an obstacle | D5 | auto | `test_planning.c` | NO_OBSTACLE, no plan |
 | S5-U55 | consecutive invalid forward attempts | D3 | auto | `test_planning.c` | first two do not fault; a valid reading resets the count; the third consecutive invalid reading faults |
+| S5-U56 | final forward clearance after a scan | D4, D6 | auto | `test_capture.c` | no plan before a fresh safe forward reading; an unsafe reading faults without a plan |
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

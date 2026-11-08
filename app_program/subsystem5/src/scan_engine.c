@@ -237,6 +237,7 @@ scan_engine_abort (scan_engine_t * p_engine)
     p_engine->b_is_authorised   = false;
     p_engine->b_is_stopped      = false;
     p_engine->b_is_scanning     = false;
+    p_engine->b_awaiting_clearance = false;
     p_engine->b_trigger_started = false;
     p_engine->b_capture_open    = false;
     p_engine->sample_count      = 0u;
@@ -271,7 +272,9 @@ scan_engine_try_start (scan_engine_t * p_engine)
             uint32_t const now_us = p_engine->port.p_time_now_us();
 
             p_engine->b_is_scanning       = true;
+            p_engine->b_awaiting_clearance = false;
             p_engine->b_trigger_started   = false;
+            p_engine->b_has_trigger       = false;
             p_engine->b_capture_open      = false;
             p_engine->angle_index         = 0u;
             p_engine->sample_count        = 0u;
@@ -409,12 +412,36 @@ scan_engine_complete (scan_engine_t * p_engine, bool b_valid,
     if (b_valid)
     {
         p_engine->invalid_count = 0u;
-        p_engine->samples[p_engine->sample_count] = distance_mm;
-        p_engine->sample_count++;
 
-        if (SCAN_ENGINE_SAMPLES <= p_engine->sample_count)
+        if (p_engine->b_awaiting_clearance)
         {
-            scan_engine_next_angle(p_engine);
+            if (distance_mm >= p_engine->config.hazard_mm)
+            {
+                if (!scan_engine_publish(p_engine, SCAN_ENGINE_PLAN,
+                                         g_scan_forward_angle_deg,
+                                         distance_mm, true))
+                {
+                    scan_engine_fail(p_engine);
+                }
+                else
+                {
+                    scan_engine_abort(p_engine);
+                }
+            }
+            else
+            {
+                scan_engine_fail(p_engine);
+            }
+        }
+        else
+        {
+            p_engine->samples[p_engine->sample_count] = distance_mm;
+            p_engine->sample_count++;
+
+            if (SCAN_ENGINE_SAMPLES <= p_engine->sample_count)
+            {
+                scan_engine_next_angle(p_engine);
+            }
         }
 
     }
@@ -443,10 +470,18 @@ scan_engine_next_angle (scan_engine_t * p_engine)
 
     if (SCAN_ENGINE_ANGLES <= p_engine->angle_index)
     {
-        /* Profile complete: report it, then return forward. */
-        (void) scan_engine_publish(p_engine, SCAN_ENGINE_PLAN,
-                                   g_scan_forward_angle_deg, 0u, true);
-        scan_engine_abort(p_engine);
+        /* Return forward, settle and measure fresh clearance before a plan. */
+        p_engine->b_awaiting_clearance = true;
+
+        if (scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
+                                g_scan_forward_angle_deg, 0u, true))
+        {
+            p_engine->settling_started_us = p_engine->port.p_time_now_us();
+        }
+        else
+        {
+            scan_engine_fail(p_engine);
+        }
     }
     else if (scan_engine_publish(p_engine, SCAN_ENGINE_SERVO,
                                  scan_engine_angle(p_engine), 0u, true))
@@ -472,9 +507,15 @@ static int16_t
 scan_engine_angle (scan_engine_t const * p_engine)
 {
     /* The cast is safe: the index is below SCAN_ENGINE_ANGLES. */
-    return ((int16_t) (g_scan_first_angle_deg
-                       + ((int16_t) p_engine->angle_index
-                          * g_scan_step_deg)));
+    int16_t angle_deg = g_scan_forward_angle_deg;
+
+    if (!p_engine->b_awaiting_clearance)
+    {
+        angle_deg = (int16_t) (g_scan_first_angle_deg
+                    + ((int16_t) p_engine->angle_index * g_scan_step_deg));
+    }
+
+    return (angle_deg);
 }
 
 static uint16_t
