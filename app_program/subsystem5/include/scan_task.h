@@ -38,6 +38,7 @@ typedef struct
 {
     uint32_t      captured_ms;
     uint32_t      request_id;   /* request the result belongs to */
+    uint32_t      result_us;    /* native clock when PLAN or CLEAR was made */
     uint16_t      forward_mm;   /* latest valid forward range, 0 if none */
     uint8_t       verdict;      /* forward_monitor_verdict_t */
     uint8_t       flags;        /* SCAN_TASK_FLAG_* */

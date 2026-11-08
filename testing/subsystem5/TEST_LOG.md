@@ -142,6 +142,8 @@ S5-U36, S5-U37. New:
 | S5-U54 | nothing in range ahead is not an obstacle | D5 | auto | `test_planning.c` | NO_OBSTACLE, no plan |
 | S5-U55 | consecutive invalid forward attempts | D3 | auto | `test_planning.c` | first two do not fault; a valid reading resets the count; the third consecutive invalid reading faults |
 | S5-U56 | final forward clearance after a scan | D4, D6 | auto | `test_capture.c` | no plan before a fresh safe forward reading; an unsafe reading faults without a plan |
+| S5-U57 | request expiry | D7 | auto | `test_safety.c` | an unstarted request remains valid through 2 s, then faults and cannot start from late authorisation |
+| S5-U58 | busy and invalid request IDs | D7 | auto | `test_safety.c` | zero ID is refused; a second request cannot replace the active one |
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

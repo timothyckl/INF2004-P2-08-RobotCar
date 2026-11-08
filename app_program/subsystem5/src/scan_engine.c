@@ -19,6 +19,7 @@ static uint32_t const g_scan_retrigger_us      = 65000u;
 static uint32_t const g_scan_deadline_us       = 30000u;
 static uint32_t const g_scan_stuck_us          = 130000u;
 static uint32_t const g_scan_limit_us          = 15000000u;
+static uint32_t const g_scan_request_limit_us  = 2000000u;
 static uint8_t const  g_scan_invalid_limit     = 3u;
 
 /** Accept a new request only while the scanner is idle. */
@@ -159,9 +160,13 @@ static void
 scan_engine_accept_request (scan_engine_t * p_engine,
                             scan_engine_event_t const * p_event)
 {
-    if ((p_event->b_asserted) && (!p_engine->b_has_request))
+    if ((p_event->b_asserted) && (0u != p_event->request_id)
+        && (!p_engine->b_has_request))
     {
         p_engine->request_id      = p_event->request_id;
+        p_engine->request_started_us =
+            (NULL != p_engine->port.p_time_now_us)
+            ? p_engine->port.p_time_now_us() : 0u;
         p_engine->b_has_request   = true;
         p_engine->b_is_authorised = false;
         p_engine->b_is_stopped    = false;
@@ -264,12 +269,21 @@ scan_engine_try_start (scan_engine_t * p_engine)
 
     if (b_can_start)
     {
+        uint32_t const now_us = p_engine->port.p_time_now_us();
+
+        if ((now_us - p_engine->request_started_us)
+            > g_scan_request_limit_us)
+        {
+            scan_engine_fail(p_engine);
+            return;
+        }
+
         bool const b_servo_accepted = scan_engine_publish(
             p_engine, SCAN_ENGINE_SERVO, g_scan_first_angle_deg, 0u, true);
 
         if (b_servo_accepted)
         {
-            uint32_t const now_us = p_engine->port.p_time_now_us();
+            uint32_t const started_us = p_engine->port.p_time_now_us();
 
             p_engine->b_is_scanning       = true;
             p_engine->b_awaiting_clearance = false;
@@ -279,8 +293,8 @@ scan_engine_try_start (scan_engine_t * p_engine)
             p_engine->angle_index         = 0u;
             p_engine->sample_count        = 0u;
             p_engine->invalid_count       = 0u;
-            p_engine->settling_started_us = now_us;
-            p_engine->scan_started_us     = now_us;
+            p_engine->settling_started_us = started_us;
+            p_engine->scan_started_us     = started_us;
         }
         else
         {
@@ -337,6 +351,17 @@ scan_engine_tick (scan_engine_t * p_engine)
             /* Settling, or waiting out the 65 ms trigger spacing. */
         }
 
+    }
+    else if (p_engine->b_has_request && b_clock_ready
+             && ((p_engine->port.p_time_now_us()
+                  - p_engine->request_started_us)
+                 > g_scan_request_limit_us))
+    {
+        scan_engine_fail(p_engine);
+    }
+    else
+    {
+        /* No timed work is active. */
     }
 
 }

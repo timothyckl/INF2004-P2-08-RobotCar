@@ -97,6 +97,7 @@ typedef struct
     scan_engine_port_t   port;
     scan_engine_config_t config;
     uint32_t             request_id;
+    uint32_t             request_started_us;
     uint32_t             settling_started_us;
     uint32_t             scan_started_us;
     uint32_t             trigger_us;

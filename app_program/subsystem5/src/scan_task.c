@@ -22,6 +22,7 @@
 #include "../include/scan_engine.h"
 #include "../include/scan_lifecycle.h"
 #include "../../subsystem2/subsystem2.h"
+#include "../../subsystem2/motion_api.h"
 
 #define SCAN_TASK_PERIOD_MS     (10)
 #define SCAN_TASK_PUBLISH_MS    (2)
@@ -31,6 +32,7 @@ static uint32_t const g_task_retrigger_us = 65000u;
 static uint32_t const g_task_deadline_us  = 30000u;
 static uint32_t const g_task_stuck_us     = 130000u;
 static uint32_t const g_task_fresh_us     = 150000u;
+static uint32_t const g_task_result_limit_us = 2000000u;
 
 /* UNMEASURED: worst servo settling + 25% (S5-U47) and the hazard
    distance from braking and response (S5-U38). */
@@ -93,6 +95,12 @@ static void scan_task_forward_fault (void);
 
 /** True when the mission mode moves the vehicle (S5 hazards apply). */
 static bool scan_task_moving (void);
+
+/** Abort active work if the controller left SCAN or the wheels moved. */
+static void scan_task_check_authority (void);
+
+/** Invalidate an unaccepted result after its two-second lifetime. */
+static void scan_task_expire_result (uint32_t now_us);
 
 ER
 scan_task_create (void)
@@ -169,6 +177,14 @@ scan_task_get (scan_task_status_t * p_status)
         {
             *p_status = g_task_status;
             (void) tk_unl_mtx(mtx);
+
+            if (((SCAN_TASK_RESULT_PLAN == p_status->result)
+                 || (SCAN_TASK_RESULT_CLEAR == p_status->result))
+                && ((scan_task_now_us() - p_status->result_us)
+                    > g_task_result_limit_us))
+            {
+                p_status->result = SCAN_TASK_RESULT_NONE;
+            }
         }
 
     }
@@ -218,6 +234,11 @@ scan_task_main (INT stacd, void * p_exinf)
         if (g_engine.b_is_scanning)
         {
             gb_capture_armed = false;   /* discard the old forward capture */
+
+            if (gb_was_scanning)
+            {
+                scan_task_check_authority();
+            }
         }
 
         /* 2. ECHO edges in time order. */
@@ -251,6 +272,8 @@ scan_task_main (INT stacd, void * p_exinf)
         scan_engine_process(&g_engine, &tick);
 
         uint32_t const now_us = scan_task_now_us();
+
+        scan_task_expire_result(now_us);
 
         /* 4. Forward monitoring, restarted after each scan. */
         if (g_engine.b_is_scanning)
@@ -357,6 +380,7 @@ scan_task_publish (scan_engine_output_t const * p_output)
         case SCAN_ENGINE_PLAN:
             (void) bypass_plan_make(g_profile, &g_task_plan_config,
                                     &g_work.plan);
+            g_work.result_us = scan_task_now_us();
 
             if (BYPASS_PLAN_OK == g_work.plan.result)
             {
@@ -555,6 +579,50 @@ scan_task_moving (void)
             && ((S2_MODE_FOLLOW == state.mode)
                 || (S2_MODE_BYPASS == state.mode)
                 || (S2_MODE_REACQUIRE == state.mode)));
+}
+
+static void
+scan_task_check_authority (void)
+{
+    s2_robot_state_t state;
+    bool const b_state_ok = (E_OK == s2_get_robot_state(&state))
+                            && (S2_SYS_RUNNING == state.state)
+                            && (S2_MODE_SCAN == state.mode)
+                            && (0u == (state.flags & S2_RS_STOP_LATCHED));
+
+    if (!b_state_ok)
+    {
+        scan_engine_event_t const stop =
+            {SCAN_ENGINE_STOP, g_engine.request_id, true, 0u};
+
+        scan_engine_process(&g_engine, &stop);
+    }
+    else if (!motion_stop_confirmed())
+    {
+        scan_engine_event_t const moved =
+            {SCAN_ENGINE_MOVEMENT, g_engine.request_id, true, 0u};
+
+        scan_engine_process(&g_engine, &moved);
+        scan_task_forward_fault();
+    }
+    else
+    {
+        /* The controller still owns a stationary scan. */
+    }
+}
+
+static void
+scan_task_expire_result (uint32_t now_us)
+{
+    if (((SCAN_TASK_RESULT_PLAN == g_work.result)
+         || (SCAN_TASK_RESULT_CLEAR == g_work.result))
+        && ((now_us - g_work.result_us) > g_task_result_limit_us))
+    {
+        bypass_plan_t const cleared = {0};
+
+        g_work.result = SCAN_TASK_RESULT_NONE;
+        g_work.plan   = cleared;
+    }
 }
 
 /* End of file. */

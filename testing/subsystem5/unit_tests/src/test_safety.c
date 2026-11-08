@@ -31,6 +31,12 @@ static bool test_safety_cancel (test_interface_api_t const * p_api);
 /** Verify that a new stop event invalidates active scan work. */
 static bool test_safety_new_stop (test_interface_api_t const * p_api);
 
+/** An unstarted request expires; later permission cannot revive it. */
+static bool test_safety_request_expiry (test_interface_api_t const * p_api);
+
+/** A busy scanner keeps the original request and refuses invalid IDs. */
+static bool test_safety_busy_request (test_interface_api_t const * p_api);
+
 /** Supply the matching inputs needed to start a scan. */
 static void test_safety_start_scan (test_interface_api_t const * p_api);
 
@@ -53,11 +59,67 @@ test_safety_run (test_interface_api_t const * p_api)
          test_safety_matching},
         {"S5-U13", "cancel invalidates scan and acknowledges",
          test_safety_cancel},
-        {"S5-U14", "new STOP aborts an authorised scan", test_safety_new_stop}
+        {"S5-U14", "new STOP aborts an authorised scan", test_safety_new_stop},
+        {"S5-U57", "unstarted request expires after two seconds",
+         test_safety_request_expiry},
+        {"S5-U58", "busy request cannot replace the active scan",
+         test_safety_busy_request}
     };
     uint32_t const count = sizeof(cases) / sizeof(cases[0u]);
 
     test_runner_cases(cases, count, p_api);
+}
+
+static bool
+test_safety_busy_request (test_interface_api_t const * p_api)
+{
+    test_subject_start(p_api, 0u);
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST, 0u, true);
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE, 0u, true);
+    test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM, 0u, true);
+
+    bool const b_zero_rejected = test_safety_is_inactive();
+
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
+                      g_test_safety_request, true);
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
+                      g_test_safety_other, true);
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE,
+                      g_test_safety_other, true);
+    test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM,
+                      g_test_safety_other, true);
+
+    bool const b_other_rejected = test_safety_is_inactive();
+
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE,
+                      g_test_safety_request, true);
+    test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM,
+                      g_test_safety_request, true);
+    test_fixture_advance(g_test_safety_settling_us, p_api);
+
+    return (b_zero_rejected && b_other_rejected
+            && (1u == test_fixture_count(TEST_INTERFACE_TRIGGER))
+            && (!test_fixture_overflowed()));
+}
+
+static bool
+test_safety_request_expiry (test_interface_api_t const * p_api)
+{
+    test_subject_start(p_api, 0u);
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_REQUEST,
+                      g_test_safety_request, true);
+    test_fixture_advance(2000000u, p_api);
+
+    bool const b_boundary = (0u == test_fixture_count(TEST_INTERFACE_FAULT));
+
+    test_fixture_advance(1u, p_api);
+    test_fixture_send(p_api, TEST_INTERFACE_SCAN_AUTHORISE,
+                      g_test_safety_request, true);
+    test_fixture_send(p_api, TEST_INTERFACE_STOP_CONFIRM,
+                      g_test_safety_request, true);
+
+    return (b_boundary && (1u == test_fixture_count(TEST_INTERFACE_FAULT))
+            && test_safety_is_inactive());
 }
 
 static bool
