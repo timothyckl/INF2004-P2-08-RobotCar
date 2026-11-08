@@ -88,6 +88,9 @@ static void scan_task_forward_step (uint32_t now_us);
 static void scan_task_forward_result (bool b_valid, uint16_t distance_mm,
                                       uint32_t now_us);
 
+/** Latch a forward sensor fault and notify the controller once. */
+static void scan_task_forward_fault (void);
+
 /** True when the mission mode moves the vehicle (S5 hazards apply). */
 static bool scan_task_moving (void);
 
@@ -210,6 +213,11 @@ scan_task_main (INT stacd, void * p_exinf)
                == (INT) sizeof(s2_scan_cmd_t))
         {
             scan_task_command(&cmd);
+        }
+
+        if (g_engine.b_is_scanning)
+        {
+            gb_capture_armed = false;   /* discard the old forward capture */
         }
 
         /* 2. ECHO edges in time order. */
@@ -491,6 +499,8 @@ scan_task_forward_step (uint32_t now_us)
         if (gb_capture_used && (since_us >= g_task_stuck_us))
         {
             forward_monitor_sample(&g_monitor, false, 0u, now_us);
+            g_work.invalid_count = g_monitor.invalid_count;
+            scan_task_forward_fault();
         }
 
     }
@@ -514,20 +524,20 @@ scan_task_forward_result (bool b_valid, uint16_t distance_mm,
 {
     gb_capture_armed = false;
     forward_monitor_sample(&g_monitor, b_valid, distance_mm, now_us);
+    g_work.invalid_count = g_monitor.invalid_count;
 
-    if (b_valid)
+    if (forward_monitor_faulted(&g_monitor))
     {
-        g_work.invalid_count = 0u;
-    }
-    else if (g_work.invalid_count < UINT8_MAX)
-    {
-        g_work.invalid_count++;
-    }
-    else
-    {
-        /* Saturated. */
+        scan_task_forward_fault();
     }
 
+}
+
+static void
+scan_task_forward_fault (void)
+{
+    g_work.result = SCAN_TASK_RESULT_FAULT;
+    (void) tk_set_flg(controller_flags, CTRL_FLG_SCAN_FAULT);
 }
 
 static bool

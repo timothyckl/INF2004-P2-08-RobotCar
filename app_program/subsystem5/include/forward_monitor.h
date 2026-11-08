@@ -13,6 +13,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define FORWARD_MONITOR_INVALID_LIMIT (3u)
+
 /** Monitoring verdict; anything except SAFE requests a stop. */
 typedef enum
 {
@@ -34,6 +36,7 @@ typedef struct
 {
     uint32_t sample_us;
     uint16_t distance_mm;
+    uint8_t  invalid_count;
     bool     b_has_sample;
     bool     b_is_valid;
 } forward_monitor_t;
@@ -44,6 +47,9 @@ void forward_monitor_reset (forward_monitor_t * p_monitor);
 /** Record one attempt; distance_mm is ignored when b_valid is false. */
 void forward_monitor_sample (forward_monitor_t * p_monitor, bool b_valid,
                              uint16_t distance_mm, uint32_t now_us);
+
+/** True after three consecutive invalid forward attempts. */
+bool forward_monitor_faulted (forward_monitor_t const * p_monitor);
 
 /** Judge the latest reading at now_us. */
 forward_monitor_verdict_t forward_monitor_check (

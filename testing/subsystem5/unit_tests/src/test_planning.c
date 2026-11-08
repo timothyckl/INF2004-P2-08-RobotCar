@@ -22,6 +22,9 @@ static bypass_plan_config_t const g_planning_config =
 /** S5-U25: unsafe, invalid and stale readings request a stop. */
 static bool test_planning_monitor (test_interface_api_t const * p_api);
 
+/** Forward invalid attempts fault only on the third consecutive sample. */
+static bool test_planning_monitor_fault (test_interface_api_t const * p_api);
+
 /** S5-U36: the shorter route wins; left wins a tie. */
 static bool test_planning_shorter (test_interface_api_t const * p_api);
 
@@ -41,6 +44,8 @@ test_planning_run (test_interface_api_t const * p_api)
     {
         {"S5-U25", "unsafe, invalid or stale data stops",
          test_planning_monitor},
+        {"S5-U55", "third invalid forward attempt faults",
+         test_planning_monitor_fault},
         {"S5-U36", "shorter route wins, left on a tie",
          test_planning_shorter},
         {"S5-U37", "blocked or unobserved sides give no plan",
@@ -53,6 +58,32 @@ test_planning_run (test_interface_api_t const * p_api)
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
 
     test_runner_cases(cases, count, p_api);
+}
+
+static bool
+test_planning_monitor_fault (test_interface_api_t const * p_api)
+{
+    forward_monitor_t monitor;
+
+    (void) p_api;
+    forward_monitor_reset(&monitor);
+    forward_monitor_sample(&monitor, false, 0u, 100u);
+    forward_monitor_sample(&monitor, false, 0u, 200u);
+
+    bool const b_below = (2u == monitor.invalid_count)
+                         && (!forward_monitor_faulted(&monitor));
+
+    forward_monitor_sample(&monitor, true, 300u, 300u);
+
+    bool const b_recovered = (0u == monitor.invalid_count)
+                             && (!forward_monitor_faulted(&monitor));
+
+    forward_monitor_sample(&monitor, false, 0u, 400u);
+    forward_monitor_sample(&monitor, false, 0u, 500u);
+    forward_monitor_sample(&monitor, false, 0u, 600u);
+
+    return (b_below && b_recovered && (3u == monitor.invalid_count)
+            && forward_monitor_faulted(&monitor));
 }
 
 static bool

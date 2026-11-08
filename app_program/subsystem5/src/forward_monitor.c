@@ -28,8 +28,28 @@ forward_monitor_sample (forward_monitor_t * p_monitor, bool b_valid,
         p_monitor->b_has_sample = true;
         p_monitor->b_is_valid   = b_valid;
         p_monitor->distance_mm  = b_valid ? distance_mm : 0u;
+
+        if (b_valid)
+        {
+            p_monitor->invalid_count = 0u;
+        }
+        else if (p_monitor->invalid_count < UINT8_MAX)
+        {
+            p_monitor->invalid_count++;
+        }
+        else
+        {
+            /* Keep the saturated count. */
+        }
     }
 
+}
+
+bool
+forward_monitor_faulted (forward_monitor_t const * p_monitor)
+{
+    return ((NULL != p_monitor)
+            && (p_monitor->invalid_count >= FORWARD_MONITOR_INVALID_LIMIT));
 }
 
 forward_monitor_verdict_t
