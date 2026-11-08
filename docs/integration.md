@@ -97,8 +97,10 @@ does not act on terrain results; the design makes them report-only.
 - **Monitoring restart.** The 150 ms freshness counts from a monitoring
   restart until the first new reading, so returning from a scan is not a
   false hazard.
-- **Coarse scan only.** The 5° fine refinement (S5-U27), request expiry
-  (S5-U30, U31) and packed result formats (S5-U39) are not implemented.
+- **Scan refinement and expiry.** The scanner now takes 5° samples at coarse
+  obstacle-edge transitions. Unstarted requests and unaccepted results expire
+  after 2 s. Pose-based plan invalidation and packed result formats (S5-U39)
+  still require an agreed interface with the Vehicle Controller.
 - **Bypass geometry.** A front scan cannot see obstacle depth, so a depth is
   assumed. The swept footprint is the sideways step's rectangle.
 - **Priorities.** Obstacle Scan (20) runs below Line Sensor (16), the
@@ -122,8 +124,8 @@ Requirements from `docs/Project Description.pdf` and the design review FRs.
 | Encoder-based motion (FR4) | S2 Motion | encoder ISR → PID | S2-U20..U35, U55, U56 (host) | Host-tested; S2 bench rows in TEST_LOG |
 | Detect humps; highest peak (FR5) | S4 `terrain_logic`, `s4_odometry` | §2 rows 4, 5 | S4 odometry 12 (host); S4-U03..U22 on target only | Partly host-tested; height unvalidated |
 | Detect obstacles (FR6) | S5 `forward_monitor`, `scan_task` | §2 row 3 | S5-U25 (host) | Host-tested; 3V3 ranging unvalidated |
-| Profile obstacles | S5 `scan_engine` | sweep, median | S5-U19..U24, U26, U28 (host) | Host-tested, coarse only |
-| Bypass and reacquire line (FR7) | S5 `bypass_plan`; S2 BYPASS/REACQUIRE | §2 row 3 | S5-U36, U37, U53, U54; S2-U63..U65 (host) | Host-tested; hardware pending |
+| Profile obstacles | S5 `scan_engine` | coarse sweep, edge refinement, median | S5-U19..U24, U26, U28, U59 (host) | Host-tested; width accuracy and hardware pending |
+| Bypass and reacquire line (FR7) | S5 `bypass_plan`; S2 BYPASS/REACQUIRE | §2 row 3 | S5-U36, U37, U53, U54, U60, U61; S2-U63..U65 (host) | Host-tested; geometry and hardware pending |
 | Telemetry over WiFi (FR8) | S1 bridge, `mqtt_utk` | §2 rows 6, 7 | S1-U04..U07 (host); MQTT build | Compiled; broker test pending |
 | Safety: STOP, faults, timeouts | S2 controller, Motion | §3 | S2-U41..U53, U57, U58, U66 (host) | Host-tested; timing pending |
 
