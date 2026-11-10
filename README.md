@@ -193,6 +193,7 @@ make WIFI=none -j8                # radio off
 make TEST=1 -j8                   # firmware with the subsystem self-tests
 make S2_LOG=1 -j8                 # print controller diagnostics every 500 ms
 make LINE_ONLY=1 -j8              # diagnostic line following; no obstacle task
+make S2_MOTION_LOG=1 -j8          # print the speed loop and timer clock (PID, timing)
 make S5_RANGE_DIAG=1 -j8          # print every forward HC-SR04 reading (S5-U48)
 make TEST=1 S3_IR_DIAG=1 -j8      # print live IR sensor colours for 60 s
 make NET=lwip MQTT=1 -j8          # WiFi + MQTT commands and telemetry (see below)
@@ -218,6 +219,7 @@ the next plain `make` goes back to the defaults.
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
 | `S2_LOG` | **`0`**, `1` | Prints controller state, fault, motion state, distance and line status every 500 ms | `_s2log` / *(nothing)* | `S2_DEMO_LOG` (1 or 0) |
 | `LINE_ONLY` | **`0`**, `1` | Diagnostic profile that keeps line following and motion but does not initialise or start obstacle scanning; cannot be combined with `TEST=1` | `_lineonly` / *(nothing)* | `APP_LINE_ONLY` (1 or 0) |
+| `S2_MOTION_LOG` | **`0`**, `1` | Prints Motion Control's speed loop every 50 ms while moving (target, measured speed, duty, encoder counts and errors, sleep result) and the timer clock registers (WATCHDOG TICK, clk_ref) at 0, 5 and 30 s. Console formatting runs in the motion task, after the watchdog kick; bench use only | `_mclog` / *(nothing)* | `S2_MOTION_LOG` (1 or 0) |
 | `S5_RANGE_DIAG` | **`0`**, `1` | Prints every forward HC-SR04 attempt: echo duration, validity, distance and the consecutive-invalid count. Console formatting runs in the Obstacle Scan task, so use it for bench ranging only; cannot be combined with `LINE_ONLY=1` | `_s5range` / *(nothing)* | `S5_RANGE_DIAGNOSTIC` (1 or 0) |
 | `S3_IR_DIAG` | **`0`**, `1` | With `TEST=1`, prints normalised left, right and barcode sensor readings for 60 seconds | `_s3irdiag` / *(nothing)* | `S3_IR_DIAGNOSTIC` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |

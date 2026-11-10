@@ -39,6 +39,8 @@
    never starts this task, so arming it there would reset the board. */
 #define MC_USE_WATCHDOG     ((0 == APP_TEST) && (0 == S2_HW_TEST))
 #define MC_LOCK_TMO_MS      10      /* reader wait for the status lock */
+#define MC_LOG_PERIODS      5u      /* S2_MOTION_LOG: one line per 50 ms */
+#define MC_LOG_WDT_TICK     0x4005802Cu /* WATCHDOG TICK (RP2040 4.7.6) */
 
 EXPORT ID motion_q = 0;
 
@@ -46,6 +48,8 @@ static ID              g_tid_motion = 0;
 static ID              g_cyc_motion = 0;
 static ID              g_status_mtx = 0;
 static motion_status_t g_status;            /* guarded by g_status_mtx */
+static ER              g_slp_er  = E_OK;   /* S2_MOTION_LOG only */
+static INT             g_can_cnt = 0;      /* S2_MOTION_LOG only */
 static motion_t        g_motion;            /* motion task only */
 static volatile uint32_t g_latch_us   = 0u; /* written by the controller */
 static volatile uint32_t g_off_us     = 0u; /* written by this task */
@@ -80,6 +84,8 @@ static void     read_input (motion_input_t * p_in);
 static void     apply_duty (int32_t duty_l, int32_t duty_r);
 static void     raise_fault (motion_output_t const * p_out);
 static void     publish_status (void);
+static void     motion_log (motion_input_t const * p_in,
+                            motion_output_t const * p_out);
 static uint32_t now_ms (void);
 
 /** @brief Create motion_q, the status mutex and the period handler. */
@@ -236,8 +242,8 @@ motion_task (INT stacd, void * exinf)
 
     for (;;)
     {
-        (void)tk_slp_tsk(TMO_FEVR);
-        (void)tk_can_wup(TSK_SELF);     /* drop wake-ups queued meanwhile */
+        g_slp_er  = tk_slp_tsk(TMO_FEVR);
+        g_can_cnt = tk_can_wup(TSK_SELF);   /* drop wake-ups queued meanwhile */
 
         read_input(&in);
         motion_output_clear(&out);
@@ -262,7 +268,56 @@ motion_task (INT stacd, void * exinf)
         }
         raise_fault(&out);
         publish_status();
+        motion_log(&in, &out);
     }
+}
+
+/* S2_MOTION_LOG: one line every MC_LOG_PERIODS control periods while a
+   command is active. Runs after the watchdog kick, so a slow console
+   cannot reset the board. */
+static void
+motion_log (motion_input_t const * p_in, motion_output_t const * p_out)
+{
+#if S2_MOTION_LOG
+    static uint32_t periods = 0u;
+    bool const b_active = (MOTION_SPEED == g_motion.state)
+                          || (MOTION_MOVE == g_motion.state)
+                          || (MOTION_TURN == g_motion.state)
+                          || (MOTION_STOPPING == g_motion.state);
+
+    static uint32_t total   = 0u;
+
+    periods++;
+    total++;
+
+    /* Timer clock source: TIMER counts clk_ref / WATCHDOG TICK cycles. */
+    if ((1u == total) || (500u == total) || (3000u == total))
+    {
+        tm_printf((UB *)"[MC] clk us %u tick 0x%x ref ctrl 0x%x div 0x%x"
+                  " sel 0x%x\n",
+                  (UW)p_in->now_us, (UW)in_w(MC_LOG_WDT_TICK),
+                  (UW)in_w(CLK_REF + CLK_x_CTRL),
+                  (UW)in_w(CLK_REF + CLK_x_DIV),
+                  (UW)in_w(CLK_REF + CLK_x_SELECTED));
+    }
+
+    if (b_active && (periods >= MC_LOG_PERIODS))
+    {
+        periods = 0u;
+        tm_printf((UB *)"[MC] us %u st %d tgt %d/%d spd %d/%d duty %d/%d"
+                  " cnt %d/%d err %u/%u slp %d can %d\n",
+                  (UW)p_in->now_us, (INT)g_motion.state,
+                  (INT)g_motion.tgt_l, (INT)g_motion.tgt_r,
+                  (INT)g_motion.speed_l, (INT)g_motion.speed_r,
+                  (INT)p_out->duty_l, (INT)p_out->duty_r,
+                  (INT)p_in->count_l, (INT)p_in->count_r,
+                  (UW)p_in->errors_l, (UW)p_in->errors_r,
+                  (INT)g_slp_er, (INT)g_can_cnt);
+    }
+#else
+    (void)p_in;
+    (void)p_out;
+#endif
 }
 
 static void

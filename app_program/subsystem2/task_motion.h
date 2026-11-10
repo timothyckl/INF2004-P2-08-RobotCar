@@ -26,6 +26,12 @@
 #define S2_HW_TEST  0
 #endif
 
+/* Speed-loop printout for PID tuning (build option S2_MOTION_LOG=1):
+   target, measured speed and duty per wheel every 50 ms while moving. */
+#ifndef S2_MOTION_LOG
+#define S2_MOTION_LOG   0
+#endif
+
 ER   s2_motion_create (void);
 ER   s2_motion_start (void);
 void s2_motion_wake (void);
