@@ -345,13 +345,8 @@ log_fault (motion_input_t const * p_input,
     if ((MOTION_FAULT_STALL == p_output->fault_reason)
         && (0u != (p_output->stalled_wheels & MOTION_STALL_RIGHT)))
     {
-#if S3_LINE_FOLLOW_TEST
         tm_printf((UB *)"[S2] RIGHT stall/no feedback: check wheel and "
                           "encoder 1 GP0/GP1\n");
-#else
-        tm_printf((UB *)"[S2] RIGHT stall/no feedback: check wheel and "
-                          "encoder 1 GP26/GP27; disconnect IR AO from GP26\n");
-#endif
     }
 }
 

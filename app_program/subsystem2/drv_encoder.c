@@ -24,11 +24,7 @@ typedef struct
 
 static const drv_encoder_hw_t g_encoder_hw[DRV_ENCODER_COUNT] =
 {
-#if S3_LINE_FOLLOW_TEST
-    {0u,  1u},      /* dedicated S3 trial: right wheel on Grove GP0/GP1 */
-#else
-    {26u, 27u},     /* DRV_ENCODER_1: right wheel, A GP26, B GP27 */
-#endif
+    {0u,  1u},      /* DRV_ENCODER_1: right wheel, A GP0, B GP1 */
     {7u,  28u}      /* DRV_ENCODER_2: left wheel, A GP7, B GP28 */
 };
 

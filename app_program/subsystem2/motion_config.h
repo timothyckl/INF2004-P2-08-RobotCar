@@ -31,30 +31,18 @@
 #define MC_WHEEL_CIRC_UM        204000u     /* um */
 #define MC_TRACK_MM             130u        /* wheel centre to centre */
 
-/* Wiring viewed from behind. The dedicated S3 line trial follows the current
-   installation: left wheel = motor 1, right wheel = motor 2. Normal firmware
-   retains the integrated motor assignment. Positive duty drives motor A.
-   The line-test motor signs reproduce the observed physical forward motion
-   and remain provisional until a wheels-raised S2-H01 check. */
-#if S3_LINE_FOLLOW_TEST
+/* Wiring viewed from behind, ultrasonic sensor forward: left wheel = motor 1
+   + encoder 2 (GP7/GP28), right wheel = motor 2 + encoder 1 (GP0/GP1).
+   Positive duty drives motor A. Confirmed by a full line-follow lap on
+   2026-11-10 (AGENTS.md, Agreed pin mapping). */
 #define MC_LEFT_MOTOR           DRV_MOTOR_1
 #define MC_RIGHT_MOTOR          DRV_MOTOR_2
-#define MC_LEFT_MOTOR_INVERT    0           /* provisional: M1 forward */
-#define MC_RIGHT_MOTOR_INVERT   1           /* provisional: M2 forward */
-#else
-#define MC_LEFT_MOTOR           DRV_MOTOR_2
-#define MC_RIGHT_MOTOR          DRV_MOTOR_1
-#define MC_LEFT_MOTOR_INVERT    1           /* 1: forward needs -duty */
-#define MC_RIGHT_MOTOR_INVERT   0           /* forward needs +duty */
-#endif
+#define MC_LEFT_MOTOR_INVERT    0           /* forward needs +duty (GP8) */
+#define MC_RIGHT_MOTOR_INVERT   1           /* forward needs -duty (GP11) */
 #define MC_LEFT_ENCODER         DRV_ENCODER_2
 #define MC_RIGHT_ENCODER        DRV_ENCODER_1
 #define MC_LEFT_ENC_INVERT      0           /* forward raw count increases */
-#if S3_LINE_FOLLOW_TEST
-#define MC_RIGHT_ENC_INVERT     1           /* observed forward count decreases */
-#else
-#define MC_RIGHT_ENC_INVERT     0           /* integrated wiring: count increases */
-#endif
+#define MC_RIGHT_ENC_INVERT     1           /* forward raw count decreases */
 
 /* Speed PID per wheel: mm/s in, duty out. UNMEASURED gains, tune on the
    robot. Gains are x PID_GAIN_SCALE (1024 = 1.0), per 10 ms sample. */

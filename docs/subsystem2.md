@@ -11,12 +11,12 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 
 | Item | Setting | Source |
 |---|---|---|
-| Motor 1 (right wheel) | GP8 (M1A, forward) / GP9 (M1B, backward), PWM slice 4 | Robo Pico datasheet; team pin mapping 2026-11-03 |
-| Motor 2 (left wheel) | GP10 (M2A, backward) / GP11 (M2B, forward), PWM slice 5 | as above |
+| Motor 1 (left wheel) | GP8 (M1A, forward) / GP9 (M1B, backward), PWM slice 4 | Robo Pico datasheet; full lap 2026-11-10 (decision 6) |
+| Motor 2 (right wheel) | GP10 (M2A, backward) / GP11 (M2B, forward), PWM slice 5 | as above |
 | Motor PWM | 20 kHz: 125 MHz clk_sys, divider 1, TOP 6249; duty -6250..+6250 | Robo Pico datasheet table 1 row 10 |
 | Driver truth table | A high B low forward; A low B high backward; both low brake; both high coast | Robo Pico datasheet section 4 |
-| Encoder 1 (right wheel, motor 1) | GP26 (A) / GP27 (B); ADC pin initialisation disabled | agreed pin mapping, 2026-11-04 |
-| Encoder 2 (left wheel, motor 2) | GP7 (A) / GP28 (B); keep the GP28 battery-sense jumper open | as above |
+| Encoder 1 (right wheel, motor 2) | GP0 (A) / GP1 (B); counts down going forward; `CRASH_REPORT=0` | full lap 2026-11-10 (decision 6) |
+| Encoder 2 (left wheel, motor 1) | GP7 (A) / GP28 (B); counts up going forward; keep the GP28 battery-sense jumper open | as above |
 | Encoder power | 3V3 and GND | as above |
 | Motor plug | PH2.0-6P: 01 encoder GND, 02 encoder A, 03 encoder B, 04 encoder VCC, 05 motor +, 06 motor - | as above |
 | Motor wires | M1A GP8 yellow, M1B GP9 black; M2A GP10 yellow, M2B GP11 black | as above |
@@ -24,17 +24,17 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 | Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control (normal firmware only) | Pico SDK register headers; RP2040 datasheet not in `docs/datasheets` |
 | GPIO interrupt | IO_IRQ_BANK0, IRQ 13, NVIC priority 2, on core 0 | SDK `hardware/regs/intctrl.h` |
 
-The authoritative mapping puts the IMU on GP0 (SDA0) / GP1 (SCL0), I2C0, and
-the encoders on GP26/GP27 and GP7/GP28. The sample ADC driver does not touch
-GP26 to GP28 at start-up: `DEVCONF_ADC_PIN_INIT_*` are all FALSE in
-`device/adc/sysdepend/rp2040/adc_cnf_sysdep.h`. All three pins belong to the
-encoders, so no code may configure them as ADC inputs.
+The authoritative mapping (`AGENTS.md`) puts the encoders on GP0/GP1 (right)
+and GP7/GP28 (left), and the front line sensors' analogue outputs on ADC0/GP26
+and ADC1/GP27. `adc_cnf_sysdep.h` enables ADC pin initialisation for channels 0
+and 1 only; GP28 belongs to the left encoder and must never be configured as an
+ADC input.
 
-Wheel pairing: the left wheel is motor 2 with encoder 2, and the right wheel is
-motor 1 with encoder 1 (S2-H01/H03, 2026-11-04). The previous mapping paired
-each motor with the other wheel's encoder, which made the two closed-loop speed
-controllers react to each other. `motion_config.h` now follows the measured
-pairing.
+Wheel pairing, viewed from behind: the left wheel is motor 1 with encoder 2,
+and the right wheel is motor 2 with encoder 1 (decision 6, 2026-11-10). Earlier
+documents labelled the two sides the other way round; the motor-to-encoder
+pairing itself is unchanged. `motion_config.h` follows this mapping in every
+build.
 
 ### Bench findings, 2026-11-02
 

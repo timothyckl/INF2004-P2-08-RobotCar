@@ -68,24 +68,46 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 
 ## Agreed pin mapping
 
+This section is the authoritative GPIO reference. `TEAM.md` section 2 records
+per-pin ownership claims and must match it; change both together. Left and
+right are viewed from behind the robot, with the ultrasonic sensor facing
+forward (away from the viewer).
+
 | Device | Signal | GPIO | Interface | Owner / constraint |
 |---|---|---|---|---|
-| GY-511 / LSM303DLHC IMU | SDA / SCL | GP0 / GP1 | I2C0 | IMU/Terrain; power from 3V3 |
-| HC-SR04 | TRIG | GP2 | GPIO output | Obstacle Scan generates the trigger pulse |
-| HC-SR04 | ECHO | GP3 | GPIO input | Obstacle Scan times the pulse; level-shift 5 V to 3.3 V |
-| IR line sensors 1-3 | IR1_OUT / IR2_OUT / IR3_OUT | GP4 / GP16 / GP6 | GPIO inputs | Line Sensor |
-| Motor 1 encoder | ENC1_A / ENC1_B | GP26 / GP27 | GPIO interrupts | Motion Control |
-| Motor 2 encoder | ENC2_A / ENC2_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
-| Motor 1 | M1A_PWM / M1B_PWM | GP8 / GP9 | PWM | Motion Control only |
-| Motor 2 | M2A_PWM / M2B_PWM | GP10 / GP11 | PWM | Motion Control only |
-| SG90 servo | SERVO_PWM | GP15 | PWM | Obstacle Scan; power from V+ |
+| GY-511 / LSM303DLHC IMU | SDA / SCL | GP2 / GP3 | I2C1 | IMU/Terrain; power from 3V3 |
+| HC-SR04 | TRIG | GP4 | GPIO output | Obstacle Scan generates the trigger pulse |
+| HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; currently powered from 3V3, see below |
+| Front-left line sensor | AO | GP26 | ADC0 | Line Sensor: left line guide; DOUT disconnected |
+| Front-right line sensor | AO | GP27 | ADC1 | Line Sensor: right line guide; DOUT disconnected |
+| Side barcode sensor | DOUT | GP16 | GPIO input / interrupt | Line Sensor: barcode only, never steering; AOUT disconnected |
+| Left wheel encoder | ENC_A / ENC_B | GP7 / GP28 | GPIO interrupts | Motion Control; counts up going forward; keep the GP28 battery-sense jumper open |
+| Right wheel encoder | ENC_A / ENC_B | GP0 / GP1 | GPIO interrupts | Motion Control; counts down going forward; requires `CRASH_REPORT=0` |
+| Motor 1 (left wheel) | M1A_PWM / M1B_PWM | GP8 (forward) / GP9 (backward) | PWM | Motion Control only |
+| Motor 2 (right wheel) | M2A_PWM / M2B_PWM | GP10 (backward) / GP11 (forward) | PWM | Motion Control only |
+| Robo Pico button | GP20 | GP20 | GPIO input, active low | Vehicle Controller: START/STOP in the line-follow image |
+| SG90 servo | SERVO_PWM | GP12 | PWM | Obstacle Scan; power from the servo header V+ |
 | Pico W radio | Internal WiFi signals | GP23 / GP24 / GP25 / GP29 | Internal SPI/PIO | Reserved; do not use for other functions |
+
+The drivetrain, line-sensor and GP20 rows were confirmed on 2026-11-10: the
+`S3_LINE_TEST` image completed a full lap with this wiring. The IMU,
+HC-SR04 and servo rows follow the team pin mapping of 2026-11-03 and are not
+yet exercised on this branch.
 
 Configuration constraints:
 
-- Disable or relocate UART0 and its mirror from GP0/GP1.
+- Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
+  carry the right encoder. The makefile refuses `CRASH_REPORT=1` and
+  `CONSOLE=uart`.
 - Disable or reassign the demo liveness LED from GP16.
-- Do not enable the sample ADC driver on encoder pins GP26-GP28.
-- GP5 and GP17 are unused. Connect IR sensor 3 to GP6 only; its Grove GP26
-  contact must remain disconnected because GP26 belongs to encoder 1.
-- Power the HC-SR04 from 5 V and keep all signal grounds common.
+- Enable RP2040 ADC pin initialisation only for ADC0/GP26 and ADC1/GP27, which
+  carry the two front sensors' analogue outputs. Keep ADC2/GP28 disabled
+  because GP28 carries the left encoder, and keep ADC3/GP29 disabled because
+  it is reserved for the Pico W radio.
+- GP6, GP13 to GP15, GP17 to GP19, GP21 and GP22 are unused.
+- The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently
+  powered from 3V3 (team pin mapping, 2026-11-03). That wiring is outside the
+  datasheet and is not validated. Obstacle Scan must confirm ranging at 3V3 or
+  move to 5 V; at 5 V, ECHO must be level-shifted to 3.3 V because Pico GPIO is
+  not 5 V tolerant.
+- Keep all signal grounds common.

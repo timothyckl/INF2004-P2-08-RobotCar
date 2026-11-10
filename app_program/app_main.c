@@ -60,10 +60,6 @@
 #define S3_HARDWARE_TEST 0
 #endif
 
-#ifndef S3_CALIBRATION_TEST
-#define S3_CALIBRATION_TEST 0
-#endif
-
 #ifndef S3_LINE_FOLLOW_TEST
 #define S3_LINE_FOLLOW_TEST 0
 #endif
@@ -128,7 +124,7 @@ EXPORT INT usermain(void)
 	CHECK(subsystem2_start(), "subsystem2_start");
 	tm_printf((UB *)"S3/S2 line-follow test mode\n");
 	subsystem3_test();
-#elif APP_TEST && (S3_HARDWARE_TEST || S3_CALIBRATION_TEST)
+#elif APP_TEST && S3_HARDWARE_TEST
 	/* Dedicated front-IR bench mode: no other application task runs. */
 	CHECK(subsystem3_init(), "subsystem3_init");
 	tm_printf((UB *)"S3 sensor-only test mode\n");

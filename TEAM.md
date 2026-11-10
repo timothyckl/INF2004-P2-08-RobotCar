@@ -52,11 +52,16 @@ against each other can damage it. Writing the claim down first means a clash
 is spotted when someone edits this table, not hours later on the bench.
 
 The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2. The
-authoritative assignment is the agreed pin mapping in `AGENTS.md`: IMU I2C0 on
-GP0/GP1, ultrasonic GP2/GP3, IR sensors GP4/GP16/GP6, motor 1 encoder GP26/GP27,
-motor 2 encoder GP7/GP28, motors GP8-GP11, and servo GP15. UART0 crash output
-must remain disabled because GP0/GP1 carry I2C0. Reconcile any other wiring
-with the actual board and datasheets before configuring hardware.
+authoritative GPIO mapping is `AGENTS.md`, section *Agreed pin mapping*; the
+claims below must match it. Left and right are viewed from behind the robot,
+ultrasonic sensor facing away. Motor 1 (GP8/GP9) and the GP7/GP28 encoder drive
+the left wheel; motor 2 (GP10/GP11) and the GP0/GP1 encoder drive the right
+wheel. The front line sensors' analogue outputs use ADC0/GP26 (left) and
+ADC1/GP27 (right), and the barcode sensor's digital output GP16. The IMU uses
+I2C1 on GP2/GP3, the HC-SR04 GP4/GP5 and the servo GP12. Because GP0/GP1 carry
+an encoder, building with `CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited.
+Reconcile any other wiring with the actual board and datasheets before
+configuring hardware.
 
 **No instructor check needed.** The team keeps this table itself. You do not
 need the instructor, or the rest of the team, to check or approve a claim:
@@ -67,48 +72,32 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | S4 | IMU SDA0 (I2C0); `CRASH_REPORT=1` prohibited |
-| GP1 | S4 | IMU SCL0 (I2C0); `CRASH_REPORT=1` prohibited |
-| GP2 | S5 | HC-SR04 TRIG |
-| GP3 | S5 | HC-SR04 ECHO through a 5 V-to-3.3 V level shifter |
-| GP4 | S3 | IR sensor 1 DOUT (side barcode sensor) |
-| GP5 | | unused |
-| GP6 | S3 | IR sensor 3 DOUT (front-left viewed from behind); its Grove GP26 contact remains disconnected |
-| GP7 | S2 | ENC2_A, motor 2 encoder (GPIO interrupt) |
-| GP8 | S2 | M1A motor 1 PWM (slice 4A) |
-| GP9 | S2 | M1B motor 1 PWM (slice 4B) |
-| GP10 | S2 | M2A motor 2 PWM (slice 5A) |
-| GP11 | S2 | M2B motor 2 PWM (slice 5B) |
-| GP12 | | |
+| GP0 | S2 | right encoder A (GPIO interrupt); `CRASH_REPORT=1` prohibited |
+| GP1 | S2 | right encoder B; `CRASH_REPORT=1` prohibited |
+| GP2 | S4 | IMU SDA1 (I2C1) |
+| GP3 | S4 | IMU SCL1 (I2C1) |
+| GP4 | S5 | HC-SR04 TRIG |
+| GP5 | S5 | HC-SR04 ECHO |
+| GP6 | | |
+| GP7 | S2 | left encoder A (GPIO interrupt) |
+| GP8 | S2 | M1A motor 1 PWM (slice 4A), left wheel forward |
+| GP9 | S2 | M1B motor 1 PWM (slice 4B), left wheel backward |
+| GP10 | S2 | M2A motor 2 PWM (slice 5A), right wheel backward |
+| GP11 | S2 | M2B motor 2 PWM (slice 5B), right wheel forward |
+| GP12 | S5 | SG90 servo PWM (slice 6A) |
 | GP13 | | |
 | GP14 | | |
-| GP15 | S5 | SG90 servo PWM (slice 7B) |
-| GP16 | S3 | IR sensor 2 DOUT (front-right viewed from behind); demo liveness LED must not use this pin |
-| GP17 | | unused |
+| GP15 | | |
+| GP16 | S3 | side barcode sensor DOUT; demo liveness LED must not use this pin |
+| GP17 | | |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
 | GP20 | S2 | Robo Pico programmable button; active-low START/STOP in line test |
 | GP21 | | |
 | GP22 | | |
-| GP26 | S2 | ENC1_A, motor 1 encoder; ADC pin initialisation disabled |
-| GP27 | S2 | ENC1_B, motor 1 encoder; ADC pin initialisation disabled |
-| GP28 | S2 | ENC2_B, motor 2 encoder; battery-sense jumper open |
-
-Dedicated test-profile exception (Edmund, 2026-11-05): only the
-`S3_LINE_FOLLOW_TEST` image follows the current installed trial wiring. It uses
-GP0/GP1 for the right encoder, GP7/GP28 for the left encoder, front-left AO on
-GP26/ADC0, front-right AO on GP27/ADC1, and barcode DOUT on GP16. Motor 1 drives
-the left wheel and motor 2 drives the right wheel. That image does not start
-subsystem 4 and prohibits UART0. Normal and full-system images retain the table
-above; subsystem 4's future replacement pins must be agreed and recorded before
-this exception can become an integrated mapping.
-
-Dedicated S3 analog bench exception (Edmund, 2026-11-05): the
-`S3_HARDWARE_TEST` and `S3_LINE_FOLLOW_TEST` images configure front-left AO on
-GP26/ADC0 and front-right AO on GP27/ADC1, with the side barcode DOUT on GP16.
-The two front DOUT wires and the barcode AO wire are disconnected. The hardware
-profile does not start motion control; neither profile may be used with the
-integrated encoder mapping.
+| GP26 | S3 | front-left line sensor AO (ADC0); DOUT disconnected |
+| GP27 | S3 | front-right line sensor AO (ADC1); DOUT disconnected |
+| GP28 | S2 | left encoder B; battery-sense jumper open, ADC2 disabled |
 
 ## 3. Peripherals
 
@@ -141,12 +130,12 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | S4 | IMU task | GP0 (SDA0), GP1 (SCL0) |
-| I2C1 | | | |
+| I2C0 | | | |
+| I2C1 | S4 | | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | Pin initialisation disabled on encoder pins GP26-GP28 |
-| PWM slices (list) | S2: slices 4, 5; S5: slice 7 | Motion Control; Obstacle Scan | GP8-GP11; GP15 |
+| ADC | S3 | | ADC0/GP26 and ADC1/GP27; ADC2/GP28 (left encoder) and ADC3/GP29 (radio) disabled |
+| PWM slices (list) | S2: slices 4, 5; S5: slice 6 | Motion Control; Obstacle Scan | GP8-GP11; GP12 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -207,7 +196,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
 | IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
 | IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
-| IF-06 | S3 â†’ S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
+| IF-06 | S3 → S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).

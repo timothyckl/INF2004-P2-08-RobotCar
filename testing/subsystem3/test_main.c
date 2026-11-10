@@ -21,7 +21,6 @@ static void check(bool passed, char const * p_name)
 
 static void test_ir(void)
 {
-    s3_calibration_t calibration = {0};
     s3_filter_t filter = {0};
     s3_ir_adaptive_t adaptive = {0};
     s3_ir_adaptive_config_t const adaptive_config =
@@ -32,35 +31,12 @@ static void test_ir(void)
     {
         136U, 170U, 168U, 32U, 20U
     };
-    uint8_t mask = 0U;
     s3_line_t const decisions[S3_IR_PATTERNS] =
     {
         S3_LINE_UNKNOWN, S3_LINE_LEFT,
         S3_LINE_RIGHT, S3_LINE_STRAIGHT
     };
 
-    check(!s3_ir_normalize(&calibration, 0U, &mask), "uncalibrated");
-    for (uint8_t black = 0U; black < S3_IR_PATTERNS; ++black)
-    {
-        uint8_t const white = black ^ (S3_IR_PATTERNS - 1u);
-
-        check(s3_ir_calibrate(&calibration, white, black),
-              "all polarity combinations calibrate");
-        for (uint8_t levels = 0U; levels < S3_IR_PATTERNS; ++levels)
-        {
-            check(s3_ir_normalize(&calibration, levels, &mask),
-                  "normalization accepted");
-            check(mask == ((levels ^ black) ^
-                           (S3_IR_PATTERNS - 1u)),
-                  "all normalized patterns");
-        }
-    }
-
-    check(!s3_ir_calibrate(&calibration, 0U, 2U), "stuck sensor");
-    check(!calibration.valid, "failed recalibration invalidates");
-    check(!s3_ir_calibrate(NULL, 0U, 3U), "null calibration");
-    check(!s3_ir_normalize(NULL, 0U, &mask), "null normalizer");
-    check(!s3_ir_calibrate(&calibration, 4U, 3U), "invalid bits");
     check(!s3_ir_filter(&filter, 1U, 3U), "filter first sample");
     check(!s3_ir_filter(&filter, 1U, 3U), "filter second sample");
     check(s3_ir_filter(&filter, 1U, 3U), "filter settled");

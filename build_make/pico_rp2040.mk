@@ -103,19 +103,10 @@ endif
 S3_HW_TEST_SUFFIX := _s3hw
 endif
 
-# S3_CAL_TEST=1 adds guided polarity calibration and a classified monitor.
-S3_CAL_TEST ?= 0
-ifneq ($(filter $(S3_CAL_TEST),0 1),$(S3_CAL_TEST))
-$(error Unknown S3_CAL_TEST '$(S3_CAL_TEST)'; use 0 or 1)
-endif
-ifeq ($(S3_CAL_TEST),1)
-ifneq ($(TEST),1)
-$(error S3_CAL_TEST=1 requires TEST=1)
-endif
-S3_CAL_TEST_SUFFIX := _s3cal
-endif
-ifeq ($(S3_HW_TEST)$(S3_CAL_TEST),11)
-$(error Choose either S3_HW_TEST=1 or S3_CAL_TEST=1, not both)
+# The front line sensors have analogue outputs only (AGENTS.md), so the
+# former digital-output calibration profile cannot run on this robot.
+ifneq ($(S3_CAL_TEST),)
+$(error S3_CAL_TEST was removed: the front sensors have no digital outputs; use S3_HW_TEST=1)
 endif
 
 # S3_LINE_TEST=1 runs the GP20-controlled S3/S2 line-follow integration trial.
@@ -129,10 +120,10 @@ $(error S3_LINE_TEST=1 requires TEST=1)
 endif
 S3_LINE_TEST_SUFFIX := _s3line
 endif
-S3_TEST_MODE_COUNT := $(words $(filter 1,$(S3_HW_TEST) $(S3_CAL_TEST) \
+S3_TEST_MODE_COUNT := $(words $(filter 1,$(S3_HW_TEST) \
                                       $(S3_LINE_TEST)))
 ifneq ($(filter 0 1,$(S3_TEST_MODE_COUNT)),$(S3_TEST_MODE_COUNT))
-$(error Choose only one of S3_HW_TEST, S3_CAL_TEST or S3_LINE_TEST)
+$(error Choose either S3_HW_TEST or S3_LINE_TEST, not both)
 endif
 
 # S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
@@ -167,10 +158,8 @@ endif
 ifeq ($(CONSOLE),uart)
 override CRASH_REPORT := 1
 endif
-ifeq ($(S3_LINE_TEST),1)
 ifneq ($(CRASH_REPORT),0)
-$(error S3_LINE_TEST=1 requires CRASH_REPORT=0 because GP0/GP1 carry I2C0)
-endif
+$(error CRASH_REPORT=1 and CONSOLE=uart are prohibited: GP0/GP1 carry the right wheel encoder (AGENTS.md))
 endif
 ifeq ($(CONSOLE)$(CRASH_REPORT),usb_cdc1)
 CRASH_SUFFIX := _crash
@@ -182,7 +171,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_CAL_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -244,7 +233,6 @@ ASFLAGS += -DCNF_SMP=1
 endif
 CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
-CFLAGS  += -DS3_CALIBRATION_TEST=$(S3_CAL_TEST)
 CFLAGS  += -DS3_LINE_FOLLOW_TEST=$(S3_LINE_TEST)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 ifeq ($(S3_LINE_TEST),1)
@@ -282,7 +270,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3cal$(S3_CAL_TEST)-s3line$(S3_LINE_TEST)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

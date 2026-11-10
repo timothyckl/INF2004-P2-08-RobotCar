@@ -1,15 +1,13 @@
 # Subsystem 3: line sensing and barcode foundation
 
-The current hardware stage verifies the two front analog IR outputs and the
-side barcode digital output in a dedicated bench profile:
+Every build uses the agreed pin mapping in `AGENTS.md`, viewed from behind:
 
 - front-left AO: GP26/ADC0;
 - front-right AO: GP27/ADC1;
 - side barcode DOUT: GP16.
 
-Both front DOUT wires and the barcode AO wire are disconnected. The analog
-mapping is enabled only by `S3_HW_TEST=1`; normal and integrated images leave
-GP26 and GP27 available for the agreed encoder mapping.
+The front sensors have analogue outputs only; both front DOUT wires and the
+barcode AO wire are disconnected, and GP6 is unused.
 
 Subsystem 3 never writes motor PWM. In the line-test integration profile it
 sends line positions to the Vehicle Controller, and only Motion Control writes
@@ -48,41 +46,12 @@ illustrative and is not a validated threshold. `barcode_do` is the raw GP16
 digital level. Record stable ranges for every tested surface. This stage does
 not label readings as white or black and does not command the motors.
 
-`S3_LINE_TEST=1` uses these same two AO inputs for line following. The older
-`S3_CAL_TEST=1` profile remains a DOUT-only diagnostic and must not be used
-with the AO-only front wiring.
+`S3_LINE_TEST=1` uses these same two AO inputs for line following. The former
+`S3_CAL_TEST=1` digital-output calibration profile was removed on 2026-11-10
+because the front sensors have no digital outputs; the makefile refuses it.
 
 A normal `TEST=1` build without either S3-specific option reports the hardware
 checks as blocked and runs the regular subsystem tests instead.
-
-## Guided digital calibration
-
-Keep the raw monitor available for wiring checks. For polarity calibration,
-build the separate calibration profile:
-
-```text
-make -C build_make TEST=1 S3_CAL_TEST=1 CRASH_REPORT=0 -j8
-```
-
-Flash the generated `_test_s3cal.uf2`. Follow four independent prompts:
-
-1. left sensor over white;
-2. left sensor over black;
-3. right sensor over white;
-4. right sensor over black.
-
-Only the named sensor needs to be positioned for each prompt. Hold it still at
-its normal operating height. Each observation uses 50 samples and is accepted
-when at least 45 agree. Both sensors must be stable and must change digital
-level between white and black. A failed sequence repeats automatically.
-
-After S3-H01 through S3-H03 pass, the monitor continuously labels each input
-as `WHITE` or `BLACK`, reporting changes immediately and unchanged readings
-once per second. Calibration is held in RAM and is repeated after a reset.
-
-This learns DOUT polarity; it cannot adjust the module's comparator threshold.
-Use the raw monitor and the physical potentiometer to obtain a clean transition
-before running calibration.
 
 ## Button-controlled line-follow bench trial
 
@@ -95,12 +64,7 @@ make -C build_make TEST=1 S3_LINE_TEST=1 CRASH_REPORT=0 -j8
 
 Flash the generated `_test_s3line.uf2`. This profile starts only Subsystems 2
 and 3. It samples front-left AO on GP26 and front-right AO on GP27 every 10 ms.
-It does not repeat a guided calibration prompt.
-It also selects the currently installed trial drivetrain: left motor on motor 1
-(GP8/GP9), right motor on motor 2 (GP10/GP11), left encoder on GP7/GP28 and
-right encoder on GP0/GP1. This exception applies only to `_test_s3line.uf2`;
-normal/full-system builds retain the integrated pin map. Never enable UART0 or
-`CRASH_REPORT=1` with this trial wiring.
+The drivetrain follows the agreed pin mapping used by every build.
 It waits for Motion Control to become ready, then continuously reports fresh
 line positions while STOP remains latched. Place the car on the track and press
 the Robo Pico programmable button on GP20 to start. Press GP20 again to stop;
@@ -202,8 +166,8 @@ From the project root, with GCC on `PATH`:
 powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
 ```
 
-These tests cover two-sensor calibration, polarity normalization, filtering,
-the verified four-state steering table, and the existing synthetic
+These tests cover the adaptive analogue thresholds, filtering, the verified
+four-state steering table, and the existing synthetic
 barcode/navigation foundation. They do not verify
 wiring, optical distance, surface contrast, ambient-light immunity, sampling
 performance, line following, motor behaviour, or the printed course barcode.

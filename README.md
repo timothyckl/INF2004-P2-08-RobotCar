@@ -181,8 +181,8 @@ the subsystem tests at power-up. Short videos of tests and demos are shared
 as unlisted YouTube links, listed in **`videos/`**.
 
 Pins: the robot's wiring is in `AGENTS.md`, section *Agreed pin mapping*,
-which is the authoritative GPIO reference. GP0/GP1 carry the IMU's I2C0 bus,
-so build with `CRASH_REPORT=0` and `CONSOLE=usb_cdc` (section 3).
+which is the authoritative GPIO reference. GP0/GP1 carry the right wheel
+encoder, so build with `CRASH_REPORT=0` and `CONSOLE=usb_cdc` (section 3).
 Never use GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico
 W's on-board LED is also on the radio, so use an external LED instead.
 
@@ -222,7 +222,6 @@ the next plain `make` goes back to the defaults.
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
 | `S3_HW_TEST` | **`0`**, `1` | `1` runs only subsystem 3's continuous raw two-front-IR monitor; requires `TEST=1` | `_s3hw` / *(nothing)* | `S3_HARDWARE_TEST` (1 or 0) |
-| `S3_CAL_TEST` | **`0`**, `1` | `1` runs only subsystem 3's guided digital polarity calibration and classified monitor; requires `TEST=1` | `_s3cal` / *(nothing)* | `S3_CALIBRATION_TEST` (1 or 0) |
 | `S3_LINE_TEST` | **`0`**, `1` | `1` runs the GP20-controlled S3/S2 line-follow trial; requires `TEST=1` | `_s3line` / *(nothing)* | `S3_LINE_FOLLOW_TEST` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
@@ -234,22 +233,18 @@ UART output *is* sent at once, even inside the crash handler. So when you
 need to know why the Pico crashed or froze, build with `CRASH_REPORT=1`,
 connect a USB-serial adapter (adapter RX → GP0, adapter GND → GND), and read
 it at 115200 baud. Normal `tm_printf` output on USB works the same with
-either setting. On this robot GP0/GP1 carry the IMU's I2C0 bus
-(`TEAM.md` section 2), so `CRASH_REPORT=1` and `CONSOLE=uart` are prohibited
-(`docs/decisions.md`, subsystem 2, decision 1). `CONSOLE=uart WIFI=none` also
+either setting. On this robot GP0/GP1 carry the right wheel encoder
+(`TEAM.md` section 2), so the makefile refuses `CRASH_REPORT=1` and
+`CONSOLE=uart` (`docs/decisions.md`, subsystem 2, decision 6). `CONSOLE=uart WIFI=none` also
 no longer compiles without the Pico SDK: subsystem 2's GPIO interrupt driver
 includes an SDK header.
 
 `S3_HW_TEST=1` (only with `TEST=1`) runs the dedicated subsystem 3 raw
 front-IR monitor without starting the other application subsystems. It adds
 the `_s3hw` suffix; see `app_program/subsystem3/README.md`.
-`S3_CAL_TEST=1` selects the separate guided polarity-calibration profile and
-adds `_s3cal`. Do not combine it with `S3_HW_TEST=1`.
 `S3_LINE_TEST=1` selects the supervised, GP20 START/STOP integration trial and
-adds `_s3line`. It has no automatic run-time limit. This profile alone uses the
-temporary installed drivetrain documented in `TEAM.md`, including the right
-encoder on GP0/GP1; subsystem 4 and UART0 are unavailable in this image. Do not
-combine any two S3-specific test profiles.
+adds `_s3line`. It has no automatic run-time limit, starts only subsystems 2
+and 3, and caps motor PWM at 20%. Do not combine it with `S3_HW_TEST=1`.
 `S4_HW_TEST=1` similarly adds subsystem 4's live IMU start-up check and the
 `_s4hw` image suffix; see `docs/subsystem4.md`.
 

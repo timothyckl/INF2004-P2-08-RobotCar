@@ -65,6 +65,24 @@ not assign replacement subsystem 4 pins and cannot become the integrated
 mapping until those pins are agreed, checked against the hardware references
 and recorded in `TEAM.md`.
 
+### 6. Installed wiring becomes the only mapping (2026-11-10)
+
+Supersedes decision 5 and the drivetrain parts of decisions 1 and 4. The
+`S3_LINE_TEST` image completed a full lap on 2026-11-10, which confirms the
+installed wiring. Viewed from behind (ultrasonic sensor forward), motor 1
+(GP8 forward) and encoder 2 (GP7/GP28, counts up going forward) drive the left
+wheel; motor 2 (GP11 forward) and encoder 1 (GP0/GP1, counts down going
+forward) drive the right wheel. The front line sensors' analogue outputs use
+ADC0/GP26 (left) and ADC1/GP27 (right); the GP26 sensor and the motor 1 wheel
+are on the same side, which the lap requires. Every build now uses this
+mapping, ADC0/ADC1 pin initialisation is always enabled, and the makefile
+refuses `CRASH_REPORT=1` and `CONSOLE=uart`. The front sensors have no
+digital outputs and GP6 is unused, so subsystem 3 always reads ADC0/ADC1 plus
+the GP16 barcode input, and the `S3_CAL_TEST` digital-calibration profile is
+removed (the makefile refuses it). The IMU (I2C1, GP2/GP3), HC-SR04
+(GP4/GP5) and servo (GP12) keep the 2026-11-03 team mapping and are not yet
+exercised on this branch. `AGENTS.md`, *Agreed pin mapping*, is authoritative.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
