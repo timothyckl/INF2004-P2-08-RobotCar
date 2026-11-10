@@ -9,7 +9,7 @@
 
 #if APP_TEST
 
-bool test_line_control_lost(void);
+bool test_line_control_junction(void);
 bool test_line_control_curve(void);
 
 #endif

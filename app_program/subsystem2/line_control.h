@@ -1,6 +1,6 @@
 /**
  * @file line_control.h
- * @brief Pure two-sensor line-following and bounded recovery policy.
+ * @brief Pure two-sensor line-following and junction policy.
  */
 #ifndef LINE_CONTROL_H
 #define LINE_CONTROL_H
@@ -12,7 +12,9 @@ typedef enum
 {
     LINE_CONTROL_MODE_INVALID = 0,
     LINE_CONTROL_MODE_FOLLOW,
-    LINE_CONTROL_MODE_LOST_RECOVERY
+    LINE_CONTROL_MODE_JUNCTION_CONFIRM,
+    LINE_CONTROL_MODE_CROSSING,
+    LINE_CONTROL_MODE_EXIT
 } line_control_mode_t;
 
 typedef enum
@@ -28,27 +30,36 @@ typedef enum
 typedef struct
 {
     uint32_t curve_entry_ms;
-    uint32_t lost_limit_ms;
-    uint32_t direction_memory_ms;
-    uint32_t direction_change_ms;
+    uint32_t left_center_hold_ms;
+    uint32_t right_center_hold_ms;
+    uint32_t junction_confirm_ms;
+    uint32_t crossing_limit_ms;
+    uint32_t exit_min_ms;
+    uint32_t exit_center_ms;
+    uint32_t exit_side_ms;
+    uint32_t exit_limit_ms;
 } line_control_cfg_t;
 
 typedef struct
 {
-    line_control_cfg_t  cfg;
-    line_control_mode_t mode;
-    uint32_t            mode_since_ms;
-    uint32_t            correction_since_ms;
-    uint32_t            last_direction_ms;
-    uint32_t            pending_since_ms;
-    uint8_t             last_correction;
-    uint8_t             pending_correction;
-    bool                b_correction_active;
-    bool                b_pending_correction;
-    bool                b_valid;
+    line_control_cfg_t    cfg;
+    line_control_mode_t   mode;
+    line_control_action_t held_action;
+    uint32_t              mode_since_ms;
+    uint32_t              correction_since_ms;
+    uint32_t              curve_seen_ms;
+    uint32_t              center_since_ms;
+    uint32_t              side_since_ms;
+    uint8_t               last_correction;
+    uint8_t               exit_side;
+    bool                  b_correction_active;
+    bool                  b_curve_active;
+    bool                  b_center_candidate;
+    bool                  b_side_candidate;
+    bool                  b_valid;
 } line_control_t;
 
-/** Initialise a policy. Every time limit must be nonzero. */
+/** Initialise a policy. Every time limit must be nonzero and ordered. */
 bool line_control_init(line_control_t * p_control,
                        line_control_cfg_t const * p_cfg,
                        uint32_t now_ms);

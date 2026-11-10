@@ -96,11 +96,19 @@ fixed.
 
 Dedicated test-profile exception (Edmund, 2026-11-05): only the
 `S3_LINE_FOLLOW_TEST` image follows the current installed trial wiring. It uses
-GP0/GP1 for the right encoder, GP7/GP28 for the left encoder, motor 1 for the
-left wheel and motor 2 for the right wheel. That image does not start subsystem
-4 and prohibits UART0. Normal and full-system images retain the table above;
-subsystem 4's future replacement pins must be agreed and recorded before this
-exception can become an integrated mapping.
+GP0/GP1 for the right encoder, GP7/GP28 for the left encoder, front-left AO on
+GP26/ADC0, front-right AO on GP27/ADC1, and barcode DOUT on GP16. Motor 1 drives
+the left wheel and motor 2 drives the right wheel. That image does not start
+subsystem 4 and prohibits UART0. Normal and full-system images retain the table
+above; subsystem 4's future replacement pins must be agreed and recorded before
+this exception can become an integrated mapping.
+
+Dedicated S3 analog bench exception (Edmund, 2026-11-05): the
+`S3_HARDWARE_TEST` and `S3_LINE_FOLLOW_TEST` images configure front-left AO on
+GP26/ADC0 and front-right AO on GP27/ADC1, with the side barcode DOUT on GP16.
+The two front DOUT wires and the barcode AO wire are disconnected. The hardware
+profile does not start motion control; neither profile may be used with the
+integrated encoder mapping.
 
 ## 3. Peripherals
 

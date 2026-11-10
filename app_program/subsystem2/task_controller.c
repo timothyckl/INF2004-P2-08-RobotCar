@@ -36,16 +36,23 @@
 #endif
 
 #if S3_LINE_FOLLOW_TEST
-#define CTRL_LINE_BASE_MM_S        45
-#define CTRL_LINE_CORRECT_MM_S     38
-#define CTRL_LINE_LEFT_CURVE_MM_S -10
-#define CTRL_LINE_RIGHT_CURVE_MM_S  0
+#define CTRL_LINE_BASE_MM_S        40
+#define CTRL_LINE_CORRECT_MIN_MM_S 32
+#define CTRL_LINE_CORRECT_MAX_MM_S 38
+#define CTRL_LINE_CURVE_OUTER_MM_S 35
+#define CTRL_LINE_LEFT_CURVE_MM_S   5
+#define CTRL_LINE_RIGHT_CURVE_MM_S  5
 #define CTRL_LINE_TIMEOUT_MS      500u
 #define CTRL_LINE_START_GRACE_MS  200u
-#define CTRL_LINE_CURVE_ENTRY_MS  250u
-#define CTRL_LINE_LOST_LIMIT_MS   800u
-#define CTRL_LINE_DIRECTION_MEMORY_MS 500u
-#define CTRL_LINE_DIRECTION_CHANGE_MS 100u
+#define CTRL_LINE_CURVE_ENTRY_MS  200u
+#define CTRL_LINE_LEFT_HOLD_MS    250u
+#define CTRL_LINE_RIGHT_HOLD_MS   150u
+#define CTRL_LINE_JUNCTION_MS     100u
+#define CTRL_LINE_CROSSING_MS    1500u
+#define CTRL_LINE_EXIT_MIN_MS     600u
+#define CTRL_LINE_EXIT_CENTER_MS  100u
+#define CTRL_LINE_EXIT_SIDE_MS    150u
+#define CTRL_LINE_EXIT_LIMIT_MS  2500u
 #define CTRL_LINE_BUTTON_PIN       20u
 #define CTRL_LINE_BUTTON_MASK      (UINT32_C(1) << CTRL_LINE_BUTTON_PIN)
 #define CTRL_LINE_DEBOUNCE_MS       30u
@@ -84,6 +91,8 @@ typedef struct
     uint32_t              last_report_ms;
     uint32_t              running_since_ms;
     uint8_t               position;
+    uint8_t               strength;
+    int16_t               last_correction_mm_s;
     line_control_action_t last_action;
     bool                  b_have_report;
     bool                  b_running;
@@ -109,7 +118,9 @@ static void     line_button_step (s2_robot_state_t const * p_state,
 static void     line_step (s2_robot_state_t const * p_state,
                            ctrl_input_t const * p_input);
 static void     line_reset (uint32_t now);
-static bool     line_apply_action (line_control_action_t action);
+static int16_t  line_correction_speed (uint8_t strength);
+static bool     line_apply_action (line_control_action_t action,
+                                   int16_t correction_mm_s);
 static void     line_log_mode (line_control_mode_t old_mode,
                                line_control_mode_t new_mode,
                                line_control_action_t action);
@@ -571,6 +582,8 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
     line_control_action_t action;
     line_control_mode_t old_mode;
     line_control_mode_t new_mode;
+    int16_t correction_mm_s;
+    bool b_correction_action;
 
     if (b_system_running && (!g_line_runtime.b_running))
     {
@@ -584,9 +597,12 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
     {
         bool const b_this_valid = b_system_running
             && (report.position <= S2_LINE_STOP)
+            && (report.strength <= S2_LINE_STRENGTH_MAX)
+            && (((S2_LINE_LEFT == report.position)
+                 || (S2_LINE_RIGHT == report.position))
+                || (0u == report.strength))
             && (0u == report.reserved[0])
             && (0u == report.reserved[1])
-            && (0u == report.reserved[2])
             && ((p_input->now_ms - report.captured_ms)
                 <= S2_LINE_MAX_AGE_MS);
 
@@ -598,6 +614,7 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
             {
                 g_line_runtime.last_report_ms = report.captured_ms;
                 g_line_runtime.position = report.position;
+                g_line_runtime.strength = report.strength;
                 g_line_runtime.b_have_report = true;
             }
         }
@@ -644,11 +661,17 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
                                p_input->now_ms);
     new_mode = line_control_mode(&g_line_runtime.control);
     line_log_mode(old_mode, new_mode, action);
+    correction_mm_s = line_correction_speed(g_line_runtime.strength);
+    b_correction_action = (LINE_CONTROL_ACTION_CORRECT_LEFT == action)
+                       || (LINE_CONTROL_ACTION_CORRECT_RIGHT == action);
 
     if ((!g_line_runtime.b_action_sent)
-        || (action != g_line_runtime.last_action))
+        || (action != g_line_runtime.last_action)
+        || (b_correction_action
+            && (correction_mm_s
+                != g_line_runtime.last_correction_mm_s)))
     {
-        if (!line_apply_action(action))
+        if (!line_apply_action(action, correction_mm_s))
         {
             tm_printf((UB *)"[S2] line: motion command failed; STOP\n");
             (void)s2_line_stop();
@@ -656,6 +679,7 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
         else
         {
             g_line_runtime.last_action = action;
+            g_line_runtime.last_correction_mm_s = correction_mm_s;
             g_line_runtime.b_action_sent = true;
         }
     }
@@ -667,23 +691,42 @@ line_reset (uint32_t now)
     line_control_cfg_t const cfg =
     {
         CTRL_LINE_CURVE_ENTRY_MS,
-        CTRL_LINE_LOST_LIMIT_MS,
-        CTRL_LINE_DIRECTION_MEMORY_MS,
-        CTRL_LINE_DIRECTION_CHANGE_MS
+        CTRL_LINE_LEFT_HOLD_MS,
+        CTRL_LINE_RIGHT_HOLD_MS,
+        CTRL_LINE_JUNCTION_MS,
+        CTRL_LINE_CROSSING_MS,
+        CTRL_LINE_EXIT_MIN_MS,
+        CTRL_LINE_EXIT_CENTER_MS,
+        CTRL_LINE_EXIT_SIDE_MS,
+        CTRL_LINE_EXIT_LIMIT_MS
     };
 
     (void)line_control_init(&g_line_runtime.control, &cfg, now);
     g_line_runtime.last_report_ms = now;
     g_line_runtime.running_since_ms = now;
     g_line_runtime.position = S2_LINE_STOP;
+    g_line_runtime.strength = 0u;
+    g_line_runtime.last_correction_mm_s = CTRL_LINE_CORRECT_MAX_MM_S;
     g_line_runtime.last_action = LINE_CONTROL_ACTION_STOP;
     g_line_runtime.b_have_report = false;
     g_line_runtime.b_running = false;
     g_line_runtime.b_action_sent = false;
 }
 
+static int16_t
+line_correction_speed (uint8_t strength)
+{
+    uint16_t const speed_range = (uint16_t)(CTRL_LINE_CORRECT_MAX_MM_S
+                               - CTRL_LINE_CORRECT_MIN_MM_S);
+    uint16_t const reduction = (uint16_t)((((uint16_t)strength * speed_range)
+                               + (S2_LINE_STRENGTH_MAX / 2u))
+                               / S2_LINE_STRENGTH_MAX);
+
+    return ((int16_t)(CTRL_LINE_CORRECT_MAX_MM_S - (int16_t)reduction));
+}
+
 static bool
-line_apply_action (line_control_action_t action)
+line_apply_action (line_control_action_t action, int16_t correction_mm_s)
 {
     ER er = E_PAR;
 
@@ -695,22 +738,22 @@ line_apply_action (line_control_action_t action)
         break;
 
         case LINE_CONTROL_ACTION_CORRECT_LEFT:
-            er = motion_set_speeds(CTRL_LINE_CORRECT_MM_S,
+            er = motion_set_speeds(correction_mm_s,
                                    CTRL_LINE_BASE_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_CORRECT_RIGHT:
             er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
-                                   CTRL_LINE_CORRECT_MM_S);
+                                   correction_mm_s);
         break;
 
         case LINE_CONTROL_ACTION_CURVE_LEFT:
             er = motion_set_speeds(CTRL_LINE_LEFT_CURVE_MM_S,
-                                   CTRL_LINE_BASE_MM_S);
+                                   CTRL_LINE_CURVE_OUTER_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_CURVE_RIGHT:
-            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+            er = motion_set_speeds(CTRL_LINE_CURVE_OUTER_MM_S,
                                    CTRL_LINE_RIGHT_CURVE_MM_S);
         break;
 
@@ -732,15 +775,19 @@ line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
 {
     if (old_mode != new_mode)
     {
-        if (LINE_CONTROL_MODE_LOST_RECOVERY == new_mode)
+        if (LINE_CONTROL_MODE_JUNCTION_CONFIRM == new_mode)
         {
-            static UB const left[] = "LEFT";
-            static UB const right[] = "RIGHT";
-            UB const * p_direction =
-                (LINE_CONTROL_ACTION_CURVE_LEFT == action) ? left : right;
-
-            tm_printf((UB *)"[S2] line: WHITE/WHITE; searching %s\n",
-                      p_direction);
+            tm_printf((UB *)"[S2] line: BOTH BLACK; confirming junction\n");
+        }
+        else if (LINE_CONTROL_MODE_CROSSING == new_mode)
+        {
+            tm_printf((UB *)"[S2] line: junction confirmed; "
+                              "crossing straight\n");
+        }
+        else if (LINE_CONTROL_MODE_EXIT == new_mode)
+        {
+            tm_printf((UB *)"[S2] line: junction cleared; "
+                              "holding straight exit\n");
         }
         else if (LINE_CONTROL_MODE_FOLLOW == new_mode)
         {
@@ -763,15 +810,27 @@ line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
         UB const * p_direction =
             (LINE_CONTROL_ACTION_CURVE_LEFT == action) ? left : right;
 
-        tm_printf((UB *)"[S2] line: sustained %s; strong curve\n",
-                  p_direction);
+        if (LINE_CONTROL_ACTION_CURVE_LEFT == action)
+        {
+            tm_printf((UB *)"[S2] line: sustained %s; "
+                              "strong curve target=%d/%d mm/s\n",
+                      p_direction, (INT)CTRL_LINE_LEFT_CURVE_MM_S,
+                      (INT)CTRL_LINE_CURVE_OUTER_MM_S);
+        }
+        else
+        {
+            tm_printf((UB *)"[S2] line: sustained %s; "
+                              "strong curve target=%d/%d mm/s\n",
+                      p_direction, (INT)CTRL_LINE_CURVE_OUTER_MM_S,
+                      (INT)CTRL_LINE_RIGHT_CURVE_MM_S);
+        }
     }
 
     if ((LINE_CONTROL_ACTION_STOP == action)
         && ((!g_line_runtime.b_action_sent)
             || (LINE_CONTROL_ACTION_STOP != g_line_runtime.last_action)))
     {
-        tm_printf((UB *)"[S2] line: lost/recovery failed; STOP\n");
+        tm_printf((UB *)"[S2] line: junction/recovery bound exceeded; STOP\n");
     }
 }
 #endif

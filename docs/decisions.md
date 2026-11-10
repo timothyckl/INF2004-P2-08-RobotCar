@@ -262,6 +262,136 @@ LEFT to RIGHT or RIGHT to LEFT; it requests straight during confirmation. The
 sustained-curve transition increases from 150 ms to 250 ms. Existing strong
 curve targets remain unchanged pending separate physical curve testing.
 
+### 6. Restore separated front sensors (2026-11-05)
+
+Edmund moved the two front sensors back to either side of the black line and
+requested the behavior used before the side-by-side BLACK/BLACK trial. The
+centred pattern is therefore WHITE/WHITE again. BLACK/WHITE requests LEFT,
+WHITE/BLACK requests RIGHT, and BLACK/BLACK is a junction candidate.
+
+This supersedes sections 4 and 5 for the active supervised test. It restores
+the last pre-trial 45 mm/s profile: ordinary corrections are 0/45 or 45/0,
+sustained LEFT is -10/45, sustained RIGHT is 45/0, and the sustained marker is
+150 ms. A sustained curve is retained through WHITE/WHITE for at most 300 ms
+on LEFT or 100 ms on RIGHT.
+
+BLACK/BLACK must persist for 100 ms before junction confirmation. A confirmed
+junction crosses straight and must clear within 750 ms. Clearance starts a
+straight exit of at least 600 ms; afterward, a side-black observation steers
+away from that branch and WHITE/WHITE must remain stable for 100 ms before
+normal following resumes. The exit requests STOP at 1500 ms if it cannot
+establish the centred pattern. The 500 ms report watchdog and GP20 behavior
+remain unchanged.
+
+### 7. Dampen separated-sensor straight corrections (2026-11-05)
+
+The first separated-sensor retest repeatedly entered a strong LEFT curve,
+returned to WHITE/WHITE, then entered a strong RIGHT curve. Because the prior
+LEFT curve was retained for 300 ms through WHITE/WHITE, it could carry the car
+past centre and trigger the opposite sensor.
+
+For the next supervised straight-line trial, ordinary corrections use 35/45
+or 45/35 mm/s, a strong curve requires 300 ms of continuous single-black input,
+and strong curve targets are 15/45 or 45/15 mm/s. The WHITE/WHITE curve hold is
+50 ms in either direction. Straight speed remains 45/45 mm/s; junction timing,
+the 500 ms report watchdog and GP20 behavior remain unchanged. These values
+supersede only the steering values in section 6 and require separate curve
+testing after straight stability is confirmed.
+
+The straight-line trial reduced oscillation, but 15/45 sustained steering
+activated after 300 ms could not follow an ordinary course curve. The gentle
+35/45 ordinary correction and 50 ms WHITE/WHITE hold remain unchanged. A
+continuous single-black observation now enters the sustained stage after
+200 ms, where the inside wheel target becomes 0 mm/s and the outside remains
+45 mm/s. This restores curve authority without restoring the earlier long
+post-curve hold.
+
+Intermittent curve acquisition then showed that S3's 20 ms sampling period and
+three-sample filter could delay a new stable steering observation by about
+60 ms. The supervised line-test path now samples every 10 ms while retaining
+three consecutive matching samples, reducing the nominal filter response to
+about 30 ms. Fresh unchanged reports are submitted every 30 ms instead of
+50 ms. The calibration monitor retains its existing timing, and the controller
+still rejects stale or invalid reports.
+
+Logs from the next track runs identified two independent stop paths. Repeated
+`junction/recovery bound exceeded` messages occurred when the post-junction
+state waited for stable WHITE/WHITE while the loop already produced a valid
+persistent side reading. After the 600 ms straight minimum, a single-black side
+may now resume normal following when it remains stable for 150 ms. The crossing
+bound increases from 750 ms to 1500 ms and the exit bound from 1500 ms to
+2500 ms. These remain bounded supervised recoveries. The sustained LEFT hold
+increases from 50 ms to 150 ms; RIGHT remains 50 ms.
+
+The same logs also contain `RIGHT stall/no feedback` for encoder GP0/GP1. That
+is a distinct Motion Control safety fault, so the stall detector remains
+enabled. The wiring, wheel freedom and right encoder feedback must be checked
+if that diagnostic recurs.
+
+The following normal-right-curve log repeatedly reached `sustained RIGHT`, but
+the vehicle continued forward. Sensor classification and curve escalation were
+therefore working; the remaining problem was actuator duration/authority. The
+sustained RIGHT target changes from 45/0 to 45/-10 mm/s and its WHITE/WHITE
+hold increases from 50 ms to 150 ms. LEFT, ordinary correction, straight,
+junction and report timing remain unchanged. Strong-curve logs now include the
+actual left/right target pair for physical verification.
+
+The next fault log showed `stalled L/R=0/1`, right PWM at the line-test ceiling
+of 1250, and right speed at 0 mm/s during a strong LEFT target of 0/45. Sensor
+classification had continued normally up to the fault. Braking the inside
+wheel can increase the load on the outside wheel during a pivot, so sustained
+curves now use rolling arcs: 10/40 mm/s for LEFT and 40/10 mm/s for RIGHT. The
+stall detector remains enabled because a loose GP0/GP1 encoder connection or a
+physically jammed wheel must still stop the vehicle.
+
+S3 previously printed only when the classified state changed, which could make
+an unchanged reading after a fault look like sensor reporting had stopped. The
+supervised line test now also prints a sensor-state heartbeat every 500 ms;
+the 30 ms controller-report rate is unchanged.
+
+In the next two-run log, the first run ended through an explicit GP20 STOP after
+10/40 LEFT arcs failed to remain on the loop; it was not an automatic fault.
+The second run latched a genuine dual-wheel stall with PWM already at 1250/1250
+and measured speed at 0/7 mm/s. Sensor heartbeats continued afterward.
+
+For the next supervised trial, straight speed reduces from 45/45 to 40/40
+mm/s, ordinary corrections become 32/40 or 40/32, and sustained curves become
+rolling 5/35 or 35/5 arcs. The larger curve speed ratio gives a tighter radius
+at a lower load. The LEFT WHITE/WHITE hold increases from 150 ms to 250 ms;
+RIGHT remains 150 ms. Stall protection and its 20% PWM ceiling remain enabled.
+
+### 3. Analog front sensors and adaptive thresholds (2026-11-05)
+
+Edmund installed front-left AO on GP26/ADC0, front-right AO on GP27/ADC1 and
+the side barcode DOUT on GP16. Both front DOUT wires and the barcode AO wire
+are disconnected. This mapping is restricted to the dedicated S3 hardware and
+line-follow profiles because the integrated mapping assigns GP26/GP27 to motor
+encoder 1.
+
+Measured white ranges were 118..154 counts on the left and 152..194 on the
+right. Solid black measured 1459..1724 and 3322..3397 respectively. On isolated
+faded patches, left measured 206..310 and right measured 2137..2942. The line
+profile therefore filters each channel independently and adapts only its white
+baseline. Baseline updates stop while black is classified, preventing the
+track from being learned as white. Hysteresis provides separate black-entry
+and white-release margins. The constants are bench-derived implementation
+values, not validated course acceptance thresholds.
+
+### 4. Analog-strength steering for smoother straights (2026-11-05)
+
+Edmund requested smoother tracing after observing excessive zig-zag motion.
+The line report remains eight bytes but now carries a 0..100 steering-strength
+field for LEFT and RIGHT observations. S3 derives that value from filtered
+contrast above its adaptive white baseline, normalised independently against
+1500 left and 3300 right ADC counts. Straight and crossing reports carry zero.
+
+The Vehicle Controller retains movement authority and maps ordinary correction
+strength to an inside-wheel target from 38 down to 32 mm/s while holding the
+outside wheel at the existing 40 mm/s. Thus a faint line edge causes only a
+small speed difference. A single-side reading that persists for 200 ms still
+uses the existing 5/35 or 35/5 sustained-curve target so curve authority is not
+reduced. These mappings are provisional until verified on the physical track.
+
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
 ### 1. Standalone ownership and wiring
