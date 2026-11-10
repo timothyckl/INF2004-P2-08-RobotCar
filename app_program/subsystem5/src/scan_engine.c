@@ -21,6 +21,9 @@ static uint32_t const g_scan_stuck_us          = 130000u;
 static uint32_t const g_scan_limit_us          = 15000000u;
 static uint32_t const g_scan_request_limit_us  = 2000000u;
 static uint8_t const  g_scan_invalid_limit     = 3u;
+/* A rise with no fall by the deadline is beyond the 4 m rated range
+   (23.5 ms): reported at the 4000 mm range bound (S2 decision 10). */
+static uint16_t const g_scan_beyond_mm         = 4000u;
 
 /** Accept a new request only while the scanner is idle. */
 static void scan_engine_accept_request (scan_engine_t * p_engine,
@@ -333,8 +336,11 @@ scan_engine_tick (scan_engine_t * p_engine)
         {
             if (since_us >= g_scan_deadline_us)
             {
-                /* No completion within 30 ms: not a measurement. */
-                scan_engine_complete(p_engine, false, 0u);
+                /* No completion within 30 ms: beyond range after a rise,
+                   otherwise not a measurement. */
+                scan_engine_complete(p_engine, p_engine->b_rise_seen,
+                                     p_engine->b_rise_seen
+                                         ? g_scan_beyond_mm : 0u);
             }
 
         }
@@ -421,12 +427,14 @@ scan_engine_echo (scan_engine_t * p_engine,
 
         if ((p_engine->b_capture_open) && (p_engine->b_rise_seen))
         {
-            uint16_t distance_mm = 0u;
+            uint16_t distance_mm = g_scan_beyond_mm;
             bool const b_in_time = (age_us <= g_scan_deadline_us);
-            bool const b_valid   = b_in_time
-                && range_measurement_from_echo(
-                       p_event->time_us - p_engine->rise_us, &distance_mm);
+            uint32_t const echo_us = p_event->time_us - p_engine->rise_us;
+            bool const b_valid   = (!b_in_time)
+                || range_measurement_from_echo(echo_us, &distance_mm)
+                || range_measurement_is_beyond(echo_us);
 
+            /* A fall after the deadline is beyond range (see above). */
             scan_engine_complete(p_engine, b_valid, distance_mm);
         }
 

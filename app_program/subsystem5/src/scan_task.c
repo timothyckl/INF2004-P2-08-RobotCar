@@ -50,6 +50,12 @@ static uint16_t const g_task_beyond_mm    = 4000u;
 static uint32_t const g_task_settling_us  = 300000u;
 static uint16_t const g_task_hazard_mm    = 250u;
 
+/* After the stop, a forward median at or beyond twice the hazard
+   distance means the way ahead is clear to resume following; the
+   forward monitor still stops the car later (S2 decision 12). */
+static uint16_t const g_task_clear_mm     = 500u;
+#define SCAN_TASK_FORWARD_INDEX  (12)     /* 0 degrees, 5 degree steps */
+
 /* Bypass geometry: half width and margin UNMEASURED; 50 mm clearance and
    the 500 mm search bound agreed (decisions 5 and 9); assumed depth. */
 static bypass_plan_config_t const g_task_plan_config =
@@ -107,6 +113,10 @@ static void scan_task_forward_fault (void);
 /** Print one forward attempt when S5_RANGE_DIAGNOSTIC is set. */
 static void scan_task_range_diag (char const * p_kind, uint32_t echo_us,
                                   bool b_valid, uint16_t distance_mm);
+
+/** Print one scan event when S5_RANGE_DIAGNOSTIC is set. */
+static void scan_task_scan_diag (char const * p_kind, int32_t angle_deg,
+                                 uint16_t distance_mm);
 
 /** True when the mission mode moves the vehicle (S5 hazards apply). */
 static bool scan_task_moving (void);
@@ -395,6 +405,9 @@ scan_task_publish (scan_engine_output_t const * p_output)
             int32_t const angle = (int32_t)p_output->angle_deg + 60;
             int32_t const index = angle / 5;
 
+            scan_task_scan_diag("angle", (int32_t)p_output->angle_deg,
+                                p_output->distance_mm);
+
             if ((angle >= 0) && ((angle % 5) == 0)
                 && (index < (int32_t)BYPASS_PLAN_FINE_ANGLES))
             {
@@ -409,7 +422,11 @@ scan_task_publish (scan_engine_output_t const * p_output)
                                          &g_work.plan);
             g_work.result_us = scan_task_now_us();
 
-            if (BYPASS_PLAN_OK == g_work.plan.result)
+            if (g_task_clear_mm <= g_profile[SCAN_TASK_FORWARD_INDEX])
+            {
+                g_work.result = SCAN_TASK_RESULT_CLEAR;
+            }
+            else if (BYPASS_PLAN_OK == g_work.plan.result)
             {
                 g_work.result = SCAN_TASK_RESULT_PLAN;
             }
@@ -422,9 +439,12 @@ scan_task_publish (scan_engine_output_t const * p_output)
                 g_work.result = SCAN_TASK_RESULT_NO_ROUTE;
             }
 
+            scan_task_scan_diag("result", (int32_t)g_work.result,
+                                g_work.plan.obstacle_mm);
         break;
 
         case SCAN_ENGINE_FAULT:
+            scan_task_scan_diag("fault", (int32_t)p_output->angle_deg, 0u);
             g_work.result = SCAN_TASK_RESULT_FAULT;
             (void) tk_set_flg(controller_flags, CTRL_FLG_SCAN_FAULT);
         break;
@@ -522,10 +542,14 @@ scan_task_forward_edge (bool b_high, uint32_t time_us)
     }
     else if (gb_capture_armed && (!b_high) && gb_capture_rise)
     {
-        uint16_t       distance_mm = 0u;
+        uint16_t       distance_mm = g_task_beyond_mm;
         uint32_t const echo_us     = time_us - g_capture_rise_us;
-        bool const     b_valid     = (age_us <= g_task_deadline_us)
-            && range_measurement_from_echo(echo_us, &distance_mm);
+        bool const     b_in_time   = (age_us <= g_task_deadline_us);
+
+        /* A fall after the deadline is beyond range (S2 decision 10). */
+        bool const     b_valid     = (!b_in_time)
+            || range_measurement_from_echo(echo_us, &distance_mm)
+            || range_measurement_is_beyond(echo_us);
 
         scan_task_range_diag("echo", echo_us, b_valid, distance_mm);
         scan_task_forward_result(b_valid, distance_mm, time_us);
@@ -636,6 +660,20 @@ scan_task_range_diag (char const * p_kind, uint32_t echo_us, bool b_valid,
 #endif
 }
 
+static void
+scan_task_scan_diag (char const * p_kind, int32_t angle_deg,
+                     uint16_t distance_mm)
+{
+#if S5_RANGE_DIAGNOSTIC
+    tm_printf((UB *)"[S5] scan %s %d %u mm\n", p_kind, (INT)angle_deg,
+              (UW)distance_mm);
+#else
+    (void) p_kind;
+    (void) angle_deg;
+    (void) distance_mm;
+#endif
+}
+
 static bool
 scan_task_moving (void)
 {
@@ -669,6 +707,7 @@ scan_task_check_authority (void)
         scan_engine_event_t const moved =
             {SCAN_ENGINE_MOVEMENT, g_engine.request_id, true, 0u};
 
+        scan_task_scan_diag("moved", 0, 0u);
         scan_engine_process(&g_engine, &moved);
         scan_task_forward_fault();
     }

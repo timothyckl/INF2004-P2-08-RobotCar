@@ -1,7 +1,8 @@
 /**
  * @file s2_host_main.c
  * @brief Runs subsystem 2's pure-logic unit cases (test_motion.c,
- *        test_controller.c, test_line_control.c) on the host. The same functions run on the
+ *        test_controller.c, test_line_control.c, test_scan_control.c) on the
+ *        host. The same functions run on the
  *        Pico W in the TEST=1 image; this runner adds no cases of its own.
  */
 #include <stdbool.h>
@@ -9,6 +10,7 @@
 
 #include "../../app_program/subsystem2/test_controller.h"
 #include "../../app_program/subsystem2/test_line_control.h"
+#include "../../app_program/subsystem2/test_scan_control.h"
 #include "../../app_program/subsystem2/test_motion.h"
 #include "../../app_program/subsystem2/motion_cmd.h"
 
@@ -57,6 +59,10 @@ static host_case_t const g_cases[] =
     {"S2-U53", test_ctrl_robot_state},
     {"S2-U58", test_line_control_junction},
     {"S2-U59", test_line_control_curve},
+    {"S2-U60", test_scan_control_begin},
+    {"S2-U61", test_scan_control_grant},
+    {"S2-U62", test_scan_control_outcomes},
+    {"S2-U63", test_scan_control_end},
 };
 
 int

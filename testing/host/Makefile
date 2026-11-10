@@ -23,12 +23,14 @@ STUBS   := -Istubs stubs/kernel_stub.c
 S2_SRC  := $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/controller_logic.c \
            $(APP)/subsystem2/line_control.c \
+           $(APP)/subsystem2/scan_control.c \
            $(APP)/subsystem2/pid.c \
            $(APP)/subsystem2/odometry.c \
            $(APP)/subsystem2/motion_api.c \
            $(APP)/subsystem2/test_motion.c \
            $(APP)/subsystem2/test_controller.c \
            $(APP)/subsystem2/test_line_control.c \
+           $(APP)/subsystem2/test_scan_control.c \
            s2_host_main.c
 
 S3_SRC  := $(APP)/subsystem3/s3_ir.c \

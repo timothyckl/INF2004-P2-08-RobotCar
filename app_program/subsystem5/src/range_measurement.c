@@ -36,4 +36,10 @@ range_measurement_from_echo (uint32_t echo_us,
     return (b_is_valid);
 }
 
+bool
+range_measurement_is_beyond (uint32_t echo_us)
+{
+    return (g_range_echo_max_us < echo_us);
+}
+
 /* End of file. */

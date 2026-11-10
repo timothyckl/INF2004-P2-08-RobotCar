@@ -122,16 +122,43 @@ Stage 2 adds the scan request, authorise and stop-confirm handshake
 ### 10. A late forward echo means nothing in range (2026-11-10)
 
 Deviation from subsystem 5 decision 3 ("an invalid forward reading requests
-a stop"), decided by Dalton on the integration branch; to be confirmed with
-Timothy. On the track, the HC-SR04 facing open space or an angled surface
+a stop"), approved by Dalton on the integration branch. On the track, the HC-SR04 facing open space or an angled surface
 returned echoes that rose but were still high at the 30 ms deadline: one
 such reading stopped the car, and a sustained run (134 in a row) latched a
 scan fault. The datasheet gives a 4 m maximum range (23.5 ms); it does not
-specify the output when no echo returns. A late echo is therefore reported
-as a valid forward reading at the 4000 mm range bound (clear). An attempt
-with no rising edge and ECHO stuck high past 130 ms remain invalid and still
-fault. Real readings below 250 mm still stop the car (four such stops in
+specify the output when no echo returns. A late echo (a rise with no fall
+by 30 ms, or a fall after it) and an in-time echo longer than the 4000 mm
+duration are therefore reported as a valid reading at the 4000 mm range
+bound (clear), both by the forward monitor and by the scan engine
+(`range_measurement_is_beyond()`, S5-U20 revised). An attempt with no
+rising edge and ECHO stuck high past 130 ms remain invalid and still
+fault. The first stage 2 trial needed the scan-engine half: all four scans
+faulted while the forward monitor already had the rule. Real readings below 250 mm still stop the car (four such stops in
 the same lap, including one at 248 mm beside the track on a curve).
+
+### 11. Subsystem 5 integration, stage 2: scan handshake (2026-11-10)
+
+In the `_s3line` image, a hazard while Running in FOLLOW no longer latches
+STOP. The pure `scan_control` module (S2-U60..U63) stops the wheels with a
+motion STOP, sends REQUEST and sets mode SCAN; once both wheels are still
+(`motion_stop_confirmed()`), it sends STOP_CONFIRM and AUTHORISE (IF-11).
+It then waits up to 20 s (`CTRL_SCAN_LIMIT_MS`, as on full-system) for
+subsystem 5's result for that request (IF-13); a timeout sends CANCEL. A
+STOP or fault from elsewhere sends S5 a STOP. Outcomes: CLEAR resumes line
+following; PLAN is printed and, until stage 3 drives it, stops the run;
+no route, fault or timeout stop the run. Line following is paused (its
+queue still drained) while the mode is not FOLLOW.
+
+### 12. Clear to resume after a scan (2026-11-10)
+
+Approved by Dalton on the integration branch. Subsystem 5 reported CLEAR
+only when nothing was within 4 m straight ahead, which indoors almost never
+happens: with the obstacle removed, scans read 1134 mm and 682 mm ahead and
+returned a plan or no route, so following never resumed. A scan now
+reports CLEAR when the 0 degree median is at least 500 mm (twice the
+provisional 250 mm hazard distance); the forward monitor still stops the
+car if it later comes within 250 mm. Closer readings are planned around as
+before. 500 mm is provisional, like the hazard distance.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 

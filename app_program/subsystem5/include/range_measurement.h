@@ -21,6 +21,16 @@
 bool range_measurement_from_echo (uint32_t echo_us,
                                   uint16_t * p_distance_mm);
 
+/**
+ * @brief Test whether an echo is longer than the 4000 mm range bound.
+ *
+ * Such an echo means nothing is within range (S2 decision 10).
+ *
+ * @param echo_us Echo high duration in microseconds.
+ * @return true when the duration exceeds the supported physical range.
+ */
+bool range_measurement_is_beyond (uint32_t echo_us);
+
 #endif /* RANGE_MEASUREMENT_H */
 
 /* End of file. */

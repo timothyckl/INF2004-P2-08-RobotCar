@@ -20,9 +20,11 @@
 
 #include "controller_logic.h"
 #include "line_control.h"
+#include "scan_control.h"
 #include "motion_cmd.h"
 #include "robot_state.h"
 #include "task_motion.h"
+#include "../subsystem5/include/scan_task.h"
 
 #define CTRL_TASK_CORE      TP_PRC2
 #define CTRL_WATCHDOG_MS    10
@@ -71,6 +73,15 @@
 #define CTRL_LINE_EXIT_CENTER_MS  100u
 #define CTRL_LINE_EXIT_SIDE_MS    150u
 #define CTRL_LINE_EXIT_LIMIT_MS  2500u
+/* Scan & Plan: S5's 15 s scan limit plus the stop and confirmation
+   before it (2 s) and a margin, as on full-system. */
+#define CTRL_SCAN_LIMIT_MS      20000u
+
+/* scan_control mirrors subsystem 5's result codes (IF-13). */
+typedef char ctrl_scan_codes_match_t[
+    ((SCAN_CONTROL_RESULT_NONE == SCAN_TASK_RESULT_NONE)
+     && (SCAN_CONTROL_RESULT_PLAN == SCAN_TASK_RESULT_PLAN)
+     && (SCAN_CONTROL_RESULT_CLEAR == SCAN_TASK_RESULT_CLEAR)) ? 1 : -1];
 #endif
 
 #if S2_CAL_TEST == 1
@@ -138,6 +149,8 @@ typedef struct
 } ctrl_line_runtime_t;
 
 static ctrl_line_runtime_t g_line_runtime;
+static scan_control_t      g_scan;
+static scan_task_status_t  g_scan_status;  /* off the stack */
 #endif
 
 static void     controller_task (INT stacd, void * exinf);
@@ -166,6 +179,12 @@ static void     line_reset (uint32_t now);
 static int16_t  line_correction_speed (uint8_t strength);
 static bool     line_apply_action (line_control_action_t action,
                                    int16_t correction_mm_s);
+static uint32_t scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state);
+static void     scan_update (s2_robot_state_t * p_state,
+                             ctrl_input_t const * p_input);
+static void     scan_send (scan_control_output_t const * p_out,
+                           uint32_t now);
+static void     scan_report (scan_control_outcome_t outcome);
 static void     line_log_mode (line_control_mode_t old_mode,
                                line_control_mode_t new_mode,
                                line_control_action_t action);
@@ -282,6 +301,9 @@ controller_task (INT stacd, void * exinf)
 #endif
 
     ctrl_init(&g_ctrl, &cfg, now_ms());
+#if S3_LINE_FOLLOW_TEST
+    (void)scan_control_init(&g_scan, CTRL_SCAN_LIMIT_MS);
+#endif
 
 #if CTRL_BUTTON
     tm_printf((UB *)"[S2] GP20 button ready: press to START or STOP\n");
@@ -296,6 +318,10 @@ controller_task (INT stacd, void * exinf)
         }
 
         read_input(&in);
+#if S3_LINE_FOLLOW_TEST
+        ctrl_get_state(&g_ctrl, &in, &st);
+        ptn = scan_hazard(ptn, &st);    /* a hazard while following scans */
+#endif
 
         if ((0u != (ptn & (CTRL_FLG_HAZARD | CTRL_FLG_SCAN_FAULT)))
             && (S2_SYS_RUNNING == g_ctrl.state))
@@ -326,11 +352,10 @@ controller_task (INT stacd, void * exinf)
         apply(&out, &in);
 
         ctrl_get_state(&g_ctrl, &in, &st);
-        /* Running is line following only in the line-follow image; S5
-           raises a hazard only in a moving mode. */
-        st.mode = ((0 != S3_LINE_FOLLOW_TEST)
-                   && (S2_SYS_RUNNING == st.state)) ? S2_MODE_FOLLOW
-                                                    : S2_MODE_NONE;
+#if S3_LINE_FOLLOW_TEST
+        /* Running is line following (or a scan) only in this image. */
+        scan_update(&st, &in);
+#endif
 #if CTRL_BUTTON
         button_step(&st, &in);
 #endif
@@ -712,11 +737,144 @@ cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 #endif
 
 #if S3_LINE_FOLLOW_TEST
+/* A hazard while following starts Scan & Plan instead of the latched
+   STOP; the flag is consumed here. Returns the flags still to handle. */
+static uint32_t
+scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
+{
+    scan_control_output_t out;
+
+    if ((0u == (ptn & CTRL_FLG_HAZARD)) || (S2_SYS_RUNNING != p_state->state)
+        || (0u != (p_state->flags & S2_RS_STOP_LATCHED)))
+    {
+        return (ptn);
+    }
+
+    if (!scan_control_active(&g_scan))
+    {
+        scan_control_begin(&g_scan, p_state->captured_ms, &out);
+        tm_printf((UB *)"[S2] S5 HAZARD: stopping to scan, request %u\n",
+                  (UINT)g_scan.request_id);
+        scan_send(&out, p_state->captured_ms);
+    }
+
+    (void)tk_clr_flg(controller_flags, ~(UINT)CTRL_FLG_HAZARD);
+
+    return (ptn & ~(uint32_t)CTRL_FLG_HAZARD);
+}
+
+/* Publish the mode, end the scan on a stop elsewhere, otherwise advance
+   the handshake and act on subsystem 5's result. */
+static void
+scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
+{
+    scan_control_output_t out;
+    bool const b_running = (S2_SYS_RUNNING == p_state->state)
+                           && (0u == (p_state->flags & S2_RS_STOP_LATCHED));
+
+    if (!b_running)
+    {
+        scan_control_abort(&g_scan, &out);
+        scan_send(&out, p_input->now_ms);
+        p_state->mode = S2_MODE_NONE;
+        return;
+    }
+
+    if (scan_control_active(&g_scan))
+    {
+        bool const b_ok = (E_OK == scan_task_get(&g_scan_status));
+
+        scan_control_step(&g_scan, motion_stop_confirmed(), b_ok,
+                          g_scan_status.request_id, g_scan_status.result,
+                          p_input->now_ms, &out);
+        scan_send(&out, p_input->now_ms);
+        scan_report(out.outcome);
+    }
+
+    p_state->mode = scan_control_active(&g_scan) ? S2_MODE_SCAN
+                                                 : S2_MODE_FOLLOW;
+}
+
+static void
+scan_send (scan_control_output_t const * p_out, uint32_t now)
+{
+    if (p_out->b_stop_motion)
+    {
+        (void)motion_stop();
+    }
+
+    for (uint8_t i = 0u; i < p_out->n_msg; i++)
+    {
+        s2_scan_cmd_t const msg =
+        {
+            g_scan.request_id, now, p_out->msg[i].kind,
+            p_out->msg[i].b_asserted ? 1u : 0u, {0u, 0u}
+        };
+
+        /* Best effort: S5 also checks robot_state for authority. */
+        (void)tk_snd_mbf(scan_q, &msg, (INT)sizeof(msg), TMO_POL);
+    }
+}
+
+/* Stage 2 (S2 decision 11): print the result. CLEAR resumes following;
+   a plan is not driven yet, so PLAN and failures stop the run. */
+static void
+scan_report (scan_control_outcome_t outcome)
+{
+    bypass_plan_t const * p_plan = &g_scan_status.plan;
+
+    if (SCAN_CONTROL_PLAN == outcome)
+    {
+        tm_printf((UB *)"[S2] scan %u: PLAN side=%s obstacle=%u mm"
+                  " lateral=%u mm, %u segments:\n",
+                  (UINT)g_scan.request_id,
+                  (BYPASS_PLAN_LEFT == p_plan->side) ? "LEFT" : "RIGHT",
+                  (UINT)p_plan->obstacle_mm, (UINT)p_plan->lateral_mm,
+                  (UINT)p_plan->count);
+
+        for (uint8_t i = 0u; (i < p_plan->count)
+                             && (i < BYPASS_PLAN_SEGMENTS); i++)
+        {
+            tm_printf((UB *)"[S2]   %u: %s %d %s\n", (UINT)i,
+                      (BYPASS_PLAN_TURN == p_plan->segments[i].kind)
+                          ? "TURN" : "MOVE",
+                      (INT)p_plan->segments[i].value,
+                      (BYPASS_PLAN_TURN == p_plan->segments[i].kind)
+                          ? "mdeg" : "mm");
+        }
+
+        tm_printf((UB *)"[S2]   then approach %d mdeg, search %u mm,"
+                  " align %d mdeg; bypass not driven yet: STOP\n",
+                  (INT)p_plan->approach_mdeg, (UINT)p_plan->search_mm,
+                  (INT)p_plan->align_mdeg);
+        (void)s2_local_stop();
+    }
+    else if (SCAN_CONTROL_CLEAR == outcome)
+    {
+        tm_printf((UB *)"[S2] scan %u: CLEAR, resuming line following\n",
+                  (UINT)g_scan.request_id);
+    }
+    else if ((SCAN_CONTROL_FAILED == outcome)
+             || (SCAN_CONTROL_TIMEOUT == outcome))
+    {
+        tm_printf((UB *)"[S2] scan %u: %s (S5 result %u); STOP\n",
+                  (UINT)g_scan.request_id,
+                  (SCAN_CONTROL_TIMEOUT == outcome) ? "TIMEOUT" : "FAILED",
+                  (UINT)g_scan_status.result);
+        (void)s2_local_stop();
+    }
+    else
+    {
+        /* Still scanning. */
+    }
+}
+
 static void
 line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 {
     s2_line_report_t report;
-    bool const b_system_running = (S2_SYS_RUNNING == p_state->state);
+    bool const b_system_running = (S2_SYS_RUNNING == p_state->state)
+                                  && (S2_MODE_FOLLOW == p_state->mode);
     bool b_report_valid = true;
     line_control_action_t action;
     line_control_mode_t old_mode;

@@ -73,7 +73,7 @@ test_capture_run (test_interface_api_t const * p_api)
     static test_runner_case_t const cases[] =
     {
         {"S5-U19", "trigger spacing at least 65 ms", test_capture_spacing},
-        {"S5-U20", "completion after 30 ms is no sample",
+        {"S5-U20", "completion after 30 ms or past 4 m is 4000 mm",
          test_capture_deadline},
         {"S5-U21", "malformed capture and stuck ECHO",
          test_capture_malformed},
@@ -137,9 +137,10 @@ test_capture_deadline (test_interface_api_t const * p_api)
 
     bool const b_in_time = (1u == test_fixture_count(TEST_INTERFACE_DISTANCE));
 
-    /* Late: the same width completing at 31 ms is an invalid attempt. The
-       fall is dispatched before the tick at that time, as the task drains
-       queued edges before it ticks, so the edge's own age decides. */
+    /* Late: the same width completing at 31 ms is beyond the 4 m rated
+       range, so it is a 4000 mm sample (S2 decision 10). The fall is
+       dispatched before the tick at that time, as the task drains queued
+       edges before it ticks, so the edge's own age decides. */
     test_interface_input_t const late_fall = {TEST_INTERFACE_ECHO, 0u, false};
 
     test_subject_start(p_api, 0u);
@@ -154,10 +155,24 @@ test_capture_deadline (test_interface_api_t const * p_api)
         test_fixture_advance(width + 2000u, p_api);
     }
 
-    return (b_in_time
-            && (0u == test_fixture_count(TEST_INTERFACE_DISTANCE))
-            && (1u == test_fixture_count(TEST_INTERFACE_FAULT))
-            && test_subject_no_plan());
+    bool const b_late = (1u == test_fixture_count(TEST_INTERFACE_DISTANCE))
+                        && (4000u == test_capture_first_distance())
+                        && (0u == test_fixture_count(TEST_INTERFACE_FAULT));
+
+    /* In time but longer than the 4000 mm echo (24 ms): also beyond. */
+    test_subject_start(p_api, 0u);
+    test_capture_authorise(p_api);
+
+    for (uint32_t sample = 0u; sample < 3u; sample++)
+    {
+        (void) test_capture_await(p_api, 70u);
+        test_capture_echo(p_api, g_capture_rise_us + 24000u);
+    }
+
+    return (b_in_time && b_late
+            && (1u == test_fixture_count(TEST_INTERFACE_DISTANCE))
+            && (4000u == test_capture_first_distance())
+            && (0u == test_fixture_count(TEST_INTERFACE_FAULT)));
 }
 
 static bool

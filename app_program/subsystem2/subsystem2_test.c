@@ -27,6 +27,7 @@
 #include "test_motion.h"
 #include "test_controller.h"
 #include "test_line_control.h"
+#include "test_scan_control.h"
 #include "s2_bridge.h"
 #include "../test_report.h"
 
@@ -753,6 +754,14 @@ EXPORT void subsystem2_test(void)
 		   "black-black junction and exit are bounded");
 	TEST_CHECK("S2-U59", test_line_control_curve(),
 		   "persistent correction becomes a curve without pivoting");
+	TEST_CHECK("S2-U60", test_scan_control_begin(),
+		   "hazard scan: motion STOP and one REQUEST");
+	TEST_CHECK("S2-U61", test_scan_control_grant(),
+		   "STOP_CONFIRM and AUTHORISE only once wheels are still");
+	TEST_CHECK("S2-U62", test_scan_control_outcomes(),
+		   "scan result for this request ends the scan");
+	TEST_CHECK("S2-U63", test_scan_control_end(),
+		   "scan timeout sends CANCEL, abort sends STOP");
 
 #if S2_HW_TEST
 	hw_test();
