@@ -1,0 +1,49 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
