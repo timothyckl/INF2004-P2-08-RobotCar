@@ -1,0 +1,1459 @@
+s3 line: adc=131/177 filtered=130/181 threshold=163/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/190 filtered=132/185 threshold=162/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/174 filtered=130/177 threshold=162/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/165 filtered=127/173 threshold=162/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/181 filtered=124/182 threshold=165/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/182 filtered=128/181 threshold=165/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/178 filtered=140/178 threshold=167/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/186 filtered=129/183 threshold=164/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/180 filtered=140/179 threshold=167/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/182 filtered=128/186 threshold=164/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/184 filtered=130/182 threshold=162/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/178 filtered=130/181 threshold=163/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/180 filtered=126/180 threshold=162/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/165 filtered=138/171 threshold=163/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/184 filtered=133/181 threshold=165/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/187 filtered=125/185 threshold=164/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/176 filtered=123/175 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1841/3353 filtered=1033/3145 threshold=167/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=132/3586 filtered=133/3497 threshold=167/683 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+s3 line: adc=138/3200 filtered=141/3199 threshold=168/683 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+s3 line: adc=138/3162 filtered=139/3171 threshold=168/683 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+s3 line: adc=169/3281 filtered=173/3284 threshold=170/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=149/3254 filtered=152/3270 threshold=170/683 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+s3 line: adc=1037/238 filtered=636/911 threshold=171/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2705/291 filtered=2389/306 threshold=171/683 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=2273/2480 filtered=2380/1981 threshold=171/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3852/3922 filtered=3847/3920 threshold=171/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4023/4052 filtered=4017/4048 threshold=171/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3997/4053 filtered=4008/4056 threshold=171/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2342/2640 filtered=2355/2696 threshold=171/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=171/206 filtered=255/273 threshold=171/683 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+s3 line: adc=160/195 filtered=160/199 threshold=171/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=325/186 filtered=280/187 threshold=171/684 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+s3 line: adc=133/187 filtered=138/181 threshold=171/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/187 filtered=135/180 threshold=170/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=187/182 filtered=193/179 threshold=171/682 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+s3 line: adc=130/175 filtered=134/173 threshold=171/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/189 filtered=135/179 threshold=169/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/180 filtered=126/178 threshold=166/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/179 filtered=128/178 threshold=166/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/173 filtered=129/177 threshold=165/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/177 filtered=133/179 threshold=164/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/180 filtered=130/181 threshold=165/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/169 filtered=128/174 threshold=166/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/181 filtered=128/180 threshold=164/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/173 filtered=129/176 threshold=163/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/181 filtered=132/177 threshold=164/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/166 filtered=128/171 threshold=163/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/163 filtered=131/172 threshold=164/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/190 filtered=133/186 threshold=163/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/180 filtered=131/178 threshold=160/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/169 filtered=126/174 threshold=162/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/188 filtered=126/183 threshold=163/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/185 filtered=132/179 threshold=162/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/174 filtered=127/175 threshold=163/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/184 filtered=143/180 threshold=163/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/173 filtered=137/176 threshold=163/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=110/160 filtered=119/168 threshold=162/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/173 filtered=138/179 threshold=163/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/174 filtered=137/174 threshold=165/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/181 filtered=125/180 threshold=162/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=114/173 filtered=119/174 threshold=162/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/177 filtered=142/177 threshold=165/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/171 filtered=127/175 threshold=161/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/168 filtered=133/174 threshold=160/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/184 filtered=135/180 threshold=159/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/176 filtered=142/175 threshold=162/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/161 filtered=134/164 threshold=162/674 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/185 filtered=140/181 threshold=165/673 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/153 filtered=132/162 threshold=164/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/182 filtered=127/177 threshold=163/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/186 filtered=133/181 threshold=163/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/178 filtered=133/180 threshold=165/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/188 filtered=134/182 threshold=167/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/175 filtered=130/176 threshold=166/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/176 filtered=121/174 threshold=162/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/177 filtered=137/177 threshold=165/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/194 filtered=132/183 threshold=166/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/185 filtered=135/181 threshold=167/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/185 filtered=129/179 threshold=165/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/178 filtered=131/179 threshold=164/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/161 filtered=135/167 threshold=167/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/167 filtered=142/167 threshold=164/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/182 filtered=130/175 threshold=164/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/174 filtered=137/177 threshold=163/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/170 filtered=126/173 threshold=163/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/185 filtered=127/178 threshold=164/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/184 filtered=140/184 threshold=164/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/159 filtered=135/166 threshold=163/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/180 filtered=127/174 threshold=166/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/179 filtered=139/183 threshold=166/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/179 filtered=125/179 threshold=162/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/187 filtered=132/181 threshold=165/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/190 filtered=135/180 threshold=166/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/177 filtered=134/171 threshold=163/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/184 filtered=123/182 threshold=163/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/181 filtered=132/174 threshold=164/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/181 filtered=135/180 threshold=165/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/171 filtered=134/174 threshold=166/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/185 filtered=125/180 threshold=166/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/174 filtered=138/177 threshold=163/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/176 filtered=139/180 threshold=164/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/176 filtered=130/178 threshold=162/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=110/177 filtered=123/177 threshold=162/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/174 filtered=140/179 threshold=163/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/183 filtered=124/180 threshold=164/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/188 filtered=128/183 threshold=164/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/176 filtered=128/177 threshold=164/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: START requested
+[MC] ms 57089 st 2 tgt 40/40 spd 0/0 duty 312/312 cnt 4294967262/4294967253 err 0/0
+[MC] ms 57139 st 2 tgt 40/40 spd 0/8 duty 560/480 cnt 4294967262/4294967255 err 0/0
+[MC] ms 57189 st 2 tgt 40/40 spd 17/38 duty 595/310 cnt 4294967266/4294967265 err 0/0
+s3 line: adc=146/136 filtered=139/157 threshold=163/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 57239 st 2 tgt 40/40 spd 25/21 duty 610/508 cnt 4294967273/4294967272 err 0/0
+[MC] ms 57289 st 2 tgt 40/40 spd 21/34 duty 745/453 cnt 4294967279/4294967282 err 0/0
+[MC] ms 57339 st 2 tgt 40/40 spd 29/25 duty 752/592 cnt 4294967287/4294967289 err 0/0
+[MC] ms 57389 st 2 tgt 40/40 spd 42/34 duty 658/569 cnt 4/3 err 0/0
+[MC] ms 57439 st 2 tgt 40/40 spd 42/38 duty 644/559 cnt 16/14 err 0/0
+[MC] ms 57489 st 2 tgt 40/40 spd 42/34 duty 634/613 cnt 29/24 err 0/0
+[MC] ms 57539 st 2 tgt 40/40 spd 42/34 duty 616/627 cnt 42/35 err 0/0
+[MC] ms 57589 st 2 tgt 40/40 spd 47/38 duty 557/613 cnt 55/46 err 0/0
+[MC] ms 57639 st 2 tgt 40/40 spd 42/38 duty 591/611 cnt 67/58 err 0/0
+[MC] ms 57689 st 2 tgt 40/40 spd 42/38 duty 585/609 cnt 79/70 err 0/0
+[MC] ms 57739 st 2 tgt 40/40 spd 42/42 duty 575/579 cnt 92/82 err 0/0
+s3 line: adc=132/184 filtered=138/182 threshold=166/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 57789 st 2 tgt 40/40 spd 42/38 duty 569/621 cnt 104/93 err 0/0
+[MC] ms 57839 st 2 tgt 40/40 spd 42/42 duty 567/595 cnt 116/105 err 0/0
+[MC] ms 57889 st 2 tgt 40/40 spd 42/38 duty 569/629 cnt 128/116 err 0/0
+[MC] ms 57939 st 2 tgt 40/40 spd 42/38 duty 559/643 cnt 140/127 err 0/0
+[MC] ms 57989 st 2 tgt 40/40 spd 42/38 duty 565/649 cnt 152/139 err 0/0
+[MC] ms 58039 st 2 tgt 40/40 spd 38/34 duty 599/687 cnt 163/150 err 0/0
+[MC] ms 58089 st 2 tgt 40/40 spd 38/38 duty 605/657 cnt 175/162 err 0/0
+[MC] ms 58139 st 2 tgt 40/40 spd 42/34 duty 575/699 cnt 187/173 err 0/0
+[MC] ms 58189 st 2 tgt 40/40 spd 38/42 duty 609/633 cnt 198/186 err 0/0
+[MC] ms 58239 st 2 tgt 40/40 spd 42/38 duty 579/667 cnt 210/197 err 0/0
+s3 line: adc=141/175 filtered=148/181 threshold=169/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 58289 st 2 tgt 40/40 spd 38/38 duty 609/665 cnt 222/209 err 0/0
+[MC] ms 58339 st 2 tgt 40/40 spd 42/38 duty 579/675 cnt 234/220 err 0/0
+[MC] ms 58389 st 2 tgt 40/40 spd 42/42 duty 573/641 cnt 246/233 err 0/0
+[MC] ms 58439 st 2 tgt 40/40 spd 38/38 duty 619/675 cnt 257/244 err 0/0
+[MC] ms 58489 st 2 tgt 40/40 spd 42/38 duty 577/693 cnt 270/255 err 0/0
+[MC] ms 58539 st 2 tgt 40/40 spd 38/42 duty 615/659 cnt 281/267 err 0/0
+[MC] ms 58589 st 2 tgt 40/40 spd 38/38 duty 625/693 cnt 292/279 err 0/0
+[MC] ms 58639 st 2 tgt 40/40 spd 38/38 duty 627/683 cnt 304/291 err 0/0
+[MC] ms 58689 st 2 tgt 40/40 spd 42/38 duty 585/685 cnt 317/303 err 0/0
+[MC] ms 58739 st 2 tgt 40/40 spd 42/38 duty 575/679 cnt 329/315 err 0/0
+s3 line: adc=85/185 filtered=119/181 threshold=171/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 58789 st 2 tgt 40/40 spd 42/38 duty 581/677 cnt 341/327 err 0/0
+[MC] ms 58839 st 2 tgt 40/40 spd 38/38 duty 603/679 cnt 353/339 err 0/0
+[MC] ms 58889 st 2 tgt 40/40 spd 42/38 duty 577/681 cnt 365/351 err 0/0
+[MC] ms 58939 st 2 tgt 40/40 spd 38/38 duty 607/687 cnt 376/362 err 0/0
+[MC] ms 58989 st 2 tgt 40/40 spd 42/38 duty 573/685 cnt 389/374 err 0/0
+[MC] ms 59039 st 2 tgt 40/40 spd 38/38 duty 607/703 cnt 400/385 err 0/0
+[MC] ms 59089 st 2 tgt 40/40 spd 42/42 duty 569/661 cnt 413/398 err 0/0
+[MC] ms 59139 st 2 tgt 40/40 spd 42/42 duty 559/655 cnt 425/410 err 0/0
+[MC] ms 59189 st 2 tgt 40/40 spd 42/42 duty 561/645 cnt 437/422 err 0/0
+[MC] ms 59239 st 2 tgt 40/40 spd 42/42 duty 559/647 cnt 449/434 err 0/0
+[MC] ms 59289 st 2 tgt 40/40 spd 42/42 duty 557/645 cnt 461/446 err 0/0
+s3 line: adc=160/175 filtered=159/175 threshold=174/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 59339 st 2 tgt 40/40 spd 42/38 duty 559/675 cnt 473/458 err 0/0
+[MC] ms 59389 st 2 tgt 40/40 spd 38/38 duty 589/685 cnt 484/469 err 0/0
+[MC] ms 59439 st 2 tgt 40/40 spd 42/38 duty 571/687 cnt 496/481 err 0/0
+s3 line: adc=178/180 filtered=176/181 threshold=174/676 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 59489 st 2 tgt 38/40 spd 42/38 duty 547/685 cnt 508/493 err 0/0
+[MC] ms 59539 st 2 tgt 38/40 spd 38/38 duty 575/674 cnt 519/505 err 0/0
+[MC] ms 59589 st 2 tgt 38/40 spd 38/38 duty 559/696 cnt 531/516 err 0/0
+[MC] ms 59639 st 2 tgt 38/40 spd 38/42 duty 567/650 cnt 542/529 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 59689 st 2 tgt 0/35 spd 34/42 duty 0/593 cnt 552/541 err 0/0
+[MC] ms 59739 st 2 tgt 0/35 spd 0/29 duty 0/708 cnt 552/550 err 0/0
+s3 line: adc=122/185 filtered=132/181 threshold=174/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 59789 st 2 tgt 0/35 spd 0/29 duty 0/723 cnt 552/559 err 0/0
+[MC] ms 59839 st 2 tgt 0/35 spd 0/34 duty 0/693 cnt 552/569 err 0/0
+[MC] ms 59889 st 2 tgt 0/35 spd 0/29 duty 0/731 cnt 552/579 err 0/0
+[MC] ms 59939 st 2 tgt 0/35 spd 0/34 duty 0/711 cnt 552/589 err 0/0
+[MC] ms 59989 st 2 tgt 0/35 spd 0/34 duty 0/726 cnt 552/599 err 0/0
+[MC] ms 60039 st 2 tgt 40/40 spd 0/34 duty 400/773 cnt 552/609 err 0/0
+s3 line: adc=123/2980 filtered=128/2374 threshold=172/678 left=WHITE right=BLACK mask=2 strength=70 command=RIGHT
+[MC] ms 60089 st 2 tgt 40/40 spd 17/38 duty 406/759 cnt 557/620 err 0/0
+[MC] ms 60139 st 2 tgt 40/34 spd 17/38 duty 521/697 cnt 562/631 err 0/0
+[MC] ms 60189 st 2 tgt 40/32 spd 25/34 duty 540/707 cnt 570/641 err 0/0
+[MC] ms 60239 st 2 tgt 40/32 spd 29/38 duty 563/649 cnt 579/652 err 0/0
+[MC] ms 60289 st 2 tgt 40/32 spd 34/34 duty 558/655 cnt 589/663 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 60339 st 2 tgt 35/0 spd 34/17 duty 529/0 cnt 599/669 err 0/0
+[MC] ms 60389 st 2 tgt 35/0 spd 25/0 duty 607/0 cnt 608/669 err 0/0
+[MC] ms 60439 st 2 tgt 35/0 spd 25/0 duty 657/0 cnt 616/669 err 0/0
+[MC] ms 60489 st 2 tgt 35/0 spd 34/0 duty 618/0 cnt 625/669 err 0/0
+[MC] ms 60539 st 2 tgt 35/0 spd 34/0 duty 643/0 cnt 634/669 err 0/0
+s3 line: adc=112/182 filtered=126/267 threshold=171/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 60589 st 2 tgt 35/0 spd 29/0 duty 703/0 cnt 643/669 err 0/0
+[MC] ms 60639 st 2 tgt 35/0 spd 38/0 duty 625/0 cnt 654/669 err 0/0
+[MC] ms 60689 st 2 tgt 35/0 spd 29/0 duty 722/0 cnt 663/669 err 0/0
+[MC] ms 60739 st 2 tgt 40/40 spd 34/0 duty 737/400 cnt 673/669 err 0/0
+[MC] ms 60789 st 2 tgt 40/40 spd 42/17 duty 671/423 cnt 686/673 err 0/0
+[MC] ms 60839 st 2 tgt 40/40 spd 38/17 duty 709/570 cnt 697/677 err 0/0
+[MC] ms 60889 st 2 tgt 40/40 spd 42/25 duty 659/593 cnt 710/684 err 0/0
+s3 line: adc=240/193 filtered=218/181 threshold=171/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+[MC] ms 60939 st 2 tgt 40/40 spd 42/29 duty 661/616 cnt 722/693 err 0/0
+[MC] ms 60989 st 2 tgt 38/40 spd 47/34 duty 580/611 cnt 735/703 err 0/0
+[MC] ms 61039 st 2 tgt 37/40 spd 34/29 duty 678/714 cnt 745/711 err 0/0
+[MC] ms 61089 st 2 tgt 37/40 spd 42/34 duty 609/719 cnt 757/721 err 0/0
+[MC] ms 61139 st 2 tgt 37/40 spd 38/42 duty 632/657 cnt 768/733 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 61189 st 2 tgt 0/35 spd 12/38 duty 0/626 cnt 774/744 err 0/0
+[MC] ms 61239 st 2 tgt 0/35 spd 0/34 duty 0/663 cnt 774/754 err 0/0
+[MC] ms 61289 st 2 tgt 0/35 spd 0/29 duty 0/728 cnt 774/763 err 0/0
+s3 line: adc=137/181 filtered=138/180 threshold=171/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 61339 st 2 tgt 0/35 spd 0/34 duty 0/713 cnt 774/772 err 0/0
+[MC] ms 61389 st 2 tgt 0/35 spd 0/34 duty 0/718 cnt 774/782 err 0/0
+[MC] ms 61439 st 2 tgt 0/35 spd 0/34 duty 0/723 cnt 774/792 err 0/0
+[MC] ms 61489 st 2 tgt 0/35 spd 0/25 duty 0/824 cnt 774/800 err 0/0
+[MC] ms 61539 st 2 tgt 0/35 spd 0/34 duty 0/753 cnt 774/811 err 0/0
+[MC] ms 61589 st 2 tgt 40/40 spd 0/34 duty 312/803 cnt 774/821 err 0/0
+[MC] ms 61639 st 2 tgt 40/40 spd 17/38 duty 387/785 cnt 778/832 err 0/0
+s3 line: adc=145/2924 filtered=141/2415 threshold=171/678 left=WHITE right=BLACK mask=2 strength=72 command=RIGHT
+[MC] ms 61689 st 2 tgt 40/34 spd 17/38 duty 498/733 cnt 783/844 err 0/0
+[MC] ms 61739 st 2 tgt 40/33 spd 25/38 duty 529/707 cnt 790/855 err 0/0
+[MC] ms 61789 st 2 tgt 40/32 spd 25/34 duty 616/703 cnt 797/866 err 0/0
+[MC] ms 61839 st 2 tgt 40/32 spd 38/38 duty 544/645 cnt 808/877 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 61889 st 2 tgt 35/0 spd 33/33 duty 562/0 cnt 818/888 err 0/0
+[MC] ms 61939 st 2 tgt 35/0 spd 38/0 duty 523/0 cnt 829/890 err 0/0
+[MC] ms 61989 st 2 tgt 35/0 spd 25/0 duty 642/0 cnt 837/890 err 0/0
+[MC] ms 62039 st 2 tgt 35/0 spd 29/0 duty 648/0 cnt 846/889 err 0/0
+[MC] ms 62089 st 2 tgt 35/0 spd 34/0 duty 633/0 cnt 855/889 err 0/0
+[MC] ms 62139 st 2 tgt 35/0 spd 34/0 duty 638/0 cnt 865/889 err 0/0
+s3 line: adc=130/176 filtered=126/229 threshold=172/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 62189 st 2 tgt 35/0 spd 29/0 duty 693/0 cnt 874/889 err 0/0
+[MC] ms 62239 st 2 tgt 35/0 spd 34/0 duty 668/0 cnt 884/889 err 0/0
+[MC] ms 62289 st 2 tgt 35/0 spd 29/0 duty 728/0 cnt 893/889 err 0/0
+[MC] ms 62339 st 2 tgt 40/40 spd 38/0 duty 718/480 cnt 904/889 err 0/0
+[MC] ms 62389 st 2 tgt 40/40 spd 42/4 duty 692/644 cnt 916/890 err 0/0
+[MC] ms 62439 st 2 tgt 40/40 spd 38/25 duty 730/597 cnt 927/896 err 0/0
+s3 line: adc=228/179 filtered=202/177 threshold=170/680 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+[MC] ms 62489 st 2 tgt 38/40 spd 46/34 duty 622/574 cnt 941/906 err 0/0
+[MC] ms 62539 st 2 tgt 38/40 spd 42/34 duty 626/604 cnt 954/916 err 0/0
+[MC] ms 62589 st 2 tgt 37/40 spd 42/34 duty 595/634 cnt 966/926 err 0/0
+[MC] ms 62639 st 2 tgt 35/40 spd 42/38 duty 554/628 cnt 978/937 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 62689 st 2 tgt 0/35 spd 38/38 duty 0/589 cnt 989/948 err 0/0
+[MC] ms 62739 st 2 tgt 0/35 spd 8/34 duty 0/622 cnt 993/958 err 0/0
+[MC] ms 62789 st 2 tgt 0/35 spd 0/29 duty 0/677 cnt 993/967 err 0/0
+[MC] ms 62839 st 2 tgt 0/35 spd 0/29 duty 0/715 cnt 993/975 err 0/0
+[MC] ms 62889 st 2 tgt 0/35 spd 0/34 duty 0/695 cnt 993/985 err 0/0
+s3 line: adc=140/188 filtered=139/177 threshold=170/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 62939 st 2 tgt 0/35 spd 0/34 duty 0/696 cnt 993/995 err 0/0
+[MC] ms 62989 st 2 tgt 0/35 spd 0/29 duty 0/756 cnt 993/1004 err 0/0
+[MC] ms 63039 st 2 tgt 0/35 spd 0/34 duty 0/731 cnt 993/1014 err 0/0
+[MC] ms 63089 st 2 tgt 0/35 spd 0/34 duty 0/736 cnt 993/1024 err 0/0
+[MC] ms 63139 st 2 tgt 0/35 spd 0/34 duty 0/761 cnt 993/1033 err 0/0
+[MC] ms 63189 st 2 tgt 40/40 spd 0/34 duty 312/795 cnt 993/1044 err 0/0
+[MC] ms 63239 st 2 tgt 40/40 spd 0/34 duty 560/844 cnt 993/1053 err 0/0
+s3 line: adc=133/3152 filtered=133/2603 threshold=168/676 left=WHITE right=BLACK mask=2 strength=78 command=RIGHT
+[MC] ms 63289 st 2 tgt 40/33 spd 12/42 duty 644/709 cnt 996/1065 err 0/0
+[MC] ms 63339 st 2 tgt 40/32 spd 29/38 duty 591/692 cnt 1004/1077 err 0/0
+[MC] ms 63389 st 2 tgt 40/32 spd 38/42 duty 542/626 cnt 1015/1089 err 0/0
+[MC] ms 63439 st 2 tgt 40/32 spd 34/34 duty 596/664 cnt 1025/1099 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 63489 st 2 tgt 35/0 spd 34/25 duty 564/0 cnt 1036/1108 err 0/0
+[MC] ms 63539 st 2 tgt 35/0 spd 29/0 duty 620/0 cnt 1045/1108 err 0/0
+[MC] ms 63589 st 2 tgt 35/0 spd 29/0 duty 658/0 cnt 1053/1108 err 0/0
+[MC] ms 63639 st 2 tgt 35/0 spd 29/0 duty 688/0 cnt 1062/1108 err 0/0
+[MC] ms 63689 st 2 tgt 35/0 spd 34/0 duty 654/0 cnt 1072/1108 err 0/0
+[MC] ms 63739 st 2 tgt 35/0 spd 29/0 duty 714/0 cnt 1081/1108 err 0/0
+s3 line: adc=147/184 filtered=141/238 threshold=165/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 63789 st 2 tgt 35/0 spd 34/0 duty 689/0 cnt 1091/1108 err 0/0
+[MC] ms 63839 st 2 tgt 35/0 spd 38/0 duty 646/0 cnt 1102/1108 err 0/0
+[MC] ms 63889 st 2 tgt 35/0 spd 34/0 duty 683/0 cnt 1112/1108 err 0/0
+[MC] ms 63939 st 2 tgt 40/40 spd 34/4 duty 748/444 cnt 1122/1109 err 0/0
+[MC] ms 63989 st 2 tgt 40/40 spd 34/12 duty 778/528 cnt 1132/1113 err 0/0
+[MC] ms 64039 st 2 tgt 40/40 spd 42/21 duty 720/567 cnt 1144/1119 err 0/0
+[MC] ms 64089 st 2 tgt 40/40 spd 42/25 duty 702/614 cnt 1157/1126 err 0/0
+s3 line: adc=245/173 filtered=212/177 threshold=165/676 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+[MC] ms 64139 st 2 tgt 38/40 spd 42/29 duty 672/641 cnt 1170/1135 err 0/0
+[MC] ms 64189 st 2 tgt 37/40 spd 42/38 duty 632/605 cnt 1183/1146 err 0/0
+[MC] ms 64239 st 2 tgt 36/40 spd 38/38 duty 627/615 cnt 1195/1157 err 0/0
+[MC] ms 64289 st 2 tgt 34/40 spd 38/38 duty 579/633 cnt 1207/1168 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 64339 st 2 tgt 0/35 spd 34/38 duty 0/593 cnt 1217/1179 err 0/0
+[MC] ms 64389 st 2 tgt 0/35 spd 0/34 duty 0/631 cnt 1218/1189 err 0/0
+[MC] ms 64439 st 2 tgt 0/35 spd 0/34 duty 0/641 cnt 1218/1198 err 0/0
+[MC] ms 64489 st 2 tgt 0/35 spd 0/29 duty 0/701 cnt 1218/1207 err 0/0
+s3 line: adc=245/2051 filtered=245/1648 threshold=165/678 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[MC] ms 64539 st 2 tgt 0/35 spd 0/25 duty 0/771 cnt 1218/1215 err 0/0
+[S2] line: BOTH BLACK; confirming junction
+[MC] ms 64589 st 2 tgt 0/35 spd 0/30 duty 0/764 cnt 1218/1224 err 0/0
+[MC] ms 64639 st 2 tgt 0/35 spd 0/34 duty 0/742 cnt 1218/1234 err 0/0
+[S2] line: junction confirmed; crossing straight
+[MC] ms 64689 st 2 tgt 40/40 spd 0/38 duty 520/773 cnt 1218/1245 err 0/0
+[MC] ms 64739 st 2 tgt 40/40 spd 17/42 duty 539/739 cnt 1223/1257 err 0/0
+[MC] ms 64789 st 2 tgt 40/40 spd 25/42 duty 562/741 cnt 1230/1269 err 0/0
+[MC] ms 64839 st 2 tgt 40/40 spd 29/46 duty 589/691 cnt 1239/1282 err 0/0
+[MC] ms 64889 st 2 tgt 40/40 spd 34/42 duty 589/712 cnt 1249/1295 err 0/0
+[MC] ms 64939 st 2 tgt 40/40 spd 34/42 duty 611/702 cnt 1259/1307 err 0/0
+[MC] ms 64989 st 2 tgt 40/40 spd 42/42 duty 557/696 cnt 1271/1319 err 0/0
+[MC] ms 65039 st 2 tgt 40/40 spd 38/46 duty 595/638 cnt 1282/1333 err 0/0
+s3 line: adc=182/3237 filtered=234/3229 threshold=165/678 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[MC] ms 65089 st 2 tgt 40/40 spd 38/42 duty 609/664 cnt 1293/1345 err 0/0
+[MC] ms 65139 st 2 tgt 40/40 spd 38/42 duty 623/650 cnt 1304/1358 err 0/0
+s3 line: adc=141/3235 filtered=137/3238 threshold=165/678 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+[S2] line: junction cleared; holding straight exit
+[MC] ms 65189 st 2 tgt 40/40 spd 38/42 duty 621/644 cnt 1316/1370 err 0/0
+[MC] ms 65239 st 2 tgt 40/40 spd 42/42 duty 590/637 cnt 1328/1382 err 0/0
+[MC] ms 65289 st 2 tgt 40/40 spd 38/38 duty 632/671 cnt 1339/1394 err 0/0
+[MC] ms 65339 st 2 tgt 40/40 spd 42/42 duty 610/641 cnt 1351/1406 err 0/0
+[MC] ms 65389 st 2 tgt 40/40 spd 42/42 duty 604/635 cnt 1363/1418 err 0/0
+[MC] ms 65439 st 2 tgt 40/40 spd 34/42 duty 686/637 cnt 1373/1430 err 0/0
+[MC] ms 65489 st 2 tgt 40/40 spd 38/38 duty 660/671 cnt 1385/1441 err 0/0
+[MC] ms 65539 st 2 tgt 40/40 spd 42/38 duty 630/673 cnt 1397/1453 err 0/0
+[MC] ms 65589 st 2 tgt 40/40 spd 46/38 duty 584/671 cnt 1410/1465 err 0/0
+[MC] ms 65639 st 2 tgt 40/40 spd 38/38 duty 654/669 cnt 1421/1477 err 0/0
+s3 line: adc=128/3211 filtered=136/3218 threshold=164/678 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+[MC] ms 65689 st 2 tgt 40/40 spd 38/42 duty 648/635 cnt 1433/1489 err 0/0
+[MC] ms 65739 st 2 tgt 40/40 spd 38/38 duty 646/665 cnt 1445/1501 err 0/0
+[MC] ms 65789 st 2 tgt 40/40 spd 38/42 duty 644/631 cnt 1457/1513 err 0/0
+[MC] ms 65839 st 2 tgt 40/40 spd 38/38 duty 646/669 cnt 1469/1524 err 0/0
+[MC] ms 65889 st 2 tgt 40/40 spd 38/42 duty 660/647 cnt 1480/1536 err 0/0
+[MC] ms 65939 st 2 tgt 40/40 spd 38/38 duty 654/673 cnt 1492/1548 err 0/0
+[S2] line: normal following resumed
+[MC] ms 65989 st 2 tgt 40/32 spd 38/38 duty 652/563 cnt 1504/1560 err 0/0
+[MC] ms 66039 st 2 tgt 40/32 spd 38/34 duty 650/581 cnt 1516/1570 err 0/0
+[MC] ms 66089 st 2 tgt 40/32 spd 42/34 duty 624/571 cnt 1528/1580 err 0/0
+[MC] ms 66139 st 2 tgt 40/32 spd 42/34 duty 622/561 cnt 1540/1590 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 66189 st 2 tgt 35/0 spd 34/4 duty 639/0 cnt 1550/1593 err 0/0
+s3 line: adc=144/3200 filtered=133/3213 threshold=165/678 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+[MC] ms 66239 st 2 tgt 35/0 spd 25/0 duty 740/0 cnt 1558/1593 err 0/0
+[MC] ms 66289 st 2 tgt 35/0 spd 34/0 duty 688/0 cnt 1568/1593 err 0/0
+[MC] ms 66339 st 2 tgt 35/0 spd 25/0 duty 789/0 cnt 1576/1593 err 0/0
+[MC] ms 66389 st 2 tgt 35/0 spd 34/0 duty 727/0 cnt 1587/1593 err 0/0
+s3 line: adc=151/188 filtered=141/248 threshold=165/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 66439 st 2 tgt 35/0 spd 29/0 duty 778/0 cnt 1596/1593 err 0/0
+[MC] ms 66489 st 2 tgt 35/0 spd 38/0 duty 695/0 cnt 1608/1593 err 0/0
+[MC] ms 66539 st 2 tgt 35/0 spd 38/0 duty 680/0 cnt 1619/1593 err 0/0
+[MC] ms 66589 st 2 tgt 40/40 spd 34/0 duty 754/312 cnt 1629/1593 err 0/0
+[MC] ms 66639 st 2 tgt 40/40 spd 38/8 duty 744/460 cnt 1640/1596 err 0/0
+[MC] ms 66689 st 2 tgt 40/40 spd 42/21 duty 710/494 cnt 1652/1601 err 0/0
+s3 line: adc=202/177 filtered=191/176 threshold=164/678 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 66739 st 2 tgt 40/40 spd 46/25 duty 663/545 cnt 1665/1608 err 0/0
+[MC] ms 66789 st 2 tgt 38/40 spd 42/34 duty 651/522 cnt 1678/1618 err 0/0
+[MC] ms 66839 st 2 tgt 37/40 spd 42/34 duty 625/572 cnt 1690/1627 err 0/0
+[MC] ms 66889 st 2 tgt 35/40 spd 38/34 duty 618/602 cnt 1702/1637 err 0/0
+[MC] ms 66939 st 2 tgt 35/40 spd 38/29 duty 607/682 cnt 1713/1646 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 66989 st 2 tgt 0/35 spd 8/34 duty 0/605 cnt 1717/1657 err 0/0
+[MC] ms 67039 st 2 tgt 0/35 spd 0/29 duty 0/651 cnt 1717/1666 err 0/0
+[MC] ms 67089 st 2 tgt 0/35 spd -4/29 duty 0/681 cnt 1716/1675 err 0/0
+[MC] ms 67139 st 2 tgt 0/35 spd 0/29 duty 0/701 cnt 1716/1684 err 0/0
+s3 line: adc=146/173 filtered=141/176 threshold=164/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 67189 st 2 tgt 0/35 spd 0/34 duty 0/666 cnt 1716/1695 err 0/0
+[MC] ms 67239 st 2 tgt 0/35 spd 0/34 duty 0/667 cnt 1716/1705 err 0/0
+[MC] ms 67289 st 2 tgt 0/35 spd 0/34 duty 0/672 cnt 1716/1715 err 0/0
+[MC] ms 67339 st 2 tgt 0/35 spd 0/34 duty 0/661 cnt 1716/1726 err 0/0
+[MC] ms 67389 st 2 tgt 0/35 spd 0/34 duty 0/686 cnt 1716/1735 err 0/0
+[MC] ms 67439 st 2 tgt 40/40 spd 0/38 duty 400/685 cnt 1716/1747 err 0/0
+s3 line: adc=133/3008 filtered=133/2313 threshold=164/676 left=WHITE right=BLACK mask=2 strength=68 command=RIGHT
+[MC] ms 67489 st 2 tgt 40/34 spd 0/38 duty 584/641 cnt 1717/1758 err 0/0
+[MC] ms 67539 st 2 tgt 40/33 spd 4/38 duty 748/611 cnt 1718/1769 err 0/0
+[MC] ms 67589 st 2 tgt 40/32 spd 29/34 duty 653/647 cnt 1726/1778 err 0/0
+[MC] ms 67639 st 2 tgt 40/32 spd 42/38 duty 559/593 cnt 1738/1789 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 67689 st 2 tgt 35/0 spd 38/38 duty 552/0 cnt 1749/1801 err 0/0
+[MC] ms 67739 st 2 tgt 35/0 spd 29/4 duty 630/0 cnt 1758/1803 err 0/0
+[MC] ms 67789 st 2 tgt 35/0 spd 29/0 duty 668/0 cnt 1767/1803 err 0/0
+[MC] ms 67839 st 2 tgt 35/0 spd 29/0 duty 688/0 cnt 1776/1803 err 0/0
+[MC] ms 67889 st 2 tgt 35/0 spd 29/0 duty 708/0 cnt 1785/1803 err 0/0
+[MC] ms 67939 st 2 tgt 35/0 spd 34/0 duty 683/0 cnt 1795/1803 err 0/0
+s3 line: adc=114/193 filtered=125/272 threshold=165/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 67989 st 2 tgt 35/0 spd 34/0 duty 708/0 cnt 1804/1803 err 0/0
+[MC] ms 68039 st 2 tgt 35/0 spd 34/0 duty 733/0 cnt 1813/1803 err 0/0
+[MC] ms 68089 st 2 tgt 35/0 spd 38/0 duty 702/0 cnt 1824/1803 err 0/0
+[MC] ms 68139 st 2 tgt 40/40 spd 34/0 duty 777/400 cnt 1834/1803 err 0/0
+[MC] ms 68189 st 2 tgt 40/40 spd 38/4 duty 771/564 cnt 1845/1804 err 0/0
+[MC] ms 68239 st 2 tgt 40/40 spd 38/17 duty 777/607 cnt 1856/1808 err 0/0
+[MC] ms 68289 st 2 tgt 40/40 spd 46/29 duty 699/582 cnt 1870/1817 err 0/0
+s3 line: adc=187/194 filtered=184/187 threshold=165/678 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 68339 st 2 tgt 38/40 spd 46/34 duty 648/577 cnt 1883/1827 err 0/0
+[MC] ms 68389 st 2 tgt 38/40 spd 42/34 duty 656/591 cnt 1896/1838 err 0/0
+[MC] ms 68439 st 2 tgt 38/40 spd 42/38 duty 636/581 cnt 1908/1849 err 0/0
+[MC] ms 68489 st 2 tgt 37/40 spd 38/34 duty 647/627 cnt 1920/1860 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 68539 st 2 tgt 0/35 spd 38/34 duty 0/600 cnt 1931/1870 err 0/0
+[MC] ms 68589 st 2 tgt 0/35 spd 4/34 duty 0/589 cnt 1933/1881 err 0/0
+[MC] ms 68639 st 2 tgt 0/35 spd 0/25 duty 0/699 cnt 1933/1888 err 0/0
+[MC] ms 68689 st 2 tgt 0/35 spd 0/29 duty 0/705 cnt 1933/1897 err 0/0
+[MC] ms 68739 st 2 tgt 0/35 spd 0/29 duty 0/725 cnt 1933/1906 err 0/0
+s3 line: adc=130/178 filtered=141/174 threshold=165/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 68789 st 2 tgt 0/35 spd 0/38 duty 0/669 cnt 1933/1917 err 0/0
+[MC] ms 68839 st 2 tgt 0/35 spd 0/34 duty 0/694 cnt 1933/1927 err 0/0
+[MC] ms 68889 st 2 tgt 0/35 spd 0/29 duty 0/759 cnt 1933/1936 err 0/0
+[MC] ms 68939 st 2 tgt 0/35 spd 0/38 duty 0/680 cnt 1933/1947 err 0/0
+[MC] ms 68989 st 2 tgt 0/35 spd 0/38 duty 0/677 cnt 1933/1958 err 0/0
+[MC] ms 69039 st 2 tgt 40/40 spd 0/34 duty 480/762 cnt 1933/1968 err 0/0
+s3 line: adc=138/2896 filtered=135/2307 threshold=165/677 left=WHITE right=BLACK mask=2 strength=68 command=RIGHT
+[MC] ms 69089 st 2 tgt 40/34 spd 0/38 duty 680/682 cnt 1933/1979 err 0/0
+[MC] ms 69139 st 2 tgt 40/33 spd 12/29 duty 752/735 cnt 1937/1989 err 0/0
+[MC] ms 69189 st 2 tgt 40/32 spd 38/38 duty 606/633 cnt 1947/2001 err 0/0
+[MC] ms 69239 st 2 tgt 40/32 spd 38/38 duty 600/599 cnt 1959/2012 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 69289 st 2 tgt 35/0 spd 38/29 duty 560/0 cnt 1970/2021 err 0/0
+[MC] ms 69339 st 2 tgt 35/0 spd 29/0 duty 634/0 cnt 1979/2021 err 0/0
+[MC] ms 69389 st 2 tgt 35/0 spd 25/0 duty 712/0 cnt 1987/2021 err 0/0
+[MC] ms 69439 st 2 tgt 35/0 spd 29/0 duty 718/0 cnt 1995/2021 err 0/0
+[MC] ms 69489 st 2 tgt 35/0 spd 34/0 duty 698/0 cnt 2005/2021 err 0/0
+[MC] ms 69539 st 2 tgt 35/0 spd 34/0 duty 703/0 cnt 2015/2021 err 0/0
+s3 line: adc=131/186 filtered=131/232 threshold=166/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 69589 st 2 tgt 35/0 spd 29/0 duty 768/0 cnt 2024/2021 err 0/0
+[MC] ms 69639 st 2 tgt 35/0 spd 38/0 duty 685/0 cnt 2035/2021 err 0/0
+[MC] ms 69689 st 2 tgt 35/0 spd 38/0 duty 686/0 cnt 2046/2021 err 0/0
+[MC] ms 69739 st 2 tgt 35/0 spd 34/0 duty 711/0 cnt 2056/2021 err 0/0
+[MC] ms 69789 st 2 tgt 40/40 spd 34/12 duty 781/408 cnt 2066/2024 err 0/0
+[MC] ms 69839 st 2 tgt 40/40 spd 38/17 duty 755/475 cnt 2078/2029 err 0/0
+[MC] ms 69889 st 2 tgt 40/40 spd 42/25 duty 713/498 cnt 2091/2036 err 0/0
+s3 line: adc=203/165 filtered=194/169 threshold=166/679 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 69939 st 2 tgt 40/40 spd 46/29 duty 667/533 cnt 2104/2045 err 0/0
+[MC] ms 69989 st 2 tgt 38/40 spd 42/30 duty 659/579 cnt 2116/2054 err 0/0
+[MC] ms 70039 st 2 tgt 38/40 spd 42/29 duty 651/632 cnt 2128/2063 err 0/0
+[MC] ms 70089 st 2 tgt 37/40 spd 42/34 duty 628/627 cnt 2140/2073 err 0/0
+[MC] ms 70139 st 2 tgt 37/40 spd 34/38 duty 695/613 cnt 2150/2084 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 70189 st 2 tgt 0/35 spd 12/38 duty 0/562 cnt 2156/2095 err 0/0
+[MC] ms 70239 st 2 tgt 0/35 spd 0/34 duty 0/614 cnt 2156/2104 err 0/0
+[MC] ms 70289 st 2 tgt 0/35 spd 0/29 duty 0/692 cnt 2156/2112 err 0/0
+[MC] ms 70339 st 2 tgt 0/35 spd 0/34 duty 0/681 cnt 2156/2121 err 0/0
+s3 line: adc=136/184 filtered=135/181 threshold=166/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 70389 st 2 tgt 0/35 spd 0/34 duty 0/686 cnt 2156/2131 err 0/0
+[MC] ms 70439 st 2 tgt 0/35 spd 0/29 duty 0/741 cnt 2156/2140 err 0/0
+[MC] ms 70489 st 2 tgt 0/35 spd 0/34 duty 0/716 cnt 2156/2150 err 0/0
+[MC] ms 70539 st 2 tgt 0/35 spd 0/34 duty 0/721 cnt 2156/2160 err 0/0
+[MC] ms 70589 st 2 tgt 0/35 spd 0/38 duty 0/678 cnt 2156/2171 err 0/0
+[MC] ms 70639 st 2 tgt 0/35 spd 0/34 duty 0/715 cnt 2156/2181 err 0/0
+[MC] ms 70689 st 2 tgt 40/40 spd 12/34 duty 400/785 cnt 2159/2191 err 0/0
+[MC] ms 70739 st 2 tgt 40/40 spd 17/38 duty 495/775 cnt 2163/2202 err 0/0
+s3 line: adc=133/2957 filtered=134/2431 threshold=166/677 left=WHITE right=BLACK mask=2 strength=72 command=RIGHT
+[MC] ms 70789 st 2 tgt 40/34 spd 25/42 duty 530/659 cnt 2170/2215 err 0/0
+[MC] ms 70839 st 2 tgt 40/33 spd 29/38 duty 569/655 cnt 2178/2226 err 0/0
+[MC] ms 70889 st 2 tgt 40/32 spd 34/38 duty 564/629 cnt 2188/2237 err 0/0
+[MC] ms 70939 st 2 tgt 40/32 spd 34/34 duty 594/643 cnt 2198/2247 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 70989 st 2 tgt 35/0 spd 38/25 duty 521/0 cnt 2209/2255 err 0/0
+[MC] ms 71039 st 2 tgt 35/0 spd 29/0 duty 603/0 cnt 2218/2255 err 0/0
+[MC] ms 71089 st 2 tgt 35/0 spd 21/0 duty 721/0 cnt 2225/2255 err 0/0
+[MC] ms 71139 st 2 tgt 35/0 spd 29/0 duty 699/0 cnt 2234/2255 err 0/0
+[MC] ms 71189 st 2 tgt 35/0 spd 34/0 duty 664/0 cnt 2244/2255 err 0/0
+s3 line: adc=133/180 filtered=132/271 threshold=165/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 71239 st 2 tgt 35/0 spd 29/0 duty 719/0 cnt 2253/2255 err 0/0
+[MC] ms 71289 st 2 tgt 35/0 spd 34/0 duty 694/0 cnt 2263/2255 err 0/0
+[MC] ms 71339 st 2 tgt 35/0 spd 38/0 duty 651/0 cnt 2274/2255 err 0/0
+[MC] ms 71389 st 2 tgt 40/40 spd 34/0 duty 733/312 cnt 2284/2255 err 0/0
+[MC] ms 71439 st 2 tgt 40/40 spd 38/17 duty 715/383 cnt 2295/2259 err 0/0
+[MC] ms 71489 st 2 tgt 40/40 spd 38/21 duty 725/477 cnt 2307/2264 err 0/0
+[MC] ms 71539 st 2 tgt 40/40 spd 42/25 duty 691/532 cnt 2319/2271 err 0/0
+[MC] ms 71589 st 2 tgt 40/40 spd 42/29 duty 677/571 cnt 2332/2279 err 0/0
+[MC] ms 71639 st 2 tgt 40/40 spd 47/34 duty 618/571 cnt 2345/2289 err 0/0
+s3 line: adc=196/173 filtered=196/178 threshold=167/678 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 71689 st 2 tgt 40/40 spd 42/34 duty 644/601 cnt 2358/2299 err 0/0
+[MC] ms 71739 st 2 tgt 38/40 spd 47/34 duty 557/631 cnt 2371/2309 err 0/0
+[MC] ms 71789 st 2 tgt 38/40 spd 42/34 duty 581/661 cnt 2383/2319 err 0/0
+[MC] ms 71839 st 2 tgt 38/40 spd 38/38 duty 605/651 cnt 2394/2330 err 0/0
+[MC] ms 71889 st 2 tgt 38/40 spd 38/47 duty 605/576 cnt 2406/2343 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 71939 st 2 tgt 0/35 spd 17/42 duty 0/538 cnt 2412/2355 err 0/0
+[MC] ms 71989 st 2 tgt 0/35 spd 0/34 duty 0/595 cnt 2412/2365 err 0/0
+s3 line: adc=150/173 filtered=147/173 threshold=167/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 72039 st 2 tgt 0/35 spd 0/29 duty 0/660 cnt 2412/2374 err 0/0
+[MC] ms 72089 st 2 tgt 0/35 spd 0/29 duty 0/698 cnt 2412/2382 err 0/0
+[MC] ms 72139 st 2 tgt 0/35 spd 0/29 duty 0/732 cnt 2412/2391 err 0/0
+[MC] ms 72189 st 2 tgt 0/35 spd 0/25 duty 0/793 cnt 2412/2399 err 0/0
+[MC] ms 72239 st 2 tgt 0/35 spd 0/34 duty 0/741 cnt 2412/2409 err 0/0
+[MC] ms 72289 st 2 tgt 40/40 spd 0/38 duty 312/747 cnt 2412/2420 err 0/0
+[MC] ms 72339 st 2 tgt 40/40 spd 12/42 duty 432/721 cnt 2415/2432 err 0/0
+s3 line: adc=140/2924 filtered=135/2413 threshold=165/680 left=WHITE right=BLACK mask=2 strength=72 command=RIGHT
+[MC] ms 72389 st 2 tgt 40/34 spd 21/42 duty 489/657 cnt 2420/2444 err 0/0
+[MC] ms 72439 st 2 tgt 40/33 spd 25/38 duty 544/653 cnt 2427/2455 err 0/0
+[MC] ms 72489 st 2 tgt 40/32 spd 25/38 duty 615/615 cnt 2435/2466 err 0/0
+[MC] ms 72539 st 2 tgt 40/32 spd 38/34 duty 548/633 cnt 2446/2476 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 72589 st 2 tgt 35/0 spd 34/25 duty 548/0 cnt 2456/2484 err 0/0
+[MC] ms 72639 st 2 tgt 35/0 spd 29/0 duty 603/0 cnt 2465/2484 err 0/0
+[MC] ms 72689 st 2 tgt 35/0 spd 25/0 duty 685/0 cnt 2472/2484 err 0/0
+[MC] ms 72739 st 2 tgt 35/0 spd 25/0 duty 739/0 cnt 2480/2484 err 0/0
+[MC] ms 72789 st 2 tgt 35/0 spd 34/0 duty 700/0 cnt 2489/2484 err 0/0
+[MC] ms 72839 st 2 tgt 35/0 spd 38/0 duty 674/0 cnt 2499/2484 err 0/0
+s3 line: adc=144/1776 filtered=139/2206 threshold=164/680 left=WHITE right=BLACK mask=2 strength=65 command=RIGHT
+[MC] ms 72889 st 2 tgt 35/0 spd 29/0 duty 757/0 cnt 2508/2484 err 0/0
+[MC] ms 72939 st 2 tgt 35/0 spd 34/0 duty 732/0 cnt 2518/2484 err 0/0
+s3 line: adc=131/178 filtered=131/227 threshold=165/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 72989 st 2 tgt 35/0 spd 38/0 duty 689/0 cnt 2529/2484 err 0/0
+[MC] ms 73039 st 2 tgt 35/0 spd 34/0 duty 726/0 cnt 2539/2484 err 0/0
+[MC] ms 73089 st 2 tgt 35/0 spd 38/0 duty 683/0 cnt 2550/2484 err 0/0
+[MC] ms 73139 st 2 tgt 35/0 spd 34/0 duty 716/0 cnt 2560/2484 err 0/0
+[MC] ms 73189 st 2 tgt 40/40 spd 34/12 duty 791/396 cnt 2570/2487 err 0/0
+[MC] ms 73239 st 2 tgt 40/40 spd 42/17 duty 733/476 cnt 2582/2492 err 0/0
+[MC] ms 73289 st 2 tgt 40/40 spd 38/21 duty 763/531 cnt 2594/2499 err 0/0
+[MC] ms 73339 st 2 tgt 40/40 spd 46/29 duty 676/534 cnt 2608/2508 err 0/0
+[MC] ms 73389 st 2 tgt 40/40 spd 46/29 duty 658/579 cnt 2621/2517 err 0/0
+[MC] ms 73439 st 2 tgt 40/40 spd 46/38 duty 632/539 cnt 2634/2528 err 0/0
+[MC] ms 73489 st 2 tgt 40/40 spd 42/34 duty 650/611 cnt 2647/2537 err 0/0
+s3 line: adc=148/188 filtered=148/183 threshold=166/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 73539 st 2 tgt 40/40 spd 42/38 duty 640/593 cnt 2659/2548 err 0/0
+[MC] ms 73589 st 2 tgt 40/40 spd 38/34 duty 670/639 cnt 2671/2559 err 0/0
+[MC] ms 73639 st 2 tgt 40/40 spd 42/38 duty 624/625 cnt 2684/2570 err 0/0
+[MC] ms 73689 st 2 tgt 40/40 spd 38/42 duty 649/603 cnt 2696/2582 err 0/0
+[MC] ms 73739 st 2 tgt 40/40 spd 47/38 duty 562/637 cnt 2709/2593 err 0/0
+[MC] ms 73789 st 2 tgt 40/40 spd 38/42 duty 627/599 cnt 2721/2606 err 0/0
+[MC] ms 73839 st 2 tgt 40/40 spd 42/38 duty 597/641 cnt 2733/2617 err 0/0
+[MC] ms 73889 st 2 tgt 40/40 spd 38/38 duty 635/647 cnt 2744/2628 err 0/0
+[MC] ms 73939 st 2 tgt 40/40 spd 42/38 duty 605/649 cnt 2756/2640 err 0/0
+[MC] ms 73989 st 2 tgt 40/40 spd 38/38 duty 635/659 cnt 2768/2651 err 0/0
+s3 line: adc=128/171 filtered=134/176 threshold=169/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 74039 st 2 tgt 40/40 spd 42/34 duty 601/701 cnt 2780/2662 err 0/0
+[MC] ms 74089 st 2 tgt 40/40 spd 42/42 duty 591/635 cnt 2793/2675 err 0/0
+[MC] ms 74139 st 2 tgt 40/40 spd 42/38 duty 585/653 cnt 2805/2687 err 0/0
+[MC] ms 74189 st 2 tgt 40/40 spd 42/42 duty 583/615 cnt 2817/2700 err 0/0
+s3 line: adc=110/2292 filtered=120/1800 threshold=167/679 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+[MC] ms 74239 st 2 tgt 40/35 spd 38/38 duty 625/599 cnt 2828/2711 err 0/0
+[MC] ms 74289 st 2 tgt 40/34 spd 38/38 duty 619/577 cnt 2840/2722 err 0/0
+[MC] ms 74339 st 2 tgt 40/33 spd 38/34 duty 629/593 cnt 2851/2732 err 0/0
+[MC] ms 74389 st 2 tgt 40/32 spd 38/29 duty 647/620 cnt 2862/2741 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 74439 st 2 tgt 35/0 spd 38/34 duty 595/0 cnt 2874/2751 err 0/0
+[MC] ms 74489 st 2 tgt 35/0 spd 34/4 duty 612/0 cnt 2885/2752 err 0/0
+[MC] ms 74539 st 2 tgt 35/0 spd 25/0 duty 713/0 cnt 2893/2752 err 0/0
+[MC] ms 74589 st 2 tgt 35/0 spd 25/0 duty 759/0 cnt 2901/2752 err 0/0
+[MC] ms 74639 st 2 tgt 35/0 spd 34/0 duty 712/0 cnt 2911/2752 err 0/0
+[MC] ms 74689 st 2 tgt 35/0 spd 34/0 duty 709/0 cnt 2921/2752 err 0/0
+s3 line: adc=122/230 filtered=128/530 threshold=165/679 left=WHITE right=BLACK mask=2 strength=11 command=RIGHT
+[MC] ms 74739 st 2 tgt 35/0 spd 34/0 duty 714/0 cnt 2931/2752 err 0/0
+s3 line: adc=140/174 filtered=130/228 threshold=165/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 74789 st 2 tgt 35/0 spd 34/0 duty 719/0 cnt 2941/2752 err 0/0
+[MC] ms 74839 st 2 tgt 35/0 spd 34/0 duty 724/0 cnt 2951/2752 err 0/0
+[MC] ms 74889 st 2 tgt 35/0 spd 38/0 duty 693/0 cnt 2962/2752 err 0/0
+[MC] ms 74939 st 2 tgt 35/0 spd 34/0 duty 718/0 cnt 2972/2752 err 0/0
+[MC] ms 74989 st 2 tgt 40/40 spd 34/4 duty 776/484 cnt 2983/2753 err 0/0
+[MC] ms 75039 st 2 tgt 40/40 spd 42/17 duty 722/539 cnt 2995/2757 err 0/0
+[MC] ms 75089 st 2 tgt 40/40 spd 46/29 duty 676/506 cnt 3008/2766 err 0/0
+[MC] ms 75139 st 2 tgt 40/40 spd 47/29 duty 645/551 cnt 3021/2775 err 0/0
+[MC] ms 75189 st 2 tgt 40/40 spd 38/29 duty 706/596 cnt 3033/2784 err 0/0
+[MC] ms 75239 st 2 tgt 40/40 spd 42/29 duty 664/646 cnt 3046/2793 err 0/0
+[MC] ms 75289 st 2 tgt 40/40 spd 38/38 duty 681/592 cnt 3058/2805 err 0/0
+s3 line: adc=145/185 filtered=140/184 threshold=166/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 75339 st 2 tgt 40/40 spd 42/38 duty 643/602 cnt 3071/2816 err 0/0
+[MC] ms 75389 st 2 tgt 40/40 spd 38/38 duty 677/612 cnt 3082/2827 err 0/0
+[MC] ms 75439 st 2 tgt 40/40 spd 46/42 duty 611/582 cnt 3095/2839 err 0/0
+[MC] ms 75489 st 2 tgt 40/40 spd 42/38 duty 629/620 cnt 3107/2850 err 0/0
+[MC] ms 75539 st 2 tgt 40/40 spd 42/38 duty 627/622 cnt 3119/2862 err 0/0
+s3 line: adc=133/2436 filtered=133/1957 threshold=166/679 left=WHITE right=BLACK mask=2 strength=57 command=RIGHT
+[MC] ms 75589 st 2 tgt 40/35 spd 38/34 duty 657/619 cnt 3131/2873 err 0/0
+[MC] ms 75639 st 2 tgt 40/33 spd 38/38 duty 655/556 cnt 3143/2884 err 0/0
+[MC] ms 75689 st 2 tgt 40/33 spd 42/34 duty 613/567 cnt 3156/2895 err 0/0
+[MC] ms 75739 st 2 tgt 40/32 spd 38/34 duty 651/555 cnt 3167/2905 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 75789 st 2 tgt 35/0 spd 42/29 duty 564/0 cnt 3180/2914 err 0/0
+[MC] ms 75839 st 2 tgt 35/0 spd 34/4 duty 617/0 cnt 3190/2916 err 0/0
+[MC] ms 75889 st 2 tgt 35/0 spd 29/0 duty 677/0 cnt 3199/2916 err 0/0
+[MC] ms 75939 st 2 tgt 35/0 spd 29/0 duty 702/0 cnt 3208/2916 err 0/0
+[MC] ms 75989 st 2 tgt 35/0 spd 29/0 duty 740/0 cnt 3216/2916 err 0/0
+[MC] ms 76039 st 2 tgt 35/0 spd 34/0 duty 702/0 cnt 3226/2916 err 0/0
+s3 line: adc=129/2603 filtered=129/2767 threshold=163/679 left=WHITE right=BLACK mask=2 strength=83 command=RIGHT
+[MC] ms 76089 st 2 tgt 35/0 spd 34/0 duty 722/0 cnt 3236/2916 err 0/0
+[MC] ms 76139 st 2 tgt 35/0 spd 34/0 duty 727/0 cnt 3246/2916 err 0/0
+[MC] ms 76189 st 2 tgt 35/0 spd 38/0 duty 706/0 cnt 3256/2916 err 0/0
+[MC] ms 76239 st 2 tgt 35/0 spd 29/0 duty 784/0 cnt 3265/2916 err 0/0
+s3 line: adc=134/208 filtered=132/265 threshold=162/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 76289 st 2 tgt 35/0 spd 38/0 duty 719/0 cnt 3276/2916 err 0/0
+[MC] ms 76339 st 2 tgt 35/0 spd 34/0 duty 740/0 cnt 3286/2916 err 0/0
+[MC] ms 76389 st 2 tgt 35/0 spd 34/0 duty 760/0 cnt 3296/2916 err 0/0
+[MC] ms 76439 st 2 tgt 40/40 spd 38/4 duty 767/364 cnt 3307/2917 err 0/0
+[MC] ms 76489 st 2 tgt 40/40 spd 38/4 duty 785/548 cnt 3318/2918 err 0/0
+[MC] ms 76539 st 2 tgt 40/40 spd 38/25 duty 799/514 cnt 3329/2924 err 0/0
+[MC] ms 76589 st 2 tgt 40/40 spd 42/34 duty 761/492 cnt 3342/2934 err 0/0
+[MC] ms 76639 st 2 tgt 40/40 spd 51/29 duty 662/555 cnt 3356/2943 err 0/0
+[MC] ms 76689 st 2 tgt 40/40 spd 47/38 duty 666/515 cnt 3369/2954 err 0/0
+[MC] ms 76739 st 2 tgt 40/40 spd 46/38 duty 660/551 cnt 3382/2964 err 0/0
+s3 line: adc=155/202 filtered=148/199 threshold=164/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 76789 st 2 tgt 40/40 spd 42/38 duty 678/569 cnt 3394/2975 err 0/0
+[MC] ms 76839 st 2 tgt 40/40 spd 47/38 duty 627/583 cnt 3407/2986 err 0/0
+[MC] ms 76889 st 2 tgt 40/40 spd 42/38 duty 665/589 cnt 3419/2997 err 0/0
+s3 line: adc=131/2442 filtered=133/1935 threshold=164/681 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+[MC] ms 76939 st 2 tgt 40/35 spd 42/38 duty 659/557 cnt 3431/3008 err 0/0
+[MC] ms 76989 st 2 tgt 40/33 spd 42/38 duty 645/520 cnt 3444/3019 err 0/0
+[MC] ms 77039 st 2 tgt 40/32 spd 38/34 duty 679/531 cnt 3455/3029 err 0/0
+[MC] ms 77089 st 2 tgt 40/32 spd 42/29 duty 641/581 cnt 3468/3038 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 77139 st 2 tgt 35/0 spd 42/29 duty 589/0 cnt 3480/3047 err 0/0
+[MC] ms 77189 st 2 tgt 35/0 spd 29/-4 duty 687/0 cnt 3489/3047 err 0/0
+[MC] ms 77239 st 2 tgt 35/0 spd 25/0 duty 761/0 cnt 3497/3047 err 0/0
+[MC] ms 77289 st 2 tgt 35/0 spd 34/0 duty 709/0 cnt 3507/3047 err 0/0
+[MC] ms 77339 st 2 tgt 35/0 spd 29/0 duty 769/0 cnt 3516/3047 err 0/0
+[MC] ms 77389 st 2 tgt 35/0 spd 34/0 duty 739/0 cnt 3526/3047 err 0/0
+s3 line: adc=128/3026 filtered=132/3101 threshold=166/681 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+[MC] ms 77439 st 2 tgt 35/0 spd 34/0 duty 764/0 cnt 3535/3047 err 0/0
+[MC] ms 77489 st 2 tgt 35/0 spd 38/0 duty 725/0 cnt 3546/3047 err 0/0
+[MC] ms 77539 st 2 tgt 35/0 spd 34/0 duty 758/0 cnt 3556/3047 err 0/0
+[MC] ms 77589 st 2 tgt 35/0 spd 38/0 duty 715/0 cnt 3567/3047 err 0/0
+[MC] ms 77639 st 2 tgt 35/0 spd 34/0 duty 752/0 cnt 3577/3047 err 0/0
+s3 line: adc=140/197 filtered=135/266 threshold=167/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 77689 st 2 tgt 35/0 spd 34/0 duty 757/0 cnt 3587/3047 err 0/0
+[MC] ms 77739 st 2 tgt 35/0 spd 38/0 duty 718/0 cnt 3598/3047 err 0/0
+[MC] ms 77789 st 2 tgt 35/0 spd 34/0 duty 751/0 cnt 3608/3047 err 0/0
+[MC] ms 77839 st 2 tgt 35/0 spd 34/0 duty 756/0 cnt 3618/3047 err 0/0
+[MC] ms 77889 st 2 tgt 40/40 spd 38/0 duty 790/520 cnt 3629/3047 err 0/0
+[MC] ms 77939 st 2 tgt 40/40 spd 42/21 duty 760/498 cnt 3641/3053 err 0/0
+[MC] ms 77989 st 2 tgt 40/40 spd 42/25 duty 750/525 cnt 3653/3061 err 0/0
+[MC] ms 78039 st 2 tgt 40/40 spd 38/29 duty 780/543 cnt 3665/3070 err 0/0
+[MC] ms 78089 st 2 tgt 40/40 spd 42/29 duty 734/593 cnt 3678/3079 err 0/0
+[MC] ms 78139 st 2 tgt 40/40 spd 47/38 duty 674/562 cnt 3691/3090 err 0/0
+[MC] ms 78189 st 2 tgt 40/40 spd 42/38 duty 691/572 cnt 3704/3101 err 0/0
+s3 line: adc=148/236 filtered=141/220 threshold=171/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 78239 st 2 tgt 40/40 spd 42/38 duty 677/582 cnt 3717/3112 err 0/0
+[MC] ms 78289 st 2 tgt 40/40 spd 42/38 duty 653/596 cnt 3730/3123 err 0/0
+s3 line: adc=121/2273 filtered=124/1818 threshold=171/684 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+[MC] ms 78339 st 2 tgt 40/35 spd 42/34 duty 651/588 cnt 3742/3134 err 0/0
+[MC] ms 78389 st 2 tgt 40/34 spd 38/38 duty 677/534 cnt 3754/3145 err 0/0
+[MC] ms 78439 st 2 tgt 40/33 spd 38/34 duty 679/546 cnt 3766/3155 err 0/0
+[MC] ms 78489 st 2 tgt 40/32 spd 38/34 duty 673/542 cnt 3778/3165 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 78539 st 2 tgt 35/0 spd 38/29 duty 625/0 cnt 3790/3174 err 0/0
+[MC] ms 78589 st 2 tgt 35/0 spd 38/0 duty 610/0 cnt 3801/3174 err 0/0
+[MC] ms 78639 st 2 tgt 35/0 spd 29/0 duty 703/0 cnt 3810/3174 err 0/0
+[MC] ms 78689 st 2 tgt 35/0 spd 29/0 duty 728/0 cnt 3819/3174 err 0/0
+[MC] ms 78739 st 2 tgt 35/0 spd 29/0 duty 748/0 cnt 3828/3174 err 0/0
+[MC] ms 78789 st 2 tgt 35/0 spd 34/0 duty 718/0 cnt 3838/3174 err 0/0
+s3 line: adc=133/2374 filtered=132/2491 threshold=171/684 left=WHITE right=BLACK mask=2 strength=74 command=RIGHT
+[MC] ms 78839 st 2 tgt 35/0 spd 38/0 duty 702/0 cnt 3848/3174 err 0/0
+[MC] ms 78889 st 2 tgt 35/0 spd 34/0 duty 731/0 cnt 3858/3174 err 0/0
+[MC] ms 78939 st 2 tgt 35/0 spd 29/0 duty 791/0 cnt 3867/3174 err 0/0
+[MC] ms 78989 st 2 tgt 35/0 spd 38/0 duty 717/0 cnt 3878/3174 err 0/0
+s3 line: adc=147/201 filtered=136/277 threshold=169/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 79039 st 2 tgt 35/0 spd 34/0 duty 750/0 cnt 3888/3174 err 0/0
+[MC] ms 79089 st 2 tgt 35/0 spd 38/0 duty 707/0 cnt 3899/3174 err 0/0
+[MC] ms 79139 st 2 tgt 35/0 spd 34/0 duty 744/0 cnt 3909/3174 err 0/0
+[MC] ms 79189 st 2 tgt 40/40 spd 34/4 duty 804/400 cnt 3919/3175 err 0/0
+[MC] ms 79239 st 2 tgt 40/40 spd 42/17 duty 746/412 cnt 3931/3181 err 0/0
+[MC] ms 79289 st 2 tgt 40/40 spd 38/25 duty 772/447 cnt 3943/3188 err 0/0
+[MC] ms 79339 st 2 tgt 40/40 spd 42/25 duty 726/522 cnt 3956/3195 err 0/0
+[MC] ms 79389 st 2 tgt 40/40 spd 42/29 duty 716/549 cnt 3969/3204 err 0/0
+[MC] ms 79439 st 2 tgt 40/40 spd 47/34 duty 653/549 cnt 3982/3214 err 0/0
+[MC] ms 79489 st 2 tgt 40/40 spd 42/34 duty 674/579 cnt 3995/3224 err 0/0
+s3 line: adc=138/215 filtered=124/211 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 79539 st 2 tgt 40/40 spd 42/38 duty 668/569 cnt 4007/3235 err 0/0
+[MC] ms 79589 st 2 tgt 40/40 spd 42/34 duty 654/623 cnt 4020/3245 err 0/0
+s3 line: adc=139/2184 filtered=135/1700 threshold=167/683 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+[MC] ms 79639 st 2 tgt 40/40 spd 46/38 duty 608/601 cnt 4033/3257 err 0/0
+[MC] ms 79689 st 2 tgt 40/34 spd 42/38 duty 630/533 cnt 4045/3268 err 0/0
+[MC] ms 79739 st 2 tgt 40/33 spd 42/38 duty 616/511 cnt 4058/3279 err 0/0
+[MC] ms 79789 st 2 tgt 40/33 spd 42/34 duty 601/530 cnt 4071/3289 err 0/0
+[MC] ms 79839 st 2 tgt 40/33 spd 38/34 duty 639/525 cnt 4082/3299 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 79889 st 2 tgt 35/0 spd 34/8 duty 628/0 cnt 4092/3303 err 0/0
+[MC] ms 79939 st 2 tgt 35/0 spd 29/0 duty 678/0 cnt 4101/3302 err 0/0
+[MC] ms 79989 st 2 tgt 35/0 spd 29/0 duty 708/0 cnt 4110/3302 err 0/0
+[MC] ms 80039 st 2 tgt 35/0 spd 29/0 duty 738/0 cnt 4119/3302 err 0/0
+[MC] ms 80089 st 2 tgt 35/0 spd 29/0 duty 768/0 cnt 4128/3302 err 0/0
+[MC] ms 80139 st 2 tgt 35/0 spd 38/0 duty 697/0 cnt 4139/3302 err 0/0
+s3 line: adc=141/2957 filtered=133/2973 threshold=165/683 left=WHITE right=BLACK mask=2 strength=90 command=RIGHT
+[MC] ms 80189 st 2 tgt 35/0 spd 29/0 duty 772/0 cnt 4148/3302 err 0/0
+[MC] ms 80239 st 2 tgt 35/0 spd 34/0 duty 747/0 cnt 4158/3302 err 0/0
+[MC] ms 80289 st 2 tgt 35/0 spd 29/0 duty 785/0 cnt 4168/3302 err 0/0
+[MC] ms 80339 st 2 tgt 35/0 spd 34/0 duty 760/0 cnt 4178/3302 err 0/0
+[MC] ms 80389 st 2 tgt 35/0 spd 34/0 duty 765/0 cnt 4188/3302 err 0/0
+[MC] ms 80439 st 2 tgt 35/0 spd 34/0 duty 770/0 cnt 4198/3302 err 0/0
+[MC] ms 80489 st 2 tgt 35/0 spd 34/0 duty 775/0 cnt 4208/3302 err 0/0
+s3 line: adc=130/238 filtered=131/297 threshold=163/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 80539 st 2 tgt 35/0 spd 34/0 duty 780/0 cnt 4218/3302 err 0/0
+[MC] ms 80589 st 2 tgt 35/0 spd 34/0 duty 785/0 cnt 4228/3302 err 0/0
+[MC] ms 80639 st 2 tgt 35/0 spd 38/0 duty 746/0 cnt 4239/3302 err 0/0
+[MC] ms 80689 st 2 tgt 40/40 spd 38/0 duty 780/312 cnt 4250/3302 err 0/0
+[MC] ms 80739 st 2 tgt 40/40 spd 34/8 duty 838/476 cnt 4260/3304 err 0/0
+[MC] ms 80789 st 2 tgt 40/40 spd 42/29 duty 784/400 cnt 4272/3312 err 0/0
+[MC] ms 80839 st 2 tgt 40/40 spd 47/25 duty 729/503 cnt 4285/3320 err 0/0
+[MC] ms 80889 st 2 tgt 40/40 spd 42/29 duty 751/530 cnt 4298/3329 err 0/0
+[MC] ms 80939 st 2 tgt 40/40 spd 46/29 duty 705/585 cnt 4311/3337 err 0/0
+[MC] ms 80989 st 2 tgt 40/40 spd 47/38 duty 674/545 cnt 4324/3348 err 0/0
+[MC] ms 81039 st 2 tgt 40/40 spd 42/38 duty 704/563 cnt 4336/3359 err 0/0
+s3 line: adc=145/2219 filtered=142/1776 threshold=164/686 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+[MC] ms 81089 st 2 tgt 40/35 spd 38/34 duty 730/572 cnt 4348/3369 err 0/0
+[MC] ms 81139 st 2 tgt 40/34 spd 38/38 duty 728/527 cnt 4360/3380 err 0/0
+[MC] ms 81189 st 2 tgt 40/33 spd 42/34 duty 686/540 cnt 4373/3390 err 0/0
+[MC] ms 81239 st 2 tgt 40/33 spd 38/34 duty 708/531 cnt 4385/3400 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 81289 st 2 tgt 35/0 spd 42/33 duty 625/0 cnt 4398/3411 err 0/0
+[MC] ms 81339 st 2 tgt 35/0 spd 34/4 duty 666/0 cnt 4408/3413 err 0/0
+[MC] ms 81389 st 2 tgt 35/0 spd 34/0 duty 686/0 cnt 4418/3413 err 0/0
+[MC] ms 81439 st 2 tgt 35/0 spd 34/0 duty 706/0 cnt 4427/3413 err 0/0
+[MC] ms 81489 st 2 tgt 35/0 spd 29/0 duty 776/0 cnt 4436/3413 err 0/0
+[MC] ms 81539 st 2 tgt 35/0 spd 34/0 duty 741/0 cnt 4446/3413 err 0/0
+s3 line: adc=136/3094 filtered=138/3111 threshold=164/686 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+[MC] ms 81589 st 2 tgt 35/0 spd 34/0 duty 742/0 cnt 4456/3413 err 0/0
+[MC] ms 81639 st 2 tgt 35/0 spd 34/0 duty 748/0 cnt 4466/3413 err 0/0
+[MC] ms 81689 st 2 tgt 35/0 spd 29/0 duty 799/0 cnt 4476/3413 err 0/0
+[MC] ms 81739 st 2 tgt 35/0 spd 34/0 duty 764/0 cnt 4486/3413 err 0/0
+[MC] ms 81789 st 2 tgt 35/0 spd 38/0 duty 733/0 cnt 4497/3413 err 0/0
+[MC] ms 81839 st 2 tgt 35/0 spd 34/0 duty 758/0 cnt 4507/3413 err 0/0
+[MC] ms 81889 st 2 tgt 35/0 spd 34/0 duty 768/0 cnt 4517/3413 err 0/0
+[MC] ms 81939 st 2 tgt 35/0 spd 34/0 duty 769/0 cnt 4527/3413 err 0/0
+[MC] ms 81989 st 2 tgt 35/0 spd 34/0 duty 758/0 cnt 4538/3413 err 0/0
+[MC] ms 82039 st 2 tgt 35/0 spd 38/0 duty 719/0 cnt 4549/3413 err 0/0
+s3 line: adc=134/229 filtered=140/270 threshold=165/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 82089 st 2 tgt 35/0 spd 34/0 duty 736/0 cnt 4560/3413 err 0/0
+[MC] ms 82139 st 2 tgt 35/0 spd 38/0 duty 693/0 cnt 4571/3413 err 0/0
+[MC] ms 82189 st 2 tgt 35/0 spd 38/0 duty 686/0 cnt 4582/3413 err 0/0
+[MC] ms 82239 st 2 tgt 40/40 spd 29/0 duty 824/400 cnt 4591/3413 err 0/0
+s3 line: adc=178/176 filtered=176/182 threshold=165/687 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 82289 st 2 tgt 38/40 spd 34/17 duty 797/406 cnt 4601/3418 err 0/0
+[MC] ms 82339 st 2 tgt 38/40 spd 42/25 duty 721/437 cnt 4614/3425 err 0/0
+[MC] ms 82389 st 2 tgt 38/40 spd 42/29 duty 701/472 cnt 4626/3433 err 0/0
+[MC] ms 82439 st 2 tgt 38/40 spd 38/29 duty 721/527 cnt 4638/3442 err 0/0
+s3 line: adc=132/276 filtered=142/256 threshold=165/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 82489 st 2 tgt 40/40 spd 38/29 duty 735/572 cnt 4650/3451 err 0/0
+s3 line: adc=117/2270 filtered=127/1808 threshold=165/688 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+[MC] ms 82539 st 2 tgt 40/40 spd 46/34 duty 657/576 cnt 4663/3461 err 0/0
+[MC] ms 82589 st 2 tgt 40/34 spd 38/29 duty 719/573 cnt 4674/3471 err 0/0
+[MC] ms 82639 st 2 tgt 40/33 spd 42/38 duty 681/483 cnt 4687/3482 err 0/0
+[MC] ms 82689 st 2 tgt 40/32 spd 42/29 duty 679/546 cnt 4699/3491 err 0/0
+[MC] ms 82739 st 2 tgt 40/32 spd 42/34 duty 668/501 cnt 4711/3501 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 82789 st 2 tgt 35/0 spd 38/4 duty 637/0 cnt 4723/3504 err 0/0
+[MC] ms 82839 st 2 tgt 35/0 spd 34/0 duty 666/0 cnt 4733/3504 err 0/0
+[MC] ms 82889 st 2 tgt 35/0 spd 29/0 duty 731/0 cnt 4742/3504 err 0/0
+[MC] ms 82939 st 2 tgt 35/0 spd 29/0 duty 751/0 cnt 4751/3504 err 0/0
+[MC] ms 82989 st 2 tgt 35/0 spd 29/0 duty 771/0 cnt 4760/3504 err 0/0
+[MC] ms 83039 st 2 tgt 35/0 spd 34/0 duty 746/0 cnt 4770/3504 err 0/0
+s3 line: adc=126/3260 filtered=127/3272 threshold=165/688 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+[MC] ms 83089 st 2 tgt 35/0 spd 38/0 duty 711/0 cnt 4781/3504 err 0/0
+[MC] ms 83139 st 2 tgt 35/0 spd 34/0 duty 740/0 cnt 4791/3504 err 0/0
+[MC] ms 83189 st 2 tgt 35/0 spd 29/0 duty 800/0 cnt 4800/3504 err 0/0
+[MC] ms 83239 st 2 tgt 35/0 spd 38/0 duty 734/0 cnt 4811/3504 err 0/0
+[MC] ms 83289 st 2 tgt 35/0 spd 38/0 duty 719/0 cnt 4822/3504 err 0/0
+[MC] ms 83339 st 2 tgt 35/0 spd 34/0 duty 748/0 cnt 4832/3504 err 0/0
+[MC] ms 83389 st 2 tgt 35/0 spd 34/0 duty 753/0 cnt 4842/3504 err 0/0
+[MC] ms 83439 st 2 tgt 35/0 spd 34/0 duty 758/0 cnt 4852/3504 err 0/0
+[MC] ms 83489 st 2 tgt 35/0 spd 38/0 duty 727/0 cnt 4863/3504 err 0/0
+[MC] ms 83539 st 2 tgt 35/0 spd 34/0 duty 748/0 cnt 4873/3504 err 0/0
+s3 line: adc=156/1035 filtered=148/1268 threshold=168/688 left=WHITE right=BLACK mask=2 strength=35 command=RIGHT
+[MC] ms 83589 st 2 tgt 35/0 spd 29/0 duty 799/0 cnt 4883/3504 err 0/0
+[MC] ms 83639 st 2 tgt 35/0 spd 34/0 duty 764/0 cnt 4893/3504 err 0/0
+s3 line: adc=154/235 filtered=153/288 threshold=169/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 83689 st 2 tgt 35/0 spd 38/0 duty 721/0 cnt 4904/3504 err 0/0
+[MC] ms 83739 st 2 tgt 35/0 spd 34/0 duty 758/0 cnt 4914/3504 err 0/0
+s3 line: adc=174/212 filtered=176/221 threshold=169/689 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 83789 st 2 tgt 35/0 spd 34/0 duty 747/0 cnt 4925/3504 err 0/0
+[MC] ms 83839 st 2 tgt 38/40 spd 29/12 duty 848/368 cnt 4934/3507 err 0/0
+[MC] ms 83889 st 2 tgt 38/40 spd 38/21 duty 784/408 cnt 4945/3512 err 0/0
+[MC] ms 83939 st 2 tgt 38/40 spd 42/25 duty 748/471 cnt 4957/3519 err 0/0
+[MC] ms 83989 st 2 tgt 38/40 spd 42/29 duty 740/510 cnt 4969/3527 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 84039 st 2 tgt 0/35 spd 21/29 duty 0/505 cnt 4976/3536 err 0/0
+s3 line: adc=140/2268 filtered=141/1729 threshold=169/690 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+[MC] ms 84089 st 2 tgt 40/35 spd 4/29 duty 404/538 cnt 4977/3544 err 0/0
+[MC] ms 84139 st 2 tgt 40/34 spd 12/25 duty 500/620 cnt 4980/3551 err 0/0
+[MC] ms 84189 st 2 tgt 40/32 spd 21/29 duty 544/599 cnt 4986/3559 err 0/0
+[MC] ms 84239 st 2 tgt 40/32 spd 29/34 duty 555/559 cnt 4994/3569 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 84289 st 2 tgt 35/0 spd 25/21 duty 591/0 cnt 5002/3576 err 0/0
+[MC] ms 84339 st 2 tgt 35/0 spd 25/-4 duty 632/0 cnt 5010/3575 err 0/0
+[MC] ms 84389 st 2 tgt 35/0 spd 21/0 duty 730/0 cnt 5016/3575 err 0/0
+[MC] ms 84439 st 2 tgt 35/0 spd 25/0 duty 744/0 cnt 5024/3575 err 0/0
+[MC] ms 84489 st 2 tgt 35/0 spd 29/0 duty 746/0 cnt 5033/3575 err 0/0
+[MC] ms 84539 st 2 tgt 35/0 spd 34/0 duty 726/0 cnt 5043/3575 err 0/0
+s3 line: adc=110/3215 filtered=120/3209 threshold=166/690 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+[MC] ms 84589 st 2 tgt 35/0 spd 29/0 duty 777/0 cnt 5052/3575 err 0/0
+[MC] ms 84639 st 2 tgt 35/0 spd 34/0 duty 752/0 cnt 5062/3575 err 0/0
+[MC] ms 84689 st 2 tgt 35/0 spd 38/0 duty 721/0 cnt 5073/3575 err 0/0
+[MC] ms 84739 st 2 tgt 35/0 spd 34/0 duty 746/0 cnt 5083/3575 err 0/0
+[MC] ms 84789 st 2 tgt 35/0 spd 34/0 duty 751/0 cnt 5093/3575 err 0/0
+[MC] ms 84839 st 2 tgt 35/0 spd 34/0 duty 752/0 cnt 5103/3575 err 0/0
+[MC] ms 84889 st 2 tgt 35/0 spd 34/0 duty 753/0 cnt 5114/3575 err 0/0
+[MC] ms 84939 st 2 tgt 35/0 spd 34/0 duty 750/0 cnt 5124/3575 err 0/0
+[MC] ms 84989 st 2 tgt 35/0 spd 34/0 duty 743/0 cnt 5134/3575 err 0/0
+[MC] ms 85039 st 2 tgt 35/0 spd 38/0 duty 727/0 cnt 5145/3575 err 0/0
+s3 line: adc=153/697 filtered=142/1099 threshold=167/690 left=WHITE right=BLACK mask=2 strength=29 command=RIGHT
+[MC] ms 85089 st 2 tgt 35/0 spd 38/0 duty 708/0 cnt 5156/3575 err 0/0
+[MC] ms 85139 st 2 tgt 35/0 spd 34/0 duty 741/0 cnt 5166/3575 err 0/0
+s3 line: adc=147/235 filtered=148/286 threshold=168/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 85189 st 2 tgt 35/0 spd 34/0 duty 746/0 cnt 5176/3575 err 0/0
+[MC] ms 85239 st 2 tgt 35/0 spd 38/0 duty 711/0 cnt 5187/3575 err 0/0
+[MC] ms 85289 st 2 tgt 35/0 spd 38/0 duty 717/0 cnt 5197/3575 err 0/0
+[MC] ms 85339 st 2 tgt 35/0 spd 38/0 duty 706/0 cnt 5208/3575 err 0/0
+[MC] ms 85389 st 2 tgt 40/40 spd 34/4 duty 805/476 cnt 5218/3576 err 0/0
+s3 line: adc=189/178 filtered=182/181 threshold=169/691 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 85439 st 2 tgt 38/40 spd 38/0 duty 775/704 cnt 5229/3576 err 0/0
+[MC] ms 85489 st 2 tgt 38/40 spd 38/21 duty 771/695 cnt 5240/3581 err 0/0
+[MC] ms 85539 st 2 tgt 38/40 spd 46/38 duty 682/582 cnt 5254/3592 err 0/0
+[MC] ms 85589 st 2 tgt 38/40 spd 42/38 duty 682/592 cnt 5266/3604 err 0/0
+s3 line: adc=134/216 filtered=140/207 threshold=169/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 85639 st 2 tgt 40/40 spd 46/38 duty 654/598 cnt 5279/3615 err 0/0
+[MC] ms 85689 st 2 tgt 40/40 spd 42/38 duty 666/604 cnt 5292/3627 err 0/0
+s3 line: adc=129/2550 filtered=131/1994 threshold=168/691 left=WHITE right=BLACK mask=2 strength=58 command=RIGHT
+[MC] ms 85739 st 2 tgt 40/35 spd 42/38 duty 664/564 cnt 5304/3638 err 0/0
+[MC] ms 85789 st 2 tgt 40/33 spd 42/34 duty 646/555 cnt 5317/3649 err 0/0
+[MC] ms 85839 st 2 tgt 40/32 spd 42/34 duty 644/538 cnt 5329/3659 err 0/0
+[MC] ms 85889 st 2 tgt 40/32 spd 42/29 duty 630/583 cnt 5341/3668 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 85939 st 2 tgt 35/0 spd 38/29 duty 622/0 cnt 5352/3677 err 0/0
+[MC] ms 85989 st 2 tgt 35/0 spd 34/0 duty 643/0 cnt 5363/3677 err 0/0
+[MC] ms 86039 st 2 tgt 35/0 spd 29/0 duty 698/0 cnt 5372/3677 err 0/0
+[MC] ms 86089 st 2 tgt 35/0 spd 29/0 duty 732/0 cnt 5381/3677 err 0/0
+[MC] ms 86139 st 2 tgt 35/0 spd 29/0 duty 747/0 cnt 5390/3677 err 0/0
+[MC] ms 86189 st 2 tgt 35/0 spd 29/0 duty 772/0 cnt 5399/3677 err 0/0
+s3 line: adc=132/3301 filtered=133/3309 threshold=167/691 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+[MC] ms 86239 st 2 tgt 35/0 spd 38/0 duty 698/0 cnt 5410/3677 err 0/0
+[MC] ms 86289 st 2 tgt 35/0 spd 34/0 duty 735/0 cnt 5420/3677 err 0/0
+[MC] ms 86339 st 2 tgt 35/0 spd 29/0 duty 785/0 cnt 5429/3677 err 0/0
+[MC] ms 86389 st 2 tgt 35/0 spd 38/0 duty 724/0 cnt 5440/3677 err 0/0
+[MC] ms 86439 st 2 tgt 35/0 spd 29/0 duty 807/0 cnt 5449/3677 err 0/0
+[MC] ms 86489 st 2 tgt 35/0 spd 34/0 duty 760/0 cnt 5460/3677 err 0/0
+[MC] ms 86539 st 2 tgt 35/0 spd 38/0 duty 717/0 cnt 5471/3677 err 0/0
+[MC] ms 86589 st 2 tgt 35/0 spd 34/0 duty 754/0 cnt 5481/3677 err 0/0
+[MC] ms 86639 st 2 tgt 35/0 spd 34/0 duty 759/0 cnt 5491/3677 err 0/0
+[MC] ms 86689 st 2 tgt 35/0 spd 25/0 duty 864/0 cnt 5499/3677 err 0/0
+s3 line: adc=158/252 filtered=151/327 threshold=168/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 86739 st 2 tgt 35/0 spd 25/0 duty 922/0 cnt 5506/3677 err 0/0
+[MC] ms 86789 st 2 tgt 35/0 spd 29/0 duty 920/0 cnt 5515/3677 err 0/0
+[MC] ms 86839 st 2 tgt 35/0 spd 34/0 duty 882/0 cnt 5525/3677 err 0/0
+[MC] ms 86889 st 2 tgt 40/40 spd 38/0 duty 897/312 cnt 5536/3677 err 0/0
+[MC] ms 86939 st 2 tgt 40/40 spd 47/21 duty 805/347 cnt 5550/3682 err 0/0
+[MC] ms 86989 st 2 tgt 40/40 spd 47/21 duty 786/446 cnt 5563/3688 err 0/0
+[MC] ms 87039 st 2 tgt 40/40 spd 42/25 duty 800/493 cnt 5576/3695 err 0/0
+[MC] ms 87089 st 2 tgt 40/40 spd 46/29 duty 741/528 cnt 5590/3704 err 0/0
+[MC] ms 87139 st 2 tgt 40/40 spd 47/34 duty 697/538 cnt 5604/3713 err 0/0
+[MC] ms 87189 st 2 tgt 40/40 spd 47/34 duty 678/568 cnt 5617/3723 err 0/0
+s3 line: adc=138/2524 filtered=138/2113 threshold=169/694 left=WHITE right=BLACK mask=2 strength=62 command=RIGHT
+[MC] ms 87239 st 2 tgt 40/34 spd 42/38 duty 704/490 cnt 5629/3734 err 0/0
+[MC] ms 87289 st 2 tgt 40/33 spd 47/34 duty 641/511 cnt 5643/3744 err 0/0
+[MC] ms 87339 st 2 tgt 40/33 spd 42/29 duty 666/556 cnt 5655/3753 err 0/0
+[MC] ms 87389 st 2 tgt 40/32 spd 42/29 duty 664/558 cnt 5667/3762 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 87439 st 2 tgt 35/0 spd 42/34 duty 596/0 cnt 5680/3772 err 0/0
+[MC] ms 87489 st 2 tgt 35/0 spd 38/0 duty 613/0 cnt 5691/3772 err 0/0
+[MC] ms 87539 st 2 tgt 35/0 spd 29/0 duty 701/0 cnt 5700/3772 err 0/0
+[MC] ms 87589 st 2 tgt 35/0 spd 29/0 duty 726/0 cnt 5709/3772 err 0/0
+[MC] ms 87639 st 2 tgt 35/0 spd 34/0 duty 696/0 cnt 5719/3772 err 0/0
+[MC] ms 87689 st 2 tgt 35/0 spd 29/0 duty 751/0 cnt 5728/3772 err 0/0
+s3 line: adc=132/3181 filtered=132/3182 threshold=166/694 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+[MC] ms 87739 st 2 tgt 35/0 spd 34/0 duty 726/0 cnt 5738/3772 err 0/0
+[MC] ms 87789 st 2 tgt 35/0 spd 34/0 duty 731/0 cnt 5748/3772 err 0/0
+[MC] ms 87839 st 2 tgt 35/0 spd 34/0 duty 736/0 cnt 5758/3772 err 0/0
+[MC] ms 87889 st 2 tgt 35/0 spd 34/0 duty 741/0 cnt 5768/3772 err 0/0
+[MC] ms 87939 st 2 tgt 35/0 spd 34/0 duty 746/0 cnt 5778/3772 err 0/0
+[MC] ms 87989 st 2 tgt 35/0 spd 29/0 duty 806/0 cnt 5787/3772 err 0/0
+[MC] ms 88039 st 2 tgt 35/0 spd 38/0 duty 736/0 cnt 5798/3772 err 0/0
+[MC] ms 88089 st 2 tgt 35/0 spd 38/0 duty 721/0 cnt 5809/3772 err 0/0
+[MC] ms 88139 st 2 tgt 35/0 spd 34/0 duty 773/0 cnt 5818/3772 err 0/0
+[MC] ms 88189 st 2 tgt 35/0 spd 34/0 duty 762/0 cnt 5829/3772 err 0/0
+[MC] ms 88239 st 2 tgt 35/0 spd 34/0 duty 767/0 cnt 5839/3772 err 0/0
+s3 line: adc=159/1493 filtered=153/1671 threshold=169/694 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+[MC] ms 88289 st 2 tgt 35/0 spd 38/0 duty 732/0 cnt 5850/3772 err 0/0
+[MC] ms 88339 st 2 tgt 35/0 spd 29/0 duty 806/0 cnt 5859/3772 err 0/0
+[MC] ms 88389 st 2 tgt 35/0 spd 34/0 duty 786/0 cnt 5869/3772 err 0/0
+[MC] ms 88439 st 2 tgt 35/0 spd 38/0 duty 735/0 cnt 5881/3772 err 0/0
+s3 line: adc=168/224 filtered=169/245 threshold=170/694 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+[MC] ms 88489 st 2 tgt 38/40 spd 38/4 duty 753/404 cnt 5892/3773 err 0/0
+[MC] ms 88539 st 2 tgt 38/40 spd 38/12 duty 765/479 cnt 5903/3777 err 0/0
+[MC] ms 88589 st 2 tgt 38/40 spd 42/25 duty 725/479 cnt 5915/3784 err 0/0
+[MC] ms 88639 st 2 tgt 38/40 spd 42/25 duty 709/562 cnt 5927/3791 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 88689 st 2 tgt 0/35 spd 34/29 duty 0/525 cnt 5938/3800 err 0/0
+s3 line: adc=157/2377 filtered=152/1901 threshold=170/695 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+[MC] ms 88739 st 2 tgt 40/35 spd -4/29 duty 440/554 cnt 5937/3809 err 0/0
+[MC] ms 88789 st 2 tgt 40/33 spd 0/25 duty 612/622 cnt 5937/3816 err 0/0
+[MC] ms 88839 st 2 tgt 40/33 spd 4/25 duty 764/662 cnt 5938/3823 err 0/0
+[MC] ms 88889 st 2 tgt 40/32 spd 29/25 duty 677/681 cnt 5946/3831 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 88939 st 2 tgt 35/0 spd 42/29 duty 530/0 cnt 5958/3840 err 0/0
+[MC] ms 88989 st 2 tgt 35/0 spd 29/-4 duty 624/0 cnt 5968/3840 err 0/0
+[MC] ms 89039 st 2 tgt 35/0 spd 29/0 duty 658/0 cnt 5977/3840 err 0/0
+[MC] ms 89089 st 2 tgt 35/0 spd 29/0 duty 683/0 cnt 5986/3840 err 0/0
+[MC] ms 89139 st 2 tgt 35/0 spd 34/0 duty 672/0 cnt 5995/3840 err 0/0
+[MC] ms 89189 st 2 tgt 35/0 spd 34/0 duty 677/0 cnt 6005/3840 err 0/0
+s3 line: adc=114/3314 filtered=128/3308 threshold=168/695 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+[MC] ms 89239 st 2 tgt 35/0 spd 29/0 duty 742/0 cnt 6014/3840 err 0/0
+[MC] ms 89289 st 2 tgt 35/0 spd 29/0 duty 780/0 cnt 6022/3840 err 0/0
+[MC] ms 89339 st 2 tgt 35/0 spd 29/0 duty 810/0 cnt 6031/3840 err 0/0
+[MC] ms 89389 st 2 tgt 35/0 spd 29/0 duty 835/0 cnt 6040/3840 err 0/0
+[MC] ms 89439 st 2 tgt 35/0 spd 34/0 duty 784/0 cnt 6051/3840 err 0/0
+[MC] ms 89489 st 2 tgt 35/0 spd 38/0 duty 745/0 cnt 6062/3840 err 0/0
+[MC] ms 89539 st 2 tgt 35/0 spd 34/0 duty 762/0 cnt 6073/3840 err 0/0
+[MC] ms 89589 st 2 tgt 35/0 spd 38/0 duty 727/0 cnt 6084/3840 err 0/0
+[MC] ms 89639 st 2 tgt 35/0 spd 38/0 duty 712/0 cnt 6095/3840 err 0/0
+[MC] ms 89689 st 2 tgt 35/0 spd 34/0 duty 745/0 cnt 6105/3840 err 0/0
+[MC] ms 89739 st 2 tgt 35/0 spd 34/0 duty 750/0 cnt 6115/3840 err 0/0
+s3 line: adc=130/2867 filtered=134/2931 threshold=168/695 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+[MC] ms 89789 st 2 tgt 35/0 spd 38/0 duty 711/0 cnt 6126/3840 err 0/0
+[MC] ms 89839 st 2 tgt 35/0 spd 38/0 duty 704/0 cnt 6137/3840 err 0/0
+[MC] ms 89889 st 2 tgt 35/0 spd 34/0 duty 733/0 cnt 6147/3840 err 0/0
+[MC] ms 89939 st 2 tgt 35/0 spd 34/0 duty 738/0 cnt 6157/3840 err 0/0
+[MC] ms 89989 st 2 tgt 35/0 spd 38/0 duty 703/0 cnt 6168/3840 err 0/0
+[MC] ms 90039 st 2 tgt 35/0 spd 34/0 duty 732/0 cnt 6178/3840 err 0/0
+[MC] ms 90089 st 2 tgt 35/0 spd 34/0 duty 737/0 cnt 6188/3840 err 0/0
+[MC] ms 90139 st 2 tgt 35/0 spd 29/0 duty 797/0 cnt 6197/3840 err 0/0
+s3 line: adc=185/248 filtered=179/285 threshold=170/695 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 90189 st 2 tgt 38/40 spd 34/0 duty 804/312 cnt 6207/3840 err 0/0
+[MC] ms 90239 st 2 tgt 38/40 spd 42/8 duty 749/484 cnt 6218/3842 err 0/0
+[MC] ms 90289 st 2 tgt 38/40 spd 38/25 duty 777/452 cnt 6229/3849 err 0/0
+[MC] ms 90339 st 2 tgt 38/40 spd 42/29 duty 737/487 cnt 6241/3857 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 90389 st 2 tgt 0/35 spd 42/33 duty 0/469 cnt 6254/3866 err 0/0
+s3 line: adc=138/2978 filtered=142/2668 threshold=170/696 left=WHITE right=BLACK mask=2 strength=80 command=RIGHT
+[MC] ms 90439 st 2 tgt 0/35 spd 4/29 duty 0/520 cnt 6257/3875 err 0/0
+[MC] ms 90489 st 2 tgt 40/32 spd 4/25 duty 476/555 cnt 6258/3883 err 0/0
+[MC] ms 90539 st 2 tgt 40/32 spd 0/21 duty 700/634 cnt 6258/3889 err 0/0
+[MC] ms 90589 st 2 tgt 40/32 spd 8/29 duty 824/597 cnt 6260/3898 err 0/0
+[MC] ms 90639 st 2 tgt 40/32 spd 38/34 duty 637/571 cnt 6271/3907 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 90689 st 2 tgt 35/0 spd 34/8 duty 610/0 cnt 6282/3911 err 0/0
+[MC] ms 90739 st 2 tgt 35/0 spd 29/0 duty 684/0 cnt 6290/3911 err 0/0
+[MC] ms 90789 st 2 tgt 35/0 spd 29/0 duty 709/0 cnt 6299/3911 err 0/0
+[MC] ms 90839 st 2 tgt 35/0 spd 29/0 duty 739/0 cnt 6308/3911 err 0/0
+[MC] ms 90889 st 2 tgt 35/0 spd 29/0 duty 764/0 cnt 6317/3911 err 0/0
+[MC] ms 90939 st 2 tgt 35/0 spd 34/0 duty 734/0 cnt 6327/3911 err 0/0
+s3 line: adc=147/3442 filtered=138/3433 threshold=168/696 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+[MC] ms 90989 st 2 tgt 35/0 spd 38/0 duty 695/0 cnt 6338/3911 err 0/0
+[MC] ms 91039 st 2 tgt 35/0 spd 38/0 duty 692/0 cnt 6349/3911 err 0/0
+[MC] ms 91089 st 2 tgt 35/0 spd 29/0 duty 775/0 cnt 6358/3911 err 0/0
+[MC] ms 91139 st 2 tgt 35/0 spd 34/0 duty 740/0 cnt 6368/3911 err 0/0
+[MC] ms 91189 st 2 tgt 35/0 spd 38/0 duty 701/0 cnt 6379/3911 err 0/0
+[MC] ms 91239 st 2 tgt 35/0 spd 38/0 duty 717/0 cnt 6389/3911 err 0/0
+[MC] ms 91289 st 2 tgt 35/0 spd 38/0 duty 706/0 cnt 6400/3911 err 0/0
+[MC] ms 91339 st 2 tgt 35/0 spd 34/0 duty 744/0 cnt 6409/3911 err 0/0
+[MC] ms 91389 st 2 tgt 35/0 spd 29/0 duty 822/0 cnt 6417/3911 err 0/0
+[MC] ms 91439 st 2 tgt 35/0 spd 38/0 duty 753/0 cnt 6428/3911 err 0/0
+s3 line: adc=131/3317 filtered=135/3321 threshold=169/696 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+[MC] ms 91489 st 2 tgt 35/0 spd 38/0 duty 738/0 cnt 6439/3911 err 0/0
+[MC] ms 91539 st 2 tgt 35/0 spd 38/0 duty 739/0 cnt 6450/3911 err 0/0
+[MC] ms 91589 st 2 tgt 35/0 spd 34/0 duty 764/0 cnt 6460/3911 err 0/0
+[MC] ms 91639 st 2 tgt 35/0 spd 34/0 duty 769/0 cnt 6470/3911 err 0/0
+[MC] ms 91689 st 2 tgt 35/0 spd 34/0 duty 758/0 cnt 6481/3911 err 0/0
+[MC] ms 91739 st 2 tgt 35/0 spd 29/0 duty 818/0 cnt 6490/3911 err 0/0
+[MC] ms 91789 st 2 tgt 35/0 spd 38/0 duty 744/0 cnt 6501/3911 err 0/0
+[MC] ms 91839 st 2 tgt 35/0 spd 38/0 duty 737/0 cnt 6512/3911 err 0/0
+[MC] ms 91889 st 2 tgt 35/0 spd 38/0 duty 730/0 cnt 6523/3911 err 0/0
+[MC] ms 91939 st 2 tgt 35/0 spd 34/0 duty 755/0 cnt 6533/3911 err 0/0
+s3 line: adc=165/482 filtered=165/817 threshold=171/696 left=WHITE right=BLACK mask=2 strength=20 command=RIGHT
+[MC] ms 91989 st 2 tgt 35/0 spd 29/0 duty 810/0 cnt 6542/3911 err 0/0
+[MC] ms 92039 st 2 tgt 35/0 spd 38/0 duty 736/0 cnt 6553/3911 err 0/0
+s3 line: adc=189/238 filtered=188/279 threshold=171/696 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 92089 st 2 tgt 38/40 spd 38/0 duty 752/312 cnt 6564/3911 err 0/0
+[MC] ms 92139 st 2 tgt 38/40 spd 34/12 duty 804/424 cnt 6574/3915 err 0/0
+[MC] ms 92189 st 2 tgt 38/40 spd 42/17 duty 728/499 cnt 6587/3920 err 0/0
+[MC] ms 92239 st 2 tgt 38/40 spd 42/25 duty 712/522 cnt 6599/3928 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 92289 st 2 tgt 0/35 spd 42/25 duty 0/540 cnt 6612/3936 err 0/0
+s3 line: adc=136/2320 filtered=144/1866 threshold=171/697 left=WHITE right=BLACK mask=2 strength=54 command=RIGHT
+[MC] ms 92339 st 2 tgt 0/35 spd 4/29 duty 0/528 cnt 6615/3945 err 0/0
+[MC] ms 92389 st 2 tgt 40/34 spd 8/25 duty 444/597 cnt 6617/3953 err 0/0
+[MC] ms 92439 st 2 tgt 40/33 spd 12/29 duty 556/592 cnt 6621/3961 err 0/0
+[MC] ms 92489 st 2 tgt 40/32 spd 21/29 duty 587/613 cnt 6627/3969 err 0/0
+[MC] ms 92539 st 2 tgt 40/32 spd 29/34 duty 586/573 cnt 6636/3979 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 92589 st 2 tgt 35/0 spd 30/8 duty 552/0 cnt 6645/3983 err 0/0
+[MC] ms 92639 st 2 tgt 35/0 spd 25/0 duty 634/0 cnt 6653/3983 err 0/0
+[MC] ms 92689 st 2 tgt 35/0 spd 29/0 duty 648/0 cnt 6661/3983 err 0/0
+[MC] ms 92739 st 2 tgt 35/0 spd 29/0 duty 690/0 cnt 6669/3983 err 0/0
+[MC] ms 92789 st 2 tgt 35/0 spd 34/0 duty 674/0 cnt 6679/3983 err 0/0
+[MC] ms 92839 st 2 tgt 35/0 spd 34/0 duty 671/0 cnt 6689/3983 err 0/0
+s3 line: adc=123/3197 filtered=135/3212 threshold=172/697 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+[MC] ms 92889 st 2 tgt 35/0 spd 34/0 duty 696/0 cnt 6698/3983 err 0/0
+[MC] ms 92939 st 2 tgt 35/0 spd 34/0 duty 701/0 cnt 6708/3983 err 0/0
+[MC] ms 92989 st 2 tgt 35/0 spd 34/0 duty 706/0 cnt 6718/3983 err 0/0
+[MC] ms 93039 st 2 tgt 35/0 spd 38/0 duty 671/0 cnt 6729/3983 err 0/0
+[MC] ms 93089 st 2 tgt 35/0 spd 34/0 duty 700/0 cnt 6739/3983 err 0/0
+[MC] ms 93139 st 2 tgt 35/0 spd 38/0 duty 657/0 cnt 6750/3983 err 0/0
+[MC] ms 93189 st 2 tgt 35/0 spd 38/0 duty 650/0 cnt 6761/3983 err 0/0
+s3 line: adc=149/218 filtered=137/292 threshold=171/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 93239 st 2 tgt 35/0 spd 38/0 duty 623/0 cnt 6773/3983 err 0/0
+[MC] ms 93289 st 2 tgt 35/0 spd 34/0 duty 656/0 cnt 6783/3983 err 0/0
+[MC] ms 93339 st 2 tgt 35/0 spd 34/0 duty 681/0 cnt 6792/3983 err 0/0
+[MC] ms 93389 st 2 tgt 40/40 spd 29/0 duty 804/312 cnt 6800/3983 err 0/0
+[MC] ms 93439 st 2 tgt 40/40 spd 38/0 duty 759/560 cnt 6811/3983 err 0/0
+[MC] ms 93489 st 2 tgt 40/40 spd 42/17 duty 733/579 cnt 6823/3988 err 0/0
+s3 line: adc=170/181 filtered=167/181 threshold=172/695 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+[MC] ms 93539 st 2 tgt 40/40 spd 42/29 duty 723/558 cnt 6835/3996 err 0/0
+s3 line: adc=178/186 filtered=165/185 threshold=172/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 93589 st 2 tgt 38/40 spd 47/30 duty 634/599 cnt 6849/4005 err 0/0
+[MC] ms 93639 st 2 tgt 40/40 spd 38/25 duty 714/702 cnt 6860/4013 err 0/0
+[MC] ms 93689 st 2 tgt 40/40 spd 47/34 duty 627/684 cnt 6874/4023 err 0/0
+[MC] ms 93739 st 2 tgt 40/40 spd 42/38 duty 665/658 cnt 6886/4034 err 0/0
+[MC] ms 93789 st 2 tgt 40/40 spd 47/38 duty 598/672 cnt 6899/4045 err 0/0
+[MC] ms 93839 st 2 tgt 40/40 spd 42/34 duty 620/714 cnt 6912/4056 err 0/0
+[MC] ms 93889 st 2 tgt 40/40 spd 46/42 duty 557/656 cnt 6926/4068 err 0/0
+[MC] ms 93939 st 2 tgt 40/40 spd 38/47 duty 623/605 cnt 6937/4081 err 0/0
+s3 line: adc=125/2661 filtered=130/2162 threshold=172/694 left=WHITE right=BLACK mask=2 strength=63 command=RIGHT
+[MC] ms 93989 st 2 tgt 40/34 spd 38/42 duty 625/573 cnt 6949/4093 err 0/0
+[MC] ms 94039 st 2 tgt 40/33 spd 38/34 duty 643/613 cnt 6960/4103 err 0/0
+[MC] ms 94089 st 2 tgt 40/32 spd 38/38 duty 649/543 cnt 6971/4115 err 0/0
+[MC] ms 94139 st 2 tgt 40/32 spd 38/34 duty 651/553 cnt 6983/4125 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 94189 st 2 tgt 35/0 spd 38/25 duty 607/0 cnt 6994/4133 err 0/0
+[MC] ms 94239 st 2 tgt 35/0 spd 34/0 duty 628/0 cnt 7004/4134 err 0/0
+[MC] ms 94289 st 2 tgt 35/0 spd 29/0 duty 706/0 cnt 7013/4134 err 0/0
+[MC] ms 94339 st 2 tgt 35/0 spd 34/0 duty 671/0 cnt 7023/4134 err 0/0
+[MC] ms 94389 st 2 tgt 35/0 spd 29/0 duty 736/0 cnt 7032/4134 err 0/0
+[MC] ms 94439 st 2 tgt 35/0 spd 34/0 duty 701/0 cnt 7042/4134 err 0/0
+s3 line: adc=142/1356 filtered=140/1858 threshold=169/694 left=WHITE right=BLACK mask=2 strength=54 command=RIGHT
+[MC] ms 94489 st 2 tgt 35/0 spd 34/0 duty 706/0 cnt 7052/4134 err 0/0
+[MC] ms 94539 st 2 tgt 35/0 spd 29/0 duty 766/0 cnt 7061/4134 err 0/0
+s3 line: adc=142/195 filtered=140/264 threshold=168/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 94589 st 2 tgt 35/0 spd 34/0 duty 719/0 cnt 7072/4134 err 0/0
+[MC] ms 94639 st 2 tgt 35/0 spd 34/0 duty 720/0 cnt 7082/4134 err 0/0
+[MC] ms 94689 st 2 tgt 35/0 spd 34/0 duty 730/0 cnt 7092/4134 err 0/0
+[MC] ms 94739 st 2 tgt 40/40 spd 38/0 duty 741/400 cnt 7103/4134 err 0/0
+[MC] ms 94789 st 2 tgt 40/40 spd 38/0 duty 759/584 cnt 7114/4135 err 0/0
+[MC] ms 94839 st 2 tgt 40/40 spd 42/21 duty 733/550 cnt 7126/4141 err 0/0
+[MC] ms 94889 st 2 tgt 40/40 spd 42/29 duty 723/545 cnt 7138/4150 err 0/0
+[MC] ms 94939 st 2 tgt 40/40 spd 46/29 duty 669/595 cnt 7152/4159 err 0/0
+[MC] ms 94989 st 2 tgt 40/40 spd 42/34 duty 669/595 cnt 7165/4169 err 0/0
+[MC] ms 95039 st 2 tgt 40/40 spd 42/29 duty 654/675 cnt 7178/4178 err 0/0
+s3 line: adc=130/177 filtered=132/173 threshold=169/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 95089 st 2 tgt 40/40 spd 42/42 duty 639/590 cnt 7191/4190 err 0/0
+[MC] ms 95139 st 2 tgt 40/40 spd 42/38 duty 629/632 cnt 7203/4201 err 0/0
+[MC] ms 95189 st 2 tgt 40/40 spd 42/42 duty 619/602 cnt 7216/4213 err 0/0
+[MC] ms 95239 st 2 tgt 40/40 spd 42/38 duty 617/636 cnt 7228/4224 err 0/0
+[MC] ms 95289 st 2 tgt 40/40 spd 42/42 duty 607/618 cnt 7240/4236 err 0/0
+[MC] ms 95339 st 2 tgt 40/40 spd 42/38 duty 613/652 cnt 7252/4247 err 0/0
+[MC] ms 95389 st 2 tgt 40/40 spd 42/38 duty 611/666 cnt 7264/4258 err 0/0
+[MC] ms 95439 st 2 tgt 40/40 spd 42/38 duty 609/672 cnt 7276/4270 err 0/0
+[MC] ms 95489 st 2 tgt 40/40 spd 46/42 duty 559/638 cnt 7289/4282 err 0/0
+[MC] ms 95539 st 2 tgt 40/40 spd 38/42 duty 629/628 cnt 7300/4294 err 0/0
+[MC] ms 95589 st 2 tgt 40/40 spd 47/38 duty 546/662 cnt 7313/4306 err 0/0
+s3 line: adc=108/2298 filtered=118/1920 threshold=167/690 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+[MC] ms 95639 st 2 tgt 40/40 spd 42/42 duty 580/636 cnt 7325/4318 err 0/0
+[MC] ms 95689 st 2 tgt 40/34 spd 42/38 duty 574/596 cnt 7337/4329 err 0/0
+[MC] ms 95739 st 2 tgt 40/33 spd 38/38 duty 604/566 cnt 7349/4340 err 0/0
+[MC] ms 95789 st 2 tgt 40/33 spd 42/29 duty 570/658 cnt 7361/4348 err 0/0
+[MC] ms 95839 st 2 tgt 40/32 spd 38/34 duty 604/616 cnt 7373/4358 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 95889 st 2 tgt 35/0 spd 38/4 duty 545/0 cnt 7384/4362 err 0/0
+[MC] ms 95939 st 2 tgt 35/0 spd 29/0 duty 642/0 cnt 7392/4362 err 0/0
+[MC] ms 95989 st 2 tgt 35/0 spd 29/0 duty 676/0 cnt 7401/4362 err 0/0
+[MC] ms 96039 st 2 tgt 35/0 spd 34/0 duty 646/0 cnt 7411/4362 err 0/0
+s3 line: adc=144/197 filtered=140/265 threshold=170/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 96089 st 2 tgt 35/0 spd 34/0 duty 651/0 cnt 7421/4362 err 0/0
+[MC] ms 96139 st 2 tgt 35/0 spd 34/0 duty 676/0 cnt 7430/4362 err 0/0
+[MC] ms 96189 st 2 tgt 35/0 spd 38/0 duty 641/0 cnt 7441/4362 err 0/0
+[MC] ms 96239 st 2 tgt 35/0 spd 34/0 duty 670/0 cnt 7451/4362 err 0/0
+[MC] ms 96289 st 2 tgt 40/40 spd 38/12 duty 696/396 cnt 7462/4365 err 0/0
+[MC] ms 96339 st 2 tgt 40/40 spd 38/21 duty 698/454 cnt 7474/4370 err 0/0
+[MC] ms 96389 st 2 tgt 40/40 spd 47/25 duty 607/513 cnt 7488/4377 err 0/0
+s3 line: adc=133/2508 filtered=139/1912 threshold=170/690 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+[MC] ms 96439 st 2 tgt 40/35 spd 42/34 duty 615/449 cnt 7501/4386 err 0/0
+[MC] ms 96489 st 2 tgt 40/33 spd 42/29 duty 617/501 cnt 7513/4394 err 0/0
+[MC] ms 96539 st 2 tgt 40/32 spd 42/29 duty 607/509 cnt 7525/4403 err 0/0
+s3 line: adc=198/3256 filtered=185/3255 threshold=170/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[MC] ms 96589 st 2 tgt 40/32 spd 38/29 duty 649/524 cnt 7536/4412 err 0/0
+[S2] line: BOTH BLACK; confirming junction
+[MC] ms 96639 st 2 tgt 40/38 spd 38/34 duty 659/566 cnt 7547/4421 err 0/0
+[MC] ms 96689 st 2 tgt 40/38 spd 38/34 duty 669/586 cnt 7559/4431 err 0/0
+[S2] line: junction confirmed; crossing straight
+[MC] ms 96739 st 2 tgt 40/40 spd 46/34 duty 591/631 cnt 7572/4441 err 0/0
+[MC] ms 96789 st 2 tgt 40/40 spd 38/38 duty 652/605 cnt 7583/4453 err 0/0
+[MC] ms 96839 st 2 tgt 40/40 spd 42/38 duty 622/611 cnt 7596/4464 err 0/0
+s3 line: adc=1218/188 filtered=1224/245 threshold=170/690 left=BLACK right=WHITE mask=1 strength=80 command=LEFT
+[MC] ms 96889 st 2 tgt 40/40 spd 42/42 duty 608/589 cnt 7608/4476 err 0/0
+[S2] line: junction cleared; holding straight exit
+[MC] ms 96939 st 2 tgt 40/40 spd 42/38 duty 606/635 cnt 7620/4487 err 0/0
+[MC] ms 96989 st 2 tgt 40/40 spd 38/42 duty 631/601 cnt 7632/4499 err 0/0
+[MC] ms 97039 st 2 tgt 40/40 spd 42/38 duty 601/635 cnt 7644/4510 err 0/0
+[MC] ms 97089 st 2 tgt 40/40 spd 42/38 duty 603/641 cnt 7656/4522 err 0/0
+[MC] ms 97139 st 2 tgt 40/40 spd 38/42 duty 645/607 cnt 7667/4534 err 0/0
+s3 line: adc=140/180 filtered=142/179 threshold=170/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 97189 st 2 tgt 40/40 spd 38/38 duty 643/633 cnt 7679/4546 err 0/0
+[MC] ms 97239 st 2 tgt 40/40 spd 38/42 duty 641/603 cnt 7691/4558 err 0/0
+[MC] ms 97289 st 2 tgt 40/40 spd 42/38 duty 599/645 cnt 7704/4569 err 0/0
+[MC] ms 97339 st 2 tgt 40/40 spd 38/42 duty 637/603 cnt 7715/4582 err 0/0
+[MC] ms 97389 st 2 tgt 40/40 spd 42/42 duty 603/605 cnt 7727/4594 err 0/0
+[MC] ms 97439 st 2 tgt 40/40 spd 42/38 duty 601/635 cnt 7739/4605 err 0/0
+[MC] ms 97489 st 2 tgt 40/40 spd 42/38 duty 599/645 cnt 7751/4617 err 0/0
+[MC] ms 97539 st 2 tgt 40/40 spd 38/38 duty 629/639 cnt 7763/4629 err 0/0
+[MC] ms 97589 st 2 tgt 40/40 spd 42/38 duty 595/641 cnt 7775/4641 err 0/0
+[S2] line: normal following resumed
+[MC] ms 97639 st 2 tgt 40/40 spd 38/38 duty 625/655 cnt 7787/4652 err 0/0
+s3 line: adc=145/210 filtered=144/202 threshold=171/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 97689 st 2 tgt 40/40 spd 38/42 duty 627/625 cnt 7799/4664 err 0/0
+[MC] ms 97739 st 2 tgt 40/40 spd 38/42 duty 629/623 cnt 7810/4676 err 0/0
+[MC] ms 97789 st 2 tgt 40/40 spd 42/42 duty 595/613 cnt 7823/4688 err 0/0
+[MC] ms 97839 st 2 tgt 40/40 spd 42/42 duty 585/619 cnt 7835/4700 err 0/0
+s3 line: adc=132/1848 filtered=132/1503 threshold=170/688 left=WHITE right=BLACK mask=2 strength=42 command=RIGHT
+[MC] ms 97889 st 2 tgt 40/35 spd 42/42 duty 587/550 cnt 7847/4712 err 0/0
+[MC] ms 97939 st 2 tgt 40/34 spd 42/38 duty 585/555 cnt 7859/4723 err 0/0
+[MC] ms 97989 st 2 tgt 40/33 spd 38/34 duty 623/574 cnt 7870/4733 err 0/0
+[MC] ms 98039 st 2 tgt 40/33 spd 38/34 duty 637/569 cnt 7881/4743 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 98089 st 2 tgt 35/0 spd 34/25 duty 625/0 cnt 7892/4751 err 0/0
+[MC] ms 98139 st 2 tgt 35/0 spd 34/0 duty 630/0 cnt 7902/4751 err 0/0
+[MC] ms 98189 st 2 tgt 35/0 spd 34/0 duty 635/0 cnt 7912/4751 err 0/0
+[MC] ms 98239 st 2 tgt 35/0 spd 29/0 duty 709/0 cnt 7920/4751 err 0/0
+s3 line: adc=117/175 filtered=127/232 threshold=169/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 98289 st 2 tgt 35/0 spd 34/0 duty 684/0 cnt 7930/4751 err 0/0
+[MC] ms 98339 st 2 tgt 35/0 spd 34/0 duty 689/0 cnt 7940/4751 err 0/0
+[MC] ms 98389 st 2 tgt 35/0 spd 38/0 duty 654/0 cnt 7951/4751 err 0/0
+[MC] ms 98439 st 2 tgt 40/40 spd 34/0 duty 733/400 cnt 7961/4751 err 0/0
+[MC] ms 98489 st 2 tgt 40/40 spd 38/17 duty 727/423 cnt 7972/4755 err 0/0
+[MC] ms 98539 st 2 tgt 40/40 spd 42/21 duty 697/490 cnt 7984/4761 err 0/0
+[MC] ms 98589 st 2 tgt 40/40 spd 47/25 duty 638/545 cnt 7997/4769 err 0/0
+[MC] ms 98639 st 2 tgt 40/40 spd 46/34 duty 628/527 cnt 8010/4778 err 0/0
+[MC] ms 98689 st 2 tgt 40/40 spd 42/34 duty 638/557 cnt 8023/4788 err 0/0
+[MC] ms 98739 st 2 tgt 40/40 spd 46/38 duty 588/539 cnt 8036/4799 err 0/0
+s3 line: adc=197/172 filtered=184/175 threshold=170/685 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 98789 st 2 tgt 40/40 spd 42/34 duty 605/601 cnt 8049/4809 err 0/0
+[MC] ms 98839 st 2 tgt 38/40 spd 42/34 duty 571/631 cnt 8061/4819 err 0/0
+[MC] ms 98889 st 2 tgt 38/40 spd 42/34 duty 567/645 cnt 8073/4830 err 0/0
+[MC] ms 98939 st 2 tgt 38/40 spd 42/38 duty 555/627 cnt 8085/4841 err 0/0
+[MC] ms 98989 st 2 tgt 38/40 spd 38/34 duty 579/689 cnt 8096/4851 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 99039 st 2 tgt 0/35 spd 25/38 duty 0/611 cnt 8104/4862 err 0/0
+[MC] ms 99089 st 2 tgt 0/35 spd 0/34 duty 0/648 cnt 8104/4872 err 0/0
+s3 line: adc=129/170 filtered=139/173 threshold=170/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 99139 st 2 tgt 0/35 spd 0/29 duty 0/708 cnt 8104/4881 err 0/0
+[MC] ms 99189 st 2 tgt 0/35 spd 0/29 duty 0/733 cnt 8104/4890 err 0/0
+[MC] ms 99239 st 2 tgt 0/35 spd 0/29 duty 0/748 cnt 8104/4899 err 0/0
+[MC] ms 99289 st 2 tgt 0/35 spd 0/34 duty 0/728 cnt 8104/4909 err 0/0
+[MC] ms 99339 st 2 tgt 0/35 spd 0/34 duty 0/733 cnt 8104/4919 err 0/0
+[MC] ms 99389 st 2 tgt 40/40 spd 0/34 duty 440/813 cnt 8104/4928 err 0/0
+[MC] ms 99439 st 2 tgt 40/40 spd 0/38 duty 640/803 cnt 8104/4939 err 0/0
+s3 line: adc=120/2947 filtered=130/2351 threshold=170/683 left=WHITE right=BLACK mask=2 strength=70 command=RIGHT
+[MC] ms 99489 st 2 tgt 40/34 spd 21/38 duty 606/747 cnt 8110/4950 err 0/0
+[MC] ms 99539 st 2 tgt 40/33 spd 38/42 duty 511/667 cnt 8121/4963 err 0/0
+[MC] ms 99589 st 2 tgt 40/32 spd 34/38 duty 565/649 cnt 8131/4974 err 0/0
+[MC] ms 99639 st 2 tgt 40/32 spd 34/34 duty 595/655 cnt 8141/4985 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 99689 st 2 tgt 35/0 spd 38/29 duty 527/0 cnt 8152/4994 err 0/0
+[MC] ms 99739 st 2 tgt 35/0 spd 34/0 duty 560/0 cnt 8162/4994 err 0/0
+[MC] ms 99789 st 2 tgt 35/0 spd 29/0 duty 638/0 cnt 8170/4994 err 0/0
+[MC] ms 99839 st 2 tgt 35/0 spd 29/0 duty 676/0 cnt 8178/4994 err 0/0
+[MC] ms 99889 st 2 tgt 35/0 spd 29/0 duty 710/0 cnt 8187/4994 err 0/0
+[MC] ms 99939 st 2 tgt 35/0 spd 38/0 duty 627/0 cnt 8198/4994 err 0/0
+s3 line: adc=141/166 filtered=141/225 threshold=170/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 99989 st 2 tgt 35/0 spd 29/0 duty 724/0 cnt 8207/4994 err 0/0
+[MC] ms 100039 st 2 tgt 35/0 spd 38/0 duty 649/0 cnt 8218/4994 err 0/0
+[MC] ms 100089 st 2 tgt 35/0 spd 29/0 duty 737/0 cnt 8227/4994 err 0/0
+[MC] ms 100139 st 2 tgt 35/0 spd 34/0 duty 702/0 cnt 8237/4994 err 0/0
+[MC] ms 100189 st 2 tgt 40/40 spd 42/12 duty 692/400 cnt 8249/4997 err 0/0
+[MC] ms 100239 st 2 tgt 40/40 spd 38/12 duty 730/535 cnt 8260/5001 err 0/0
+[MC] ms 100289 st 2 tgt 40/40 spd 47/25 duty 651/530 cnt 8273/5008 err 0/0
+[MC] ms 100339 st 2 tgt 40/40 spd 42/25 duty 677/597 cnt 8285/5016 err 0/0
+s3 line: adc=192/173 filtered=186/179 threshold=173/681 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+[MC] ms 100389 st 2 tgt 40/40 spd 46/29 duty 618/620 cnt 8299/5025 err 0/0
+[MC] ms 100439 st 2 tgt 38/40 spd 42/38 duty 604/571 cnt 8312/5036 err 0/0
+[MC] ms 100489 st 2 tgt 38/40 spd 42/38 duty 588/585 cnt 8324/5047 err 0/0
+[MC] ms 100539 st 2 tgt 38/40 spd 38/38 duty 604/603 cnt 8336/5058 err 0/0
+[MC] ms 100589 st 2 tgt 38/40 spd 38/34 duty 596/657 cnt 8348/5068 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 100639 st 2 tgt 0/35 spd 25/38 duty 0/575 cnt 8356/5080 err 0/0
+[MC] ms 100689 st 2 tgt 0/35 spd -4/29 duty 0/654 cnt 8355/5089 err 0/0
+[MC] ms 100739 st 2 tgt 0/35 spd 0/29 duty 0/688 cnt 8355/5097 err 0/0
+s3 line: adc=134/169 filtered=138/172 threshold=173/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 100789 st 2 tgt 0/35 spd 0/29 duty 0/722 cnt 8355/5106 err 0/0
+[MC] ms 100839 st 2 tgt 0/35 spd 0/29 duty 0/764 cnt 8355/5114 err 0/0
+[MC] ms 100889 st 2 tgt 0/35 spd 0/38 duty 0/690 cnt 8355/5125 err 0/0
+[MC] ms 100939 st 2 tgt 0/35 spd 0/38 duty 0/687 cnt 8355/5136 err 0/0
+[MC] ms 100989 st 2 tgt 0/35 spd 0/34 duty 0/716 cnt 8355/5146 err 0/0
+[MC] ms 101039 st 2 tgt 40/40 spd 0/29 duty 400/817 cnt 8355/5155 err 0/0
+s3 line: adc=128/2955 filtered=135/2366 threshold=171/679 left=WHITE right=BLACK mask=2 strength=70 command=RIGHT
+[MC] ms 101089 st 2 tgt 40/40 spd 4/38 duty 556/772 cnt 8356/5166 err 0/0
+[MC] ms 101139 st 2 tgt 40/34 spd 21/38 duty 579/702 cnt 8361/5178 err 0/0
+[MC] ms 101189 st 2 tgt 40/32 spd 34/38 duty 510/668 cnt 8371/5189 err 0/0
+[MC] ms 101239 st 2 tgt 40/32 spd 34/38 duty 532/638 cnt 8381/5200 err 0/0
+[MC] ms 101289 st 2 tgt 40/32 spd 34/38 duty 572/612 cnt 8391/5211 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 101339 st 2 tgt 35/0 spd 38/17 duty 494/0 cnt 8402/5217 err 0/0
+[MC] ms 101389 st 2 tgt 35/0 spd 25/0 duty 631/0 cnt 8410/5217 err 0/0
+[MC] ms 101439 st 2 tgt 35/0 spd 29/0 duty 633/0 cnt 8419/5217 err 0/0
+[MC] ms 101489 st 2 tgt 35/0 spd 29/0 duty 658/0 cnt 8428/5217 err 0/0
+[MC] ms 101539 st 2 tgt 35/0 spd 29/0 duty 683/0 cnt 8437/5217 err 0/0
+[MC] ms 101589 st 2 tgt 35/0 spd 34/0 duty 653/0 cnt 8447/5217 err 0/0
+s3 line: adc=135/170 filtered=139/229 threshold=170/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 101639 st 2 tgt 35/0 spd 34/0 duty 654/0 cnt 8457/5217 err 0/0
+[MC] ms 101689 st 2 tgt 35/0 spd 29/0 duty 719/0 cnt 8466/5217 err 0/0
+[MC] ms 101739 st 2 tgt 35/0 spd 34/0 duty 684/0 cnt 8476/5217 err 0/0
+[MC] ms 101789 st 2 tgt 40/40 spd 34/0 duty 734/312 cnt 8486/5217 err 0/0
+[MC] ms 101839 st 2 tgt 40/40 spd 34/4 duty 764/512 cnt 8496/5218 err 0/0
+[MC] ms 101889 st 2 tgt 40/40 spd 42/12 duty 702/624 cnt 8508/5221 err 0/0
+[MC] ms 101939 st 2 tgt 40/40 spd 42/29 duty 696/563 cnt 8521/5230 err 0/0
+s3 line: adc=208/184 filtered=193/182 threshold=172/679 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 101989 st 2 tgt 38/40 spd 46/29 duty 624/608 cnt 8534/5239 err 0/0
+[MC] ms 102039 st 2 tgt 38/40 spd 42/34 duty 623/603 cnt 8547/5249 err 0/0
+[MC] ms 102089 st 2 tgt 38/40 spd 42/38 duty 603/589 cnt 8560/5260 err 0/0
+[MC] ms 102139 st 2 tgt 37/40 spd 38/34 duty 619/647 cnt 8571/5270 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 102189 st 2 tgt 0/35 spd 42/38 duty 0/580 cnt 8584/5282 err 0/0
+[MC] ms 102239 st 2 tgt 0/35 spd 4/34 duty 0/605 cnt 8587/5292 err 0/0
+[MC] ms 102289 st 2 tgt 0/35 spd 0/29 duty 0/665 cnt 8587/5301 err 0/0
+[MC] ms 102339 st 2 tgt 0/35 spd 0/29 duty 0/699 cnt 8587/5309 err 0/0
+[MC] ms 102389 st 2 tgt 0/35 spd 0/29 duty 0/729 cnt 8587/5318 err 0/0
+s3 line: adc=120/177 filtered=133/180 threshold=172/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 102439 st 2 tgt 0/35 spd 0/29 duty 0/763 cnt 8587/5327 err 0/0
+[MC] ms 102489 st 2 tgt 0/35 spd 0/34 duty 0/728 cnt 8587/5337 err 0/0
+[MC] ms 102539 st 2 tgt 0/35 spd 0/34 duty 0/733 cnt 8587/5347 err 0/0
+[MC] ms 102589 st 2 tgt 0/35 spd 0/34 duty 0/738 cnt 8587/5357 err 0/0
+[MC] ms 102639 st 2 tgt 0/35 spd 0/34 duty 0/743 cnt 8587/5367 err 0/0
+s3 line: adc=135/2982 filtered=139/2323 threshold=172/682 left=WHITE right=BLACK mask=2 strength=69 command=RIGHT
+[MC] ms 102689 st 2 tgt 40/40 spd 0/34 duty 440/813 cnt 8587/5377 err 0/0
+[MC] ms 102739 st 2 tgt 40/34 spd 17/38 duty 429/715 cnt 8593/5388 err 0/0
+[MC] ms 102789 st 2 tgt 40/32 spd 25/42 duty 456/641 cnt 8600/5400 err 0/0
+[MC] ms 102839 st 2 tgt 40/32 spd 29/34 duty 495/683 cnt 8608/5410 err 0/0
+[MC] ms 102889 st 2 tgt 40/32 spd 34/38 duty 500/629 cnt 8618/5421 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 102939 st 2 tgt 35/0 spd 34/17 duty 471/0 cnt 8628/5427 err 0/0
+[MC] ms 102989 st 2 tgt 35/0 spd 25/0 duty 567/0 cnt 8636/5427 err 0/0
+[MC] ms 103039 st 2 tgt 35/0 spd 21/0 duty 657/0 cnt 8643/5427 err 0/0
+[MC] ms 103089 st 2 tgt 35/0 spd 25/0 duty 675/0 cnt 8651/5427 err 0/0
+[MC] ms 103139 st 2 tgt 35/0 spd 34/0 duty 631/0 cnt 8660/5427 err 0/0
+[MC] ms 103189 st 2 tgt 35/0 spd 34/0 duty 633/0 cnt 8671/5427 err 0/0
+s3 line: adc=134/175 filtered=137/265 threshold=171/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 103239 st 2 tgt 35/0 spd 34/0 duty 648/0 cnt 8680/5427 err 0/0
+[MC] ms 103289 st 2 tgt 35/0 spd 29/0 duty 694/0 cnt 8690/5427 err 0/0
+[MC] ms 103339 st 2 tgt 35/0 spd 34/0 duty 659/0 cnt 8700/5427 err 0/0
+[MC] ms 103389 st 2 tgt 40/40 spd 38/0 duty 665/312 cnt 8711/5427 err 0/0
+[MC] ms 103439 st 2 tgt 40/40 spd 34/12 duty 723/436 cnt 8721/5430 err 0/0
+[MC] ms 103489 st 2 tgt 40/40 spd 38/17 duty 709/516 cnt 8732/5435 err 0/0
+[MC] ms 103539 st 2 tgt 40/40 spd 42/25 duty 679/551 cnt 8744/5442 err 0/0
+[MC] ms 103589 st 2 tgt 40/40 spd 47/25 duty 632/618 cnt 8757/5450 err 0/0
+[MC] ms 103639 st 2 tgt 40/40 spd 42/38 duty 654/537 cnt 8769/5461 err 0/0
+s3 line: adc=173/176 filtered=173/179 threshold=173/681 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+[MC] ms 103689 st 2 tgt 38/40 spd 38/38 duty 670/543 cnt 8781/5473 err 0/0
+[MC] ms 103739 st 2 tgt 38/40 spd 38/38 duty 670/561 cnt 8792/5484 err 0/0
+[MC] ms 103789 st 2 tgt 38/40 spd 38/34 duty 674/611 cnt 8803/5494 err 0/0
+[MC] ms 103839 st 2 tgt 38/40 spd 38/34 duty 678/641 cnt 8814/5504 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 103889 st 2 tgt 0/35 spd 29/34 duty 0/601 cnt 8824/5515 err 0/0
+[MC] ms 103939 st 2 tgt 0/35 spd -4/29 duty 0/651 cnt 8823/5524 err 0/0
+s3 line: adc=125/185 filtered=135/181 threshold=173/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 103989 st 2 tgt 0/35 spd 0/29 duty 0/685 cnt 8823/5533 err 0/0
+[MC] ms 104039 st 2 tgt 0/35 spd 0/34 duty 0/674 cnt 8823/5542 err 0/0
+[MC] ms 104089 st 2 tgt 0/35 spd 0/38 duty 0/631 cnt 8823/5553 err 0/0
+[MC] ms 104139 st 2 tgt 0/35 spd 0/34 duty 0/668 cnt 8823/5563 err 0/0
+[MC] ms 104189 st 2 tgt 0/35 spd 0/29 duty 0/706 cnt 8823/5573 err 0/0
+[MC] ms 104239 st 2 tgt 40/40 spd 0/29 duty 400/790 cnt 8823/5582 err 0/0
+[MC] ms 104289 st 2 tgt 40/40 spd 4/38 duty 556/732 cnt 8824/5593 err 0/0
+s3 line: adc=136/3208 filtered=134/2508 threshold=172/680 left=WHITE right=BLACK mask=2 strength=75 command=RIGHT
+[MC] ms 104339 st 2 tgt 40/33 spd 12/34 duty 668/708 cnt 8827/5604 err 0/0
+[MC] ms 104389 st 2 tgt 40/32 spd 34/38 duty 550/648 cnt 8837/5615 err 0/0
+[MC] ms 104439 st 2 tgt 40/32 spd 34/38 duty 572/626 cnt 8847/5626 err 0/0
+[MC] ms 104489 st 2 tgt 40/32 spd 29/38 duty 648/596 cnt 8857/5637 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 104539 st 2 tgt 35/0 spd 42/38 duty 500/0 cnt 8869/5648 err 0/0
+[MC] ms 104589 st 2 tgt 35/0 spd 34/-4 duty 561/0 cnt 8879/5647 err 0/0
+[MC] ms 104639 st 2 tgt 35/0 spd 29/0 duty 635/0 cnt 8887/5647 err 0/0
+[MC] ms 104689 st 2 tgt 35/0 spd 29/0 duty 669/0 cnt 8896/5647 err 0/0
+[MC] ms 104739 st 2 tgt 35/0 spd 29/0 duty 694/0 cnt 8905/5647 err 0/0
+s3 line: adc=125/173 filtered=124/237 threshold=169/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 104789 st 2 tgt 35/0 spd 34/0 duty 659/0 cnt 8915/5647 err 0/0
+[MC] ms 104839 st 2 tgt 35/0 spd 34/0 duty 664/0 cnt 8925/5647 err 0/0
+[MC] ms 104889 st 2 tgt 35/0 spd 29/0 duty 714/0 cnt 8934/5647 err 0/0
+[MC] ms 104939 st 2 tgt 35/0 spd 38/0 duty 658/0 cnt 8945/5647 err 0/0
+[MC] ms 104989 st 2 tgt 40/40 spd 38/0 duty 712/520 cnt 8956/5647 err 0/0
+[MC] ms 105039 st 2 tgt 40/40 spd 38/8 duty 718/640 cnt 8967/5649 err 0/0
+[MC] ms 105089 st 2 tgt 40/40 spd 42/29 duty 680/560 cnt 8980/5657 err 0/0
+s3 line: adc=194/173 filtered=189/174 threshold=169/678 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+[MC] ms 105139 st 2 tgt 38/40 spd 46/34 duty 610/565 cnt 8993/5667 err 0/0
+[MC] ms 105189 st 2 tgt 38/40 spd 42/34 duty 613/595 cnt 9006/5677 err 0/0
+[MC] ms 105239 st 2 tgt 37/40 spd 42/34 duty 585/625 cnt 9018/5687 err 0/0
+[MC] ms 105289 st 2 tgt 35/40 spd 42/34 duty 542/639 cnt 9030/5698 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 105339 st 2 tgt 0/35 spd 38/38 duty 0/579 cnt 9041/5709 err 0/0
+[MC] ms 105389 st 2 tgt 0/35 spd 0/38 duty 0/564 cnt 9042/5720 err 0/0
+[MC] ms 105439 st 2 tgt 0/35 spd 0/29 duty 0/665 cnt 9042/5728 err 0/0
+[MC] ms 105489 st 2 tgt 0/35 spd 0/25 duty 0/735 cnt 9042/5736 err 0/0
+s3 line: adc=123/160 filtered=132/168 threshold=169/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 105539 st 2 tgt 0/35 spd 0/29 duty 0/733 cnt 9042/5745 err 0/0
+[MC] ms 105589 st 2 tgt 0/35 spd 0/34 duty 0/708 cnt 9042/5755 err 0/0
+[MC] ms 105639 st 2 tgt 0/35 spd 0/29 duty 0/768 cnt 9042/5764 err 0/0
+[MC] ms 105689 st 2 tgt 0/35 spd 0/34 duty 0/738 cnt 9042/5774 err 0/0
+[MC] ms 105739 st 2 tgt 0/35 spd 0/34 duty 0/763 cnt 9042/5783 err 0/0
+[MC] ms 105789 st 2 tgt 40/40 spd 0/34 duty 312/823 cnt 9042/5793 err 0/0
+[MC] ms 105839 st 2 tgt 40/40 spd 17/42 duty 383/765 cnt 9046/5805 err 0/0
+s3 line: adc=153/3206 filtered=148/2736 threshold=169/676 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+[MC] ms 105889 st 2 tgt 40/33 spd 21/42 duty 446/682 cnt 9053/5817 err 0/0
+[MC] ms 105939 st 2 tgt 40/32 spd 25/38 duty 501/669 cnt 9060/5828 err 0/0
+[MC] ms 105989 st 2 tgt 40/32 spd 29/34 duty 532/675 cnt 9068/5839 err 0/0
+[MC] ms 106039 st 2 tgt 40/32 spd 34/42 duty 537/581 cnt 9078/5851 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 106089 st 2 tgt 35/0 spd 38/25 duty 469/0 cnt 9089/5859 err 0/0
+[MC] ms 106139 st 2 tgt 35/0 spd 34/0 duty 516/0 cnt 9098/5859 err 0/0
+[MC] ms 106189 st 2 tgt 35/0 spd 25/0 duty 634/0 cnt 9105/5859 err 0/0
+s3 line: adc=163/3222 filtered=163/3248 threshold=169/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[MC] ms 106239 st 2 tgt 35/0 spd 29/0 duty 644/0 cnt 9114/5859 err 0/0
+[MC] ms 106289 st 2 tgt 35/0 spd 34/0 duty 628/0 cnt 9123/5859 err 0/0
+[S2] line: junction confirmed; crossing straight
+[MC] ms 106339 st 2 tgt 40/40 spd 34/0 duty 684/400 cnt 9133/5859 err 0/0
+s3 line: adc=149/186 filtered=155/234 threshold=169/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 106389 st 2 tgt 40/40 spd 34/4 duty 714/564 cnt 9143/5860 err 0/0
+[S2] line: junction cleared; holding straight exit
+[MC] ms 106439 st 2 tgt 40/40 spd 38/17 duty 696/619 cnt 9154/5864 err 0/0
+s3 line: adc=157/179 filtered=167/183 threshold=169/676 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+[MC] ms 106489 st 2 tgt 40/40 spd 38/29 duty 702/586 cnt 9166/5873 err 0/0
+[MC] ms 106539 st 2 tgt 40/40 spd 47/29 duty 602/626 cnt 9180/5882 err 0/0
+s3 line: adc=160/163 filtered=157/171 threshold=169/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 106589 st 2 tgt 40/40 spd 42/34 duty 622/608 cnt 9193/5893 err 0/0
+[MC] ms 106639 st 2 tgt 40/40 spd 42/38 duty 612/598 cnt 9205/5904 err 0/0
+s3 line: adc=173/186 filtered=170/183 threshold=169/678 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+[MC] ms 106689 st 2 tgt 40/40 spd 42/34 duty 598/652 cnt 9218/5914 err 0/0
+[MC] ms 106739 st 2 tgt 40/40 spd 42/38 duty 592/646 cnt 9230/5925 err 0/0
+[MC] ms 106789 st 2 tgt 40/40 spd 42/42 duty 582/608 cnt 9243/5937 err 0/0
+[MC] ms 106839 st 2 tgt 40/40 spd 42/42 duty 580/602 cnt 9255/5950 err 0/0
+[MC] ms 106889 st 2 tgt 40/40 spd 42/42 duty 557/588 cnt 9268/5962 err 0/0
+[MC] ms 106939 st 2 tgt 40/40 spd 46/38 duty 511/626 cnt 9281/5973 err 0/0
+[MC] ms 106989 st 2 tgt 40/40 spd 42/38 duty 537/644 cnt 9293/5984 err 0/0
+[MC] ms 107039 st 2 tgt 40/40 spd 34/34 duty 619/702 cnt 9303/5994 err 0/0
+[MC] ms 107089 st 2 tgt 40/40 spd 38/38 duty 597/692 cnt 9315/6005 err 0/0
+s3 line: adc=144/177 filtered=151/177 threshold=169/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 107139 st 2 tgt 40/40 spd 34/42 duty 647/658 cnt 9325/6017 err 0/0
+[MC] ms 107189 st 2 tgt 40/40 spd 42/38 duty 593/700 cnt 9337/6028 err 0/0
+[S2] line: normal following resumed
+[MC] ms 107239 st 2 tgt 40/40 spd 42/42 duty 587/670 cnt 9349/6040 err 0/0
+[MC] ms 107289 st 2 tgt 40/40 spd 42/42 duty 593/659 cnt 9361/6053 err 0/0
+[MC] ms 107339 st 2 tgt 40/40 spd 42/46 duty 583/609 cnt 9373/6066 err 0/0
+[MC] ms 107389 st 2 tgt 40/40 spd 46/42 duty 533/631 cnt 9387/6078 err 0/0
+[MC] ms 107439 st 2 tgt 40/40 spd 42/42 duty 546/616 cnt 9399/6091 err 0/0
+[MC] ms 107489 st 2 tgt 40/40 spd 42/38 duty 536/654 cnt 9412/6102 err 0/0
+[MC] ms 107539 st 2 tgt 40/40 spd 38/34 duty 578/712 cnt 9423/6112 err 0/0
+[MC] ms 107589 st 2 tgt 40/40 spd 38/38 duty 592/702 cnt 9434/6123 err 0/0
+s3 line: adc=137/192 filtered=141/183 threshold=170/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 107639 st 2 tgt 40/40 spd 38/38 duty 594/712 cnt 9445/6134 err 0/0
+[MC] ms 107689 st 2 tgt 40/40 spd 38/42 duty 604/670 cnt 9457/6147 err 0/0
+[MC] ms 107739 st 2 tgt 40/40 spd 42/42 duty 566/664 cnt 9469/6159 err 0/0
+[MC] ms 107789 st 2 tgt 40/40 spd 42/38 duty 568/698 cnt 9481/6171 err 0/0
+[MC] ms 107839 st 2 tgt 40/40 spd 42/42 duty 570/668 cnt 9493/6183 err 0/0
+s3 line: adc=164/188 filtered=166/187 threshold=171/681 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+[MC] ms 107889 st 2 tgt 40/40 spd 38/42 duty 600/662 cnt 9504/6195 err 0/0
+[MC] ms 107939 st 2 tgt 38/40 spd 38/34 duty 578/744 cnt 9516/6205 err 0/0
+[MC] ms 107989 st 2 tgt 38/40 spd 38/38 duty 570/718 cnt 9528/6217 err 0/0
+[MC] ms 108039 st 2 tgt 38/40 spd 38/42 duty 574/684 cnt 9539/6229 err 0/0
+[MC] ms 108089 st 2 tgt 38/40 spd 42/42 duty 534/686 cnt 9551/6241 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 108139 st 2 tgt 0/35 spd 21/38 duty 0/660 cnt 9558/6252 err 0/0
+[MC] ms 108189 st 2 tgt 0/35 spd 0/34 duty 0/697 cnt 9558/6262 err 0/0
+[MC] ms 108239 st 2 tgt 0/35 spd 0/34 duty 0/702 cnt 9558/6272 err 0/0
+s3 line: adc=153/178 filtered=147/182 threshold=171/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 108289 st 2 tgt 0/35 spd 0/29 duty 0/767 cnt 9558/6281 err 0/0
+[MC] ms 108339 st 2 tgt 0/35 spd 0/34 duty 0/752 cnt 9558/6290 err 0/0
+[MC] ms 108389 st 2 tgt 0/35 spd 0/34 duty 0/767 cnt 9558/6300 err 0/0
+s3 line: adc=133/3105 filtered=132/2436 threshold=170/680 left=WHITE right=BLACK mask=2 strength=72 command=RIGHT
+[MC] ms 108439 st 2 tgt 0/35 spd 0/34 duty 0/764 cnt 9558/6310 err 0/0
+[MC] ms 108489 st 2 tgt 40/32 spd 12/38 duty 404/694 cnt 9561/6321 err 0/0
+[MC] ms 108539 st 2 tgt 40/32 spd 25/29 duty 371/762 cnt 9569/6330 err 0/0
+[MC] ms 108589 st 2 tgt 40/32 spd 25/38 duty 442/668 cnt 9577/6342 err 0/0
+[MC] ms 108639 st 2 tgt 40/32 spd 29/38 duty 469/638 cnt 9586/6353 err 0/0
+[S2] line: sustained RIGHT; strong curve target=35/0 mm/s
+[MC] ms 108689 st 2 tgt 35/0 spd 34/8 duty 391/0 cnt 9596/6358 err 0/0
+[MC] ms 108739 st 2 tgt 35/0 spd 25/0 duty 492/0 cnt 9604/6358 err 0/0
+[MC] ms 108789 st 2 tgt 35/0 spd 21/0 duty 594/0 cnt 9610/6358 err 0/0
+[MC] ms 108839 st 2 tgt 35/0 spd 25/0 duty 616/0 cnt 9618/6358 err 0/0
+[MC] ms 108889 st 2 tgt 35/0 spd 25/0 duty 658/0 cnt 9626/6358 err 0/0
+[MC] ms 108939 st 2 tgt 35/0 spd 29/0 duty 660/0 cnt 9635/6358 err 0/0
+s3 line: adc=137/179 filtered=137/547 threshold=169/680 left=WHITE right=BLACK mask=2 strength=12 command=RIGHT
+[MC] ms 108989 st 2 tgt 35/0 spd 29/0 duty 685/0 cnt 9644/6358 err 0/0
+s3 line: adc=140/190 filtered=139/231 threshold=169/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[MC] ms 109039 st 2 tgt 35/0 spd 34/0 duty 655/0 cnt 9654/6358 err 0/0
+[MC] ms 109089 st 2 tgt 35/0 spd 29/0 duty 720/0 cnt 9663/6358 err 0/0
+[MC] ms 109139 st 2 tgt 35/0 spd 34/0 duty 705/0 cnt 9672/6358 err 0/0
+s3 line: adc=221/162 filtered=205/169 threshold=168/679 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+[MC] ms 109189 st 2 tgt 40/40 spd 34/0 duty 765/440 cnt 9682/6358 err 0/0
+[MC] ms 109239 st 2 tgt 38/40 spd 38/0 duty 723/640 cnt 9693/6358 err 0/0
+[MC] ms 109289 st 2 tgt 38/40 spd 38/21 duty 723/635 cnt 9705/6363 err 0/0
+[MC] ms 109339 st 2 tgt 38/40 spd 42/34 duty 679/585 cnt 9717/6372 err 0/0
+[MC] ms 109389 st 2 tgt 38/40 spd 46/29 duty 623/670 cnt 9730/6381 err 0/0
+[S2] line: sustained LEFT; strong curve target=0/35 mm/s
+[MC] ms 109439 st 2 tgt 0/35 spd 25/34 duty 0/606 cnt 9738/6391 err 0/0
+[MC] ms 109489 st 2 tgt 0/35 spd 0/34 duty 0/611 cnt 9738/6401 err 0/0
+[MC] ms 109539 st 2 tgt 0/35 spd 0/25 duty 0/725 cnt 9738/6408 err 0/0
+[MC] ms 109589 st 2 tgt 0/35 spd 0/21 duty 0/815 cnt 9738/6415 err 0/0
+[MC] ms 109639 st 2 tgt 0/35 spd 0/21 duty 0/897 cnt 9738/6420 err 0/0
+[MC] ms 109689 st 2 tgt 0/35 spd 0/25 duty 0/927 cnt 9738/6428 err 0/0
+s3 line: adc=219/161 filtered=222/168 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+[MC] ms 109739 st 2 tgt 0/35 spd 0/29 duty 0/937 cnt 9738/6436 err 0/0
+[MC] ms 109789 st 2 tgt 0/35 spd 0/21 duty 0/1059 cnt 9738/6442 err 0/0
+[MC] ms 109839 st 2 tgt 0/35 spd 0/17 duty 0/1161 cnt 9738/6448 err 0/0
+[MC] ms 109889 st 2 tgt 0/35 spd 0/25 duty 0/1167 cnt 9738/6455 err 0/0
+[MC] ms 109939 st 2 tgt 0/35 spd 0/25 duty 0/1213 cnt 9738/6463 err 0/0
+[MC] ms 109989 st 2 tgt 0/35 spd 0/29 duty 0/1223 cnt 9738/6471 err 0/0
+[MC] ms 110039 st 2 tgt 0/35 spd 0/17 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110089 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110139 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110189 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+s3 line: adc=217/173 filtered=217/177 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+[MC] ms 110239 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110289 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110339 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110389 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110439 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110489 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[MC] ms 110539 st 2 tgt 0/35 spd 0/0 duty 0/1250 cnt 9738/6475 err 0/0
+[S2] motion fault=3 from state=2; valid=1; stalled L/R=0/1; prior PWM duty=0/1250; speed=0/0 mm/s; counts=9738/6475 errors=0/0
+[S2] RIGHT stall/no feedback: check wheel and encoder 1 GP0/GP1
+s3 line: adc=195/177 filtered=202/178 threshold=168/678 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=210/170 filtered=209/175 threshold=168/677 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=203/172 filtered=209/179 threshold=168/678 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=218/184 filtered=214/180 threshold=168/679 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=195/175 filtered=206/175 threshold=168/676 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=208/186 filtered=210/183 threshold=168/675 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=223/173 filtered=218/178 threshold=168/676 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=196/175 filtered=204/177 threshold=168/677 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=209/178 filtered=210/178 threshold=168/678 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=218/174 filtered=209/177 threshold=168/680 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=207/173 filtered=209/176 threshold=168/681 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=218/185 filtered=216/179 threshold=168/679 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=226/171 filtered=221/178 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=199/174 filtered=208/175 threshold=168/679 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=213/182 filtered=213/181 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=187/161 filtered=199/171 threshold=168/682 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=209/176 filtered=215/175 threshold=168/681 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=214/186 filtered=214/181 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=226/184 filtered=216/182 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=209/171 filtered=209/172 threshold=168/675 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=206/171 filtered=206/173 threshold=168/674 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=220/180 filtered=217/180 threshold=168/675 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=194/179 filtered=204/181 threshold=168/674 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=227/181 filtered=220/179 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=209/179 filtered=214/179 threshold=168/676 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=199/179 filtered=206/176 threshold=168/677 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=211/184 filtered=207/182 threshold=168/679 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=208/165 filtered=213/170 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=197/162 filtered=208/168 threshold=168/678 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=229/178 filtered=221/180 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=213/184 filtered=210/178 threshold=168/677 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=214/182 filtered=213/174 threshold=168/675 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=209/179 filtered=211/176 threshold=168/676 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=216/174 filtered=217/177 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=207/182 filtered=209/177 threshold=168/676 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=213/184 filtered=210/180 threshold=168/678 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=222/171 filtered=219/174 threshold=168/678 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=217/176 filtered=215/179 threshold=168/679 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=229/172 filtered=221/176 threshold=168/678 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=216/188 filtered=218/182 threshold=168/681 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=222/184 filtered=222/181 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=216/178 filtered=215/178 threshold=168/681 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=213/175 filtered=212/177 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=209/180 filtered=212/180 threshold=168/681 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=221/176 filtered=216/178 threshold=168/680 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=221/174 filtered=219/180 threshold=168/679 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=230/181 filtered=218/180 threshold=168/678 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=214/172 filtered=213/174 threshold=168/678 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=195/184 filtered=203/180 threshold=168/677 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+s3 line: adc=219/182 filtered=216/179 threshold=168/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=208/188 filtered=212/179 threshold=168/678 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=211/180 filtered=212/176 threshold=168/676 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=220/192 filtered=220/187 threshold=168/675 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=286/2494 filtered=251/1975 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3473/3641 filtered=3434/3616 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4002/4043 filtered=4003/4043 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4011/4048 filtered=4012/4048 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3978/4022 filtered=3973/4025 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3961/4007 filtered=3965/4010 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3963/4018 filtered=3962/4014 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3974/4010 filtered=3968/4008 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3941/4014 filtered=3955/4012 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3969/4008 filtered=3969/4011 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3978/4006 filtered=3975/4006 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3952/4011 filtered=3958/4009 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3968/4003 filtered=3965/4003 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3962/4010 filtered=3961/4010 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3961/4032 filtered=3968/4028 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3988/4040 filtered=3984/4037 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4005/4021 filtered=3996/4029 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3993/4046 filtered=4001/4045 threshold=168/676 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING

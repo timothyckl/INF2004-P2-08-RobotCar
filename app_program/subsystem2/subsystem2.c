@@ -9,7 +9,7 @@
  *	    core (core 0, usermain), so every subsystem can register pins
  *	    in its own _start().  Then the LEGACY starter objects.
  *	subsystem2_start(): Motion Control, then the Vehicle Controller.
- *	    Neither runs in a bench build (S2_HW_TEST in task_motion.h):
+ *	    Neither runs in a bench build (make S2_HW_TEST=n):
  *	    the bench sequence owns the motors.  Then the LEGACY producer.
  *
  *	The starter producer (IF-01, IF-02) stays until subsystem 3's

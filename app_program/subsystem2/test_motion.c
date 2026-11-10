@@ -306,12 +306,20 @@ test_motion_speed (void)
               && (abs_i(o.left_mm_s - 200) <= 20)
               && (abs_i(o.right_mm_s - 100) <= 20);
 
+    /* A zero target brakes that wheel at once and keeps it braked (no
+       reverse drive) while the other wheel stays driven. */
     (void)sim_cmd(p_s, S2_CMD_SPEED, 0, 100);
     sim_step(p_s);
     ok = ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
+    sim_run(p_s, 5);
+    ok = ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
 
+    /* The braked wheel drives again once its measured speed (averaged
+       over the speed window) falls below the new target. */
     (void)sim_cmd(p_s, S2_CMD_SPEED, 100, 0);
     sim_step(p_s);
+    ok = ok && (0 == p_s->out.duty_r);
+    sim_run(p_s, 5);
     ok = ok && (p_s->out.duty_l > 0) && (0 == p_s->out.duty_r);
 
     return (ok);

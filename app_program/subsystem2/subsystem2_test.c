@@ -7,8 +7,7 @@
  *	gains and geometry; they need no motors or encoders. S2-U20..S2-U35
  *	(test_motion.c) drive the Motion Control logic with a wheel model.
  *
- *	Bench mode, off by default (S2_HW_TEST 0 in task_motion.h). Set it
- *	there locally for a bench session and never commit it non-zero.
+ *	Bench mode, off by default: make TEST=1 S2_HW_TEST=n (1..4).
  *	The motion and controller tasks are then not started:
  *	  1  encoder counts every 100 ms for 60 s; motors stay OFF (S2-H03)
  *	  2  also SPINS THE MOTORS (S2-H01, S2-H02, S2-H04): wheels off the

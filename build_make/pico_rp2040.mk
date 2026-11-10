@@ -142,6 +142,25 @@ endif
 S2_CAL_TEST_SUFFIX := _s2cal$(S2_CAL_TEST)
 endif
 
+# S2_HW_TEST selects a subsystem 2 bench sequence in a TEST=1 image; the
+# motion and controller tasks are not started (subsystem2_test.c):
+# 1 encoder counts, motors off (S2-H03); 2 also spins the motors (S2-H01,
+# H02, H04); 3 only the full-speed check (S2-H04); 4 only the watchdog
+# check (S2-H05). 2..4 SPIN THE MOTORS: wheels off the ground.
+S2_HW_TEST ?= 0
+ifneq ($(filter $(S2_HW_TEST),0 1 2 3 4),$(S2_HW_TEST))
+$(error Unknown S2_HW_TEST '$(S2_HW_TEST)'; use 0 to 4)
+endif
+ifneq ($(S2_HW_TEST),0)
+ifneq ($(TEST),1)
+$(error S2_HW_TEST requires TEST=1)
+endif
+ifneq ($(S2_CAL_TEST)$(S3_TEST_MODE_COUNT),00)
+$(error S2_HW_TEST cannot be combined with S2_CAL_TEST or an S3 test profile)
+endif
+S2_HW_TEST_SUFFIX := _s2hw$(S2_HW_TEST)
+endif
+
 # S2_MOTION_LOG=1 prints Motion Control's speed loop (target, measured
 # speed, duty per wheel) every 50 ms while moving, for PID tuning. Opt-in
 # because console formatting runs in the motion task.
@@ -203,7 +222,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_HW_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -268,6 +287,7 @@ CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
 CFLAGS  += -DS3_LINE_FOLLOW_TEST=$(S3_LINE_TEST)
 CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
 CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
+CFLAGS  += -DS2_HW_TEST=$(S2_HW_TEST)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 ifeq ($(S3_LINE_TEST),1)
 CFLAGS  += -DS2_DEMO_SCRIPT=0
@@ -304,7 +324,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s2hw$(S2_HW_TEST)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

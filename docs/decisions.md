@@ -94,6 +94,18 @@ hardware watchdog, GPIO interrupt timestamps) was then 43 times slow.
 CYCLES = `XOSC_MHz` with ENABLE once clk_ref runs from the crystal. S2-H06
 verifies it after a cold power-up.
 
+### 8. Line-follow inside wheel and PWM cap (2026-11-10)
+
+The strong-curve inside wheel stays at 5 mm/s. At 5 mm/s the speed loop
+averages correctly but the wheel moves jerkily (about one encoder count per
+40 ms window, plus stick-slip below breakaway duty). On the track, 10 mm/s
+widened the arc so the car could not hold the loop, and 0 (brake) stalled
+the outer wheel at the 20% cap while pivoting (Fault STALL); 5 mm/s is the
+only value of the three that completes the lap (S2 test log, 2026-11-10).
+The `_s3line` PWM cap stays at 20%: line following peaks at duty 1120 of
+1250, and steady 200 mm/s needs about 1800, so the cap is raised only
+together with faster line-follow speeds or pivot turns, and retested then.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
