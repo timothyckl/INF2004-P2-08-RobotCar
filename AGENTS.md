@@ -10,8 +10,9 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
   records later decisions and open validation. Use the later decisions where
   they revise the initial design. `TEAM.md` maps members to subsystem folders.
 - `docs/decisions.md` records agreed resolutions to tribunal gaps and implementation issues (currently subsystem 5). All members must record new agreed decisions there, labelled by subsystem—not unresolved proposals.
-- Distinguish planned robot behaviour from the starter examples still in the
-  firmware. Do not present proposed timing, data widths or test criteria as
+- The starter examples have been retired; `docs/integration.md` records the
+  integrated architecture and what remains unvalidated. Do not present
+  proposed timing, data widths, calibration values or test criteria as
   validated results.
 - The Vehicle Controller authorises movement/recovery; only Motion Control
   writes motor PWM. Preserve latched STOP and stop-before-scan. Network APIs
@@ -68,24 +69,39 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 
 ## Agreed pin mapping
 
+This section is the authoritative GPIO reference. `TEAM.md` section 2 records
+per-pin ownership claims and must match it; change both together.
+
 | Device | Signal | GPIO | Interface | Owner / constraint |
 |---|---|---|---|---|
-| GY-511 / LSM303DLHC IMU | SDA / SCL | GP0 / GP1 | I2C0 | IMU/Terrain; power from 3V3 |
-| HC-SR04 | TRIG | GP2 | GPIO output | Obstacle Scan generates the trigger pulse |
-| HC-SR04 | ECHO | GP3 | GPIO input | Obstacle Scan times the pulse; level-shift 5 V to 3.3 V |
-| IR line sensors 1–3 | IR1_OUT / IR2_OUT / IR3_OUT | GP4 / GP16 / GP6 | GPIO inputs | Line Sensor |
-| Motor 1 encoder | ENC1_A / ENC1_B | GP26 / GP27 | GPIO interrupts | Motion Control |
-| Motor 2 encoder | ENC2_A / ENC2_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
-| Motor 1 | M1A_PWM / M1B_PWM | GP8 / GP9 | PWM | Motion Control only |
-| Motor 2 | M2A_PWM / M2B_PWM | GP10 / GP11 | PWM | Motion Control only |
-| SG90 servo | SERVO_PWM | GP15 | PWM | Obstacle Scan; power from V+ |
+| GY-511 / LSM303DLHC IMU | SDA / SCL | GP2 / GP3 | I2C1 | IMU/Terrain; power from 3V3 |
+| HC-SR04 | TRIG | GP4 | GPIO output | Obstacle Scan generates the trigger pulse |
+| HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; currently powered from 3V3, see below |
+| Front-left line sensor | AO | GP26 | ADC0 | Line Sensor: left line guide; DOUT disconnected |
+| Front-right line sensor | AO | GP27 | ADC1 | Line Sensor: right line guide; DOUT disconnected |
+| Side barcode sensor | DOUT | GP16 | GPIO input / interrupt | Line Sensor: barcode only, never steering; AOUT disconnected |
+| Right wheel encoder (encoder 1) | ENC1_A / ENC1_B | GP7 / GP28 | GPIO interrupts | Motion Control; keep the GP28 battery-sense jumper open |
+| Left wheel encoder (encoder 2) | ENC2_A / ENC2_B | GP0 / GP1 | GPIO interrupts | Motion Control; requires `CRASH_REPORT=0` |
+| Motor 1 (right wheel) | M1A_PWM / M1B_PWM | GP8 (forward) / GP9 (backward) | PWM | Motion Control only |
+| Motor 2 (left wheel) | M2A_PWM / M2B_PWM | GP10 (backward) / GP11 (forward) | PWM | Motion Control only |
+| SG90 servo | SERVO_PWM | GP12 | PWM | Obstacle Scan; power from the servo header V+ |
 | Pico W radio | Internal WiFi signals | GP23 / GP24 / GP25 / GP29 | Internal SPI/PIO | Reserved; do not use for other functions |
 
 Configuration constraints:
 
-- Disable or relocate UART0 and its mirror from GP0/GP1.
+- Build with `CRASH_REPORT=0`: UART0 and its mirror would take GP0/GP1, which
+  carry the left encoder. The makefile refuses `CRASH_REPORT=1` and
+  `CONSOLE=uart`, and `kernel/sysdepend/pico_rp2040/hw_setting.c` and
+  `config/config_device.h` fail to compile if UART0 would claim the pins.
 - Disable or reassign the demo liveness LED from GP16.
-- Do not enable the sample ADC driver on encoder pins GP26–GP28.
-- GP5 and GP17 are unused. Connect IR sensor 3 to GP6 only; its Grove GP26
-  contact must remain disconnected because GP26 belongs to encoder 1.
-- Power the HC-SR04 from 5 V and keep all signal grounds common.
+- Enable RP2040 ADC pin initialisation only for ADC0/GP26 and ADC1/GP27, which
+  carry the two front sensors' analogue outputs. Keep ADC2/GP28 disabled
+  because GP28 carries the right encoder, and keep ADC3/GP29 disabled because
+  it is reserved for the Pico W radio.
+- GP13, GP14, GP15 and GP18 to GP22 are unused.
+- The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently
+  powered from 3V3 (team pin mapping, 2026-11-03). That wiring is outside the
+  datasheet and is not validated. Obstacle Scan must confirm ranging at 3V3 or
+  move to 5 V; at 5 V, ECHO must be level-shifted to 3.3 V because Pico GPIO is
+  not 5 V tolerant.
+- Keep all signal grounds common.

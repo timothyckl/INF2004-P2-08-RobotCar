@@ -1,0 +1,180 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: joining "Pixel_1232" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+s4: stationary calibration complete
+wifi: link status -> joined AP, no IP yet (2)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link up, ip=10.214.80.101
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: connection status 256, retrying in 3s
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+
+
+microT-Kernel Version 3.00
+
+S3/S2 bounded line-follow test mode
+[S2] GP20 button ready: press to START or STOP
+s3: using saved calibration: WHITE=LOW, BLACK=HIGH
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: joining "Pixel_1232" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+s4: terrain fault 1; sensor restart
+s4: calibration span x 199 y 404 z 90 mg (limit 80) after 200 samples
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: joining "Pixel_1232" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+s4: terrain fault 1; sensor restart
+s4: calibration span x 108 y 287 z 46 mg (limit 80) after 200 samples
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+s4: LSM303DLHC ready; calibrating
+wifi: link status -> joined AP, no IP yet (2)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link up, ip=10.214.80.101
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3

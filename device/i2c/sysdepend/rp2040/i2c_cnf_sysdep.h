@@ -28,12 +28,22 @@
  * GPIO function table), and must be recorded in TEAM.md.
  *   I2C0: SDA on GP0/4/8/12/16/20/28, SCL on GP1/5/9/13/17/21
  *   I2C1: SDA on GP2/6/10/14/18/22/26, SCL on GP3/7/11/15/19/27
- * Robo Pico: I2C0 = GP4/GP5 (Grove 3), I2C1 = GP2/GP3 (Grove 2, Maker port).
- * GP8/GP9 are its motor 1 pins. */
-#define	DEVCNF_I2C0_SDA_PIN	8
-#define	DEVCNF_I2C0_SCL_PIN	9
-#define	DEVCNF_I2C1_SDA_PIN	6
-#define	DEVCNF_I2C1_SCL_PIN	7
+ * Subsystem 4 uses I2C1 on GP2/GP3.  I2C0 is not initialized by the current
+ * Pico W device-startup configuration (devinit.c starts unit 1 only).  Its
+ * placeholder pins are GP20/GP21, which no subsystem claims, so enabling
+ * I2C0 by mistake cannot take the encoder (GP0/GP1, GP7/GP28), ultrasonic
+ * (GP4/GP5) or line sensor (GP16/GP17) pins. */
+#define	DEVCNF_I2C0_SDA_PIN	20
+#define	DEVCNF_I2C0_SCL_PIN	21
+#define	DEVCNF_I2C1_SDA_PIN	2
+#define	DEVCNF_I2C1_SCL_PIN	3
+
+#if (DEVCNF_I2C0_SDA_PIN == 0) || (DEVCNF_I2C0_SDA_PIN == 4) \
+    || (DEVCNF_I2C0_SDA_PIN == 16) || (DEVCNF_I2C0_SDA_PIN == 28) \
+    || (DEVCNF_I2C0_SCL_PIN == 1) || (DEVCNF_I2C0_SCL_PIN == 5) \
+    || (DEVCNF_I2C0_SCL_PIN == 17)
+#error "I2C0 placeholder pins collide with pins claimed in AGENTS.md"
+#endif
 
 /* Register initial value */
 

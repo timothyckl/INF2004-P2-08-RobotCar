@@ -1,0 +1,421 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+s4: stationary calibration complete
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[TEST] S2-U67 PASS  strong curves and junction bounds
+[TEST] subsystem2 SUMMARY 65 passed, 0 failed
+[TEST] INT-03 PASS  line sensor publishes IF-06 every 10 ms
+[TEST] S3-U02 PASS  IF-06 snapshot fields consistent
+[TEST] subsystem3 SUMMARY 2 passed, 0 failed
+[S3 IR] diagnostic start: 60 seconds; move white and black under each sensor
+[S3 IR] adc=156/210 filtered=146/195 threshold=168/680 black=0/0 barcode=0
+[S3 IR] adc=141/200 filtered=136/196 threshold=169/681 black=0/0 barcode=0
+[S3 IR] adc=144/188 filtered=142/187 threshold=170/682 black=0/0 barcode=0
+[S3 IR] adc=125/193 filtered=131/197 threshold=171/683 black=0/0 barcode=0
+[S3 IR] adc=153/190 filtered=148/191 threshold=171/685 black=0/0 barcode=0
+[S3 IR] adc=158/194 filtered=148/193 threshold=172/686 black=0/0 barcode=0
+[S3 IR] adc=131/193 filtered=133/190 threshold=171/687 black=0/0 barcode=0
+[S3 IR] adc=123/188 filtered=134/187 threshold=172/686 black=0/0 barcode=0
+[S3 IR] adc=144/193 filtered=149/195 threshold=174/688 black=0/0 barcode=0
+[S3 IR] adc=149/202 filtered=144/203 threshold=173/689 black=0/0 barcode=0
+[S3 IR] adc=152/177 filtered=150/189 threshold=172/690 black=0/0 barcode=0
+[S3 IR] adc=134/203 filtered=138/201 threshold=173/689 black=0/0 barcode=0
+[S3 IR] adc=157/201 filtered=148/197 threshold=171/691 black=0/0 barcode=0
+[S3 IR] adc=157/200 filtered=147/197 threshold=172/692 black=0/0 barcode=0
+[S3 IR] adc=155/174 filtered=155/183 threshold=173/693 black=0/0 barcode=0
+[S3 IR] adc=147/188 filtered=145/192 threshold=172/692 black=0/0 barcode=0
+[S3 IR] adc=158/203 filtered=147/202 threshold=172/692 black=0/0 barcode=0
+[S3 IR] adc=236/2634 filtered=193/1418 threshold=172/692 black=1/1 barcode=0
+[S3 IR] adc=2538/3200 filtered=1366/2309 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=3005/3379 filtered=2186/2844 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=3296/3548 filtered=2741/3196 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=3295/3549 filtered=3018/3373 threshold=172/692 black=1/1 barcode=1
+s4: hump complete; height invalid (no valid distance)
+[S3 IR] adc=2930/3281 filtered=2974/3327 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=1283/2552 filtered=2128/2939 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=1129/2158 filtered=1628/2548 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=1857/2694 filtered=1743/2621 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=1564/2610 filtered=1653/2615 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=331/2283 filtered=992/2449 threshold=172/692 black=1/1 barcode=0
+[S3 IR] adc=202/1652 filtered=597/2050 threshold=172/692 black=1/1 barcode=0
+[S3 IR] adc=209/1827 filtered=403/1938 threshold=172/692 black=1/1 barcode=0
+[S3 IR] adc=229/2140 filtered=316/2039 threshold=172/692 black=1/1 barcode=1
+[S3 IR] adc=222/1566 filtered=269/1802 threshold=172/692 black=1/1 barcode=1
+s4: hump complete; run maximum 0 mm (provisional estimate)
+[S3 IR] adc=269/189 filtered=269/995 threshold=172/692 black=1/1 barcode=0
+[S3 IR] adc=1074/163 filtered=672/579 threshold=172/692 black=1/1 barcode=0
+[S3 IR] adc=1405/224 filtered=1039/401 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1524/335 filtered=1282/368 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1493/360 filtered=1388/364 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1685/609 filtered=1537/487 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1172/193 filtered=1354/340 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1078/169 filtered=1216/254 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1089/173 filtered=1152/213 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1068/192 filtered=1110/202 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1074/179 filtered=1092/190 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1033/179 filtered=1062/184 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1050/190 filtered=1056/187 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1066/187 filtered=1061/187 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1057/161 filtered=1059/174 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1070/151 filtered=1065/162 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1053/171 filtered=1059/167 threshold=172/693 black=1/0 barcode=0
+[S3 IR] adc=1067/178 filtered=1063/173 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1033/168 filtered=1048/170 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1041/177 filtered=1044/174 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1069/187 filtered=1057/181 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1050/174 filtered=1053/177 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1072/187 filtered=1063/182 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1068/178 filtered=1066/180 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1057/149 filtered=1061/164 threshold=172/692 black=1/0 barcode=0
+[S3 IR] adc=1068/179 filtered=1065/172 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1066/174 filtered=1066/173 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1062/186 filtered=1064/180 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1074/169 filtered=1069/174 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1044/170 filtered=1056/172 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1047/185 filtered=1051/179 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1053/174 filtered=1052/176 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1046/170 filtered=1049/173 threshold=172/691 black=1/0 barcode=0
+[S3 IR] adc=1049/173 filtered=1049/173 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1073/179 filtered=1061/176 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1051/178 filtered=1056/177 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1072/165 filtered=1064/171 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1057/180 filtered=1060/176 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1061/168 filtered=1061/172 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1056/163 filtered=1058/167 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1048/170 filtered=1053/169 threshold=172/690 black=1/0 barcode=0
+[S3 IR] adc=1058/182 filtered=1056/176 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1061/175 filtered=1059/175 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1038/174 filtered=1048/174 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1069/177 filtered=1059/176 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1073/173 filtered=1066/174 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1058/180 filtered=1062/177 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1066/155 filtered=1064/166 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1074/184 filtered=1069/175 threshold=172/689 black=1/0 barcode=0
+[S3 IR] adc=1049/184 filtered=1059/180 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1046/174 filtered=1052/177 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1054/161 filtered=1053/169 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1068/181 filtered=1061/175 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1073/184 filtered=1067/180 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1064/186 filtered=1065/183 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1053/174 filtered=1059/178 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1074/177 filtered=1067/177 threshold=172/688 black=1/0 barcode=0
+[S3 IR] adc=1059/182 filtered=1063/180 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1048/171 filtered=1055/175 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1072/178 filtered=1064/177 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1070/172 filtered=1067/174 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1057/189 filtered=1062/182 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1062/176 filtered=1062/179 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1054/154 filtered=1058/166 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1054/187 filtered=1056/177 threshold=172/687 black=1/0 barcode=0
+[S3 IR] adc=1039/170 filtered=1047/173 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1048/175 filtered=1048/174 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1073/160 filtered=1061/167 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1057/194 filtered=1059/181 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1064/180 filtered=1062/180 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1067/175 filtered=1065/177 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1051/192 filtered=1058/185 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1070/172 filtered=1064/178 threshold=172/686 black=1/0 barcode=0
+[S3 IR] adc=1053/176 filtered=1058/177 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1046/177 filtered=1052/177 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1051/152 filtered=1051/164 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1074/178 filtered=1063/171 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1067/176 filtered=1065/174 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1035/180 filtered=1050/177 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1075/172 filtered=1063/174 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1060/170 filtered=1061/172 threshold=172/685 black=1/0 barcode=0
+[S3 IR] adc=1062/169 filtered=1062/170 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1057/163 filtered=1059/166 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1065/179 filtered=1062/173 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1057/182 filtered=1059/178 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1066/171 filtered=1063/174 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1074/170 filtered=1069/172 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1041/172 filtered=1055/172 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1068/179 filtered=1062/176 threshold=172/684 black=1/0 barcode=0
+[S3 IR] adc=1037/180 filtered=1049/178 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1062/180 filtered=1056/179 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1050/178 filtered=1053/178 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1072/170 filtered=1063/174 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1052/170 filtered=1057/172 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1046/180 filtered=1051/176 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1057/174 filtered=1054/175 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1057/180 filtered=1056/178 threshold=172/683 black=1/0 barcode=0
+[S3 IR] adc=1070/170 filtered=1063/174 threshold=172/682 black=1/0 barcode=0
+[S3 IR] adc=1078/180 filtered=1071/177 threshold=172/682 black=1/0 barcode=0
+[S3 IR] adc=142/178 filtered=606/178 threshold=172/682 black=1/0 barcode=0
+[S3 IR] adc=1121/2579 filtered=864/1379 threshold=172/682 black=1/1 barcode=1
+[S3 IR] adc=294/2418 filtered=579/1899 threshold=172/682 black=1/1 barcode=0
+s4: candidate impact detected
+[S3 IR] adc=131/173 filtered=355/1036 threshold=172/682 black=1/1 barcode=0
+[S3 IR] adc=129/190 filtered=242/613 threshold=172/682 black=1/1 barcode=0
+s4: hump complete; run maximum 0 mm (provisional estimate)
+[S3 IR] adc=125/180 filtered=183/396 threshold=172/682 black=1/0 barcode=0
+[S3 IR] adc=137/186 filtered=137/186 threshold=172/683 black=0/0 barcode=0
+[S3 IR] adc=136/187 filtered=136/185 threshold=170/682 black=0/0 barcode=0
+[S3 IR] adc=128/189 filtered=134/179 threshold=169/681 black=0/0 barcode=0
+[S3 IR] adc=123/176 filtered=131/177 threshold=168/680 black=0/0 barcode=0
+[S3 IR] adc=144/172 filtered=136/171 threshold=167/678 black=0/0 barcode=0
+[S3 IR] adc=122/3325 filtered=128/1756 threshold=168/678 black=0/1 barcode=0
+[S3 IR] adc=125/3331 filtered=126/2544 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=120/3306 filtered=123/2925 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=131/3308 filtered=127/3117 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=129/3289 filtered=128/3203 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=133/3284 filtered=131/3244 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=117/3275 filtered=124/3260 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=140/3284 filtered=132/3272 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=126/3289 filtered=129/3281 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=114/3290 filtered=121/3286 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=112/3292 filtered=116/3289 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=128/3293 filtered=122/3291 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=112/3300 filtered=117/3296 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=140/3295 filtered=129/3295 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=139/3286 filtered=134/3290 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=110/3296 filtered=122/3293 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=121/3290 filtered=121/3291 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=118/3287 filtered=119/3289 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=147/3282 filtered=133/3285 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=138/3290 filtered=136/3288 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=131/3289 filtered=133/3289 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=122/3288 filtered=127/3288 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=133/3291 filtered=130/3290 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=120/3291 filtered=125/3291 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=146/3292 filtered=136/3292 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=138/3296 filtered=137/3294 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=123/3288 filtered=130/3291 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=148/3283 filtered=139/3287 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=118/3293 filtered=128/3290 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=123/3289 filtered=125/3289 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=121/3293 filtered=123/3291 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=114/3296 filtered=118/3294 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=132/3294 filtered=125/3294 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=114/3277 filtered=119/3285 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=125/3292 filtered=122/3289 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=128/3295 filtered=125/3292 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=117/3299 filtered=121/3296 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=138/3296 filtered=130/3296 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=121/3274 filtered=125/3285 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=118/3295 filtered=121/3290 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=138/3277 filtered=130/3283 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=137/3277 filtered=134/3280 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=123/3288 filtered=128/3284 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=120/3288 filtered=124/3286 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=121/3299 filtered=122/3293 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=129/3294 filtered=126/3294 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=129/3282 filtered=128/3288 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=109/3285 filtered=118/3286 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=112/3298 filtered=115/3292 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=142/3298 filtered=129/3295 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=140/3285 filtered=135/3290 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=140/3296 filtered=138/3293 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=125/3297 filtered=131/3295 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=142/3347 filtered=137/3321 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=136/3384 filtered=136/3353 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=109/3460 filtered=122/3407 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=112/3481 filtered=117/3444 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=122/3364 filtered=120/3404 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=142/3373 filtered=131/3388 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=118/3366 filtered=124/3377 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=138/3364 filtered=131/3370 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=116/3368 filtered=123/3369 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=140/3352 filtered=132/3360 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=144/3361 filtered=138/3361 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=146/3356 filtered=142/3358 threshold=164/678 black=0/1 barcode=0
+[S3 IR] adc=139/3355 filtered=140/3356 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=132/3349 filtered=136/3352 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=131/3366 filtered=133/3359 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=139/3353 filtered=136/3356 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=117/3359 filtered=126/3358 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=145/3372 filtered=136/3365 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=124/3360 filtered=130/3362 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=137/3357 filtered=134/3359 threshold=165/678 black=0/1 barcode=0
+[S3 IR] adc=140/3370 filtered=137/3365 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=114/3354 filtered=125/3359 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=147/3372 filtered=136/3366 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=129/3354 filtered=132/3360 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=146/3362 filtered=139/3361 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=112/3370 filtered=125/3366 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=123/3352 filtered=124/3359 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=142/3354 filtered=133/3356 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=136/3365 filtered=135/3361 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=121/3357 filtered=128/3359 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=115/3357 filtered=121/3358 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=147/3353 filtered=134/3355 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=121/3354 filtered=127/3354 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=112/3366 filtered=119/3360 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=120/3355 filtered=120/3357 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=140/3365 filtered=130/3361 threshold=167/678 black=0/1 barcode=0
+[S3 IR] adc=118/3363 filtered=124/3362 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=126/3061 filtered=125/3211 threshold=166/678 black=0/1 barcode=0
+[S3 IR] adc=1365/187 filtered=745/1699 threshold=166/678 black=1/1 barcode=0
+[S3 IR] adc=149/218 filtered=447/958 threshold=166/678 black=1/1 barcode=0
+[S3 IR] adc=175/234 filtered=311/596 threshold=166/678 black=1/1 barcode=0
+[S3 IR] adc=147/168 filtered=229/382 threshold=166/678 black=1/0 barcode=0
+[S3 IR] adc=120/176 filtered=174/279 threshold=166/678 black=1/0 barcode=0
+[S3 IR] adc=142/192 filtered=158/235 threshold=166/678 black=1/0 barcode=1
+[S3 IR] adc=112/180 filtered=118/178 threshold=166/677 black=0/0 barcode=1
+[S3 IR] adc=124/173 filtered=124/176 threshold=164/678 black=0/0 barcode=1
+[S3 IR] adc=115/175 filtered=125/170 threshold=163/679 black=0/0 barcode=1
+[S3 IR] adc=141/170 filtered=133/173 threshold=164/678 black=0/0 barcode=1
+[S3 IR] adc=130/180 filtered=127/177 threshold=163/676 black=0/0 barcode=1
+[S3 IR] adc=128/178 filtered=136/177 threshold=165/677 black=0/0 barcode=0
+[S3 IR] adc=140/190 filtered=144/185 threshold=166/676 black=0/0 barcode=0
+[S3 IR] adc=196/203 filtered=170/193 threshold=166/677 black=1/0 barcode=0
+[S3 IR] adc=180/178 filtered=175/185 threshold=166/677 black=1/0 barcode=0
+[S3 IR] adc=178/184 filtered=177/184 threshold=166/677 black=1/0 barcode=0
+[S3 IR] adc=193/185 filtered=185/185 threshold=166/677 black=1/0 barcode=0
+[S3 IR] adc=150/198 filtered=167/192 threshold=166/677 black=1/0 barcode=0
+[S3 IR] adc=153/203 filtered=154/196 threshold=166/677 black=0/0 barcode=0
+[S3 IR] adc=121/187 filtered=127/189 threshold=165/679 black=0/0 barcode=0
+[S3 IR] adc=153/171 filtered=142/172 threshold=165/679 black=0/0 barcode=0
+[S3 IR] adc=149/166 filtered=147/174 threshold=167/678 black=0/0 barcode=0
+[S3 IR] adc=155/177 filtered=151/172 threshold=168/677 black=0/0 barcode=0
+[S3 IR] adc=132/170 filtered=133/174 threshold=167/677 black=0/0 barcode=0
+[S3 IR] adc=138/190 filtered=138/178 threshold=166/676 black=0/0 barcode=0
+[S3 IR] adc=149/176 filtered=148/174 threshold=168/675 black=0/0 barcode=0
+[S3 IR] adc=142/170 filtered=142/177 threshold=169/676 black=0/0 barcode=0
+[S3 IR] diagnostic complete; reset to run again
+[TEST] S4-U03 PASS  stable samples complete calibration
+[TEST] S4-U04 PASS  unstable samples cause calibration fault
+[TEST] S4-U05 PASS  single tilt spike is not a hump
+[TEST] S4-U06 PASS  ascent descent level completes one hump
+[TEST] S4-U07 PASS  ascent returning to level remains incomplete
+[TEST] S4-U08 PASS  consecutive invalid samples cause sensor fault
+[TEST] S4-U09 PASS  valid sample clears invalid streak
+[TEST] S4-U10 PASS  timestamp wrap does not cause stale fault
+[TEST] S4-U11 PASS  excess sample gap causes stale fault
+[TEST] S4-U12 PASS  larger valid hump becomes run maximum
+[TEST] S4-U13 PASS  local recovery preserves run maximum
+[TEST] S4-U14 PASS  new run clears run maximum
+[TEST] S4-U15 PASS  missing distance leaves height invalid
+[TEST] S4-U16 PASS  impact is reported once per threshold crossing
+[TEST] S4-U17 PASS  null API inputs do not crash
+[TEST] S4-U18 PASS  driver decodes axis order and scale
+[TEST] S4-U19 PASS  driver decodes signed 12-bit limits
+[TEST] S4-U20 PASS  driver decode rejects null pointers
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 18 passed, 0 failed
+[TEST] S5-U03 PASS  known integral pulse conversions
+[TEST] S5-U04 PASS  minimum physical range boundary
+[TEST] S5-U05 PASS  maximum physical range boundary
+[TEST] S5-U06 PASS  invalid conversion preserves output
+[TEST] S5-U07 PASS  null conversion output is rejected
+[TEST] S5-U08 PASS  oversized pulses cannot overflow valid
+[TEST] S5-U09 PASS  permission without stop cannot scan
+[TEST] S5-U10 PASS  wrong request stop cannot scan
+[TEST] S5-U11 PASS  stop without permission cannot scan
+[TEST] S5-U12 PASS  matched permission and stop allow scan
+[TEST] S5-U13 PASS  cancel invalidates scan and acknowledges
+[TEST] S5-U14 PASS  new STOP aborts an authorised scan
+[TEST] S5-U57 PASS  unstarted request expires after two seconds
+[TEST] S5-U58 PASS  busy request cannot replace the active scan
+[TEST] S5-U15 PASS  coarse scan starts at minus sixty
+[TEST] S5-U16 PASS  no trigger before calibrated settling
+[TEST] S5-U17 PASS  withdrawn permission prevents scanning
+[TEST] S5-U51 PASS  rejected servo command prevents scanning
+[TEST] S5-U52 PASS  rejected trigger command aborts scanning
+[TEST] S5-U19 PASS  trigger spacing at least 65 ms
+[TEST] S5-U20 PASS  completion after 30 ms is no sample
+[TEST] S5-U21 PASS  malformed capture and stuck ECHO
+[TEST] S5-U22 PASS  old completion cannot complete new capture
+[TEST] S5-U23 PASS  angle distance is the median of three
+[TEST] S5-U24 PASS  third consecutive invalid attempt faults
+[TEST] S5-U26 PASS  coarse scan angles and three samples
+[TEST] S5-U56 PASS  plan waits for safe forward clearance
+[TEST] S5-U59 PASS  coarse edges receive five-degree samples
+[TEST] S5-U28 PASS  scan past 15 s faults
+[TEST] S5-U25 PASS  unsafe, invalid or stale data stops
+[TEST] S5-U55 PASS  third invalid forward attempt faults
+[TEST] S5-U36 PASS  shorter route wins, left on a tie
+[TEST] S5-U37 PASS  blocked or unobserved sides give no plan
+[TEST] S5-U53 PASS  plan segments, search bound and align
+[TEST] S5-U54 PASS  nothing ahead in range is no obstacle
+[TEST] S5-U60 PASS  fine edge chooses shorter side
+[TEST] S5-U61 PASS  missing or inconsistent edge has no route
+[TEST] S5-U62 PASS  observed span and plan clearance estimate
+[TEST] S5-U63 PASS  missing edge keeps shape unknown
+[TEST] subsystem5 SUMMARY 39 passed, 0 failed, 0 blocked
+[TEST] console dropped 0 bytes
+[TEST] === test run end ===

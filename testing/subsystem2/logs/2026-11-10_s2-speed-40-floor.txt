@@ -1,0 +1,421 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+WARNING: LINE_ONLY=1; obstacle detection and scanning are disabled.
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+s4: LSM303DLHC ready; calibrating
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x0 age -939197420 ms
+[MC] t 4 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 5 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 6 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 8 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 9 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 10 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 11 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 12 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 13 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 15 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 90 ms
+[MC] t 16 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 17 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 18 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 19 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 20 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 22 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 23 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 24 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 25 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 26 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 350 ms
+[MC] t 27 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 29 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 30 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 31 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 32 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 33 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 34 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 36 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 37 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 38 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 850 ms
+[MC] t 39 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 40 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 42 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 43 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 44 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 45 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 46 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 47 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 49 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 50 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 1350 ms
+[MC] t 51 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 52 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 53 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 54 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 56 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 57 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 58 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 59 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 60 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 61 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 1850 ms
+[MC] t 63 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 64 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 65 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 66 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 67 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 68 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 70 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 71 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 72 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 73 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 5 fault 1 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 2350 ms
+[MC] t 74 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 75 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 77 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 78 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 79 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 80 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 81 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 83 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 84 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 85 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 5 fault 1 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 2850 ms
+[S2] last STOP: latch to motor off 16 us
+[MC] t 86 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 87 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 88 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 90 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 91 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 92 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 93 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 94 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 95 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 97 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 5 fault 1 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 3350 ms
+[S2] last STOP: latch to motor off 16 us
+[MC] t 98 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 99 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 100 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 101 st 5 tgt 0/0 spd 0/0 duty 0/0
+[MC] t 102 st 5 tgt 0/0 spd 0/0 duty 0/0
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 3850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 4350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 4850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 5350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 5850 ms
+[S2] last STOP: latch to motor off 16 us
+wifi: joining "Edmund" ...
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 6350 ms
+[S2] last STOP: latch to motor off 16 us
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 6850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 7350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 7850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 8350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 8850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 9350 ms
+[S2] last STOP: latch to motor off 16 us
+wifi: link status -> FAILED (association failure) (-1)
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 9850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 11350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 11850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 12350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 12850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 13350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 13850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 14350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 14850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 15350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 15850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 16350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 16850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 17350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 17850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 18350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 18850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 19350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 19850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 20350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 20850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 21350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 21850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 22350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 22850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 23350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 23850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 24350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 24850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 25350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 25850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 26350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 26850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 27350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 27850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 28350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 28850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 29350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 29850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 30350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 30850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 31350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 31850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 32350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 32850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 33350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 33850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 34350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 34850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 35350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 35850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 36350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 36850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 37350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 37850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 38350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 38850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 39350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 39850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 40350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 40850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 41350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 41850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 42350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 42850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 43350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 43850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 44350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 44850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 45350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 45850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 46350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 46850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 47350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 47850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 48350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 48850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 49350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 49850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 50350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 50850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 51350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 51850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 52350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 52850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 53350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 53850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 54350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 54850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 55350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 55850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 56350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 56850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 57350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 57850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 58350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 58850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 59350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 59850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 60350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 60850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 61350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 61850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 62350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 62850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 63350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 63850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 64350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 64850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 65350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 65850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 66350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 66850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 67350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 67850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 68350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 68850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 69350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 69850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 70350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 70850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 71350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 71850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 72350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 72850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 73350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 73850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 74350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 74850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 75350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 75850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 76350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 76850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 77350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 77850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 78350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 78850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 79350 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 79850 ms
+[S2] last STOP: latch to motor off 16 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 80350 ms
+[S2] last STOP: latch to motor off 16 us

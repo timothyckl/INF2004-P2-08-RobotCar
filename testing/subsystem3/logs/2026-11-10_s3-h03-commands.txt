@@ -1,0 +1,5 @@
+16:14:13 RESET (clear INIT fault after boot)
+16:14:27 START (run 1)
+16:18:51 RESET (clear INIT fault, boot 4)
+16:19:08 START (reproduction run)
+16:20:13 STOP (wheels jittering, no travel)

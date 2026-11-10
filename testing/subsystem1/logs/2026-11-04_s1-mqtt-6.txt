@@ -1,0 +1,226 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x0 age -939197420 ms
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x21 age 90 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+wifi: joining "SINGTEL-SYBAU" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+s4: terrain fault 1; sensor restart
+s4: calibration span x 572 y 930 z 213 mg (limit 80) after 200 samples
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+s4: stationary calibration complete
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x11 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0xa age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0xa age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0xa age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0xa age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: joining "SINGTEL-SYBAU" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: joining "SINGTEL-SYBAU" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms

@@ -27,9 +27,14 @@
 
 #define DEVCNF_USE_SER		1		// Serial communication device 
 #define DEVCNF_USE_ADC		1		// A/D conversion device
-#define DEVCNF_USE_IIC		0		// I2C communication device
-		/* Off by default so no pins are claimed at boot.  To use I2C,
-		   set this to 1 and choose the pins in
-		   device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h. */
+#define DEVCNF_USE_IIC		1		// I2C communication device
+
+/* GP0/GP1 carry a wheel encoder (AGENTS.md), so the boot code
+   must leave them alone. sysdef.h defaults BOARD_UART0_FREE to 0, so test
+   its value, not only whether it is defined. */
+#if defined(_PICO_RP2040_) \
+    && (!defined(BOARD_UART0_FREE) || (0 == BOARD_UART0_FREE))
+#error "Encoder inputs on GP0/GP1 require UART0 to be disabled or relocated"
+#endif
 
 #endif	/* __DEV_CONFIG_H__ */

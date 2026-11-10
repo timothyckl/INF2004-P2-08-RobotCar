@@ -1,19 +1,18 @@
 /**
  * @file test_subject.c
- * @brief Default absent binding, not a fake implementation of subsystem 5.
+ * @brief Binding and shared helpers for production obstacle-scan logic.
  */
 #include "../include/test_subject.h"
 
 #include "../include/test_fixture.h"
+#include "../../../../app_program/subsystem5/include/scan_test_adapter.h"
 #include <stddef.h>
 
-#ifndef TEST_SUBJECT_BOUND
 test_interface_api_t const *
 test_subject_get (void)
 {
-    return (NULL);
+    return (scan_test_adapter_get());
 }
-#endif
 
 bool
 test_subject_valid (test_interface_api_t const * p_api)
@@ -34,7 +33,7 @@ void
 test_subject_start (test_interface_api_t const * p_api, uint32_t time_us)
 {
     /* These values exercise logic; they are not servo calibration evidence. */
-    test_interface_config_t const config = {1000u, 200u};
+    test_interface_config_t const config = {1000u, 200u, 200u};
 
     test_fixture_reset(time_us);
     p_api->p_reset_fixture(test_fixture_ports(), &config);
@@ -47,13 +46,15 @@ test_subject_forward_only (void)
 
     for (uint32_t index = 0u; index < test_fixture_size(); index++)
     {
-        test_fixture_record_t const * p_record = test_fixture_record(index);
+        test_fixture_record_t const * const p_record =
+            test_fixture_record(index);
 
         if ((TEST_INTERFACE_SERVO == p_record->output.kind)
             && (0 != p_record->output.angle_deg))
         {
             b_forward = false;
         }
+
     }
 
     return (b_forward && (!test_fixture_overflowed()));

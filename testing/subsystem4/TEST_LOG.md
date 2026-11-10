@@ -1,27 +1,127 @@
-# Subsystem 4 — test log
+# Subsystem 4 - test log
 
-**Owner:** Khang (2503012)  ·  **Planned subsystem:** IMU motion and terrain monitoring  ·  **Code:** `app_program/subsystem4/`
+**Owner:** Khang (2503012). **Scope:** LSM303DLHC IMU calibration, motion and
+terrain classification, hump detection, candidate height estimation, highest
+valid peak retention, impact detection, and sensor fault handling.
 
-The cases below test the current monitor starter example, not the planned subsystem.
+The implementation remains independent of the other application subsystems.
+Synthetic odometry is injected into logic tests; real encoder integration is
+outside the scope of these standalone cases.
 
-See `testing/README.md` for how to run tests and record results.
+## Status and execution
 
-## Test cases
+All automated cases execute on the Raspberry Pi Pico W in a `TEST=1` firmware
+image. A computer cross-compiles and records the serial output; it does not
+execute the target test cases.
 
-Define a test here before running it. Test IDs never change.
+- `BLOCKED` means the case is executable but its production binding is absent.
+- `PLANNED` means hardware, calibration, or an agreed acceptance threshold is
+  still required.
+- A successful build is not a passing on-board test.
+- Synthetic input proves deterministic logic only. It does not validate sensor
+  wiring, physical timing, mounting, vibration rejection, or measurement
+  accuracy.
 
-| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
-|---|---|---|---|---|---|
-| S4-U01 | message buffer max line = S4_SUMMARY_MAX | IF-03 | auto | `subsystem4_test.c` | `[TEST] S4-U01 PASS` |
-| S4-U02 | LED pauses and resumes every 6 reports | IF-05 | manual | 1. Flash normal image. 2. Watch LED and console ~20 s. | console shows "LED task paused"/"resumed"; LED stops/starts |
+Build with:
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
+```sh
+make -C build_make TEST=1 -j8
+```
+
+For the connected-IMU startup case only, build with:
+
+```sh
+make -C build_make TEST=1 S4_HW_TEST=1 -j8
+```
+
+Do not use the hardware-test result without recording the exact board, sensor,
+wiring, mounting, commit, and captured serial log.
+
+Flash the resulting UF2, capture the USB serial console at 115200 baud, and
+record the commit and saved evidence in the results table.
+
+## Retired starter IDs
+
+| ID | Previous starter purpose | Disposition |
+|---|---|---|
+| S4-U01 | Starter message-buffer size | Retired; not evidence of IMU behavior. Do not reuse. |
+| S4-U02 | Starter LED pause/resume observation | Retired; not executed as an IMU test. Do not reuse. |
+
+The starter integration case `INT-02` remains documented in the shared log but
+is no longer executed by Subsystem 4 after the starter monitor is replaced.
+
+## Initial on-target logic cases
+
+| ID | Initial state / input | Expected result |
+|---|---|---|
+| S4-U03 | Stable stationary samples through the configured calibration count. | Calibration completes once and reports ready. |
+| S4-U04 | Calibration samples span more than the configured limit. | Calibration fault; no ready or terrain result. |
+| S4-U05 | One above-threshold forward sample between level samples. | No confirmed hump. |
+| S4-U06 | Confirmed positive tilt, confirmed negative tilt, then confirmed level samples. | Exactly one complete ascent/descent hump. |
+| S4-U07 | Confirmed ascent that returns directly to level. | No completed hump result. |
+| S4-U08 | Invalid samples reach the configured consecutive limit. | Sensor fault and invalid current result. |
+| S4-U09 | Invalid sample count below the configured limit followed by valid data. | No sensor fault; invalid streak clears. |
+| S4-U10 | Valid timestamps cross `UINT32_MAX`. | Elapsed-time handling remains correct across wraparound. |
+| S4-U11 | Gap between valid samples exceeds the configured maximum. | Stale-data fault. |
+| S4-U12 | Two valid humps with different injected heights. | Higher valid height becomes the run maximum. |
+| S4-U13 | Local recovery after a valid maximum. | Fresh calibration is required; run maximum is retained. |
+| S4-U14 | Explicit new-run reset after a valid maximum. | Stored maximum and its validity are cleared. |
+| S4-U15 | Hump sequence without valid injected distance. | Hump may be detected, but height remains invalid. |
+| S4-U16 | Acceleration magnitude exceeds the configured impact threshold. | One impact event is reported without changing motor state. |
+| S4-U17 | Null context, configuration, sample, or result access. | Calls reject or ignore invalid pointers without a crash. |
+| S4-U18 | Known raw bytes for +100 mg, -200 mg, and +1000 mg. | Axis order, 1 mg/LSB scaling, validity, and timestamp decode correctly. |
+| S4-U19 | Raw values at the signed 12-bit limits. | Values decode as -2048 mg and +2047 mg without implementation-defined shifting. |
+| S4-U20 | Null raw-data or destination pointer passed to the decode helper. | Decode is rejected without dereferencing the pointer. |
+
+Boundary cases use small synthetic thresholds to remain deterministic. These
+values are not physical calibration evidence.
+
+## Planned driver and hardware cases
+
+| ID | Procedure | Expected result / evidence |
+|---|---|---|
+| S4-H01 | Verify I2C addresses, magnetometer identity registers, and configuration read-back. | Correct identity/configuration or a bounded startup fault; serial log. |
+| S4-H02 | Place the stationary module in six known orientations. | Document axis signs, mounting mapping, offsets, and repeatability. |
+| S4-H03 | Record stationary samples for an agreed interval. | Measured bias, range, noise, and selected calibration-span limit. |
+| S4-H04 | Hold the module at independently measured angles. | Measured tilt error; no accuracy claim until a criterion is agreed. |
+| S4-H05 | Run at the configured rate and record timestamps/status. | Measured task period, execution time, overruns, and missed samples. |
+| S4-H06 | Disconnect or suppress the sensor, then restore it. | Bounded fault entry and recovery only after fresh validation. |
+| S4-H07 | Record flat movement, turns, and representative vibration. | False detections measured before thresholds are finalised. |
+| S4-H08 | Traverse known humps repeatedly with reference observations. | Detection and candidate-height error recorded; method remains experimental until accepted. |
+| S4-H09 | Apply a safe controlled acceleration impulse. | Impact behavior measured without collision or damage. |
+| S4-H10 | Compare magnetic readings with representative current wiring inactive and active. | Interference and any usable heading limitations documented. |
+
+## Acceptance criteria still requiring agreement
+
+The design documents do not establish numerical limits for tilt error, hump
+height error, missed detections, false detections, or magnetometer-derived turn
+rate. These must be agreed before physical PASS results are claimed. The
+LSM303DLHC contains no gyroscope; turn-rate and encoder-assisted height remain
+experimental measurements.
 
 ## Results
 
-Add a new row for every run. Never edit or delete old rows.
+Results are append-only. Do not record synthetic tests as physical validation.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| YYYY-MM-DD | S4-U01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
+
+## Integration additions (2026-11-03, feature/full-system-integration)
+
+Test IDs never change. Host runs (`make -C testing/host`) use synthetic input
+on a computer; they are not on-target or hardware results.
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| S4-U23 | encoder distance into terrain: alignment, run change, invalid cases | IF-15, FR5 | auto (host) | `testing/subsystem4/test_odometry.c` | 12 checks pass |
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-03 | S4-U23 | `ebb59a5` | host (gcc) | PASS (12/12) | `../integration/logs/2026-11-03_host-suites.txt` | host only; S4-U03..U22 remain on-target only |
+| 2026-11-04 | S4-U03..U20 | `1573b62` | Dalton | PASS (18/18) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W. S4-H01 reported BLOCKED in this image, as expected |
+| 2026-11-04 | S4-H01 | `1573b62` | Dalton | FAIL | `logs/2026-11-04_s4-h01.txt`, `logs/2026-11-04_s4-imu-diag.txt` | `TEST=1 S4_HW_TEST=1`. Open, identity and configuration read-back succeed ("LSM303DLHC ready"), then terrain fault 2 (SENSOR) every cycle. Diagnostic build (uncommitted prints on `1573b62`): every first read returns E_IO (-57) with STATUS_REG_A 0xff, 0 good reads. Cause: the driver treats ZYXOR overrun as an error, but datasheet 7.1.8 defines it as new data overwriting old; the sensor keeps sampling during the 1 s retry, so the first read always overruns, and `s4_mark_sensor_error()` faults on one bad read. Wiring OK. Fix proposed to the S4 owner |
+| 2026-11-04 | S4-H01 | `1cd5330` (partial, uncommitted) | Dalton | FAIL | `logs/2026-11-04_s4-h01-2.txt` | with the overrun and one-invalid-read fixes: reads succeed, but the first calibration failed (fault 1, CALIBRATION) and the retry finished after the 3.5 s window. Next: discard turn-on samples |
+| 2026-11-04 | S4-H01 | `1cd5330` (partial, uncommitted) | Dalton | FAIL | `logs/2026-11-04_s4-h01-3.txt` | with the turn-on discard: no calibration fault, but fault 3 (STALE) under test load and calibration slower than the window. Cause: tk_dly_tsk(10) sleeps ~20 ms (kernel adds a tick), so ~50 Hz. Next: cyclic 100 Hz |
+| 2026-11-04 | S4-U03..U20 | `1cd5330` | Dalton | PASS (18/18) | `logs/2026-11-04_s4-h01-4.txt` | on the Pico W |
+| 2026-11-04 | S4-H01 | `1cd5330` | Dalton | PASS | `logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1`, GY-511 on GP2/GP3 at 3V3, robot still and level. Calibration completes within the window. One fault 3 (STALE) under test load, with both cores busy (S2 tests on core 0 at priority 1, WiFi start-up on core 1 at priority 4), recovered. Watch for it with MQTT running |
+| 2026-11-10 | S4-U03..U20 | `76db3d8` | Dalton | PASS (18/18) | `../integration/logs/2026-11-10_target-selftest.txt` | `TEST=1` on the Pico W; image built from `893f4dc` (code identical at `76db3d8`); first on-target run after the analogue line-sensor remap and the S5 changes of 2026-11-08; console dropped 0 bytes; S4-H01 BLOCKED in this image, as expected |

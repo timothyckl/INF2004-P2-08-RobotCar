@@ -1,0 +1,6 @@
+16:26:07 RESET (clear INIT fault)
+16:26:23 START
+16:26:33 STOP (after 10 s)
+16:28:53 RESET (clear INIT fault, run 3)
+16:29:23 START (run 3)
+16:29:33 STOP (after 10 s)

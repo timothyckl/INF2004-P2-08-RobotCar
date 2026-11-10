@@ -91,6 +91,82 @@ ifeq ($(TEST),1)
 TEST_SUFFIX := _test
 endif
 
+# S2_LOG=1 enables the Vehicle Controller's periodic diagnostic line. It is
+# opt-in because console formatting runs in the controller task.
+S2_LOG ?= 0
+ifneq ($(filter $(S2_LOG),0 1),$(S2_LOG))
+$(error Unknown S2_LOG '$(S2_LOG)'; use 0 or 1)
+endif
+ifeq ($(S2_LOG),1)
+S2_LOG_SUFFIX := _s2log
+endif
+
+# LINE_ONLY=1 is a diagnostic profile for isolated line-follow testing. It
+# leaves WiFi, MQTT, the controller, motion and line sensing enabled, but the
+# application does not initialise or start obstacle scanning. The suffix and
+# boot warning prevent this reduced-safety image from resembling production.
+LINE_ONLY ?= 0
+ifneq ($(filter $(LINE_ONLY),0 1),$(LINE_ONLY))
+$(error Unknown LINE_ONLY '$(LINE_ONLY)'; use 0 or 1)
+endif
+ifeq ($(LINE_ONLY),1)
+ifeq ($(TEST),1)
+$(error LINE_ONLY=1 cannot be combined with TEST=1)
+endif
+LINE_ONLY_SUFFIX := _lineonly
+endif
+
+# S2_MOTION_LOG=1 prints Motion Control's speed loop (target, measured
+# speed, duty per wheel) every 50 ms while moving, for PID tuning. Opt-in
+# because console formatting runs in the motion task.
+S2_MOTION_LOG ?= 0
+ifneq ($(filter $(S2_MOTION_LOG),0 1),$(S2_MOTION_LOG))
+$(error Unknown S2_MOTION_LOG '$(S2_MOTION_LOG)'; use 0 or 1)
+endif
+ifeq ($(S2_MOTION_LOG),1)
+S2_MOTION_LOG_SUFFIX := _mclog
+endif
+
+# S5_RANGE_DIAG=1 prints every forward HC-SR04 attempt (echo duration,
+# validity, distance) for S5-U48. Opt-in because console formatting runs in
+# the Obstacle Scan task.
+S5_RANGE_DIAG ?= 0
+ifneq ($(filter $(S5_RANGE_DIAG),0 1),$(S5_RANGE_DIAG))
+$(error Unknown S5_RANGE_DIAG '$(S5_RANGE_DIAG)'; use 0 or 1)
+endif
+ifeq ($(S5_RANGE_DIAG),1)
+ifeq ($(LINE_ONLY),1)
+$(error S5_RANGE_DIAG=1 cannot be combined with LINE_ONLY=1)
+endif
+S5_RANGE_DIAG_SUFFIX := _s5range
+endif
+
+# S3_IR_DIAG=1 prints the three normalised IR sensor readings during the
+# on-target test run. It is opt-in because periodic console output can affect
+# timing measurements in unrelated tests.
+S3_IR_DIAG ?= 0
+ifneq ($(filter $(S3_IR_DIAG),0 1),$(S3_IR_DIAG))
+$(error Unknown S3_IR_DIAG '$(S3_IR_DIAG)'; use 0 or 1)
+endif
+ifeq ($(S3_IR_DIAG),1)
+ifneq ($(TEST),1)
+$(error S3_IR_DIAG=1 requires TEST=1)
+endif
+S3_IR_DIAG_SUFFIX := _s3irdiag
+endif
+
+# S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
+S4_HW_TEST ?= 0
+ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
+$(error Unknown S4_HW_TEST '$(S4_HW_TEST)'; use 0 or 1)
+endif
+ifeq ($(S4_HW_TEST),1)
+ifneq ($(TEST),1)
+$(error S4_HW_TEST=1 requires TEST=1)
+endif
+S4_HW_TEST_SUFFIX := _s4hw
+endif
+
 # CRASH_REPORT=1 also copies every console line to UART0 on GP0 (TX) /
 # GP1 (RX), 115200 8N1.  UART output is sent immediately, so it still shows
 # the last messages and the kernel's crash report after a crash, when the
@@ -99,12 +175,17 @@ endif
 # CRASH_REPORT=0 (default): console on USB only; the boot code leaves GP0/GP1
 # alone, so a subsystem may claim them in TEAM.md.
 # CONSOLE=uart always uses UART0 as the console, so it forces CRASH_REPORT=1.
+# On this robot GP0/GP1 carry the right wheel encoder (AGENTS.md), so any
+# build that would give them to UART0 is refused here, before compiling.
 CRASH_REPORT ?= 0
 ifneq ($(filter $(CRASH_REPORT),0 1),$(CRASH_REPORT))
 $(error Unknown CRASH_REPORT '$(CRASH_REPORT)'; use 0 or 1)
 endif
 ifeq ($(CONSOLE),uart)
 override CRASH_REPORT := 1
+endif
+ifeq ($(CRASH_REPORT),1)
+$(error CRASH_REPORT=1 and CONSOLE=uart put UART0 on GP0/GP1, which carry the right wheel encoder (AGENTS.md); build with CRASH_REPORT=0 CONSOLE=usb_cdc)
 endif
 ifeq ($(CONSOLE)$(CRASH_REPORT),usb_cdc1)
 CRASH_SUFFIX := _crash
@@ -116,7 +197,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(S2_LOG_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(LINE_ONLY_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -177,6 +258,12 @@ CFLAGS  += -DCNF_SMP=1
 ASFLAGS += -DCNF_SMP=1
 endif
 CFLAGS  += -DAPP_TEST=$(TEST)
+CFLAGS  += -DS2_DEMO_LOG=$(S2_LOG)
+CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
+CFLAGS  += -DAPP_LINE_ONLY=$(LINE_ONLY)
+CFLAGS  += -DS5_RANGE_DIAGNOSTIC=$(S5_RANGE_DIAG)
+CFLAGS  += -DS3_IR_DIAGNOSTIC=$(S3_IR_DIAG)
+CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
 ifeq ($(CRASH_REPORT),0)
 CFLAGS  += -DBOARD_UART0_FREE=1
@@ -209,7 +296,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-s2log$(S2_LOG)-mclog$(S2_MOTION_LOG)-lineonly$(LINE_ONLY)-s5range$(S5_RANGE_DIAG)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))
