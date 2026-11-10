@@ -116,6 +116,20 @@ endif
 LINE_ONLY_SUFFIX := _lineonly
 endif
 
+# S5_RANGE_DIAG=1 prints every forward HC-SR04 attempt (echo duration,
+# validity, distance) for S5-U48. Opt-in because console formatting runs in
+# the Obstacle Scan task.
+S5_RANGE_DIAG ?= 0
+ifneq ($(filter $(S5_RANGE_DIAG),0 1),$(S5_RANGE_DIAG))
+$(error Unknown S5_RANGE_DIAG '$(S5_RANGE_DIAG)'; use 0 or 1)
+endif
+ifeq ($(S5_RANGE_DIAG),1)
+ifeq ($(LINE_ONLY),1)
+$(error S5_RANGE_DIAG=1 cannot be combined with LINE_ONLY=1)
+endif
+S5_RANGE_DIAG_SUFFIX := _s5range
+endif
+
 # S3_IR_DIAG=1 prints the three normalised IR sensor readings during the
 # on-target test run. It is opt-in because periodic console output can affect
 # timing measurements in unrelated tests.
@@ -172,7 +186,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(S2_LOG_SUFFIX)$(LINE_ONLY_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(S2_LOG_SUFFIX)$(LINE_ONLY_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -235,6 +249,7 @@ endif
 CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DS2_DEMO_LOG=$(S2_LOG)
 CFLAGS  += -DAPP_LINE_ONLY=$(LINE_ONLY)
+CFLAGS  += -DS5_RANGE_DIAGNOSTIC=$(S5_RANGE_DIAG)
 CFLAGS  += -DS3_IR_DIAGNOSTIC=$(S3_IR_DIAG)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
@@ -269,7 +284,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-s2log$(S2_LOG)-lineonly$(LINE_ONLY)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-s2log$(S2_LOG)-lineonly$(LINE_ONLY)-s5range$(S5_RANGE_DIAG)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

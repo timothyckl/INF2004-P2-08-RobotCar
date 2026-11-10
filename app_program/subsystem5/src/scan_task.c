@@ -28,6 +28,12 @@
 #define SCAN_TASK_PERIOD_MS     (10)
 #define SCAN_TASK_PUBLISH_MS    (2)
 
+/* S5-U48 bench diagnostic: print every forward attempt (build option
+   S5_RANGE_DIAG=1). Off by default; never for timing tests. */
+#ifndef S5_RANGE_DIAGNOSTIC
+#define S5_RANGE_DIAGNOSTIC     (0)
+#endif
+
 /* Agreed (decision 3): trigger spacing, echo deadline, freshness. */
 static uint32_t const g_task_retrigger_us = 65000u;
 static uint32_t const g_task_deadline_us  = 30000u;
@@ -93,6 +99,10 @@ static void scan_task_forward_result (bool b_valid, uint16_t distance_mm,
 
 /** Latch a forward sensor fault and notify the controller once. */
 static void scan_task_forward_fault (void);
+
+/** Print one forward attempt when S5_RANGE_DIAGNOSTIC is set. */
+static void scan_task_range_diag (char const * p_kind, uint32_t echo_us,
+                                  bool b_valid, uint16_t distance_mm);
 
 /** True when the mission mode moves the vehicle (S5 hazards apply). */
 static bool scan_task_moving (void);
@@ -508,11 +518,12 @@ scan_task_forward_edge (bool b_high, uint32_t time_us)
     }
     else if (gb_capture_armed && (!b_high) && gb_capture_rise)
     {
-        uint16_t   distance_mm = 0u;
-        bool const b_valid     = (age_us <= g_task_deadline_us)
-            && range_measurement_from_echo(time_us - g_capture_rise_us,
-                                           &distance_mm);
+        uint16_t       distance_mm = 0u;
+        uint32_t const echo_us     = time_us - g_capture_rise_us;
+        bool const     b_valid     = (age_us <= g_task_deadline_us)
+            && range_measurement_from_echo(echo_us, &distance_mm);
 
+        scan_task_range_diag("echo", echo_us, b_valid, distance_mm);
         scan_task_forward_result(b_valid, distance_mm, time_us);
     }
     else
@@ -531,6 +542,8 @@ scan_task_forward_step (uint32_t now_us)
     {
         if (since_us >= g_task_deadline_us)
         {
+            scan_task_range_diag((gb_capture_rise ? "late" : "none"), 0u,
+                                 false, 0u);
             scan_task_forward_result(false, 0u, now_us);
         }
 
@@ -540,6 +553,7 @@ scan_task_forward_step (uint32_t now_us)
         /* Never retrigger while ECHO is high; stuck high is invalid. */
         if (gb_capture_used && (since_us >= g_task_stuck_us))
         {
+            scan_task_range_diag("stuck", 0u, false, 0u);
             forward_monitor_sample(&g_monitor, false, 0u, now_us);
             g_work.invalid_count = g_monitor.invalid_count;
             scan_task_forward_fault();
@@ -580,6 +594,32 @@ scan_task_forward_fault (void)
 {
     g_work.result = SCAN_TASK_RESULT_FAULT;
     (void) tk_set_flg(controller_flags, CTRL_FLG_SCAN_FAULT);
+}
+
+static void
+scan_task_range_diag (char const * p_kind, uint32_t echo_us, bool b_valid,
+                      uint16_t distance_mm)
+{
+#if S5_RANGE_DIAGNOSTIC
+    SYSTIM tim;
+    UW     now_ms = 0u;
+
+    if (tk_get_tim(&tim) >= E_OK)
+    {
+        now_ms = tim.lo;
+    }
+
+    /* echo_us is 0 when no complete pulse arrived. */
+    tm_printf((UB *)"[S5] range t %u ms %s echo %u us valid %d %u mm"
+              " invalid %d\n",
+              now_ms, p_kind, (UW)echo_us, (INT)b_valid, (UW)distance_mm,
+              (INT)g_monitor.invalid_count);
+#else
+    (void) p_kind;
+    (void) echo_us;
+    (void) b_valid;
+    (void) distance_mm;
+#endif
 }
 
 static bool
