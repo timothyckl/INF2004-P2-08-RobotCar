@@ -8,12 +8,34 @@ Requirements come from the Design Review (FR6, FR7, FR10, NFR2–NFR8), PostTri1
 
 All test cases execute on the **Raspberry Pi Pico W**, not on the build computer. The computer only cross-compiles firmware, copies the UF2 and saves serial output.
 
-- **Ready / blocked:** S5-U03–S5-U17 have executable on-device test code. Until actual subsystem logic is bound, each reports `BLOCKED`, never PASS. The serial summary includes the blocked count.
+- **Ready:** S5-U03–S5-U17 and S5-U51–S5-U52 have executable on-device test code bound to the production distance and scan-gating logic. Each reports `PASS` or `FAIL`; no on-device execution has been recorded yet.
 - **Planned:** the case is specified but its code, interface or hardware prerequisites are not ready. Planned cases are not counted as executed.
-- Automated logic cases run through the existing `subsystem5_test()` call in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
+- Automated logic cases run through `scan_lifecycle_test()` in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
 - Real sensor, servo, RTOS/ISR and integration cases require separate on-board measurements. No motor or servo movement is enabled by this test scaffold.
 
-Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source only for `TEST=1`. Normal firmware excludes it. All new/modified C requires BARR-C:2018 review; there is no custom BARR checker.
+### Host simulation evidence (2026-11-08)
+
+`make -C testing/host s5` passed 39/39 synthetic cases, including the cases below. The same source cross-built for the Pico W with `TEST=1 CRASH_REPORT=0`; no on-device execution or physical clearance was verified for these changes.
+
+| ID | Host check | Result |
+|---|---|---|
+| S5-U55 | Three consecutive invalid forward echoes fault; a valid echo resets the count. | Passed in host simulation. |
+| S5-U56 | A scan plan waits for a fresh, safe forward reading. | Passed in host simulation. |
+| S5-U57 | An unstarted request expires after 2 s. | Passed in host simulation. |
+| S5-U58 | A busy request cannot replace the active scan. | Passed in host simulation. |
+| S5-U59 | Coarse obstacle edges receive two intermediate 5° readings before forward clearance. | Passed in host simulation. |
+| S5-U60 | The refined profile selects the shorter observed side and resolves a tie to the left. | Passed in host simulation. |
+| S5-U61 | Missing or inconsistent fine edges and a second observed obstacle yield no route; missing coarse data is invalid. | Passed in host simulation. |
+| S5-U62 | Refined rays produce an observed span, centre offset and a labelled planning-clearance estimate. | Passed in host simulation. |
+| S5-U63 | Missing one edge keeps the shape unknown; an out-of-range configuration is rejected. | Passed in host simulation. |
+
+The host-only `s5_view` check also covers the IF-17 decoded getter: non-blocking
+failure leaves output unchanged; fresh, stale, pending, plan and incomplete
+profile states carry distinct validity flags. A compile check includes the S1
+and S5 public telemetry headers together. These checks do not execute on the
+Pico W and do not validate the future S1 wire format.
+
+Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in `testing/subsystem5/unit_tests/include/`; the subsystem test interfaces are in `app_program/subsystem5/include/test_interface.h`. The firmware build includes the unit source and adapter only for `TEST=1`. Normal firmware excludes them. The subsystem build compiles project-authored subsystem 5 C as C99 with strict warnings treated as errors. It also runs `tools/check_subsystem5_barr_c.py` for mechanically enforceable BARR-C:2018 rules; semantic rules still require review.
 
 1. Build with `make -C build_make TEST=1 -j8`, following the SDK/toolchain setup in the project README. `make -C testing/subsystem5/unit_tests` forwards to the same firmware build; it does not run a native executable.
 2. Flash `build_make/mtk3pico_smp1_usb_cdc_wifi_test.uf2` to the Pico W using BOOTSEL. This is the default build profile's filename; other profile options change it.
@@ -29,27 +51,29 @@ Test C sources are in `testing/subsystem5/unit_tests/src/` and their headers in 
 
 ## Executable Pico W logic cases
 
-All cases below execute on the Pico W and are **ready / blocked** until an adapter binds to real S5 logic. Every stateful case uses an isolated on-device fixture with controlled inputs, starting ready and forward-facing with no echo in flight. The synthetic fixture uses a 1000 µs effective settling interval and a 200 mm hazard threshold; neither is physical calibration evidence.
+All cases below are **ready** to execute on the Pico W through an adapter bound to the production logic. Every stateful case uses an isolated on-device fixture with controlled inputs, starting ready and forward-facing with no echo in flight. The synthetic fixture uses a 1000 µs effective settling interval and a 200 mm hazard threshold; neither is physical calibration evidence.
 
 | ID | Reference | Initial state / inputs | Expected result |
 |---|---|---|---|
 | S5-U03 | D3 | Convert 1000, 2000 and 5000 µs pulse widths. | Valid outputs of 170, 340 and 850 mm, independently derived from 340 m/s. |
 | S5-U04 | D3 | Convert 117 and 118 µs. | Reject the below-minimum physical pulse; accept the first above-minimum pulse with an in-range integer result. |
-| S5-U05 | D3 | Convert 23529 and 23530 µs. | Accept the below-maximum physical pulse; reject the above-maximum pulse. |
+| S5-U05 | D3 | Convert 23530 and 23531 µs. | Accept 23530 µs as 4000 mm; reject the next integer pulse width. |
 | S5-U06 | D3 | Convert zero width with an existing output value. | Invalid result; no plausible measurement replaces the existing value. |
 | S5-U07 | D3; invalid input handling | Supply a null conversion output pointer. | Reject safely without a crash. |
 | S5-U08 | D3, D8 | Convert 30000 µs and `UINT32_MAX`. | Invalid; multiplication/overflow cannot produce a valid near obstacle distance. |
-| S5-U09 | D6; FR10 | Request 7 and authorise it, but supply no stop confirmation. Advance 1000 µs. | No non-forward scan command or bypass plan. |
-| S5-U10 | D6 | Request/authorise 7; confirm stop for request 8. Advance 1000 µs. | Wrong-request confirmation does not start scanning. |
-| S5-U11 | D6 | Request 7 and confirm its stop, but provide no scan authorisation. | No non-forward scan command or bypass plan. |
+| S5-U09 | D6; FR10 | Request 7 and authorise it, but supply no stop confirmation. Advance 1000 µs. | No non-forward servo command, trigger or bypass plan. |
+| S5-U10 | D6 | Request/authorise 7; confirm stop for request 8. Advance 1000 µs. | No non-forward servo command, trigger or bypass plan. |
+| S5-U11 | D6 | Request 7 and confirm its stop, but provide no scan authorisation. | No non-forward servo command, trigger or bypass plan. |
 | S5-U12 | D6; FR6 | Request 7, authorise 7 and confirm its stop. Advance the effective settling interval. | Scan starts; no premature plan. This positive control prevents a no-op subject from passing the gate suite. |
-| S5-U13 | D6, D8 | Start an authorised scan; cancel 7; inject late echo edges. | Acknowledge 7; no subsequent sweep or plan from cancelled work. Forward monitoring may continue. |
-| S5-U14 | D6 | Start an authorised stationary scan, then inject a new STOP event. | No subsequent sweep or bypass plan. Existing motor inhibition is not itself this new event. |
+| S5-U13 | D6, D8 | Start an authorised scan; cancel 7; inject late echo edges. | Acknowledge 7; no subsequent trigger, sweep or plan from cancelled work. Forward monitoring may continue. |
+| S5-U14 | D6 | Start an authorised stationary scan, then inject a new STOP event. | No subsequent trigger, sweep or bypass plan. Existing motor inhibition is not itself this new event. |
 | S5-U15 | D4; FR6 | Start a matched, authorised scan. | First non-forward coarse command is −60°. |
 | S5-U16 | D4 | Start the scan at time zero; tick at 999 and 1000 µs with the synthetic effective settling interval. | No scan trigger before settling; first trigger when the interval completes. |
-| S5-U17 | D6 | Authorise request 7, withdraw authorisation, then confirm its stop. | Withdrawn permission cannot start scanning. |
+| S5-U17 | D6 | Authorise request 7, withdraw authorisation, then confirm its stop. | Withdrawn permission cannot command the servo, trigger ranging or produce a plan. |
+| S5-U51 | D6 | Reject the initial non-forward servo command for an otherwise authorised scan. | Scan entry is invalidated after one servo attempt; no retry, trigger or plan follows. |
+| S5-U52 | D6 | Accept scan entry, then reject its first trigger command and advance another settling interval. | The scan aborts after one rejected trigger attempt, requests a forward servo position and emits no retry or plan. |
 
-The physical boundaries 20 and 4000 mm are not exactly representable as integer microsecond echo widths. U04/U05 therefore bracket them with adjacent pulse widths rather than invent exact pulses. Fractional-millimetre rounding is not asserted by U03; the fixtures there are exact integers.
+The physical boundaries 20 and 4000 mm are not exactly representable as integer microsecond echo widths. U04/U05 use the first integer widths that produce the inclusive whole-millimetre endpoints, then reject the adjacent outside widths. Fractional-millimetre rounding is not asserted by U03; the fixtures there are exact integers.
 
 ## Remaining Pico W logic cases
 
@@ -125,3 +149,39 @@ No Pico W executions have been recorded. Build verification does not count as su
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
+
+## Integration additions (2026-11-03, feature/full-system-integration)
+
+Test IDs never change. Host runs (`make -C testing/host`) use synthetic input
+on a computer; they are not on-target or hardware results.
+
+Now executable (definitions above): S5-U19..U24, S5-U25, S5-U26, S5-U28,
+S5-U36, S5-U37. New:
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | four segments, approach, align, search within bound |
+| S5-U54 | nothing in range ahead is not an obstacle | D5 | auto | `test_planning.c` | NO_OBSTACLE, no plan |
+| S5-U55 | consecutive invalid forward attempts | D3 | auto | `test_planning.c` | first two do not fault; a valid reading resets the count; the third consecutive invalid reading faults |
+| S5-U56 | final forward clearance after a scan | D4, D6 | auto | `test_capture.c` | no plan before a fresh safe forward reading; an unsafe reading faults without a plan |
+| S5-U57 | request expiry | D7 | auto | `test_safety.c` | an unstarted request remains valid through 2 s, then faults and cannot start from late authorisation |
+| S5-U58 | busy and invalid request IDs | D7 | auto | `test_safety.c` | zero ID is refused; a second request cannot replace the active one |
+| S5-U62 | observed profile and planning-clearance estimate | D5; FR6, FR7 | auto | `test_planning.c` | ray span/centre and explicitly modelled clearance, with no claim of physical width |
+| S5-U63 | incomplete profile and range guard | D3, D5; FR6 | auto | `test_planning.c` | missing edge keeps shape unknown; nominal 4 m maximum bounds the geometry |
+
+| Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
+|---|---|---|---|---|---|---|
+| 2026-11-03 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `ebb59a5` | host (gcc) | PASS (30/30) | `../integration/logs/2026-11-03_host-suites.txt` | host only; not on the Pico W |
+| 2026-11-04 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `1573b62` | Dalton | PASS (30/30) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W |
+| 2026-11-04 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `1cd5330` | Dalton | PASS (30/30) | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W |
+| 2026-11-10 | S5 unit tests on target | `76db3d8` | Dalton | PASS (39/39) | `../integration/logs/2026-11-10_target-selftest.txt` | `TEST=1` on the Pico W; image built from `893f4dc` (code identical at `76db3d8`); first on-target run after the analogue line-sensor remap and the S5 changes of 2026-11-08; console dropped 0 bytes; logic only, no HC-SR04 or servo hardware test |
+| 2026-11-10 | S5-U48 (50 mm) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | PASS | `logs/2026-11-10_s5-u48-50mm.txt` | HC-SR04 on 3V3, servo centred. 70/70 valid, all 47 mm (error 3 mm, tolerance 10 mm). Target surface and distance reference point not recorded |
+| 2026-11-10 | S5-U48 (100 mm) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | FAIL | `logs/2026-11-10_s5-u48-100mm.txt` | 70/70 valid: 105 ×40, 106 ×30, 111 ×1. One reading 11 mm out against 10 mm; the rest read 5 to 6 mm long |
+| 2026-11-10 | S5-U48 (250 mm) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | FAIL | `logs/2026-11-10_s5-u48-250mm.txt` | 71/71 valid: 253 ×48, 262 ×22, 276 ×2; 24 out of tolerance (worst 26 mm). Steady at 253 at the start and end; the +9 and +23 mm jumps are about 2 and 5 cycles of the 40 kHz burst (25 µs, 4.25 mm each), consistent with a weak echo detected late. Whether the target moved was not recorded |
+| 2026-11-10 | S5-U48 (500 mm) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | FAIL | `logs/2026-11-10_s5-u48-500mm.txt` | 70/70 valid: 496 to 497 ×54, 491 to 493 ×10, 488 ×6; the 6 at 488 mm are 12 mm out against 10 mm |
+| 2026-11-10 | S5-U48 (1000 mm) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | FAIL | `logs/2026-11-10_s5-u48-1000mm.txt` | 71/71 valid, 966 to 971 mm: all about 30 mm (3.2 %) short against 20 mm. Spread 5 mm, so a constant bias. `range_measurement.c` assumes 340 m/s; at about 30 °C sound travels about 349 m/s, so readings would be about 2.7 % short. Not consistent with 500 mm (0.6 % short), so the distance reference may also have varied |
+| 2026-11-10 | — (diagnostic, open space) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | — | `logs/2026-11-10_s5-u48-open.txt` | Sensor level, nothing intended ahead: 142/142 valid at 721 to 732 mm. Consistent with the floor in the lower half of the 15° beam (sensor height not measured); not confirmed |
+| 2026-11-10 | — (diagnostic, open space) | `562f8b6`, `S5_RANGE_DIAG=1` | Dalton | — | `logs/2026-11-10_s5-u48-open-2.txt` | Sensor tilted up: 143/143 invalid, all "late" (ECHO rose but did not fall within the 30 ms deadline). Invalid count saturates at 255; three in a row latch the forward fault (S5-U55), so with genuinely open space ahead the robot stops. No invalid reading occurred at any target from 50 to 1000 mm on 3V3 |
+| 2026-11-10 | S5 unit cases (39) on target, integrated | working tree after `700bfe2` on `feature/subsystem2-integration` (`TEST=1`) | Dalton | PASS (39 passed, 0 failed, 0 blocked) | `logs/2026-11-10_s5-integration-selftest.txt` | First run of subsystem 5 on the subsystem 2 integration branch (stage 1, S2 decision 9); same image: S2 59/59. Host: 39/39 (`make -C testing/host s5`) |
+| 2026-11-10 | — (stage 1 obstacle stop, line following) | working tree after `700bfe2`, `TEST=1 S3_LINE_TEST=1` then `S5_RANGE_DIAG=1` | Dalton | Obstacle stop works; false stops traced | `logs/2026-11-10_s5-stage1-obstacle.txt`, `logs/2026-11-10_s5-stage1-range-lap.txt` | Placed obstacle: HAZARD at 248 and 239 mm, again at 112 mm on restart. An unplanned stop on a curve was a real 248 mm echo beside the track. Two stops came from a single "late" echo after steady 1405..1451 and 626..630 mm readings; in one position late echoes persisted (invalid count 134) and latched SCAN_FAULT until the car was moved (then 2322 mm). Led to S2 decision 10 (late echo = clear) |
+| 2026-11-10 | — (stage 1 obstacle stop, after S2 decision 10) | working tree after `700bfe2`, `TEST=1 S3_LINE_TEST=1 S5_RANGE_DIAG=1` | Dalton | PASS (stage 1) | `logs/2026-11-10_s5-stage1-late-clear.txt` | Clear lap, the previous no-echo position, and the placed obstacle: 8 HAZARD stops, each after a real 242..248 mm reading; 413 late echoes reported as 4000 mm (clear) with no false stop; 0 "none", 0 "stuck", 0 SCAN_FAULT. Tester: all good |

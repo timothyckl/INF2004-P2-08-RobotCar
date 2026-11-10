@@ -172,9 +172,9 @@ static void     line_log_mode (line_control_mode_t old_mode,
 #endif
 
 /**
- * @brief Create controller_flags, safety_flags (STOP set), remote_q, line_q
- *        and state_mutex. Each global ID is set only once its object exists,
- *        because the WiFi task may already be calling the adapters.
+ * @brief Create controller_flags, safety_flags (STOP set), remote_q, line_q,
+ *        scan_q and state_mutex. Each global ID is set only once its object
+ *        exists, because the WiFi task may already be calling the adapters.
  */
 ER
 s2_controller_create (void)
@@ -238,6 +238,18 @@ s2_controller_create (void)
 
     line_q = lq;
 
+    cmbf.bufsz  = S2_SCAN_Q_BYTES;
+    cmbf.maxmsz = (INT)sizeof(s2_scan_cmd_t);
+
+    ID const sq = tk_cre_mbf(&cmbf);
+
+    if (sq < E_OK)
+    {
+        return (sq);
+    }
+
+    scan_q = sq;
+
     return (s2_robot_state_create());
 }
 
@@ -285,6 +297,18 @@ controller_task (INT stacd, void * exinf)
 
         read_input(&in);
 
+        if ((0u != (ptn & (CTRL_FLG_HAZARD | CTRL_FLG_SCAN_FAULT)))
+            && (S2_SYS_RUNNING == g_ctrl.state))
+        {
+            /* A stop must never be silent; S5 repeats its flags while
+               the cause persists, so report only the one that stops a
+               run. */
+            tm_printf((UB *)"[S2] S5 %s%s: STOP latched\n",
+                      (0u != (ptn & CTRL_FLG_HAZARD)) ? "HAZARD" : "",
+                      (0u != (ptn & CTRL_FLG_SCAN_FAULT)) ? " SCAN_FAULT"
+                                                          : "");
+        }
+
         ctrl_output_clear(&out);
         ctrl_flags(&g_ctrl, (uint32_t)ptn, &in, &out);
         apply(&out, &in);
@@ -302,6 +326,11 @@ controller_task (INT stacd, void * exinf)
         apply(&out, &in);
 
         ctrl_get_state(&g_ctrl, &in, &st);
+        /* Running is line following only in the line-follow image; S5
+           raises a hazard only in a moving mode. */
+        st.mode = ((0 != S3_LINE_FOLLOW_TEST)
+                   && (S2_SYS_RUNNING == st.state)) ? S2_MODE_FOLLOW
+                                                    : S2_MODE_NONE;
 #if CTRL_BUTTON
         button_step(&st, &in);
 #endif

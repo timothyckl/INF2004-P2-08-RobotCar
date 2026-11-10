@@ -20,7 +20,7 @@ s2_robot_state_create (void)
     T_CMTX         cmtx = {0};
     s2_robot_state_t const boot = {0u, 0, 0u, S2_SYS_INITIALISING,
                                    S2_FAULT_NONE, S2_RS_STOP_LATCHED,
-                                   0u, S2_RESULT_NONE, 0u, {0u, 0u}};
+                                   0u, S2_RESULT_NONE, 0u, S2_MODE_NONE, 0u};
 
     g_state      = boot;
     cmtx.mtxatr  = TA_INHERIT;

@@ -226,6 +226,7 @@ the next plain `make` goes back to the defaults.
 | `S2_CAL_TEST` | **`0`**, `1`, `2` | starts only subsystem 2; each GP20 press runs forward 1000 mm (`1`) or left 360 degrees (`2`) and prints odometry and a timer check (S2-H06..H08); requires `TEST=1` | `_s2cal1`, `_s2cal2` / *(nothing)* | `S2_CAL_TEST` (0..2) |
 | `S2_HW_TEST` | **`0`**..`4` | subsystem 2 bench sequence instead of the motion and controller tasks: `1` encoder counts, motors off (S2-H03); `2` motors both ways (S2-H01, H02, H04); `3` full speed (S2-H04); `4` watchdog (S2-H05). `2`..`4` SPIN THE MOTORS; requires `TEST=1` | `_s2hw1`..`_s2hw4` / *(nothing)* | `S2_HW_TEST` (0..4) |
 | `S2_MOTION_LOG` | **`0`**, `1` | `1` prints Motion Control's speed loop (target, measured speed, duty, counts per wheel) every 50 ms while moving, for PID tuning | `_mclog` / *(nothing)* | `S2_MOTION_LOG` (1 or 0) |
+| `S5_RANGE_DIAG` | **`0`**, `1` | `1` prints every forward HC-SR04 attempt (echo duration, validity, distance) for S5-U48 | `_s5range` / *(nothing)* | `S5_RANGE_DIAGNOSTIC` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
 **Why `CRASH_REPORT` exists.** USB output is not sent the moment you call

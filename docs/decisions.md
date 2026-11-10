@@ -106,6 +106,33 @@ The `_s3line` PWM cap stays at 20%: line following peaks at duty 1120 of
 1250, and steady 200 mm/s needs about 1800, so the cap is raised only
 together with faster line-follow speeds or pivot turns, and retested then.
 
+### 9. Subsystem 5 integration, stage 1: obstacle stop (2026-11-10)
+
+Subsystem 5 is integrated from `feature/full-system-integration` (11-10)
+in stages. Stage 1: S2 creates `scan_q` (IF-11) and publishes
+`robot_state.mode` (IF-14, from the former reserved bytes; still 20
+bytes). Mode is FOLLOW while Running in the `_s3line` image and NONE
+otherwise, because Running is line following only there. S5 raises
+`CTRL_FLG_HAZARD` (IF-12) when the forward range falls inside its
+provisional 250 mm hazard distance in a moving mode, and the controller
+latches STOP, as before. The `_s3line` image now also starts subsystem 5.
+Stage 2 adds the scan request, authorise and stop-confirm handshake
+(IF-11, IF-13); stage 3 the bypass and line reacquisition.
+
+### 10. A late forward echo means nothing in range (2026-11-10)
+
+Deviation from subsystem 5 decision 3 ("an invalid forward reading requests
+a stop"), decided by Dalton on the integration branch; to be confirmed with
+Timothy. On the track, the HC-SR04 facing open space or an angled surface
+returned echoes that rose but were still high at the 30 ms deadline: one
+such reading stopped the car, and a sustained run (134 in a row) latched a
+scan fault. The datasheet gives a 4 m maximum range (23.5 ms); it does not
+specify the output when no echo returns. A late echo is therefore reported
+as a valid forward reading at the 4000 mm range bound (clear). An attempt
+with no rising edge and ECHO stuck high past 130 ms remain invalid and still
+fault. Real readings below 250 mm still stop the car (four such stops in
+the same lap, including one at 248 mm beside the track on a curve).
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

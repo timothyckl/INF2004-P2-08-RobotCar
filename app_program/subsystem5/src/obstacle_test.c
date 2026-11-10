@@ -1,13 +1,16 @@
 /**
- * @file subsystem5_test.c
- * @brief Pico W test entry called by usermain in TEST=1 firmware.
+ * @file obstacle_test.c
+ * @brief Pico W obstacle-scanning test runner.
+ * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * S5-U01 and S5-U02 are retired. Cases start at S5-U03.
  * Source: testing/subsystem5/TEST_LOG.md.
  */
-#include "../include/subsystem5_test.h"
+#include "../include/obstacle_test.h"
 
 #if APP_TEST
+#include "../../../testing/subsystem5/unit_tests/include/test_capture.h"
+#include "../../../testing/subsystem5/unit_tests/include/test_planning.h"
 #include "../../../testing/subsystem5/unit_tests/include/test_ranging.h"
 #include "../../../testing/subsystem5/unit_tests/include/test_runner.h"
 #include "../../../testing/subsystem5/unit_tests/include/test_safety.h"
@@ -16,7 +19,7 @@
 #include <stddef.h>
 
 void
-subsystem5_test (void)
+obstacle_test_run (void)
 {
     test_interface_api_t const * p_api = test_subject_get();
 
@@ -31,6 +34,8 @@ subsystem5_test (void)
     test_ranging_run(p_api);
     test_safety_run(p_api);
     test_scanning_run(p_api);
+    test_capture_run(p_api);
+    test_planning_run(p_api);
     test_runner_finish();
 }
 #endif

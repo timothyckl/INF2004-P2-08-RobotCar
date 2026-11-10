@@ -22,7 +22,7 @@
  *	  subsystem2/  Producer  makes a "sample" every 300 ms     (core 1)
  *	  subsystem3/  Consumer  collects samples into statistics  (core 0)
  *	  subsystem4/  Monitor   prints reports, pauses/resumes the LED
- *	  subsystem5/  (empty template for the fifth student)
+ *	  subsystem5/  Obstacle Scan task (20): HC-SR04, servo, bypass plan
  *
  *	How they talk to each other (the interfaces, see TEAM.md section 5):
  *	  IF-01  S2 -> S3  mailbox mbx_samples      (owned by S3)
@@ -122,11 +122,14 @@ EXPORT INT usermain(void)
 
 
 #if APP_TEST && S3_LINE_FOLLOW_TEST
-	/* Dedicated S3/S2 trial: no unrelated application task runs. */
+	/* Dedicated S3/S2/S5 trial: line following with the forward
+	   obstacle monitor; no unrelated application task runs. */
 	CHECK(subsystem2_init(), "subsystem2_init");
 	CHECK(subsystem3_init(), "subsystem3_init");
+	CHECK(scan_lifecycle_init(), "scan_lifecycle_init");
 	CHECK(subsystem2_start(), "subsystem2_start");
-	tm_printf((UB *)"S3/S2 line-follow test mode\n");
+	CHECK(scan_lifecycle_start(), "scan_lifecycle_start");
+	tm_printf((UB *)"S3/S2/S5 line-follow test mode\n");
 	subsystem3_test();
 #elif APP_TEST && S2_CAL_TEST
 	/* Dedicated S2 calibration: GP20 runs one manoeuvre per press. */
@@ -144,14 +147,14 @@ EXPORT INT usermain(void)
 	CHECK(subsystem2_init(), "subsystem2_init");
 	CHECK(subsystem3_init(), "subsystem3_init");
 	CHECK(subsystem4_init(), "subsystem4_init");
-	CHECK(subsystem5_init(), "subsystem5_init");
+	CHECK(scan_lifecycle_init(), "scan_lifecycle_init");
 
 	/* Phase 2: every subsystem starts its tasks */
 	CHECK(subsystem1_start(), "subsystem1_start");
 	CHECK(subsystem2_start(), "subsystem2_start");
 	CHECK(subsystem3_start(), "subsystem3_start");
 	CHECK(subsystem4_start(), "subsystem4_start");
-	CHECK(subsystem5_start(), "subsystem5_start");
+	CHECK(scan_lifecycle_start(), "scan_lifecycle_start");
 
 	tm_printf((UB*)"all subsystems started\n\n");
 
@@ -164,7 +167,7 @@ EXPORT INT usermain(void)
 	subsystem2_test();
 	subsystem3_test();
 	subsystem4_test();
-	subsystem5_test();
+	scan_lifecycle_test();
 	tm_printf((UB*)"[TEST] === test run end ===\n");
 #endif
 #endif
