@@ -15,9 +15,14 @@ subsystem3_init (void)
 {
     T_CMBX mailbox_config = {0};
     T_CMTX mutex_config = {0};
+    ER sensor_error;
 
     /* Inputs only: this test stage never commands either motor. */
-    s3_ir_gpio_init();
+    sensor_error = s3_ir_gpio_init();
+    if (sensor_error < E_OK)
+    {
+        return (sensor_error);
+    }
 
     /*
      * The mailbox passes a pointer without copying its message. Subsystem 2

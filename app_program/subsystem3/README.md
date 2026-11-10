@@ -1,15 +1,15 @@
 # Subsystem 3: line sensing and barcode foundation
 
-The current hardware stage verifies only the two front digital IR sensors:
+The current hardware stage verifies the two front analog IR outputs and the
+side barcode digital output in a dedicated bench profile:
 
-- front-left DOUT: GP6;
-- front-right DOUT: GP16;
-- side barcode DOUT: GP4, deliberately excluded from steering and this test.
+- front-left AO: GP26/ADC0;
+- front-right AO: GP27/ADC1;
+- side barcode DOUT: GP16.
 
-`s3_ir_gpio` configures GP16 and GP6 as SIO inputs, disables their output
-drivers, and reads both pins into a two-bit mask. It does not enable internal
-pull resistors or assume whether white produces a high or low signal.
-`s3_ir` calibrates the raw polarity from stable white and black observations.
+Both front DOUT wires and the barcode AO wire are disconnected. The analog
+mapping is enabled only by `S3_HW_TEST=1`; normal and integrated images leave
+GP26 and GP27 available for the agreed encoder mapping.
 
 Subsystem 3 never writes motor PWM. In the line-test integration profile it
 sends line positions to the Vehicle Controller, and only Motion Control writes
@@ -18,10 +18,10 @@ present for the other starter subsystems.
 
 ## On-car raw input monitor
 
-1. Connect both sensor modules to 3V3 and a common ground. From behind the
-   robot, the left DOUT is GP6 and the right DOUT is GP16. GP17 is unused;
-   connect only DOUT for this test. Keep the Grove GP26 contact beside GP6
-   disconnected because GP26 belongs to motor 1's encoder.
+1. Connect all three sensor modules to 3V3 and a common ground. From behind
+   the robot, connect front-left AO to GP26, front-right AO to GP27, and the
+   side barcode DOUT to GP16. Disconnect both front DOUT wires and the barcode
+   AO wire.
 2. Build the dedicated monitor with `TEST=1`, `S3_HW_TEST=1`, and
    `CRASH_REPORT=0`:
 
@@ -32,20 +32,25 @@ present for the other starter subsystems.
 3. Flash the generated `_test_s3hw.uf2` and open the serial console. This
    profile starts only the Subsystem 3 sensor monitor; the other application
    subsystems and their output are suppressed.
-4. Cover and uncover either sensor with a finger and watch its raw DOUT value.
-   The monitor continues at 10 Hz until the Pico is reset.
+4. Move each front sensor over representative white, solid black, and faded
+   black sections at its installed height. The monitor prints the 12-bit ADC
+   readings at 10 Hz until the Pico is reset. Cover or uncover the side sensor
+   to check the barcode DOUT separately.
 
 Example raw diagnostic output:
 
 ```text
-s3 raw: left=0 right=1
+s3 raw: left_adc=742 right_adc=801 barcode_do=1
 ```
 
-`left` is GP6 and `right` is GP16, using robot-relative sides viewed from
-behind. A value of `0` is LOW and `1` is HIGH. This
-stage does not label readings as white or black and does not advance into a
-calibration prompt. If a value never changes, check that sensor's threshold
-adjustment, DOUT wiring, power, ground, and mounting height.
+`left_adc` and `right_adc` are raw values from 0 through 4095; the example is
+illustrative and is not a validated threshold. `barcode_do` is the raw GP16
+digital level. Record stable ranges for every tested surface. This stage does
+not label readings as white or black and does not command the motors.
+
+`S3_LINE_TEST=1` uses these same two AO inputs for line following. The older
+`S3_CAL_TEST=1` profile remains a DOUT-only diagnostic and must not be used
+with the AO-only front wiring.
 
 A normal `TEST=1` build without either S3-specific option reports the hardware
 checks as blocked and runs the regular subsystem tests instead.
@@ -81,16 +86,16 @@ before running calibration.
 
 ## Button-controlled line-follow bench trial
 
-Only run this after S3-H01 through S3-H03 pass. Raise the wheels clear of the
-floor and build:
+First verify both AO channels with `S3_HW_TEST=1`. Raise the wheels clear of
+the floor for the first moving test and build:
 
 ```text
 make -C build_make TEST=1 S3_LINE_TEST=1 CRASH_REPORT=0 -j8
 ```
 
 Flash the generated `_test_s3line.uf2`. This profile starts only Subsystems 2
-and 3 and loads the verified digital polarity from firmware: LOW is WHITE and
-HIGH is BLACK for both sensors. It does not repeat the four calibration prompts.
+and 3. It samples front-left AO on GP26 and front-right AO on GP27 every 10 ms.
+It does not repeat a guided calibration prompt.
 It also selects the currently installed trial drivetrain: left motor on motor 1
 (GP8/GP9), right motor on motor 2 (GP10/GP11), left encoder on GP7/GP28 and
 right encoder on GP0/GP1. This exception applies only to `_test_s3line.uf2`;
@@ -102,42 +107,59 @@ the Robo Pico programmable button on GP20 to start. Press GP20 again to stop;
 after the wheels stop, another press resets and starts a new run. The input is
 active-low and debounced for 30 ms by the Vehicle Controller.
 
-The saved value is polarity, not an optical threshold. The modules' physical
-potentiometers retain their comparator thresholds. If a sensor module or its
-wiring changes, rerun `S3_CAL_TEST=1`, verify the new WHITE/BLACK levels, and
-update the saved constants before using the line profile again.
+Each channel has an independent filtered threshold because the measured sensor
+ranges differ. The initial white baselines are 136 counts on the left and 180
+on the right. While a channel remains white, its baseline moves by at most one
+count per eight samples and the threshold follows it. The left baseline is
+bounded to 96..168 counts and uses 32-count detection and 20-count release
+margins. The right baseline is bounded to 100..300 counts and uses 500-count
+detection and 350-count release margins. A black reading freezes baseline
+adaptation so the algorithm cannot learn the line as white. These values come
+from the 2026-11-05 bench observations and still require on-track validation.
+
+The serial heartbeat prints raw ADC values, filtered values and the current
+thresholds, plus a 0..100 steering strength for a single-black observation.
+The strength is normalised independently against the measured solid-black
+references of 1500 counts on the left and 3300 counts on the right. If a sensor
+or mounting height changes, rerun `S3_HW_TEST=1` and review all white,
+solid-black and faded-black ranges before changing them.
 
 There is no automatic run-time limit. Its verified sensor mapping is:
 
 | Left | Right | Request |
 |---|---|---|
-| WHITE | WHITE | bounded lost-line recovery, then STOP |
+| WHITE | WHITE | centred straight |
 | BLACK | WHITE | left correction |
 | WHITE | BLACK | right correction |
-| BLACK | BLACK | centred straight |
+| BLACK | BLACK | crossing/junction candidate |
 
-BLACK/BLACK is the normal centred state, so this two-front-sensor trial cannot
-distinguish a junction from an ordinary line and continues straight through
-both. If one sensor remains black for 250 ms, the controller applies the
-sustained curve command. WHITE/WHITE searches in the most recently observed
-direction only if that direction was seen within 500 ms. The search lasts at
-most 800 ms before requesting STOP. These values are provisional and require
-repeated track testing.
+BLACK/BLACK must persist for 100 ms before the controller confirms a junction;
+brief BLACK/BLACK observations retain the preceding curve command. A confirmed
+junction crosses straight and must clear within 1500 ms. Its first clear reading
+starts a straight exit of at least 600 ms. After that minimum, a side-black
+reading that persists for 150 ms resumes normal curve tracking, while
+WHITE/WHITE must remain stable for 100 ms before normal following resumes. The
+exit requests STOP after 2500 ms if neither pattern becomes stable.
 
 It also stops if reports become invalid or stale, a queue/API operation fails,
 or the GP20 button is pressed while running. The supervised USB-logging profile
-allows at most 500 ms between line reports. The
-outer/straight speed is 45 mm/s. During an ordinary correction, the inside
-wheel slows to 38 mm/s while the other wheel remains at 45 mm/s. `LEFT` slows
-the left wheel and drives the right wheel; `RIGHT` drives the left wheel and
-slows the right wheel. This gentler 7 mm/s difference reduces left-right
-hunting around the BLACK/BLACK centred state. A direct LEFT-to-RIGHT or
-RIGHT-to-LEFT reversal commands straight until the new direction remains
-stable for 100 ms. After a LEFT observation persists for 250 ms, the sustained
-curve target becomes -10/45 mm/s to compensate for the physically weaker LEFT
-turn. A sustained RIGHT curve remains 45/0 mm/s. The sensor labels and
-GPIO assignments are unchanged; the decision table above reflects the new
-on-line mounting geometry.
+samples the front sensors every 10 ms, requires three consecutive matching
+samples, and refreshes the Vehicle Controller report every 30 ms. It allows at
+most 500 ms between valid line reports. The
+outer/straight speed is 40 mm/s. During an ordinary correction, the inside
+wheel scales from 38 down to 32 mm/s as analog contrast rises from 0 to 100,
+while the other wheel remains at 40 mm/s. This replaces the immediate fixed
+32/40 step that caused excessive left-right oscillation on straights. `LEFT`
+slows the left wheel and drives the right wheel; `RIGHT` drives the left wheel
+and slows the right wheel. A single-black observation must persist for 200 ms
+before the sustained curve target becomes a rolling 5/35 mm/s LEFT arc or
+35/5 mm/s RIGHT arc. If WHITE/WHITE appears during a sustained curve, LEFT is
+retained for at most 250 ms and RIGHT for 150 ms before returning to straight.
+The lower forward targets provide additional margin below the test profile's
+PWM ceiling, while the larger wheel-speed ratio produces a tighter rolling
+curve without braking a wheel. The sensor labels and GPIO assignments are
+unchanged. The serial monitor prints the classified sensor state at least every
+500 ms, even when it has not changed.
 The earlier 30/15 mm/s target did not reduce the observed physical speed and
 the controller entered Fault. These are provisional commands, not measured
 wheel speeds. Keep the wheels raised for the first run because the motor
@@ -151,10 +173,11 @@ outside motor cannot start at 20%, Motion Control reports a stall fault and
 stops; do not increase the ceiling until the encoder counts and measured wheel
 speeds are verified.
 
-WHITE/WHITE now unambiguously means that neither front sensor sees the line.
-Recovery still relies on recent direction history and cannot guarantee that a
-branch is the intended route. Supervise the whole run and keep a hand near
-GP20; do not use this as an unattended line follower.
+WHITE/WHITE is intentionally the centred pattern for the separated-sensor
+geometry, but it is also possible after the car loses the line completely.
+The bounded curve hold cannot distinguish those two physical situations.
+Supervise the whole run and keep a hand near GP20; do not use this as an
+unattended line follower.
 
 ## Save every serial line
 
