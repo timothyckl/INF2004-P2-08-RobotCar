@@ -174,3 +174,4 @@ S5-U36, S5-U37. New:
 | 2026-11-03 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `ebb59a5` | host (gcc) | PASS (30/30) | `../integration/logs/2026-11-03_host-suites.txt` | host only; not on the Pico W |
 | 2026-11-04 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `1573b62` | Dalton | PASS (30/30) | `../integration/logs/2026-11-04_target-selftest.txt` | `TEST=1` on the Pico W |
 | 2026-11-04 | S5-U03..U17, U19..U26, U28, U36, U37, U51..U54 | `1cd5330` | Dalton | PASS (30/30) | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W |
+| 2026-11-10 | S5 unit tests on target | `76db3d8` | Dalton | PASS (39/39) | `../integration/logs/2026-11-10_target-selftest.txt` | `TEST=1` on the Pico W; image built from `893f4dc` (code identical at `76db3d8`); first on-target run after the analogue line-sensor remap and the S5 changes of 2026-11-08; console dropped 0 bytes; logic only, no HC-SR04 or servo hardware test |

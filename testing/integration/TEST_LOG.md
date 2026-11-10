@@ -49,3 +49,4 @@ INT-01 and INT-02 are retired with the starter interfaces IF-01 to IF-05.
 | 2026-11-04 | host suites (all subsystems) | `1cd5330` | host (gcc) | PASS | `logs/2026-11-04_host-suites-2.txt` | host only |
 | 2026-11-04 | INT-03 | `1cd5330` | Dalton | PASS | `../subsystem4/logs/2026-11-04_s4-h01-4.txt` | `TEST=1 S4_HW_TEST=1` on the Pico W |
 | 2026-11-04 | host suites (all subsystems) | `2e26c65` | host (gcc) | PASS | `logs/2026-11-04_host-suites-3.txt` | host only; S5 30/30 |
+| 2026-11-10 | INT-03 | `76db3d8` | Dalton | PASS | `logs/2026-11-10_target-selftest.txt` | `TEST=1` on the Pico W, analogue front sensors on ADC0/ADC1; freshness only, not sensor values |
