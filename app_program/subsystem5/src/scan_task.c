@@ -610,7 +610,7 @@ scan_task_range_diag (char const * p_kind, uint32_t echo_us, bool b_valid,
     }
 
     /* echo_us is 0 when no complete pulse arrived. */
-    tm_printf((UB *)"[S5] range t %u ms %s echo %u us valid %d %u mm"
+    tm_printf((UB *)"[S5] range t %u ms %s %u us valid %d %u mm"
               " invalid %d\n",
               now_ms, p_kind, (UW)echo_us, (INT)b_valid, (UW)distance_mm,
               (INT)g_monitor.invalid_count);
