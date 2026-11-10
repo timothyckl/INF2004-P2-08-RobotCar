@@ -300,6 +300,14 @@ Firmware applies the agreed timeout, invalid-reading and fault rules
 (subsystem 5 decision 3) whatever the supply. Any wiring change needs team
 review first.
 
+2026-11-04: the team keeps the HC-SR04 on 3V3 and will not move it to 5 V.
+Reason given: other groups run the same module at 3V3. This is a wiring
+decision, not a measurement; ranging at 3V3 on this robot remains
+unvalidated until S5-U48 (known distances, 10 repetitions) passes. The
+S3-H03 runs of 2026-11-04 stopped in a way consistent with the forward
+monitor seeing no echo, so S5-U48 is needed before line-following
+results can be trusted.
+
 ### 4. UART0 on the encoder pins (D4)
 
 Builds that would give GP0/GP1 to UART0 are refused: the makefile rejects
