@@ -142,6 +142,17 @@ endif
 S2_CAL_TEST_SUFFIX := _s2cal$(S2_CAL_TEST)
 endif
 
+# S2_MOTION_LOG=1 prints Motion Control's speed loop (target, measured
+# speed, duty per wheel) every 50 ms while moving, for PID tuning. Opt-in
+# because console formatting runs in the motion task.
+S2_MOTION_LOG ?= 0
+ifneq ($(filter $(S2_MOTION_LOG),0 1),$(S2_MOTION_LOG))
+$(error Unknown S2_MOTION_LOG '$(S2_MOTION_LOG)'; use 0 or 1)
+endif
+ifeq ($(S2_MOTION_LOG),1)
+S2_MOTION_LOG_SUFFIX := _mclog
+endif
+
 # S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
 S4_HW_TEST ?= 0
 ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
@@ -192,7 +203,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -256,6 +267,7 @@ CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
 CFLAGS  += -DS3_LINE_FOLLOW_TEST=$(S3_LINE_TEST)
 CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
+CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 ifeq ($(S3_LINE_TEST),1)
 CFLAGS  += -DS2_DEMO_SCRIPT=0
@@ -292,7 +304,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

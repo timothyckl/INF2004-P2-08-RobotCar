@@ -39,6 +39,7 @@
    never starts this task, so arming it there would reset the board. */
 #define MC_USE_WATCHDOG     ((0 == APP_TEST) && (0 == S2_HW_TEST))
 #define MC_LOCK_TMO_MS      10      /* reader wait for the status lock */
+#define MC_LOG_PERIODS      5u      /* S2_MOTION_LOG: one line per 50 ms */
 
 EXPORT ID motion_q = 0;
 
@@ -82,6 +83,8 @@ static void     log_fault (motion_input_t const * p_input,
                            motion_output_t const * p_output);
 static void     raise_fault (motion_output_t const * p_out);
 static void     publish_status (void);
+static void     motion_log (motion_input_t const * p_in,
+                            motion_output_t const * p_out);
 static uint32_t now_ms (void);
 
 /** @brief Create motion_q, the status mutex and the period handler. */
@@ -270,7 +273,41 @@ motion_task (INT stacd, void * exinf)
 
         raise_fault(&out);
         publish_status();
+        motion_log(&in, &out);
     }
+}
+
+/* S2_MOTION_LOG: one line every MC_LOG_PERIODS control periods while a
+   command is active, for PID tuning. Runs after the motors are written and
+   the watchdog is kicked, so a slow console cannot delay either. */
+static void
+motion_log (motion_input_t const * p_in, motion_output_t const * p_out)
+{
+#if S2_MOTION_LOG
+    static uint32_t periods = 0u;
+    bool const b_active = (MOTION_SPEED == g_motion.state)
+                          || (MOTION_MOVE == g_motion.state)
+                          || (MOTION_TURN == g_motion.state)
+                          || (MOTION_STOPPING == g_motion.state);
+
+    periods++;
+
+    if (b_active && (periods >= MC_LOG_PERIODS))
+    {
+        periods = 0u;
+        tm_printf((UB *)"[MC] ms %u st %d tgt %d/%d spd %d/%d duty %d/%d"
+                  " cnt %u/%u err %u/%u\n",
+                  (UINT)(p_in->now_us / 1000u), (INT)g_motion.state,
+                  (INT)g_motion.tgt_l, (INT)g_motion.tgt_r,
+                  (INT)g_motion.speed_l, (INT)g_motion.speed_r,
+                  (INT)p_out->duty_l, (INT)p_out->duty_r,
+                  (UINT)p_in->count_l, (UINT)p_in->count_r,
+                  (UINT)p_in->errors_l, (UINT)p_in->errors_r);
+    }
+#else
+    (void)p_in;
+    (void)p_out;
+#endif
 }
 
 static void
