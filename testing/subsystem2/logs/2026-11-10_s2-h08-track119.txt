@@ -1,0 +1,9 @@
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=3515 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 17862868 us in 17740 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=2070 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 36862831 us in 36740 ms of kernel time (expect 1000 us per ms)
