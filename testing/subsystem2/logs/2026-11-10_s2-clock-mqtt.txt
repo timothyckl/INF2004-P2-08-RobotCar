@@ -1,0 +1,114 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+WARNING: LINE_ONLY=1; obstacle detection and scanning are disabled.
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x0 age -939197420 ms
+s4: LSM303DLHC ready; calibrating
+[MC] clk us 150976 tick 0x260c ref ctrl 0x2 div 0x100 sel 0x4
+[MC] us 189846 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 239545 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 90 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+wifi: joining "Edmund" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+s4: stationary calibration complete
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.5
+mqtt: connected to 172.20.10.4
+[MC] clk us 5139573 tick 0x160c ref ctrl 0x2 div 0x100 sel 0x4
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 440 ms
+mqtt: subscribed to p2-08/p2-08-car-01/command
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 1440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 1940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 2440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 2940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 3440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 3940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 4440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 4940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 0"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 5440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 5940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 6440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 6940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 7440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 7940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 8440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 8940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 9440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 9940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 1"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 11440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 11940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 12440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 12940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 13440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 13940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 14440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 14940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 2"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 15440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 15940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 16440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 16940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 17440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 17940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 18440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 18940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 19440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 19940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 3"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 20440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 20940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 21440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 21940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 22440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 22940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 23440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 23940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 24440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 24940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 4"
+[MC] clk us 30139576 tick 0x660c ref ctrl 0x2 div 0x100 sel 0x4
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 25440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 25940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 26440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 26940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 27440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 27940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 28440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 28940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 29440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 29940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 5"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 30440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 30940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 31440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 31940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 32440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 32940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 33440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 33940 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 34440 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 34940 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 6"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 35440 ms

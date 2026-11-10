@@ -1,0 +1,1070 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+WARNING: LINE_ONLY=1; obstacle detection and scanning are disabled.
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+s4: LSM303DLHC ready; calibrating
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x0 age -939197420 ms
+[MC] us 4516 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 5680 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 6857 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 8024 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 9201 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 10368 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 11545 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 12712 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 13898 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 15060 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 90 ms
+[MC] us 16243 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 17400 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 18576 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 19744 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 20921 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 22087 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 23265 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 24430 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 25608 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 26775 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 10 ms
+[MC] us 27950 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 29118 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 30293 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 31461 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 32637 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 33805 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 34981 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 36149 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 37324 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 38493 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 480 ms
+[MC] us 39668 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 40837 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 42012 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 43180 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 44356 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 45524 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 46699 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 47868 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 49043 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 50211 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 980 ms
+[MC] us 51387 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 52555 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 53731 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 54899 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 56074 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 57243 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 58418 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 59586 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 60762 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+s4: stationary calibration complete
+[MC] us 61930 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 1 fault 0 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 1480 ms
+[MC] us 63106 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 64274 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 65449 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 66618 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 67793 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 68962 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 70137 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 71305 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 72481 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 73649 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 5 fault 1 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 1980 ms
+[MC] us 74824 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 75993 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 77168 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 78337 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 79512 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 80680 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 81855 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 83024 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 84199 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 85368 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 5 fault 1 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 2480 ms
+[S2] last STOP: latch to motor off 13 us
+[MC] us 86543 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 87712 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 88887 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 90055 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 91230 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 92399 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 93574 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 94743 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 95918 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 97087 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 5 fault 1 motion 5 dist 0 mm flags 0x1 line ok 1 0x1 age 2980 ms
+[S2] last STOP: latch to motor off 13 us
+[MC] us 98262 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 99430 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 100606 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 101774 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[MC] us 102949 st 5 tgt 0/0 spd 0/0 duty 0/0 cnt 0/0 err 0/0 slp 0 can 0
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 3480 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 3980 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 4480 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 4980 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+wifi: joining "Edmund" ...
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+wifi: link status -> joined AP, no IP yet (2)
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+wifi: link up, ip=172.20.10.5
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: connected to 172.20.10.4
+mqtt: subscribed to p2-08/p2-08-car-01/command
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 0"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 1"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 2"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 3"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 4"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 5"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 6"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 7"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 8"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 9"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 10"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 11"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 12"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 13"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 14"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 15"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 16"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 17"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 18"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 19"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 20"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 21"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 22"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 23"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 24"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 25"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 26"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 27"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 28"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 29"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 30"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 31"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 32"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 33"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 34"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 35"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 36"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 37"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 38"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 39"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 40"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 41"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 42"
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us
+[S2] state 5 fault 1 motion 1 dist 0 mm flags 0x3 line ok 1 0x1 age 10 ms
+[S2] last STOP: latch to motor off 13 us

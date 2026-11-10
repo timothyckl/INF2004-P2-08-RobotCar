@@ -1,0 +1,98 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+WARNING: LINE_ONLY=1; obstacle detection and scanning are disabled.
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x0 age -939197420 ms
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 90 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+wifi: joining "Edmund" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x15 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: link status -> joined AP, no IP yet (2)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+wifi: link up, ip=172.20.10.5
+mqtt: connected to 172.20.10.4
+mqtt: subscribed to p2-08/p2-08-car-01/command
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 0"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x1 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x1c age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x18 age 10 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 1"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 2"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 3"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 4"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 5"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3 line ok 1 0x8 age 10 ms
