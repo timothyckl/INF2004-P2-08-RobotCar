@@ -5,8 +5,8 @@
  * The port has no watchdog or PSM defines, so the registers are defined
  * here. Values are from the Pico SDK's generated register headers
  * (hardware/regs/watchdog.h, psm.h, addressmap.h), which follow the
- * RP2040 datasheet's Watchdog and Power-On State Machine (PSM) chapters;
- * the RP2040 datasheet itself is not in docs/datasheets.
+ * RP2040 datasheet's Watchdog and Power-On State Machine (PSM) chapters
+ * (docs/datasheets/rp2040-datasheet.pdf).
  *
  * - Erratum RP2040-E1: the counter decrements twice per 1 us tick, so the
  *   load value is twice the microsecond count (as the SDK does).
@@ -16,7 +16,8 @@
  * - CTRL's PAUSE_DBG0/DBG1/JTAG bits are 1 at reset and left alone: the
  *   counter pauses while a debugger halts the CPU.
  * - The watchdog tick (TICK) also clocks the 1 MHz system timer the
- *   kernel and this subsystem use. It is checked, never changed.
+ *   kernel and this subsystem use. The kernel sets it in startup_clock();
+ *   this driver only checks that it runs.
  * - SCRATCH0 holds a marker written at start, so a timeout can be told
  *   apart from the boot ROM's own watchdog reboot (after flashing).
  *   SCRATCH0-3 are free for applications; the boot ROM uses SCRATCH4-7.

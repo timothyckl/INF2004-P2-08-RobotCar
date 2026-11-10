@@ -126,6 +126,22 @@ ifneq ($(filter 0 1,$(S3_TEST_MODE_COUNT)),$(S3_TEST_MODE_COUNT))
 $(error Choose either S3_HW_TEST or S3_LINE_TEST, not both)
 endif
 
+# S2_CAL_TEST runs a GP20-started subsystem 2 calibration manoeuvre:
+# 1 = forward 1000 mm (distance scale), 2 = left 360 degrees (track width).
+S2_CAL_TEST ?= 0
+ifneq ($(filter $(S2_CAL_TEST),0 1 2),$(S2_CAL_TEST))
+$(error Unknown S2_CAL_TEST '$(S2_CAL_TEST)'; use 0, 1 or 2)
+endif
+ifneq ($(S2_CAL_TEST),0)
+ifneq ($(TEST),1)
+$(error S2_CAL_TEST requires TEST=1)
+endif
+ifneq ($(S3_TEST_MODE_COUNT),0)
+$(error S2_CAL_TEST cannot be combined with an S3 test profile)
+endif
+S2_CAL_TEST_SUFFIX := _s2cal$(S2_CAL_TEST)
+endif
+
 # S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
 S4_HW_TEST ?= 0
 ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
@@ -140,6 +156,11 @@ endif
 ifneq ($(S3_TEST_MODE_COUNT),0)
 ifeq ($(S4_HW_TEST),1)
 $(error S3 and S4 dedicated hardware-test profiles cannot be combined)
+endif
+endif
+ifneq ($(S2_CAL_TEST),0)
+ifeq ($(S4_HW_TEST),1)
+$(error S2_CAL_TEST cannot be combined with S4_HW_TEST)
 endif
 endif
 
@@ -171,7 +192,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -234,6 +255,7 @@ endif
 CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
 CFLAGS  += -DS3_LINE_FOLLOW_TEST=$(S3_LINE_TEST)
+CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 ifeq ($(S3_LINE_TEST),1)
 CFLAGS  += -DS2_DEMO_SCRIPT=0
@@ -270,7 +292,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

@@ -59,6 +59,7 @@ Robot car firmware running on the micro T-Kernel 3.0 port for the RP2040
 | Hardware | Local datasheet / manual |
 |---|---|
 | Raspberry Pi Pico W board (RP2040-based) | [pico_w_datasheet.pdf](docs/datasheets/pico_w_datasheet.pdf) |
+| RP2040 microcontroller (registers, clocks, timer, watchdog, ADC) | [rp2040-datasheet.pdf](docs/datasheets/rp2040-datasheet.pdf) |
 | Cytron Robo Pico carrier board | [Robo-Pico-datasheet.pdf](docs/datasheets/Robo-Pico-datasheet.pdf) |
 | HC-SR04 ultrasonic ranging module | [HCSR04-datasheet.pdf](docs/datasheets/HCSR04-datasheet.pdf) |
 | ST188 infrared reflective sensor module | [ST188-datasheet.pdf](docs/datasheets/ST188-datasheet.pdf) |

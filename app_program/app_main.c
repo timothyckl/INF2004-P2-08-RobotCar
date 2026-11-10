@@ -64,6 +64,10 @@
 #define S3_LINE_FOLLOW_TEST 0
 #endif
 
+#ifndef S2_CAL_TEST
+#define S2_CAL_TEST 0
+#endif
+
 /*
  * Create and start one task (declared in app.h for every subsystem).
  *   prc = TP_PRC1 (core 0), TP_PRC2 (core 1), or 0 for "any core".
@@ -124,6 +128,11 @@ EXPORT INT usermain(void)
 	CHECK(subsystem2_start(), "subsystem2_start");
 	tm_printf((UB *)"S3/S2 line-follow test mode\n");
 	subsystem3_test();
+#elif APP_TEST && S2_CAL_TEST
+	/* Dedicated S2 calibration: GP20 runs one manoeuvre per press. */
+	CHECK(subsystem2_init(), "subsystem2_init");
+	CHECK(subsystem2_start(), "subsystem2_start");
+	tm_printf((UB *)"S2 calibration test mode %d\n", (INT)S2_CAL_TEST);
 #elif APP_TEST && S3_HARDWARE_TEST
 	/* Dedicated front-IR bench mode: no other application task runs. */
 	CHECK(subsystem3_init(), "subsystem3_init");

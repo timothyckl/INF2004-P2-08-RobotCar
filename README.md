@@ -223,6 +223,7 @@ the next plain `make` goes back to the defaults.
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
 | `S3_HW_TEST` | **`0`**, `1` | `1` runs only subsystem 3's continuous raw two-front-IR monitor; requires `TEST=1` | `_s3hw` / *(nothing)* | `S3_HARDWARE_TEST` (1 or 0) |
 | `S3_LINE_TEST` | **`0`**, `1` | `1` runs the GP20-controlled S3/S2 line-follow trial; requires `TEST=1` | `_s3line` / *(nothing)* | `S3_LINE_FOLLOW_TEST` (1 or 0) |
+| `S2_CAL_TEST` | **`0`**, `1`, `2` | starts only subsystem 2; each GP20 press runs forward 1000 mm (`1`) or left 360 degrees (`2`) and prints odometry and a timer check (S2-H06..H08); requires `TEST=1` | `_s2cal1`, `_s2cal2` / *(nothing)* | `S2_CAL_TEST` (0..2) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
 **Why `CRASH_REPORT` exists.** USB output is not sent the moment you call

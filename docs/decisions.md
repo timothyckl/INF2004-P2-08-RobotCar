@@ -83,6 +83,17 @@ removed (the makefile refuses it). The IMU (I2C1, GP2/GP3), HC-SR04
 (GP4/GP5) and servo (GP12) keep the 2026-11-03 team mapping and are not yet
 exercised on this branch. `AGENTS.md`, *Agreed pin mapping*, is authoritative.
 
+### 7. Kernel sets the 1 us timer tick (2026-11-10)
+
+After a cold power-up the RP2040 system timer ran at 23.4 kHz instead of
+1 MHz: the watchdog TICK register's CYCLES field resets to 0 (RP2040
+datasheet 4.7.2, Table 550), and only the boot ROM's BOOTSEL path left it at
+12. Every TIMERAWL user (Motion Control speed, stop and timeout timing, the
+hardware watchdog, GPIO interrupt timestamps) was then 43 times slow.
+`startup_clock()` in `kernel/sysdepend/pico_rp2040/cpu_clock.c` now writes
+CYCLES = `XOSC_MHz` with ENABLE once clk_ref runs from the crystal. S2-H06
+verifies it after a cold power-up.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

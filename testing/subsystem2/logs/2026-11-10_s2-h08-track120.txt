@@ -1,0 +1,34 @@
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=1918 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 23362865 us in 23240 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=2873 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 108882829 us in 108760 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=1918 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 112842825 us in 112720 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=1918 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 118222835 us in 118100 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=2873 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 128622827 us in 128500 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=2873 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 132442824 us in 132320 ms of kernel time (expect 1000 us per ms)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+[S2] CAL left 360000 mdeg finished
+[S2] CAL odometry: x=0 mm y=0 mm heading=1440 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 135842828 us in 135720 ms of kernel time (expect 1000 us per ms)

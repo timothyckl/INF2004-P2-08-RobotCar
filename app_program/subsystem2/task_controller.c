@@ -35,6 +35,24 @@
 #define S3_LINE_FOLLOW_TEST 0
 #endif
 
+#ifndef S2_CAL_TEST
+#define S2_CAL_TEST 0
+#endif
+
+/* The GP20 START/STOP button is used by the line and calibration images. */
+#define CTRL_BUTTON         (S3_LINE_FOLLOW_TEST || S2_CAL_TEST)
+
+#if CTRL_BUTTON
+#define CTRL_BUTTON_PIN         20u
+#define CTRL_BUTTON_MASK        (UINT32_C(1) << CTRL_BUTTON_PIN)
+#define CTRL_BUTTON_DEBOUNCE_MS 30u
+#endif
+
+#if S2_CAL_TEST
+#define CTRL_CAL_DISTANCE_MM    1000u
+#define CTRL_CAL_ANGLE_MDEG     360000u
+#endif
+
 #if S3_LINE_FOLLOW_TEST
 #define CTRL_LINE_BASE_MM_S        40
 #define CTRL_LINE_CORRECT_MIN_MM_S 32
@@ -53,12 +71,23 @@
 #define CTRL_LINE_EXIT_CENTER_MS  100u
 #define CTRL_LINE_EXIT_SIDE_MS    150u
 #define CTRL_LINE_EXIT_LIMIT_MS  2500u
-#define CTRL_LINE_BUTTON_PIN       20u
-#define CTRL_LINE_BUTTON_MASK      (UINT32_C(1) << CTRL_LINE_BUTTON_PIN)
-#define CTRL_LINE_DEBOUNCE_MS       30u
 #endif
 
-#if S2_DEMO_SCRIPT
+#if S2_CAL_TEST == 1
+static const ctrl_step_t g_demo[] =
+{
+    {CTRL_ACT_FORWARD, CTRL_CAL_DISTANCE_MM}
+};
+#define CTRL_SCRIPT     g_demo
+#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
+#elif S2_CAL_TEST == 2
+static const ctrl_step_t g_demo[] =
+{
+    {CTRL_ACT_LEFT, CTRL_CAL_ANGLE_MDEG}
+};
+#define CTRL_SCRIPT     g_demo
+#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
+#elif S2_DEMO_SCRIPT
 static const ctrl_step_t g_demo[] =
 {
     {CTRL_ACT_FORWARD, 500u},
@@ -74,7 +103,12 @@ static const ctrl_step_t g_demo[] =
 
 static ctrl_t g_ctrl;               /* controller task only */
 
-#if S3_LINE_FOLLOW_TEST
+#if S2_CAL_TEST
+static uint32_t g_cal_boot_us;      /* controller task only */
+static uint32_t g_cal_boot_ms;
+#endif
+
+#if CTRL_BUTTON
 typedef struct
 {
     uint32_t candidate_since_ms;
@@ -83,8 +117,12 @@ typedef struct
     bool     b_initialised;
     bool     b_armed;
     bool     b_restart_pending;
-} ctrl_line_button_t;
+} ctrl_button_t;
 
+static ctrl_button_t g_button;
+#endif
+
+#if S3_LINE_FOLLOW_TEST
 typedef struct
 {
     line_control_t        control;
@@ -99,7 +137,6 @@ typedef struct
     bool                  b_action_sent;
 } ctrl_line_runtime_t;
 
-static ctrl_line_button_t g_line_button;
 static ctrl_line_runtime_t g_line_runtime;
 #endif
 
@@ -109,12 +146,20 @@ static void     read_input (ctrl_input_t * p_in);
 static void     apply (ctrl_output_t * p_out, ctrl_input_t const * p_in);
 static ER       send_action (ctrl_action_t action, uint32_t value);
 static uint32_t now_ms (void);
+#if CTRL_BUTTON
+static ER       button_init (void);
+static bool     button_press_event (uint32_t now);
+static void     button_request_reset (s2_robot_state_t const * p_state);
+static void     button_step (s2_robot_state_t const * p_state,
+                             ctrl_input_t const * p_input);
+#endif
+#if S2_CAL_TEST
+static void     cal_timer_start (void);
+static void     cal_timer_print (uint32_t now);
+static void     cal_report (s2_robot_state_t const * p_state,
+                            ctrl_input_t const * p_input);
+#endif
 #if S3_LINE_FOLLOW_TEST
-static ER       line_button_init (void);
-static bool     line_button_press_event (uint32_t now);
-static void     line_button_request_reset (s2_robot_state_t const * p_state);
-static void     line_button_step (s2_robot_state_t const * p_state,
-                                  ctrl_input_t const * p_input);
 static void     line_step (s2_robot_state_t const * p_state,
                            ctrl_input_t const * p_input);
 static void     line_reset (uint32_t now);
@@ -137,8 +182,8 @@ s2_controller_create (void)
     T_CFLG cflg = {0};
     T_CMBF cmbf = {0};
 
-#if S3_LINE_FOLLOW_TEST
-    ER const button_er = line_button_init();
+#if CTRL_BUTTON
+    ER const button_er = button_init();
 
     if (button_er < E_OK)
     {
@@ -220,9 +265,13 @@ controller_task (INT stacd, void * exinf)
     (void)stacd;
     (void)exinf;
 
+#if S2_CAL_TEST
+    cal_timer_start();
+#endif
+
     ctrl_init(&g_ctrl, &cfg, now_ms());
 
-#if S3_LINE_FOLLOW_TEST
+#if CTRL_BUTTON
     tm_printf((UB *)"[S2] GP20 button ready: press to START or STOP\n");
 #endif
 
@@ -253,8 +302,13 @@ controller_task (INT stacd, void * exinf)
         apply(&out, &in);
 
         ctrl_get_state(&g_ctrl, &in, &st);
+#if CTRL_BUTTON
+        button_step(&st, &in);
+#endif
+#if S2_CAL_TEST
+        cal_report(&st, &in);
+#endif
 #if S3_LINE_FOLLOW_TEST
-        line_button_step(&st, &in);
         line_step(&st, &in);
 #endif
         s2_robot_state_publish(&st);
@@ -413,54 +467,54 @@ now_ms (void)
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 
-#if S3_LINE_FOLLOW_TEST
+#if CTRL_BUTTON
 static ER
-line_button_init (void)
+button_init (void)
 {
-    ER const er = gpio_set_pin(CTRL_LINE_BUTTON_PIN, GPIO_MODE_IN);
+    ER const er = gpio_set_pin(CTRL_BUTTON_PIN, GPIO_MODE_IN);
 
     if (er >= E_OK)
     {
-        clr_w(GPIO(CTRL_LINE_BUTTON_PIN), GPIO_PDE);
-        set_w(GPIO(CTRL_LINE_BUTTON_PIN), GPIO_PUE);
+        clr_w(GPIO(CTRL_BUTTON_PIN), GPIO_PDE);
+        set_w(GPIO(CTRL_BUTTON_PIN), GPIO_PUE);
     }
 
     return (er);
 }
 
 static bool
-line_button_press_event (uint32_t now)
+button_press_event (uint32_t now)
 {
     bool const b_pressed =
-        (0u == (in_w(GPIO_IN) & CTRL_LINE_BUTTON_MASK));
+        (0u == (in_w(GPIO_IN) & CTRL_BUTTON_MASK));
     bool b_event = false;
 
-    if (!g_line_button.b_initialised)
+    if (!g_button.b_initialised)
     {
-        g_line_button.b_candidate_pressed = b_pressed;
-        g_line_button.candidate_since_ms = now;
-        g_line_button.b_initialised = true;
+        g_button.b_candidate_pressed = b_pressed;
+        g_button.candidate_since_ms = now;
+        g_button.b_initialised = true;
     }
-    else if (b_pressed != g_line_button.b_candidate_pressed)
+    else if (b_pressed != g_button.b_candidate_pressed)
     {
-        g_line_button.b_candidate_pressed = b_pressed;
-        g_line_button.candidate_since_ms = now;
+        g_button.b_candidate_pressed = b_pressed;
+        g_button.candidate_since_ms = now;
     }
-    else if ((now - g_line_button.candidate_since_ms)
-             >= CTRL_LINE_DEBOUNCE_MS)
+    else if ((now - g_button.candidate_since_ms)
+             >= CTRL_BUTTON_DEBOUNCE_MS)
     {
         if (!b_pressed)
         {
-            g_line_button.b_armed = true;
+            g_button.b_armed = true;
         }
 
-        if (b_pressed != g_line_button.b_stable_pressed)
+        if (b_pressed != g_button.b_stable_pressed)
         {
-            g_line_button.b_stable_pressed = b_pressed;
+            g_button.b_stable_pressed = b_pressed;
 
-            if (b_pressed && g_line_button.b_armed)
+            if (b_pressed && g_button.b_armed)
             {
-                g_line_button.b_armed = false;
+                g_button.b_armed = false;
                 b_event = true;
             }
         }
@@ -474,7 +528,7 @@ line_button_press_event (uint32_t now)
 }
 
 static void
-line_button_request_reset (s2_robot_state_t const * p_state)
+button_request_reset (s2_robot_state_t const * p_state)
 {
     bool const b_wheels_stopped =
         (0u != (p_state->flags & S2_RS_STOPPED));
@@ -485,7 +539,7 @@ line_button_request_reset (s2_robot_state_t const * p_state)
     }
     else if (s2_local_command(S2_REMOTE_RESET))
     {
-        g_line_button.b_restart_pending = true;
+        g_button.b_restart_pending = true;
 
         if (S2_SYS_FAULT == p_state->state)
         {
@@ -503,24 +557,24 @@ line_button_request_reset (s2_robot_state_t const * p_state)
 }
 
 static void
-line_button_step (s2_robot_state_t const * p_state,
+button_step (s2_robot_state_t const * p_state,
                   ctrl_input_t const * p_input)
 {
-    bool const b_press = line_button_press_event(p_input->now_ms);
+    bool const b_press = button_press_event(p_input->now_ms);
 
-    if (g_line_button.b_restart_pending)
+    if (g_button.b_restart_pending)
     {
         if (S2_SYS_READY == p_state->state)
         {
             if (s2_local_command(S2_REMOTE_START))
             {
-                g_line_button.b_restart_pending = false;
+                g_button.b_restart_pending = false;
                 tm_printf((UB *)"[S2] GP20: START requested\n");
             }
         }
         else if (S2_SYS_FAULT == p_state->state)
         {
-            g_line_button.b_restart_pending = false;
+            g_button.b_restart_pending = false;
         }
         else
         {
@@ -555,7 +609,7 @@ line_button_step (s2_robot_state_t const * p_state,
         else if ((S2_SYS_STOPPED == p_state->state)
                  || (S2_SYS_FAULT == p_state->state))
         {
-            line_button_request_reset(p_state);
+            button_request_reset(p_state);
         }
         else
         {
@@ -572,7 +626,63 @@ line_button_step (s2_robot_state_t const * p_state,
         }
     }
 }
+#endif
 
+#if S2_CAL_TEST
+/* Kernel time runs on SysTick (clk_sys); TIMERAWL runs on the watchdog
+   tick (clk_ref). Both come from the crystal, so they agree only if the
+   tick generator is set up (kernel startup_clock()). The reference is
+   taken at boot and compared at every report, because after a cold
+   power-up the USB terminal is usually opened after boot. TIMERAWL wraps
+   after about 71 minutes. */
+static void
+cal_timer_start (void)
+{
+    g_cal_boot_us = in_w(TIMER_TIMERAWL);
+    g_cal_boot_ms = now_ms();
+}
+
+static void
+cal_timer_print (uint32_t now)
+{
+    tm_printf((UB *)"[S2] CAL timer: %u us in %u ms of kernel time"
+              " (expect 1000 us per ms)\n",
+              (UINT)(in_w(TIMER_TIMERAWL) - g_cal_boot_us),
+              (UINT)(now - g_cal_boot_ms));
+}
+
+/* Print the odometry once when a run ends. Odometry drives the manoeuvre,
+   so it always reads close to the command: the calibration value is the
+   physical distance or angle measured on the floor. */
+static void
+cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
+{
+    static uint8_t last_state = 0u;
+
+    if ((S2_SYS_RUNNING == last_state) && (S2_SYS_RUNNING != p_state->state))
+    {
+#if S2_CAL_TEST == 1
+        tm_printf((UB *)"[S2] CAL forward %u mm finished\n",
+                  (UINT)CTRL_CAL_DISTANCE_MM);
+#else
+        tm_printf((UB *)"[S2] CAL left %u mdeg finished\n",
+                  (UINT)CTRL_CAL_ANGLE_MDEG);
+#endif
+        tm_printf((UB *)"[S2] CAL odometry: x=%d mm y=%d mm heading=%d mdeg;"
+                  " result=%u reason=%u state=%u fault=%u\n",
+                  (INT)p_input->status.x_mm, (INT)p_input->status.y_mm,
+                  (INT)p_input->status.heading_mdeg,
+                  (UINT)p_input->status.last_result,
+                  (UINT)p_input->status.last_reason,
+                  (UINT)p_state->state, (UINT)p_state->fault);
+        cal_timer_print(p_input->now_ms);
+    }
+
+    last_state = p_state->state;
+}
+#endif
+
+#if S3_LINE_FOLLOW_TEST
 static void
 line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 {

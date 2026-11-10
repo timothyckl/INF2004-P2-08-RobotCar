@@ -25,11 +25,17 @@
 #define MC_PERIOD_MS            10u
 
 /* Geometry. Counts per revolution are the provisional median of three
-   S2-H03 hand-turned trials per wheel on 2026-11-04. Wheel circumference
-   and track remain unmeasured values from the assembled robot. */
+   S2-H03 hand-turned trials per wheel on 2026-11-04. Odometry uses only
+   the ratio circumference / counts, so the circumference is the effective
+   value from S2-H07 (2026-11-10): 204000 um x 1115 mm measured / 1001 mm
+   odometry, three identical floor runs. The track is the effective value
+   from S2-H08 (2026-11-10): 130 mm x 362.7 degrees odometry (median of
+   three) / about 380 degrees measured for a commanded left 360 gave 124.
+   124 and 122 still turned too far by eye; 120 ends within 1-2 degrees
+   of a full turn (by eye; 1 mm is about 2.9 degrees per full turn). */
 #define MC_COUNTS_PER_REV       1330u       /* x2 counts per wheel rev */
-#define MC_WHEEL_CIRC_UM        204000u     /* um */
-#define MC_TRACK_MM             130u        /* wheel centre to centre */
+#define MC_WHEEL_CIRC_UM        227233u     /* um, effective (S2-H07) */
+#define MC_TRACK_MM             120u        /* effective (S2-H08) */
 
 /* Wiring viewed from behind, ultrasonic sensor forward: left wheel = motor 1
    + encoder 2 (GP7/GP28), right wheel = motor 2 + encoder 1 (GP0/GP1).

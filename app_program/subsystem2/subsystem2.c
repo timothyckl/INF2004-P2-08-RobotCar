@@ -27,6 +27,13 @@
 #define S3_LINE_FOLLOW_TEST 0
 #endif
 
+#ifndef S2_CAL_TEST
+#define S2_CAL_TEST 0
+#endif
+
+/* Dedicated trials that do not start the legacy producer. */
+#define S2_NO_PRODUCER      (S3_LINE_FOLLOW_TEST || S2_CAL_TEST)
+
 /* Robot interface objects (subsystem2.h). Set by s2_controller_create()
    once each object exists; 0 before that, so the S1 adapters (which may
    run first, in the WiFi task) fail safely. */
@@ -87,7 +94,7 @@ EXPORT ER subsystem2_init(void)
 
 EXPORT ER subsystem2_start(void)
 {
-#if !S3_LINE_FOLLOW_TEST
+#if !S2_NO_PRODUCER
 	ID	tid;
 #endif
 
@@ -104,8 +111,8 @@ EXPORT ER subsystem2_start(void)
 	}
 #endif
 
-#if S3_LINE_FOLLOW_TEST
-	/* The line-follow integration profile does not use the legacy producer. */
+#if S2_NO_PRODUCER
+	/* The line-follow and calibration trials do not use the legacy producer. */
 	return E_OK;
 #else
 	/* LEGACY producer, pinned to core 1: samples cross to subsystem 3 */
