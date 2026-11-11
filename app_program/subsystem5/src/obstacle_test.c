@@ -10,6 +10,7 @@
 
 #if APP_TEST
 #include "../../../testing/subsystem5/unit_tests/include/test_capture.h"
+#include "../../../testing/subsystem5/unit_tests/include/test_look.h"
 #include "../../../testing/subsystem5/unit_tests/include/test_planning.h"
 #include "../../../testing/subsystem5/unit_tests/include/test_ranging.h"
 #include "../../../testing/subsystem5/unit_tests/include/test_runner.h"
@@ -36,6 +37,7 @@ obstacle_test_run (void)
     test_scanning_run(p_api);
     test_capture_run(p_api);
     test_planning_run(p_api);
+    test_look_run(p_api);
     test_runner_finish();
 }
 #endif

@@ -47,6 +47,7 @@ S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(APP)/subsystem5/src/bypass_plan.c \
            $(APP)/subsystem5/src/scan_profile.c \
            $(APP)/subsystem5/src/forward_monitor.c \
+           $(APP)/subsystem5/src/scan_look.c \
            $(wildcard $(ROOT)/testing/subsystem5/unit_tests/src/*.c) \
            s5_host_main.c
 

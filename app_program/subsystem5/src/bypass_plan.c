@@ -42,6 +42,17 @@ static int32_t const g_plan_cos_45[BYPASS_PLAN_HEADINGS] =
 
 static int32_t const g_plan_eighth_mdeg = 45000;
 
+/* cot(60 + allowance) for allowances of 0 to 30 degrees in 5-degree
+   steps, in thousandths: how far ahead of the sensor, per millimetre of
+   sideways gap, a far end can still be when a 60 degree look misses. */
+static int32_t const g_plan_cot_look[7] = {577, 466, 364, 268, 176, 87, 0};
+
+/* 1 / sin(50 degrees), in thousandths: the farthest a look's 50 to 70
+   degree beam reads the obstacle's side, per millimetre of sideways gap.
+   A reading 100 mm (UNMEASURED) beyond that has passed it. */
+static int32_t const g_plan_side_permille = 1305;
+static int32_t const g_plan_side_gap_mm   = 100;
+
 /* sqrt(2) and sqrt(1/2) in thousandths. sqrt(2) is rounded up so the
    diagonal reaches the sideways offset and a bound is never short. */
 static int32_t const g_plan_root2_up_permille = 1415;
@@ -60,12 +71,18 @@ typedef struct
     int32_t end_mm;
 } bypass_plan_geom_t;
 
-/** One side's route: reverse, sideways offset, extra forward travel. */
+/**
+ * One side's route: reverse, sideways offset, and the forward travel
+ * after the turn straight for an obstacle of the assumed depth; with the
+ * edge and that depth's far end, in route coordinates.
+ */
 typedef struct
 {
     int32_t back_mm;
     int32_t side_mm;
     int32_t forward_mm;
+    int32_t edge_mm;
+    int32_t end_mm;
 } bypass_plan_route_t;
 
 /** Edge of one side from the coarse medians, or false if unobserved. */
@@ -224,7 +241,11 @@ bypass_plan_config_ok (bypass_plan_config_t const * p_config)
     };
     bool b_ok = (0u < p_config->search_max_mm)
                 && (0u < p_config->range_max_mm)
-                && (p_config->range_max_mm <= SCAN_PROFILE_MAX_RANGE_MM);
+                && (p_config->range_max_mm <= SCAN_PROFILE_MAX_RANGE_MM)
+                && ((p_config->beam_deg % 5u) == 0u)
+                && (p_config->beam_deg <= SCAN_PROFILE_BEAM_MAX_DEG)
+                && (p_config->depth_max_mm >= p_config->depth_mm)
+                && (p_config->depth_max_mm <= BYPASS_PLAN_GEOMETRY_MAX_MM);
 
     /* Every coordinate then stays below 16000 mm, so squared distances
        and the thousandths products stay far below INT32_MAX. */
@@ -243,7 +264,7 @@ bypass_plan_choose (bypass_plan_config_t const * p_config, uint32_t face_mm,
                     bool b_left, uint32_t left_mm, bool b_right,
                     uint32_t right_mm, bypass_plan_t * p_plan)
 {
-    bypass_plan_route_t route = {0, 0, 0};
+    bypass_plan_route_t route = {0, 0, 0, 0, 0};
 
     /* Left whenever it has a route (S2 decision 16): the barcode sensor
        on the left then faces away from the obstacle. */
@@ -390,6 +411,9 @@ bypass_plan_route (bypass_plan_config_t const * p_config, uint32_t edge_mm,
         }
     }
 
+    p_route->edge_mm = geom.edge_mm;
+    p_route->end_mm  = geom.end_mm;
+
     return (b_found);
 }
 
@@ -483,10 +507,20 @@ bypass_plan_fill (bypass_plan_config_t const * p_config, bool b_left,
 {
     int32_t const turn = b_left ? g_plan_eighth_mdeg : -g_plan_eighth_mdeg;
     int32_t const side = p_route->side_mm;
+    int32_t const gap  = side - p_route->edge_mm;   /* > 0 by the route */
+
+    /* The turn back must be past the far end by the same amount the
+       assumed-depth route needed (the requirement moves with the far
+       end); a passing look bounds the far end to the sensor's position
+       plus gap x cot(60 + allowance). */
+    int32_t const lead  = (side + p_route->forward_mm) - p_route->end_mm;
+    int32_t const extra = (int32_t)p_config->sensor_mm + lead
+        + (((gap * g_plan_cot_look[p_config->beam_deg / 5u]) + 999) / 1000);
 
     /* side + margin is at most search_max_mm <= 1000 (bypass_plan_route,
-       bypass_plan_config_ok), so the search fits uint16_t; the moves are
-       at most a few thousand millimetres. */
+       bypass_plan_config_ok), so the search fits uint16_t; gap is below
+       1000, and the forward travel is a few thousand millimetres at most,
+       so every value below fits uint16_t. */
     p_plan->result            = BYPASS_PLAN_OK;
     p_plan->side              = b_left ? BYPASS_PLAN_LEFT : BYPASS_PLAN_RIGHT;
     p_plan->count             = BYPASS_PLAN_SEGMENTS;
@@ -499,14 +533,19 @@ bypass_plan_fill (bypass_plan_config_t const * p_config, bool b_left,
                                 / 1000;
     p_plan->segments[3].kind  = BYPASS_PLAN_TURN;
     p_plan->segments[3].value = -turn;
-    p_plan->segments[4].kind  = BYPASS_PLAN_MOVE;
-    p_plan->segments[4].value = p_route->forward_mm;
     p_plan->approach_mdeg     = -turn;
     p_plan->search_mm         = (uint16_t)
         ((((side + (int32_t)p_config->margin_mm) * g_plan_root2_up_permille)
           + 999) / 1000);
     p_plan->align_mdeg        = turn;
     p_plan->lateral_mm        = (uint16_t)side;
+    p_plan->look_deg          = (int16_t)(b_left ? -BYPASS_PLAN_LOOK_DEG
+                                                 : BYPASS_PLAN_LOOK_DEG);
+    p_plan->clear_mm          = (uint16_t)
+        ((((gap * g_plan_side_permille) + 999) / 1000) + g_plan_side_gap_mm);
+    p_plan->extra_mm          = (uint16_t)((extra > 0) ? extra : 0);
+    p_plan->pass_max_mm       = (uint16_t)(p_route->forward_mm
+        + ((int32_t)p_config->depth_max_mm - (int32_t)p_config->depth_mm));
     p_plan->estimated_min_clearance_mm = p_config->clearance_mm;
 }
 

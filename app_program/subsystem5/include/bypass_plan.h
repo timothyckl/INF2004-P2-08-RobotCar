@@ -12,10 +12,17 @@
  *
  * The route turns 45 degrees, never 90 (S2 decision 17): reverse if
  * needed, turn 45 degrees to the bypass side, drive diagonally until the
- * axle is the sideways offset across, turn straight, drive past the
- * obstacle, turn 45 degrees back and search diagonally for the original
- * line, then align. Each length is the shortest that keeps the whole body
- * (from the measured extents) clearance + margin from the obstacle,
+ * axle is the sideways offset across and turn straight. The controller
+ * then passes the obstacle by measurement (S2 decision 19): it steps
+ * forward, looks sideways at look_deg and stops stepping once a reading
+ * exceeds clear_mm, then drives extra_mm, turns 45 degrees back, searches
+ * diagonally for the original line and aligns. A look beyond 60 degrees
+ * misses only once the far end is within cot(60 + beam allowance) of the
+ * sideways gap ahead of the sensor; extra_mm puts the turn back where it
+ * clears a far end there. Stepping past pass_max_mm means the obstacle is
+ * deeper than depth_max_mm. Each length is the shortest that keeps the
+ * whole body (from the measured extents) clearance + margin from the
+ * obstacle,
  * including the corners swept by each in-place turn. The sideways offset
  * plus the margin must stay within search_max_mm. Left is used whenever
  * it has a route; right only when it does not (S2 decision 16).
@@ -34,7 +41,8 @@
 
 #define BYPASS_PLAN_ANGLES      (9u)
 #define BYPASS_PLAN_FINE_ANGLES SCAN_PROFILE_ANGLES
-#define BYPASS_PLAN_SEGMENTS    (5u)
+#define BYPASS_PLAN_SEGMENTS    (4u)
+#define BYPASS_PLAN_LOOK_DEG    (60)    /* side look, the servo's limit */
 
 /* Upper bound on each geometry setting, for the overflow analysis. */
 #define BYPASS_PLAN_GEOMETRY_MAX_MM (1000u)
@@ -71,11 +79,12 @@ typedef struct
     uint16_t sensor_mm;         /* axle to the ultrasonic sensor face */
     uint16_t clearance_mm;      /* physical clearance, agreed 50 mm */
     uint16_t margin_mm;         /* sensing and motion error allowance */
-    uint16_t depth_mm;          /* assumed obstacle depth */
+    uint16_t depth_mm;          /* separates obstacle rays from beyond */
     uint16_t back_max_mm;       /* longest reverse before the first turn */
     uint16_t search_max_mm;     /* sideways reacquisition bound, 500 mm */
     uint16_t range_max_mm;      /* sensor range limit, 4000 mm */
     uint16_t beam_deg;          /* edge beam allowance, 5-degree steps */
+    uint16_t depth_max_mm;      /* deepest obstacle passed, >= depth_mm */
 } bypass_plan_config_t;
 
 /** A route the Vehicle Controller can execute segment by segment. */
@@ -90,6 +99,10 @@ typedef struct
     int32_t               align_mdeg;     /* turn once the line is found */
     uint16_t              obstacle_mm;    /* forward distance */
     uint16_t              lateral_mm;     /* sideways offset of the axle */
+    int16_t               look_deg;       /* side look; positive = left */
+    uint16_t              clear_mm;       /* a look beyond this has passed */
+    uint16_t              extra_mm;       /* forward after the first pass */
+    uint16_t              pass_max_mm;    /* most forward stepping */
     uint16_t              estimated_min_clearance_mm; /* configured target,
                                                         not physical proof */
     scan_profile_t    profile;        /* observed rays, if fine scan */

@@ -10,17 +10,35 @@
 #define BYPASS_HALF_TURN_MDEG   180000
 #define BYPASS_FULL_TURN_MDEG   360000
 
+/* The align spin gives up this far past the align angle: 135 degrees in
+   all for the 45 degree align (agreed with Dalton, S2 decision 21). The
+   total must stay below 180 degrees, the most a wrapped heading change
+   can show. */
+#define BYPASS_SPIN_OVER_MDEG   90000
+
 static void    bypass_clear(bypass_control_output_t * p_out);
 static bool    bypass_plan_valid(bypass_control_plan_t const * p_plan);
 static void    bypass_next(bypass_control_t * p_bypass,
                            bypass_control_input_t const * p_in,
                            bypass_control_output_t * p_out);
+static void    bypass_look(bypass_control_t * p_bypass,
+                           bypass_control_input_t const * p_in,
+                           bypass_control_output_t * p_out);
+static void    bypass_pass(bypass_control_t * p_bypass,
+                           bypass_control_input_t const * p_in, bool b_done,
+                           bypass_control_output_t * p_out);
 static void    bypass_search(bypass_control_t * p_bypass,
                              bypass_control_input_t const * p_in,
                              bypass_control_output_t * p_out);
+static void    bypass_halt(bypass_control_t * p_bypass,
+                           bypass_control_input_t const * p_in,
+                           bypass_control_output_t * p_out);
 static void    bypass_align(bypass_control_t * p_bypass,
                             bypass_control_input_t const * p_in,
                             bypass_control_output_t * p_out);
+static void    bypass_spin(bypass_control_t * p_bypass,
+                           bypass_control_input_t const * p_in,
+                           bypass_control_output_t * p_out);
 static void    bypass_check_heading(bypass_control_t * p_bypass,
                                     bypass_control_input_t const * p_in,
                                     bypass_control_output_t * p_out);
@@ -40,6 +58,8 @@ bypass_control_init (bypass_control_t * p_bypass,
     bool const b_valid = (NULL != p_bypass) && (NULL != p_cfg)
                          && (0u != p_cfg->search_limit_ms)
                          && (0u != p_cfg->found_ms)
+                         && (0u != p_cfg->step_mm)
+                         && (0u != p_cfg->wait_limit_ms)
                          && (p_cfg->heading_tol_mdeg > 0)
                          && (p_cfg->heading_tol_mdeg < BYPASS_HALF_TURN_MDEG);
 
@@ -68,8 +88,9 @@ bypass_control_mode (bypass_control_t const * p_bypass)
 
     if (bypass_control_active(p_bypass))
     {
-        mode = (BYPASS_CONTROL_SEGMENT == p_bypass->state) ? S2_MODE_BYPASS
-                                                           : S2_MODE_REACQUIRE;
+        mode = ((BYPASS_CONTROL_SEGMENT == p_bypass->state)
+                || (BYPASS_CONTROL_PASS == p_bypass->state))
+               ? S2_MODE_BYPASS : S2_MODE_REACQUIRE;
     }
 
     return (mode);
@@ -105,6 +126,12 @@ bypass_control_begin (bypass_control_t * p_bypass,
     p_bypass->heading_ref_mdeg = p_in->heading_mdeg;
     p_bypass->next = 0u;
     p_bypass->b_have_id = false;
+    p_bypass->b_have_look = false;
+    p_bypass->b_looking = false;
+    p_bypass->b_extra = false;
+    p_bypass->b_aligned = false;
+    p_bypass->b_passed = (0 == p_plan->look_deg);
+    p_bypass->stepped_mm = 0;
     p_bypass->b_seen = false;
     p_bypass->state = BYPASS_CONTROL_SEGMENT;
     bypass_next(p_bypass, p_in, p_out);
@@ -126,15 +153,21 @@ bypass_control_sent (bypass_control_t * p_bypass, bool b_sent,
         return;
     }
 
-    if (b_sent)
+    if (!b_sent)
     {
-        p_bypass->cmd_id = cmd_id;
-        p_bypass->b_have_id = true;
+        bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                      p_bypass->b_looking ? BYPASS_CONTROL_FAIL_LOOK
+                                          : BYPASS_CONTROL_FAIL_MOTION);
+    }
+    else if (p_bypass->b_looking)
+    {
+        p_bypass->look_cmd_id = cmd_id;
+        p_bypass->b_have_look = true;
     }
     else
     {
-        bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
-                      BYPASS_CONTROL_FAIL_MOTION);
+        p_bypass->cmd_id = cmd_id;
+        p_bypass->b_have_id = true;
     }
 }
 
@@ -159,9 +192,11 @@ bypass_control_step (bypass_control_t * p_bypass,
                         && (p_in->last_id == p_bypass->cmd_id);
     bool const b_done = b_ours && (MOTION_EVT_DONE == p_in->last_result);
 
+    /* The halt's own command ends STOPPED: that is its success. */
     if (b_ours && ((MOTION_EVT_REJECTED == p_in->last_result)
                    || (MOTION_EVT_FAULT == p_in->last_result)
-                   || (MOTION_EVT_STOPPED == p_in->last_result)))
+                   || ((MOTION_EVT_STOPPED == p_in->last_result)
+                       && (BYPASS_CONTROL_HALT != p_bypass->state))))
     {
         bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
                       BYPASS_CONTROL_FAIL_MOTION);
@@ -175,6 +210,18 @@ bypass_control_step (bypass_control_t * p_bypass,
     {
         bypass_search(p_bypass, p_in, p_out);
     }
+    else if (BYPASS_CONTROL_PASS == p_bypass->state)
+    {
+        bypass_pass(p_bypass, p_in, b_done, p_out);
+    }
+    else if (BYPASS_CONTROL_HALT == p_bypass->state)
+    {
+        bypass_halt(p_bypass, p_in, p_out);
+    }
+    else if (BYPASS_CONTROL_ALIGN == p_bypass->state)
+    {
+        bypass_spin(p_bypass, p_in, p_out);
+    }
     else if (!b_done)
     {
         /* Waiting for the MOVE or TURN in progress. */
@@ -183,13 +230,9 @@ bypass_control_step (bypass_control_t * p_bypass,
     {
         bypass_next(p_bypass, p_in, p_out);
     }
-    else if (BYPASS_CONTROL_STEP == p_bypass->state)
-    {
-        bypass_align(p_bypass, p_in, p_out);
-    }
     else
     {
-        bypass_check_heading(p_bypass, p_in, p_out);
+        bypass_align(p_bypass, p_in, p_out);    /* the step is done */
     }
 }
 
@@ -219,8 +262,17 @@ bypass_plan_valid (bypass_control_plan_t const * p_plan)
 {
     int32_t const turn_max = (int32_t)MOTION_ANGLE_MAX_MDEG;
     int32_t const move_max = (int32_t)MOTION_DISTANCE_MAX_MM;
+    bool const    b_pass   = (0 != p_plan->look_deg);
     bool          b_valid  = (p_plan->count <= BYPASS_CONTROL_SEGMENTS)
                              && (0u != p_plan->search_mm)
+                             && ((!b_pass)
+                                 || ((p_plan->look_deg >= -90)
+                                     && (p_plan->look_deg <= 90)
+                                     && (0u != p_plan->clear_mm)
+                                     && ((int32_t)p_plan->extra_mm
+                                         <= move_max)
+                                     && ((int32_t)p_plan->pass_max_mm
+                                         <= move_max)))
                              && (p_plan->approach_mdeg >= -turn_max)
                              && (p_plan->approach_mdeg <= turn_max)
                              && (p_plan->align_mdeg >= -turn_max)
@@ -264,6 +316,14 @@ bypass_next (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
         }
     }
 
+    if ((p_bypass->next == p_bypass->plan.count) && (!p_bypass->b_passed))
+    {
+        /* Pass the obstacle by measurement before turning back. */
+        p_bypass->state = BYPASS_CONTROL_PASS;
+        bypass_look(p_bypass, p_in, p_out);
+        return;
+    }
+
     if (p_bypass->next == p_bypass->plan.count)
     {
         p_bypass->next++;                   /* the approach turn, once */
@@ -281,6 +341,92 @@ bypass_next (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
     p_bypass->start_mm = p_in->travel_mm;
     p_bypass->b_seen = false;
     bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_SEARCH, 0);
+}
+
+static void
+bypass_look (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
+             bypass_control_output_t * p_out)
+{
+    p_bypass->b_looking = true;
+    p_bypass->b_have_look = false;
+    p_bypass->wait_since_ms = p_in->now_ms;
+    bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_LOOK,
+                   (int32_t)p_bypass->plan.look_deg);
+}
+
+/* Look; step until a look has passed the obstacle; then drive extra_mm
+   and continue with the approach turn (S2 decision 19). */
+static void
+bypass_pass (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
+             bool b_done, bypass_control_output_t * p_out)
+{
+    bool const b_answer = p_bypass->b_looking && p_bypass->b_have_look
+                          && (p_in->look_id == p_bypass->look_cmd_id);
+
+    if (p_bypass->b_looking)
+    {
+        int32_t const step_mm = (int32_t)p_bypass->cfg.step_mm;
+
+        if (b_answer && p_in->b_look_fault)
+        {
+            bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                          BYPASS_CONTROL_FAIL_LOOK);
+        }
+        else if (b_answer && p_in->b_look_done)
+        {
+            p_bypass->b_looking = false;
+
+            if ((p_in->look_mm > p_bypass->plan.clear_mm)
+                && (0u == p_bypass->plan.extra_mm))
+            {
+                p_bypass->b_passed = true;
+                p_bypass->state = BYPASS_CONTROL_SEGMENT;
+                bypass_next(p_bypass, p_in, p_out);
+            }
+            else if (p_in->look_mm > p_bypass->plan.clear_mm)
+            {
+                p_bypass->b_extra = true;
+                bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_MOVE,
+                               (int32_t)p_bypass->plan.extra_mm);
+            }
+            else if ((p_bypass->stepped_mm + step_mm)
+                     > (int32_t)p_bypass->plan.pass_max_mm)
+            {
+                bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                              BYPASS_CONTROL_FAIL_DEPTH);
+            }
+            else
+            {
+                p_bypass->stepped_mm += step_mm;
+                bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_MOVE,
+                               step_mm);
+            }
+        }
+        else if ((p_in->now_ms - p_bypass->wait_since_ms)
+                 > p_bypass->cfg.wait_limit_ms)
+        {
+            bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                          BYPASS_CONTROL_FAIL_LOOK);
+        }
+        else
+        {
+            /* Waiting for the look. */
+        }
+    }
+    else if (!b_done)
+    {
+        /* Waiting for the step or the extra move. */
+    }
+    else if (p_bypass->b_extra)
+    {
+        p_bypass->b_passed = true;
+        p_bypass->state = BYPASS_CONTROL_SEGMENT;
+        bypass_next(p_bypass, p_in, p_out);
+    }
+    else
+    {
+        bypass_look(p_bypass, p_in, p_out);
+    }
 }
 
 static void
@@ -308,8 +454,31 @@ bypass_search (bypass_control_t * p_bypass,
     }
     else if ((p_in->now_ms - p_bypass->seen_ms) >= p_bypass->cfg.found_ms)
     {
-        /* Bring the axle to where the sensors first saw the line, so the
-           align turn leaves them straddling it. */
+        /* Found: stop first, so the step is measured from where the car
+           actually comes to rest, not from where it was still rolling. */
+        p_bypass->state = BYPASS_CONTROL_HALT;
+        p_bypass->b_aligned = false;
+        p_bypass->wait_since_ms = p_in->now_ms;
+        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_HALT, 0);
+    }
+    else
+    {
+        /* On the line, not yet for found_ms. */
+    }
+}
+
+/* Once still after the spin, check the heading; once still after the
+   search, bring the axle to where the sensors first saw the line. */
+static void
+bypass_halt (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
+             bypass_control_output_t * p_out)
+{
+    if (p_in->b_still && p_bypass->b_aligned)
+    {
+        bypass_check_heading(p_bypass, p_in, p_out);
+    }
+    else if (p_in->b_still)
+    {
         int32_t const step_mm = (int32_t)p_bypass->cfg.sensor_ahead_mm
                                 - (p_in->travel_mm - p_bypass->seen_mm);
 
@@ -324,9 +493,15 @@ bypass_search (bypass_control_t * p_bypass,
             bypass_align(p_bypass, p_in, p_out);
         }
     }
+    else if ((p_in->now_ms - p_bypass->wait_since_ms)
+             > p_bypass->cfg.wait_limit_ms)
+    {
+        bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                      BYPASS_CONTROL_FAIL_MOTION);
+    }
     else
     {
-        /* On the line, not yet for found_ms. */
+        /* Braking. */
     }
 }
 
@@ -334,16 +509,48 @@ static void
 bypass_align (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
               bypass_control_output_t * p_out)
 {
-    p_bypass->state = BYPASS_CONTROL_ALIGN;
-
     if (0 != p_bypass->plan.align_mdeg)
     {
-        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_TURN,
-                       p_bypass->plan.align_mdeg);
+        p_bypass->state = BYPASS_CONTROL_ALIGN;
+        p_bypass->align_start_mdeg = p_in->heading_mdeg;
+        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_SPIN,
+                       (p_bypass->plan.align_mdeg > 0) ? 1 : -1);
     }
     else
     {
         bypass_check_heading(p_bypass, p_in, p_out);
+    }
+}
+
+/* Spin until a sensor sees the line (S2 decision 21): the dead-reckoned
+   45 degrees alone can leave the line outside both sensors, which read
+   the same white as when they straddle it. */
+static void
+bypass_spin (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
+             bypass_control_output_t * p_out)
+{
+    int32_t const align = p_bypass->plan.align_mdeg;
+    int32_t const tol = p_bypass->cfg.heading_tol_mdeg;
+    int32_t const turned_raw = bypass_wrap_mdeg(p_in->heading_mdeg
+                                                - p_bypass->align_start_mdeg);
+    int32_t const turned = (align > 0) ? turned_raw : -turned_raw;
+    int32_t const want = (align > 0) ? align : -align;
+
+    if (p_in->b_on_line && (turned >= (want - (2 * tol))))
+    {
+        p_bypass->state = BYPASS_CONTROL_HALT;
+        p_bypass->b_aligned = true;
+        p_bypass->wait_since_ms = p_in->now_ms;
+        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_HALT, 0);
+    }
+    else if (turned > (want + BYPASS_SPIN_OVER_MDEG))
+    {
+        bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                      BYPASS_CONTROL_FAIL_SEARCH);
+    }
+    else
+    {
+        /* Spinning. */
     }
 }
 

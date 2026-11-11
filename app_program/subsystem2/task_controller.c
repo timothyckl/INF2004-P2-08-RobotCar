@@ -91,6 +91,15 @@
 #define CTRL_BYPASS_FORWARD_AGE_MS  150u
 #define CTRL_BYPASS_SEARCH_MM_S     100
 #define CTRL_BYPASS_SENSOR_AHEAD_MM 133u
+/* Passing by measurement (S2 decision 19): 50 mm steps (agreed with
+   Dalton); 3 s for a look's answer, above S5's own 2.5 s look limit, and
+   for the wheels to stop once the line is found (S2 decision 20). */
+#define CTRL_BYPASS_STEP_MM          50u
+/* UNMEASURED: align spin wheel speed (S2 decision 21); about 58 degrees/s
+   on the 119 mm track, so the sensors sweep the tape at about 130 mm/s
+   and several 30 ms line reports fall on it. */
+#define CTRL_BYPASS_SPIN_MM_S        60
+#define CTRL_BYPASS_WAIT_MS        3000u
 
 /* scan_control and bypass_control mirror subsystem 5's codes (IF-13). */
 typedef char ctrl_scan_codes_match_t[
@@ -170,8 +179,9 @@ static ctrl_line_runtime_t g_line_runtime;
 static bypass_control_cfg_t const g_bypass_cfg =
 {
     CTRL_BYPASS_SEARCH_MS, CTRL_BYPASS_FOUND_MS, CTRL_BYPASS_HEADING_MDEG,
-    CTRL_BYPASS_SENSOR_AHEAD_MM
+    CTRL_BYPASS_SENSOR_AHEAD_MM, CTRL_BYPASS_STEP_MM, CTRL_BYPASS_WAIT_MS
 };
+static uint16_t            g_bypass_look_id;   /* last LOOK request ID */
 
 static scan_control_t      g_scan;
 static bypass_control_t    g_bypass;
@@ -867,7 +877,7 @@ scan_send (scan_control_output_t const * p_out, uint32_t now)
         s2_scan_cmd_t const msg =
         {
             g_scan.request_id, now, p_out->msg[i].kind,
-            p_out->msg[i].b_asserted ? 1u : 0u, {0u, 0u}
+            p_out->msg[i].b_asserted ? 1u : 0u, 0, 0u
         };
 
         /* Best effort: S5 also checks robot_state for authority. */
@@ -947,6 +957,10 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
                           ? "mdeg" : "mm");
         }
 
+        tm_printf((UB *)"[S2]   then pass: look %d deg, passed beyond %u mm,"
+                  " then %u mm (stepping at most %u mm)\n",
+                  (INT)p_plan->look_deg, (UINT)p_plan->clear_mm,
+                  (UINT)p_plan->extra_mm, (UINT)p_plan->pass_max_mm);
         tm_printf((UB *)"[S2]   then approach %d mdeg, search %u mm,"
                   " align %d mdeg; bypass starts\n",
                   (INT)p_plan->approach_mdeg, (UINT)p_plan->search_mm,
@@ -957,6 +971,10 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
         plan.approach_mdeg = p_plan->approach_mdeg;
         plan.align_mdeg = p_plan->align_mdeg;
         plan.search_mm = p_plan->search_mm;
+        plan.look_deg = p_plan->look_deg;
+        plan.clear_mm = p_plan->clear_mm;
+        plan.extra_mm = p_plan->extra_mm;
+        plan.pass_max_mm = p_plan->pass_max_mm;
 
         for (uint8_t i = 0u; i < BYPASS_CONTROL_SEGMENTS; i++)
         {
@@ -1016,6 +1034,11 @@ bypass_input (ctrl_input_t const * p_input, bypass_control_input_t * p_in)
                           || (S2_LINE_BOTH_BLACK == position));
     p_in->b_hazard = (!b_forward_fresh)
                      || (0u != (g_scan_status.flags & SCAN_TASK_FLAG_HAZARD));
+    p_in->b_still = motion_stop_confirmed();
+    p_in->look_id = (uint16_t)g_scan_status.look_id;
+    p_in->look_mm = g_scan_status.look_mm;
+    p_in->b_look_done = (SCAN_TASK_LOOK_DONE == g_scan_status.look_result);
+    p_in->b_look_fault = (SCAN_TASK_LOOK_FAULT == g_scan_status.look_result);
 }
 
 /* Send the requested motion command, report the send, then report the
@@ -1025,6 +1048,7 @@ bypass_send (bypass_control_output_t const * p_out)
 {
     bypass_control_output_t sent;
     ER                      er = E_OK;
+    uint16_t                cmd_id = 0u;
 
     switch (p_out->action)
     {
@@ -1049,9 +1073,56 @@ bypass_send (bypass_control_output_t const * p_out)
                       (INT)CTRL_BYPASS_SEARCH_MM_S);
         break;
 
+        case BYPASS_CONTROL_ACT_HALT:
+            /* The motion STOP command, not the safety latch: it brakes
+               and returns to Idle, so motion_stop_confirmed() can hold
+               (a zero SPEED target stays in a moving state). */
+            er = motion_stop();
+            tm_printf((UB *)"[S2] bypass: line found, stopping\n");
+        break;
+
+        case BYPASS_CONTROL_ACT_SPIN:
+            er = motion_set_speeds(
+                (int16_t)(-p_out->value * CTRL_BYPASS_SPIN_MM_S),
+                (int16_t)(p_out->value * CTRL_BYPASS_SPIN_MM_S));
+            tm_printf((UB *)"[S2] bypass: spinning %s until a sensor sees the"
+                      " line\n", (p_out->value > 0) ? "left" : "right");
+        break;
+
+        case BYPASS_CONTROL_ACT_LOOK:
+        {
+            /* The plan's look angle is within the servo's +/-60 degrees
+               (bypass_plan.h), so it fits int8_t. */
+            uint32_t const now = now_ms();
+            s2_scan_cmd_t msg;
+
+            g_bypass_look_id = (uint16_t)(g_bypass_look_id + 1u);
+            msg.request_id = g_bypass_look_id;
+            msg.time_ms = now;
+            msg.kind = S2_SCAN_LOOK;
+            msg.b_asserted = 1u;
+            msg.angle_deg = (int8_t)p_out->value;
+            msg.reserved = 0u;
+            er = tk_snd_mbf(scan_q, &msg, (INT)sizeof(msg), TMO_POL);
+            cmd_id = g_bypass_look_id;
+            tm_printf((UB *)"[S2] bypass: look %d deg\n", (INT)p_out->value);
+        }
+        break;
+
         default:
             /* Nothing to send. */
         break;
+    }
+
+    if (BYPASS_CONTROL_ACT_NONE != p_out->action)
+    {
+        motion_status_t st;
+
+        if (E_OK == motion_get_status(&st))
+        {
+            tm_printf((UB *)"[S2]   at %d mm, %d mdeg\n",
+                      (INT)st.travel_mm, (INT)st.heading_mdeg);
+        }
     }
 
     if (BYPASS_CONTROL_ACT_NONE == p_out->action)
@@ -1060,8 +1131,12 @@ bypass_send (bypass_control_output_t const * p_out)
     }
     else
     {
-        bypass_control_sent(&g_bypass, (E_OK == er), motion_last_command_id(),
-                            &sent);
+        if (BYPASS_CONTROL_ACT_LOOK != p_out->action)
+        {
+            cmd_id = motion_last_command_id();
+        }
+
+        bypass_control_sent(&g_bypass, (E_OK == er), cmd_id, &sent);
         bypass_report(&sent);
     }
 }
@@ -1073,7 +1148,8 @@ bypass_report (bypass_control_output_t const * p_out)
     static char const * const reasons[] =
     {
         "none", "invalid plan", "motion command failed", "forward hazard",
-        "line not found", "heading off the original line"
+        "line not found", "heading off the original line",
+        "side look failed", "obstacle deeper than the pass allows"
     };
 
     if (BYPASS_CONTROL_DONE == p_out->outcome)
@@ -1139,6 +1215,17 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 
             if (b_this_valid)
             {
+                /* Reacquisition diagnostic: each change of what the
+                   sensors see, with the odometry it happened at. */
+                if ((S2_MODE_REACQUIRE == p_state->mode)
+                    && (report.position != g_line_runtime.position))
+                {
+                    tm_printf((UB *)"[S2] reacquire: line %u at %d mm,"
+                              " %d mdeg\n", (UINT)report.position,
+                              (INT)p_input->status.travel_mm,
+                              (INT)p_input->status.heading_mdeg);
+                }
+
                 g_line_runtime.last_report_ms = report.captured_ms;
                 g_line_runtime.position = report.position;
                 g_line_runtime.strength = report.strength;

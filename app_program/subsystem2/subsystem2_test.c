@@ -771,6 +771,10 @@ EXPORT void subsystem2_test(void)
 		   "bypass hazard ignored in turns, stops forward travel");
 	TEST_CHECK("S2-U67", test_bypass_control_reacquire(),
 		   "bounded reacquisition, step onto the line, heading check");
+	TEST_CHECK("S2-U68", test_bypass_control_pass(),
+		   "pass: look, step, extra distance once passed");
+	TEST_CHECK("S2-U69", test_bypass_control_pass_fail(),
+		   "pass: look fault, timeout, hazard, depth limit");
 
 #if S2_HW_TEST
 	hw_test();

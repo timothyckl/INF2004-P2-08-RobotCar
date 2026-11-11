@@ -22,6 +22,7 @@
 #include "../include/range_measurement.h"
 #include "../include/scan_engine.h"
 #include "../include/scan_lifecycle.h"
+#include "../include/scan_look.h"
 #include "../../subsystem2/subsystem2.h"
 #include "../../subsystem2/motion_api.h"
 
@@ -63,10 +64,12 @@ static uint16_t const g_task_clear_mm     = 500u;
    UNMEASURED; 50 mm clearance and the 500 mm sideways search bound agreed
    (decisions 5 and 9, S2 decision 17); assumed depth. Beam allowance
    10 degrees: the largest that kept every edge of a centred test box
-   outside the real one in five scans on 2026-11-11 (S2 decision 18). */
+   outside the real one in five scans on 2026-11-11 (S2 decision 18).
+   Obstacles up to 300 mm deep are passed by measurement (S2 decision
+   19, agreed with Dalton). */
 static bypass_plan_config_t const g_task_plan_config =
 {
-    82u, 63u, 132u, 56u, 81u, 50u, 30u, 200u, 150u, 500u, 4000u, 10u
+    82u, 63u, 132u, 56u, 81u, 50u, 30u, 200u, 150u, 500u, 4000u, 10u, 300u
 };
 
 static ID                 g_task_tid = 0;
@@ -79,6 +82,7 @@ static scan_task_status_t g_work;
 static scan_engine_t      g_engine;
 static uint16_t           g_profile[BYPASS_PLAN_FINE_ANGLES];
 static forward_monitor_t  g_monitor;
+static scan_look_t        g_look;
 static uint32_t           g_monitor_since_us;
 static uint32_t           g_capture_us;
 static uint32_t           g_capture_rise_us;
@@ -133,6 +137,16 @@ static void scan_task_check_authority (void);
 /** Invalidate an unaccepted result after its two-second lifetime. */
 static void scan_task_expire_result (uint32_t now_us);
 
+/** Start a side look for the controller (S2 decision 19). */
+static void scan_task_look_start (s2_scan_cmd_t const * p_cmd);
+
+/** Apply one side-look output: servo, monitoring restart, result. */
+static void scan_task_look_output (scan_look_output_t const * p_out,
+                                   uint32_t now_us);
+
+/** True while a side look may continue: running, BYPASS, no STOP. */
+static bool scan_task_look_authority (void);
+
 ER
 scan_task_create (void)
 {
@@ -177,7 +191,13 @@ scan_task_start (void)
         return (er);
     }
 
+    /* Side look: the scan's settling; UNMEASURED 1 s for the wheels to
+       stop and 2.5 s for the whole look (S2 decision 19). */
+    scan_look_cfg_t const look_config = {g_task_settling_us, 1000000u,
+                                         2500000u};
+
     scan_engine_reset(&g_engine, &port, &config);
+    (void) scan_look_init(&g_look, &look_config);
     forward_monitor_reset(&g_monitor);
     g_monitor_since_us = scan_task_now_us();
 
@@ -303,7 +323,11 @@ scan_task_main (INT stacd, void * p_exinf)
         scan_engine_process(&g_engine, &tick);
 
         uint32_t const now_us = scan_task_now_us();
+        scan_look_output_t look_out;
 
+        scan_look_tick(&g_look, now_us, motion_stop_confirmed(),
+                       scan_task_look_authority(), &look_out);
+        scan_task_look_output(&look_out, now_us);
         scan_task_expire_result(now_us);
 
         /* 4. Forward monitoring, restarted after each scan. */
@@ -343,6 +367,7 @@ scan_task_main (INT stacd, void * p_exinf)
 
         bool const b_hazard = (FORWARD_MONITOR_SAFE != verdict)
                               && (!g_engine.b_is_scanning)
+                              && (!scan_look_active(&g_look))
                               && scan_task_moving();
 
         if (b_hazard && (!gb_was_hazard))
@@ -372,7 +397,8 @@ scan_task_main (INT stacd, void * p_exinf)
             | ((FORWARD_MONITOR_SAFE != verdict) ? SCAN_TASK_FLAG_HAZARD
                                                  : 0u)
             | (g_engine.b_has_request ? SCAN_TASK_FLAG_REQUEST_PENDING
-                                      : 0u));
+                                      : 0u)
+            | (scan_look_active(&g_look) ? SCAN_TASK_FLAG_LOOKING : 0u));
 
         if (tk_loc_mtx(g_task_mtx, SCAN_TASK_PUBLISH_MS) >= E_OK)
         {
@@ -522,6 +548,11 @@ scan_task_command (s2_scan_cmd_t const * p_cmd)
             event.kind = SCAN_ENGINE_RESET;
         break;
 
+        case S2_SCAN_LOOK:
+            b_mapped = false;
+            scan_task_look_start(p_cmd);
+        break;
+
         default:
             b_mapped = false;
         break;
@@ -621,13 +652,30 @@ static void
 scan_task_forward_result (bool b_valid, uint16_t distance_mm,
                           uint32_t now_us)
 {
-    gb_capture_armed = false;
-    forward_monitor_sample(&g_monitor, b_valid, distance_mm, now_us);
-    g_work.invalid_count = g_monitor.invalid_count;
+    bool b_forward = true;
 
-    if (forward_monitor_faulted(&g_monitor))
+    gb_capture_armed = false;
+
+    if (scan_look_active(&g_look))
     {
-        scan_task_forward_fault();
+        /* A side look takes the readings; only its final fresh forward
+           reading also goes to the monitor. */
+        scan_look_output_t out;
+
+        b_forward = (SCAN_LOOK_FRESH == g_look.state);
+        scan_look_sample(&g_look, b_valid, distance_mm, now_us, &out);
+        scan_task_look_output(&out, now_us);
+    }
+
+    if (b_forward)
+    {
+        forward_monitor_sample(&g_monitor, b_valid, distance_mm, now_us);
+        g_work.invalid_count = g_monitor.invalid_count;
+
+        if (forward_monitor_faulted(&g_monitor))
+        {
+            scan_task_forward_fault();
+        }
     }
 
 }
@@ -734,6 +782,73 @@ scan_task_expire_result (uint32_t now_us)
         g_work.result = SCAN_TASK_RESULT_NONE;
         g_work.plan   = cleared;
     }
+}
+
+static void
+scan_task_look_start (s2_scan_cmd_t const * p_cmd)
+{
+    scan_look_output_t out;
+
+    g_work.look_id     = p_cmd->request_id;
+    g_work.look_result = SCAN_TASK_LOOK_NONE;
+    g_work.look_mm     = 0u;
+
+    if (g_engine.b_is_scanning || g_engine.b_has_request
+        || scan_look_active(&g_look))
+    {
+        /* Busy: refuse this look rather than queue it. */
+        g_work.look_result = SCAN_TASK_LOOK_FAULT;
+    }
+    else
+    {
+        scan_look_start(&g_look, p_cmd->request_id,
+                        (int16_t)p_cmd->angle_deg, scan_task_now_us(), &out);
+        scan_task_look_output(&out, scan_task_now_us());
+    }
+}
+
+static void
+scan_task_look_output (scan_look_output_t const * p_out, uint32_t now_us)
+{
+    if (p_out->b_servo)
+    {
+        /* Angles are within the servo's limit (scan_look_start). */
+        (void) drv_servo_set_angle(p_out->servo_deg);
+    }
+
+    if (p_out->b_resume)
+    {
+        forward_monitor_reset(&g_monitor);
+        g_monitor_since_us = now_us;
+    }
+
+    if (SCAN_LOOK_DONE == p_out->result)
+    {
+        g_work.look_result = SCAN_TASK_LOOK_DONE;
+        g_work.look_mm     = p_out->distance_mm;
+        scan_task_scan_diag("look", (int32_t)g_look.angle_deg,
+                            p_out->distance_mm);
+    }
+    else if (SCAN_LOOK_FAULT == p_out->result)
+    {
+        g_work.look_result = SCAN_TASK_LOOK_FAULT;
+        scan_task_scan_diag("look fault", (int32_t)g_look.angle_deg, 0u);
+    }
+    else
+    {
+        /* The look continues. */
+    }
+}
+
+static bool
+scan_task_look_authority (void)
+{
+    s2_robot_state_t state;
+
+    return ((E_OK == s2_get_robot_state(&state))
+            && (S2_SYS_RUNNING == state.state)
+            && (S2_MODE_BYPASS == state.mode)
+            && (0u == (state.flags & S2_RS_STOP_LATCHED)));
 }
 
 /* End of file. */

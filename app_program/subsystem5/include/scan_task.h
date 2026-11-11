@@ -5,7 +5,9 @@
  *
  * Inputs from the controller arrive on scan_q (owned by subsystem 2,
  * s2_scan_cmd_t in subsystem2.h): REQUEST, AUTHORISE, STOP_CONFIRM,
- * CANCEL, STOP, MOVEMENT and RESET for one request ID at a time.
+ * CANCEL, STOP, MOVEMENT and RESET for one request ID at a time, and LOOK
+ * for one stationary side look while passing an obstacle (S2 decision
+ * 19), answered in look_id, look_result and look_mm.
  *
  * Outputs to the controller:
  * - CTRL_FLG_HAZARD when the forward verdict turns to a stop while
@@ -27,6 +29,11 @@
 #define SCAN_TASK_FLAG_SCANNING     (0x02u)
 #define SCAN_TASK_FLAG_HAZARD       (0x04u)    /* verdict is not SAFE */
 #define SCAN_TASK_FLAG_REQUEST_PENDING (0x08u)
+#define SCAN_TASK_FLAG_LOOKING      (0x10u)    /* a side look is active */
+
+#define SCAN_TASK_LOOK_NONE         (0u)
+#define SCAN_TASK_LOOK_DONE         (1u)       /* look_mm is the median */
+#define SCAN_TASK_LOOK_FAULT        (2u)
 
 #define SCAN_TASK_RESULT_NONE       (0u)
 #define SCAN_TASK_RESULT_PLAN       (1u)       /* plan is usable */
@@ -47,7 +54,11 @@ typedef struct
     uint8_t       flags;        /* SCAN_TASK_FLAG_* */
     uint8_t       result;       /* SCAN_TASK_RESULT_* for request_id */
     uint8_t       invalid_count;    /* consecutive invalid forward tries */
-    uint8_t       reserved[2];
+    uint8_t       look_result;  /* SCAN_TASK_LOOK_* for look_id */
+    uint8_t       reserved;
+    uint32_t      look_id;      /* the latest LOOK command's request_id */
+    uint16_t      look_mm;      /* side median when look_result is DONE */
+    uint8_t       reserved2[2];
     bypass_plan_t plan;         /* meaningful when result is PLAN */
 } scan_task_status_t;
 

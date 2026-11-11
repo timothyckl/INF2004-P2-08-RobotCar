@@ -13,6 +13,8 @@ bool test_bypass_control_segments(void);    /* S2-U64 */
 bool test_bypass_control_motion(void);      /* S2-U65 */
 bool test_bypass_control_hazard(void);      /* S2-U66 */
 bool test_bypass_control_reacquire(void);   /* S2-U67 */
+bool test_bypass_control_pass(void);        /* S2-U68 */
+bool test_bypass_control_pass_fail(void);   /* S2-U69 */
 
 #endif
 

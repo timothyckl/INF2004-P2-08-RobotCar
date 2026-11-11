@@ -208,6 +208,7 @@ bool s2_distance_delta (motion_status_t const * p_prev,
 #define S2_SCAN_STOP            5u  /* a new STOP event */
 #define S2_SCAN_MOVEMENT        6u  /* the vehicle moved */
 #define S2_SCAN_RESET           7u
+#define S2_SCAN_LOOK            8u  /* one side look, S2 decision 19 */
 
 typedef struct
 {
@@ -215,7 +216,8 @@ typedef struct
     uint32_t time_ms;       /* send time, for S5's 2 s request expiry */
     uint8_t  kind;          /* S2_SCAN_* */
     uint8_t  b_asserted;
-    uint8_t  reserved[2];
+    int8_t   angle_deg;     /* LOOK only: positive = left */
+    uint8_t  reserved;
 } s2_scan_cmd_t;
 
 #define S2_SCAN_Q_BYTES         96      /* 6 x (4 + 12): one scan's traffic */

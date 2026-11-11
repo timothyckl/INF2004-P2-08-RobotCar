@@ -299,6 +299,83 @@ plus the forward leg plus the return diagonal beyond the stop, about
 0.8 m here, much of it from the 200 mm assumed depth. The space left on
 the straight ahead of the obstacle is not yet measured or checked.
 
+### 19. Passing the obstacle by measurement (2026-11-11)
+
+Approved by Dalton on the integration branch (proposed by a teammate);
+replaces the assumed-depth forward leg of decision 17. A front scan
+cannot see an obstacle's depth, and assuming 200 mm made the forward leg
+long enough to leave the mat. After the turn back to straight the car
+now passes the obstacle by measurement: it looks sideways at 60 degrees
+(the servo's limit) towards the obstacle, and while the reading is
+within clear_mm it steps 50 mm forward and looks again. clear_mm is the
+farthest the side of the obstacle can read through a 50 to 70 degree
+beam (sideways gap / sin 50 degrees) plus 100 mm (UNMEASURED). The first
+look beyond it bounds the far end to within gap x cot(60 + beam
+allowance) ahead of the sensor; the car then drives extra_mm, which puts
+the turn back as far past that bound as the assumed-depth route put it
+past its far end, and turns back, searches and aligns as before.
+Obstacles up to 300 mm deep are handled; stepping beyond that stops the
+run, as does a look that faults or gets no answer within 3 s.
+
+Each look is stationary, keeping stop-before-scan: subsystem 5 waits up
+to 1 s for the wheels to be confirmed still, turns the servo, waits the
+scan settling time, takes the median of three valid readings, turns the
+servo forward, waits again and answers only after one fresh forward
+reading, so the controller never moves on a stale forward verdict. A
+look needs RUNNING, mode BYPASS and no latched STOP; movement, three
+invalid readings or 2.5 s overall fault it and return the servo
+forward. Only subsystem 5 drives the servo. The controller sends LOOK on
+scan_q (new kind 8, angle in the former reserved byte); subsystem 5
+answers in look_id, look_result and look_mm. For the 144 x 96 mm test
+box the forward leg is expected to fall from about 37 to 31 cm. Pure
+logic in scan_look (S5-U68 to S5-U70) and bypass_control (S2-U68,
+S2-U69); S5-U53 revised. Not yet run on the robot.
+
+### 20. Stop before stepping onto the found line (2026-11-11)
+
+Approved by Dalton on the integration branch; revises the step of
+decision 14. The first run passing by measurement (decision 19) found
+the line, stepped and aligned, but ended past the line. The step had
+been worked out the moment the line was confirmed, while the car was
+still searching at 100 mm/s, and the step MOVE counts from wherever the
+car is when it starts, so the distance rolled in between was never
+subtracted. Once the line is confirmed the controller now sends the
+motion STOP command (not the safety STOP latch), waits for
+motion_stop_confirmed() (both wheels still for 100 ms and motion Idle),
+and only then sets the step from the travel since the sensors first saw
+the line. The command's own STOPPED result is its success there. Not
+still within 3 s stops the run. A first build braked with a zero SPEED
+target instead; motion stays in its moving SPEED state then, so the stop
+was never confirmed and two runs on the robot stopped just short of the
+line and failed after 3 s (`logs/2026-11-11_s5-pass-halt.txt`). S2-U66
+and S2-U67 are revised; the old order fails S2-U67. Not yet run on the
+robot with the STOP command.
+
+### 21. Align by spinning onto the line (2026-11-11)
+
+Approved by Dalton on the integration branch; revises the align turn of
+decision 14. With the stop before the step (decision 20) three bypasses
+found the line, stepped and turned 45 degrees, but the car then drove on
+with both sensors white and had to be stopped near the mat edge; in one
+run the right sensor met the tape only about 4 s later. The front sensors
+straddle the tape and are 133 mm ahead of the axle, so a few degrees of
+turn error or a centimetre of step error leaves the tape outside both,
+and "both white" then reads the same as centred. The align is now closed
+on the line: the car spins in place towards the original direction (60
+mm/s per wheel, UNMEASURED) and stops as soon as a fresh line report has
+a sensor on black, then line following takes over and steers onto it.
+Black is accepted only after turning the align angle less twice the 15
+degree heading tolerance (15 degrees of the 45), so the crossing just
+made is not taken; past the align angle plus 90 degrees (135 in all, agreed
+with Dalton after the runs below) without the line
+the run stops (line not found). Once still, the heading check of
+decision 14 still applies. S2-U66 and S2-U67 are revised. The first run
+on the robot (`logs/2026-11-11_s5-pass-spin.txt`) spun about 60 degrees
+without a sensor on black, so the limit was widened from plus 15 to plus
+45 degrees and the controller now prints the odometry at each bypass
+command and every line-sensor change during reacquisition, to find out
+whether the step leaves the axle past the line.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

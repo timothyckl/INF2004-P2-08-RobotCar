@@ -3,15 +3,23 @@
  * @brief Pure bypass and line reacquisition for the Vehicle Controller.
  *
  * Drives subsystem 5's plan (IF-13) after a PLAN scan result: each plan
- * segment as one MOVE or TURN, then the approach turn back towards the
+ * segment as one MOVE or TURN; then, when the plan has a look angle, the
+ * pass (S2 decision 19): look sideways, and until a look reads beyond
+ * clear_mm, MOVE step_mm and look again, failing past pass_max_mm; once
+ * passed, MOVE extra_mm. Then the approach turn back towards the
  * original line, then a forward search. The search succeeds once a line
- * sensor has been on black for found_ms; the car then moves so its axle
- * reaches the point where the sensors first saw the line, turns by the
- * align angle and checks that the heading is within heading_tol_mdeg of
- * the heading at the start (S5 decision 9).
+ * sensor has been on black for found_ms; the car then stops (S2 decision
+ * 20) and moves so its axle reaches the point where the sensors first saw
+ * the line. It then spins towards the original direction until a sensor
+ * sees the line (S2 decision 21), accepted only once it has turned the
+ * align angle less twice heading_tol_mdeg, and failing (FAIL_SEARCH) past
+ * the align angle plus 90 degrees; it stops and checks that the
+ * heading is within heading_tol_mdeg of the heading at the start (S5
+ * decision 9).
  *
  * A rejected, failed or stopped command, a forward hazard while driving
- * forward, or an exhausted search bound (search_limit_ms, or the plan's
+ * forward, a faulted or unanswered look, an obstacle deeper than the
+ * pass allows, or an exhausted search bound (search_limit_ms, or the plan's
  * search_mm) fails the bypass. In-place turns ignore the forward hazard:
  * they do not close on the obstacle, and the first one starts within the
  * hazard distance. A hazard when the align turn ends fails it too, as
@@ -25,7 +33,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define BYPASS_CONTROL_SEGMENTS     5u
+#define BYPASS_CONTROL_SEGMENTS     4u
 
 /* Segment kinds: subsystem 5's codes (bypass_plan.h BYPASS_PLAN_*). */
 #define BYPASS_CONTROL_TURN         1u  /* value: mdeg, positive = left */
@@ -35,9 +43,12 @@ typedef enum
 {
     BYPASS_CONTROL_IDLE = 0,
     BYPASS_CONTROL_SEGMENT,     /* a plan segment or the approach turn */
+    BYPASS_CONTROL_PASS,        /* stepping and looking past the obstacle */
     BYPASS_CONTROL_SEARCH,      /* forward towards the line */
+    BYPASS_CONTROL_HALT,        /* line found: braking to a standstill */
     BYPASS_CONTROL_STEP,        /* axle onto the point the line was seen */
-    BYPASS_CONTROL_ALIGN        /* turn back to the original direction */
+    BYPASS_CONTROL_ALIGN        /* spin towards the original direction
+                                   until a sensor sees the line */
 } bypass_control_state_t;
 
 typedef enum
@@ -45,7 +56,11 @@ typedef enum
     BYPASS_CONTROL_ACT_NONE = 0,
     BYPASS_CONTROL_ACT_MOVE,    /* value: signed mm */
     BYPASS_CONTROL_ACT_TURN,    /* value: signed mdeg, positive = left */
-    BYPASS_CONTROL_ACT_SEARCH   /* hold the search speed on both wheels */
+    BYPASS_CONTROL_ACT_SEARCH,  /* hold the search speed on both wheels */
+    BYPASS_CONTROL_ACT_LOOK,    /* value: look angle, degrees, + = left */
+    BYPASS_CONTROL_ACT_HALT,    /* motion STOP command (not the STOP
+                                   latch); its STOPPED result is success */
+    BYPASS_CONTROL_ACT_SPIN     /* value: +1 spin left, -1 spin right */
 } bypass_control_action_t;
 
 typedef enum
@@ -59,10 +74,13 @@ typedef enum
 {
     BYPASS_CONTROL_FAIL_NONE = 0,
     BYPASS_CONTROL_FAIL_PLAN,       /* segment kind or value out of range */
-    BYPASS_CONTROL_FAIL_MOTION,     /* not sent, rejected, fault, stopped */
+    BYPASS_CONTROL_FAIL_MOTION,     /* not sent, rejected, fault, stopped,
+                                       or not still within wait_limit_ms */
     BYPASS_CONTROL_FAIL_HAZARD,     /* forward hazard while going forward */
     BYPASS_CONTROL_FAIL_SEARCH,     /* line not found within the bounds */
-    BYPASS_CONTROL_FAIL_HEADING     /* aligned, but off the original */
+    BYPASS_CONTROL_FAIL_HEADING,    /* aligned, but off the original */
+    BYPASS_CONTROL_FAIL_LOOK,       /* look faulted or not answered */
+    BYPASS_CONTROL_FAIL_DEPTH       /* not passed within pass_max_mm */
 } bypass_control_fail_t;
 
 typedef struct
@@ -79,6 +97,10 @@ typedef struct
     int32_t                  approach_mdeg;
     int32_t                  align_mdeg;
     uint16_t                 search_mm;
+    int16_t                  look_deg;      /* 0: no pass, drive on */
+    uint16_t                 clear_mm;      /* a look beyond has passed */
+    uint16_t                 extra_mm;      /* forward once passed */
+    uint16_t                 pass_max_mm;   /* most stepping */
 } bypass_control_plan_t;
 
 typedef struct
@@ -87,6 +109,8 @@ typedef struct
     uint32_t found_ms;          /* agreed 100 ms of stable line */
     int32_t  heading_tol_mdeg;  /* agreed 15 degrees */
     uint16_t sensor_ahead_mm;   /* line sensors ahead of the axle */
+    uint16_t step_mm;           /* forward step between looks */
+    uint32_t wait_limit_ms;     /* longest wait for a look or a halt */
 } bypass_control_cfg_t;
 
 /** One control cycle's view of the vehicle. */
@@ -100,6 +124,11 @@ typedef struct
     bool     b_status_ok;       /* the motion fields above are current */
     bool     b_on_line;         /* fresh report, a sensor on black */
     bool     b_hazard;          /* forward hazard, or no fresh verdict */
+    bool     b_still;           /* motion_stop_confirmed() */
+    uint16_t look_id;           /* the look the answer below belongs to */
+    uint16_t look_mm;           /* side median when b_look_done */
+    bool     b_look_done;
+    bool     b_look_fault;
 } bypass_control_input_t;
 
 /** Results of one call; cleared by every call. */
@@ -120,15 +149,25 @@ typedef struct
     int32_t                start_mm;    /* travel at search start */
     int32_t                seen_mm;     /* travel when first seen */
     int32_t                heading_ref_mdeg;
-    uint16_t               cmd_id;      /* last command sent */
+    int32_t                align_start_mdeg;  /* heading at spin start */
+    uint32_t               wait_since_ms;  /* look or halt start */
+    int32_t                stepped_mm;  /* forward stepped while passing */
+    uint16_t               cmd_id;      /* last motion command sent */
+    uint16_t               look_cmd_id; /* last look sent */
     uint8_t                next;        /* next segment; count = approach */
     bypass_control_state_t state;
     bool                   b_have_id;
+    bool                   b_have_look;
+    bool                   b_looking;   /* waiting for a look's answer */
+    bool                   b_extra;     /* driving extra_mm, passed */
+    bool                   b_passed;    /* the pass is complete */
+    bool                   b_aligned;   /* spin stopped on the line */
     bool                   b_forward;   /* last command drives forward */
     bool                   b_seen;
 } bypass_control_t;
 
-/** Initialise idle. Limits must be nonzero, the tolerance positive. */
+/** Initialise idle. Limits and the step must be nonzero, the tolerance
+    positive. */
 bool bypass_control_init(bypass_control_t * p_bypass,
                          bypass_control_cfg_t const * p_cfg);
 
@@ -150,7 +189,8 @@ void bypass_control_begin(bypass_control_t * p_bypass,
 
 /**
  * Report the send of the action just requested. b_sent false fails the
- * bypass (FAIL_MOTION); cmd_id is the command's motion_q ID.
+ * bypass (FAIL_MOTION, or FAIL_LOOK for a look); cmd_id is the command's
+ * motion_q ID, or the look's scan_q request ID.
  */
 void bypass_control_sent(bypass_control_t * p_bypass, bool b_sent,
                          uint16_t cmd_id, bypass_control_output_t * p_out);

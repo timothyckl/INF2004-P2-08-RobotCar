@@ -16,12 +16,13 @@
    the axle to the front, 56 mm to the rear, sensor 81 mm ahead; 50 mm
    clearance, synthetic 20 mm margin, 200 mm depth, 150 mm reverse limit,
    500 mm sideways search bound, 4000 mm range, 15 degree beam
-   allowance. Expected lengths marked
+   allowance, 300 mm deepest obstacle. Expected lengths marked
    golden were checked by an independent float sweep of the body along
    the route (S2 decision 17), not derived by hand. */
 static bypass_plan_config_t const g_planning_config =
 {
-    82u, 63u, 132u, 56u, 81u, 50u, 20u, 200u, 150u, 500u, 4000u, 15u
+    82u, 63u, 132u, 56u, 81u, 50u, 20u, 200u, 150u, 500u, 4000u, 15u,
+    300u
 };
 
 /* Obstacle-facing side + clearance + margin, for a left bypass. */
@@ -266,8 +267,14 @@ test_planning_segments (test_interface_api_t const * p_api)
     /* Left edge at +15 degrees and 610 mm: 610 x 0.259 = 157 mm. Far
        enough that nothing reverses or widens: offset 157 + 133 = 290 mm,
        diagonal 290 x 1.415 = 411 mm, search (290 + 20) x 1.415 = 439 mm.
-       Forward: at least the return diagonal's 189 + 157 + (81 + 610 +
-       200) - 2 x 290 = 657 mm; the turn onto it makes it 707 (golden). */
+       For the assumed 200 mm depth the far end is 81 + 600 + 200 = 881
+       mm ahead; the return diagonal needs at least 189 + 157 + 881 -
+       2 x 290 = 647 mm forward and the turn onto it 707 (golden), so the
+       turn back is 290 + 707 - 881 = 116 mm past the far end. Passing
+       (S2 decision 19): look -60 degrees; the sideways gap is 290 - 157
+       = 133 mm, so a reading beyond 133 x 1.305 + 100 = 274 mm has
+       passed; then 81 (sensor) + 116 + 133 x cot 75 (36) = 233 mm more.
+       Stepping stops at 707 + (300 - 200) = 807 mm. */
     uint16_t const profile[BYPASS_PLAN_ANGLES] =
     {
         3000u, 3000u, 3000u, 610u, 600u, 610u, 3000u, 3000u, 3000u
@@ -278,7 +285,7 @@ test_planning_segments (test_interface_api_t const * p_api)
 
     bool const b_made = bypass_plan_make(profile, &g_planning_config, &plan);
 
-    return (b_made && (BYPASS_PLAN_LEFT == plan.side) && (5u == plan.count)
+    return (b_made && (BYPASS_PLAN_LEFT == plan.side) && (4u == plan.count)
             && (BYPASS_PLAN_MOVE == plan.segments[0].kind)
             && (0 == plan.segments[0].value)
             && (BYPASS_PLAN_TURN == plan.segments[1].kind)
@@ -287,8 +294,8 @@ test_planning_segments (test_interface_api_t const * p_api)
             && (411 == plan.segments[2].value)
             && (BYPASS_PLAN_TURN == plan.segments[3].kind)
             && (-45000 == plan.segments[3].value)
-            && (BYPASS_PLAN_MOVE == plan.segments[4].kind)
-            && (707 == plan.segments[4].value)
+            && (-60 == plan.look_deg) && (274u == plan.clear_mm)
+            && (233u == plan.extra_mm) && (807u == plan.pass_max_mm)
             && (-45000 == plan.approach_mdeg)
             && (45000 == plan.align_mdeg)
             && (290u == plan.lateral_mm)
@@ -581,7 +588,11 @@ test_planning_mirror (test_interface_api_t const * p_api)
              && (right.lateral_mm == left.lateral_mm)
              && (right.search_mm == left.search_mm)
              && (right.approach_mdeg == -left.approach_mdeg)
-             && (right.align_mdeg == -left.align_mdeg);
+             && (right.align_mdeg == -left.align_mdeg)
+             && (60 == right.look_deg) && (-60 == left.look_deg)
+             && (right.clear_mm == left.clear_mm)
+             && (right.extra_mm == left.extra_mm)
+             && (right.pass_max_mm == left.pass_max_mm);
 
     for (uint32_t index = 0u; b_same && (index < BYPASS_PLAN_SEGMENTS);
          index++)
