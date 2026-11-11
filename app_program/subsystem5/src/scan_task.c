@@ -56,11 +56,13 @@ static uint16_t const g_task_hazard_mm    = 250u;
 static uint16_t const g_task_clear_mm     = 500u;
 #define SCAN_TASK_FORWARD_INDEX  (12)     /* 0 degrees, 5 degree steps */
 
-/* Bypass geometry: half width and margin UNMEASURED; 50 mm clearance and
-   the 500 mm search bound agreed (decisions 5 and 9); assumed depth. */
+/* Bypass geometry: side extents measured by ruler from the centre line
+   (left to the barcode sensor 82 mm, right to the tyre 63 mm; S2
+   decision 16); margin UNMEASURED; 50 mm clearance and the 500 mm search
+   bound agreed (decisions 5 and 9); assumed depth. */
 static bypass_plan_config_t const g_task_plan_config =
 {
-    80u, 50u, 30u, 200u, 500u, 4000u
+    82u, 63u, 50u, 30u, 200u, 500u, 4000u
 };
 
 static ID                 g_task_tid = 0;

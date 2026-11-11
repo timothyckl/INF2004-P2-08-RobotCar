@@ -10,11 +10,13 @@
  * assumed depth). A side with no passing beam within 60 degrees is
  * unobserved and cannot be used (decision 5).
  *
- * The route steps sideways by the edge's lateral offset plus half the
- * vehicle width, the agreed 50 mm clearance and a planning margin, drives
- * past the obstacle, turns back towards the original line and searches for
- * it within search_max_mm, then aligns with the original direction. The
- * shorter sideways step wins; left wins a tie.
+ * The route steps sideways by the edge's lateral offset plus the vehicle's
+ * extent on the side facing the obstacle (right_side_mm for a left bypass,
+ * left_side_mm for a right one), the agreed 50 mm clearance and a planning
+ * margin, drives past the obstacle, turns back towards the original line
+ * and searches for it within search_max_mm, then aligns with the original
+ * direction. Left is used whenever it is valid; right only when left is
+ * not (S2 decision 16).
  *
  * Simplifications, to be reviewed against decision 5: a front scan cannot
  * see the obstacle's depth, so a configured depth is assumed; the swept
@@ -57,7 +59,8 @@ typedef struct
 /** Geometry and margins; the caller supplies provisional values. */
 typedef struct
 {
-    uint16_t half_width_mm;     /* vehicle centre line to widest point */
+    uint16_t left_side_mm;      /* centre line to the left-most point */
+    uint16_t right_side_mm;     /* centre line to the right-most point */
     uint16_t clearance_mm;      /* physical clearance, agreed 50 mm */
     uint16_t margin_mm;         /* sensing and motion error allowance */
     uint16_t depth_mm;          /* assumed obstacle depth */

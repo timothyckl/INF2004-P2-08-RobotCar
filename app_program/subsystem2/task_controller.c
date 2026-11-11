@@ -210,6 +210,7 @@ static void     scan_send (scan_control_output_t const * p_out,
                            uint32_t now);
 static void     scan_report (scan_control_outcome_t outcome,
                              ctrl_input_t const * p_input);
+static void     scan_profile_report (scan_profile_t const * p_profile);
 static void     bypass_input (ctrl_input_t const * p_input,
                               bypass_control_input_t * p_in);
 static void     bypass_send (bypass_control_output_t const * p_out);
@@ -873,12 +874,53 @@ scan_send (scan_control_output_t const * p_out, uint32_t now)
     }
 }
 
+/* Print what the scan saw. Extents are sideways from the sensor axis
+   (the car's centre line) at the obstacle's edge rays; width and centre
+   are the observed span only (S5 decision 5), so print them only when
+   both edges were seen. */
+static void
+scan_profile_report (scan_profile_t const * p_profile)
+{
+    if (0u == p_profile->forward_mm)
+    {
+        /* No profile: the scan faulted or was cancelled. */
+    }
+    else if (p_profile->b_shape_estimated)
+    {
+        tm_printf((UB *)"[S2] scan %u profile: ahead %u mm, nearest %u mm,"
+                  " left edge %u mm, right edge %u mm, width %u mm,"
+                  " centre %d mm (left +)\n",
+                  (UINT)g_scan.request_id, (UINT)p_profile->forward_mm,
+                  (UINT)p_profile->nearest_observed_mm,
+                  (UINT)p_profile->left_extent_mm,
+                  (UINT)p_profile->right_extent_mm,
+                  (UINT)p_profile->observed_width_mm,
+                  (INT)p_profile->centre_offset_mm);
+    }
+    else
+    {
+        tm_printf((UB *)"[S2] scan %u profile: ahead %u mm, nearest %u mm,"
+                  " left edge %s %u mm, right edge %s %u mm\n",
+                  (UINT)g_scan.request_id, (UINT)p_profile->forward_mm,
+                  (UINT)p_profile->nearest_observed_mm,
+                  p_profile->b_left_edge ? "seen" : "UNSEEN",
+                  (UINT)p_profile->left_extent_mm,
+                  p_profile->b_right_edge ? "seen" : "UNSEEN",
+                  (UINT)p_profile->right_extent_mm);
+    }
+}
+
 /* Print the result. CLEAR resumes following (S2 decision 11); PLAN starts
    the bypass (S2 decision 14); failures stop the run. */
 static void
 scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
 {
     bypass_plan_t const * p_plan = &g_scan_status.plan;
+
+    if (SCAN_CONTROL_NONE != outcome)
+    {
+        scan_profile_report(&p_plan->profile);
+    }
 
     if (SCAN_CONTROL_PLAN == outcome)
     {

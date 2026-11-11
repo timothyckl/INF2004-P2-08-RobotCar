@@ -12,11 +12,12 @@
 
 #include <stddef.h>
 
-/* Synthetic geometry: 80 mm half width, 50 mm clearance, 20 mm margin,
-   200 mm depth, 500 mm search bound, 4000 mm range. */
+/* Synthetic geometry: 82 mm left and 63 mm right of the centre line,
+   50 mm clearance, 20 mm margin, 200 mm depth, 500 mm search bound,
+   4000 mm range. */
 static bypass_plan_config_t const g_planning_config =
 {
-    80u, 50u, 20u, 200u, 500u, 4000u
+    82u, 63u, 50u, 20u, 200u, 500u, 4000u
 };
 
 /** S5-U25: unsafe, invalid and stale readings request a stop. */
@@ -25,7 +26,7 @@ static bool test_planning_monitor (test_interface_api_t const * p_api);
 /** Forward invalid attempts fault only on the third consecutive sample. */
 static bool test_planning_monitor_fault (test_interface_api_t const * p_api);
 
-/** S5-U36: the shorter route wins; left wins a tie. */
+/** S5-U36: left wins whenever valid; right only when left is not. */
 static bool test_planning_shorter (test_interface_api_t const * p_api);
 
 /** S5-U37: blocked or unobserved sides give no usable plan. */
@@ -37,7 +38,7 @@ static bool test_planning_segments (test_interface_api_t const * p_api);
 /** S5-U54: nothing in range ahead is not an obstacle. */
 static bool test_planning_clear (test_interface_api_t const * p_api);
 
-/** S5-U60: refined edge readings decide the shorter safe side. */
+/** S5-U60: refined edges; left preferred, right if left is invalid. */
 static bool test_planning_fine_edges (test_interface_api_t const * p_api);
 
 /** S5-U61: incomplete or inconsistent edge readings yield no route. */
@@ -58,7 +59,7 @@ test_planning_run (test_interface_api_t const * p_api)
          test_planning_monitor},
         {"S5-U55", "third invalid forward attempt faults",
          test_planning_monitor_fault},
-        {"S5-U36", "shorter route wins, left on a tie",
+        {"S5-U36", "left whenever valid, else right",
          test_planning_shorter},
         {"S5-U37", "blocked or unobserved sides give no plan",
          test_planning_no_route},
@@ -66,7 +67,7 @@ test_planning_run (test_interface_api_t const * p_api)
          test_planning_segments},
         {"S5-U54", "nothing ahead in range is no obstacle",
          test_planning_clear},
-        {"S5-U60", "fine edge chooses shorter side",
+        {"S5-U60", "fine edges: left preferred, else right",
          test_planning_fine_edges},
         {"S5-U61", "missing or inconsistent edge has no route",
          test_planning_fine_reject},
@@ -159,26 +160,30 @@ test_planning_monitor (test_interface_api_t const * p_api)
 static bool
 test_planning_shorter (test_interface_api_t const * p_api)
 {
-    /* Obstacle 400 mm ahead, wider to the left: right is shorter. */
+    /* Obstacle 400 mm ahead, wider to the left: left is longer (450 x
+       0.707 = 318 mm edge, + 63 + 50 + 20) but still valid, so it wins. */
     uint16_t const wide_left[BYPASS_PLAN_ANGLES] =
     {
         3000u, 3000u, 420u, 410u, 400u, 410u, 420u, 450u, 3000u
     };
-    uint16_t const even[BYPASS_PLAN_ANGLES] =
+    /* The left side never passes within 60 degrees: right is used. */
+    uint16_t const left_wall[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 3000u, 410u, 400u, 410u, 420u, 450u, 460u
     };
     bypass_plan_t plan;
 
     (void) p_api;
 
-    bool const b_right = bypass_plan_make(wide_left, &g_planning_config,
+    bool const b_left  = bypass_plan_make(wide_left, &g_planning_config,
+                                          &plan)
+                         && (BYPASS_PLAN_LEFT == plan.side)
+                         && ((318u + 63u + 50u + 20u) == plan.lateral_mm);
+    bool const b_right = bypass_plan_make(left_wall, &g_planning_config,
                                           &plan)
                          && (BYPASS_PLAN_RIGHT == plan.side);
-    bool const b_tie   = bypass_plan_make(even, &g_planning_config, &plan)
-                         && (BYPASS_PLAN_LEFT == plan.side);
 
-    return (b_right && b_tie);
+    return (b_left && b_right);
 }
 
 static bool
@@ -222,17 +227,19 @@ test_planning_no_route (test_interface_api_t const * p_api)
 static bool
 test_planning_segments (test_interface_api_t const * p_api)
 {
-    /* Right edge hit at -15 degrees and 410 mm: 410 x 0.259 = 106 mm. */
+    /* Right edge hit at -15 degrees and 410 mm: 410 x 0.259 = 106 mm.
+       Left is blocked to 60 degrees, so the right route is used, and it
+       must clear the vehicle's wider left side (82 mm). */
     uint16_t const profile[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 420u, 430u, 3000u, 3000u
+        3000u, 3000u, 3000u, 410u, 400u, 420u, 430u, 450u, 460u
     };
     bypass_plan_t plan;
 
     (void) p_api;
 
     bool const b_made = bypass_plan_make(profile, &g_planning_config, &plan);
-    uint32_t const lateral = 106u + 80u + 50u + 20u;
+    uint32_t const lateral = 106u + 82u + 50u + 20u;
 
     return (b_made && (BYPASS_PLAN_RIGHT == plan.side) && (4u == plan.count)
             && (BYPASS_PLAN_TURN == plan.segments[0].kind)
@@ -284,18 +291,22 @@ test_planning_fine_edges (test_interface_api_t const * p_api)
     profile[16] = 410u;  /* +20 degrees: left beam hits the edge. */
     profile[17] = 410u;  /* +25 degrees: left edge reaches farther. */
 
+    /* Left edge 410 x 0.423 = 173 mm, right 410 x 0.342 = 140 mm: left is
+       longer but valid, so it wins, sized by the right side (63 mm). */
+    bool const b_left = bypass_plan_make_fine(profile, &g_planning_config,
+                                               &plan)
+                        && (BYPASS_PLAN_LEFT == plan.side)
+                        && ((173u + 63u + 50u + 20u) == plan.lateral_mm)
+                        && (plan.search_mm <= g_planning_config.search_max_mm);
+
+    profile[17] = 0u;     /* Left edge reading missing: right is used. */
+
     bool const b_right = bypass_plan_make_fine(profile, &g_planning_config,
                                                 &plan)
                          && (BYPASS_PLAN_RIGHT == plan.side)
-                         && (plan.search_mm <= g_planning_config.search_max_mm);
+                         && ((140u + 82u + 50u + 20u) == plan.lateral_mm);
 
-    profile[17] = 3000u;  /* Equal observed edges: left wins a tie. */
-
-    bool const b_tie = bypass_plan_make_fine(profile, &g_planning_config,
-                                              &plan)
-                       && (BYPASS_PLAN_LEFT == plan.side);
-
-    return (b_right && b_tie);
+    return (b_left && b_right);
 }
 
 static bool
@@ -371,7 +382,7 @@ test_planning_profile (test_interface_api_t const * p_api)
     bool const b_plan = bypass_plan_make_fine(profile, &g_planning_config,
                                                &plan);
 
-    return (b_plan && (BYPASS_PLAN_RIGHT == plan.side)
+    return (b_plan && (BYPASS_PLAN_LEFT == plan.side)
             && (50u == plan.estimated_min_clearance_mm)
             && (400u == plan.profile.forward_mm)
             && (400u == plan.profile.nearest_observed_mm)

@@ -215,6 +215,26 @@ while +/-15 degrees and the fresh reading were 245 mm. The engine no
 longer uses its hazard distance, so that setting was removed from its
 configuration. S5-U56 is revised and fails against both earlier rules.
 
+### 16. Bypass prefers left; side-specific vehicle extents (2026-11-11)
+
+Deviation from subsystem 5 decision 5 ("choose the shorter valid route, left
+on a tie"), approved by Dalton on the integration branch. The planner now
+takes the left route whenever it is valid and the right route only when
+left is blocked, unobserved or beyond the search bound. The side barcode
+sensor sticks out on the left, so passing the obstacle on the car's right
+keeps it away from the obstacle; the team also judged left to be the safer
+side on the mat. The single 80 mm half width is replaced by the measured
+extents from the car's centre line (ruler, 2026-11-11): 82 mm on the left
+(63 mm to the outside of the left tyre plus 19 mm of barcode sensor) and
+63 mm on the right (outside of the right tyre). A left bypass adds the
+right extent to the obstacle's edge, a right bypass the left extent. This
+replaces the 127 mm width noted in decision 14. The sensor axis is taken as
+the car's centre line. The controller now prints the observed profile
+(distance ahead, nearest point, both edges, and width and centre when both
+edges were seen) when every scan ends. S5-U36, S5-U53, S5-U60 and S5-U62
+are revised; the old rule and swapped extents each fail them. Not yet run
+on the robot.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

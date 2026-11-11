@@ -20,12 +20,16 @@ static bool bypass_plan_side (uint16_t const * p_distances,
                               bypass_plan_config_t const * p_config,
                               bool b_left, uint32_t * p_lateral_mm);
 
+/** Sideways step past an edge: the vehicle side facing the obstacle. */
+static uint32_t bypass_plan_lateral (bypass_plan_config_t const * p_config,
+                                     uint32_t edge_mm, bool b_left);
+
 /** Fill the four segments and the search/align turns for one side. */
 static void bypass_plan_fill (bypass_plan_config_t const * p_config,
                               uint16_t obstacle_mm, bool b_left,
                               uint32_t lateral_mm, bypass_plan_t * p_plan);
 
-/** Choose the shorter of two valid routes after the profile is analysed. */
+/** Choose left when valid, else right, after the profile is analysed. */
 static void bypass_plan_choose (bypass_plan_config_t const * p_config,
                                 uint16_t obstacle_mm, bool b_left,
                                 uint32_t left_mm, bool b_right,
@@ -128,12 +132,12 @@ bypass_plan_make_fine (uint16_t const * p_distances,
         else if ((SCAN_PROFILE_OBSERVED == profile_result)
                  && (0u < p_config->search_max_mm))
         {
-            left_mm = (uint32_t)p_plan->profile.left_extent_mm
-                      + p_config->half_width_mm + p_config->clearance_mm
-                      + p_config->margin_mm;
-            right_mm = (uint32_t)p_plan->profile.right_extent_mm
-                       + p_config->half_width_mm + p_config->clearance_mm
-                       + p_config->margin_mm;
+            left_mm = bypass_plan_lateral(p_config,
+                                          p_plan->profile.left_extent_mm,
+                                          true);
+            right_mm = bypass_plan_lateral(p_config,
+                                           p_plan->profile.right_extent_mm,
+                                           false);
 
             bool const b_left = p_plan->profile.b_left_edge
                 && ((left_mm + p_config->margin_mm)
@@ -155,7 +159,9 @@ bypass_plan_choose (bypass_plan_config_t const * p_config,
                     uint16_t obstacle_mm, bool b_left, uint32_t left_mm,
                     bool b_right, uint32_t right_mm, bypass_plan_t * p_plan)
 {
-    if (b_left && ((!b_right) || (left_mm <= right_mm)))
+    /* Left whenever valid (S2 decision 16): the barcode sensor on the
+       left then faces away from the obstacle. */
+    if (b_left)
     {
         bypass_plan_fill(p_config, obstacle_mm, true, left_mm, p_plan);
     }
@@ -201,9 +207,8 @@ bypass_plan_side (uint16_t const * p_distances,
 
     }
 
-    uint32_t const lateral_mm = edge_mm + p_config->half_width_mm
-                                + p_config->clearance_mm
-                                + p_config->margin_mm;
+    uint32_t const lateral_mm = bypass_plan_lateral(p_config, edge_mm,
+                                                    b_left);
 
     *p_lateral_mm = lateral_mm;
 
@@ -211,6 +216,18 @@ bypass_plan_side (uint16_t const * p_distances,
     return (b_passed
             && ((lateral_mm + p_config->margin_mm)
                 <= p_config->search_max_mm));
+}
+
+static uint32_t
+bypass_plan_lateral (bypass_plan_config_t const * p_config, uint32_t edge_mm,
+                     bool b_left)
+{
+    /* Going left, the obstacle passes on the vehicle's right. */
+    uint32_t const side_mm = b_left ? p_config->right_side_mm
+                                    : p_config->left_side_mm;
+
+    return (edge_mm + side_mm + p_config->clearance_mm
+            + p_config->margin_mm);
 }
 
 static void

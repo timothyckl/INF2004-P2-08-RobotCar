@@ -24,7 +24,7 @@ All test cases execute on the **Raspberry Pi Pico W**, not on the build computer
 | S5-U57 | An unstarted request expires after 2 s. | Passed in host simulation. |
 | S5-U58 | A busy request cannot replace the active scan. | Passed in host simulation. |
 | S5-U59 | Coarse obstacle edges receive two intermediate 5° readings before forward clearance. | Passed in host simulation. |
-| S5-U60 | The refined profile selects the shorter observed side and resolves a tie to the left. | Passed in host simulation. |
+| S5-U60 | The refined profile selects the left side whenever it is valid, sized by the vehicle's right extent, and the right side, sized by the left extent, only when the left edge is incomplete (revised 2026-11-11, S2 decision 16). | Passed in host simulation. |
 | S5-U61 | Missing or inconsistent fine edges and a second observed obstacle yield no route; missing coarse data is invalid. | Passed in host simulation. |
 | S5-U62 | Refined rays produce an observed span, centre offset and a labelled planning-clearance estimate. | Passed in host simulation. |
 | S5-U63 | Missing one edge keeps the shape unknown; an out-of-range configuration is rejected. | Passed in host simulation. |
@@ -99,7 +99,7 @@ These cases are **planned**, not executed. Each implementation must exercise jus
 | S5-U33 | D6 | Enter FAULT; try unauthorised RESET, authorised RESET with invalid data, then valid fresh data. | No unauthorised recovery; readiness only after validation; no clearing system STOP or initiating movement. |
 | S5-U34 | D5; FR6 | Use independent known-position/width fixtures, including incomplete edges. | Correct position/width within declared uncertainty; incomplete or unobserved space remains unknown. |
 | S5-U35 | D5 | Evaluate vehicle swept footprints around turns at clearance boundaries with synthetic uncertainty margins. | Require 50 mm physical clearance plus the configured planning margins; a ray alone cannot establish clearance. |
-| S5-U36 | D5 | Supply two safe routes of unequal length, then equal length. | Select the shorter route; select left on a tie. |
+| S5-U36 | D5 | Supply a valid but longer left route, then a left side blocked to 60 degrees (revised 2026-11-11, S2 decision 16). | Select left, with the step sized by the vehicle's right extent; select right when left is blocked. |
 | S5-U37 | D5; FR10 | Supply blocked routes, incomplete coverage and no safe candidate. | FAULT, no usable plan and no movement request. |
 | S5-U38 | D5 | Use independent sensor-offset, speed, response, braking and uncertainty fixtures. | Hazard threshold includes all agreed terms; reject speed beyond validated detection coverage. |
 | S5-U39 | D7 | After field contract completion, use golden bytes, boundary values, invalid flags and malformed payloads. | Explicit masks/shifts and little-endian representation decode correctly; no truncation or invalid-as-clear interpretation. |
@@ -160,7 +160,7 @@ S5-U36, S5-U37. New:
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
-| S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | four segments, approach, align, search within bound |
+| S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | four segments, approach, align, search within bound; with left blocked, the right step includes the vehicle's 82 mm left extent (S2 decision 16) |
 | S5-U54 | nothing in range ahead is not an obstacle | D5 | auto | `test_planning.c` | NO_OBSTACLE, no plan |
 | S5-U55 | consecutive invalid forward attempts | D3 | auto | `test_planning.c` | first two do not fault; a valid reading resets the count; the third consecutive invalid reading faults |
 | S5-U56 | final forward clearance after a scan | D4, D6 | auto | `test_capture.c` | no plan before a fresh forward reading; a reading more than 20 mm closer than the nearest central median faults without a plan; after stopping inside the 250 mm hazard distance (245 mm), a reading 15 mm closer still plans; a long 0 degree median (296 mm) beside 245 mm at +/-15 degrees still plans at 245 mm |
