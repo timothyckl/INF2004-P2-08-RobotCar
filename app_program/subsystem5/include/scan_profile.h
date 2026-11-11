@@ -15,6 +15,7 @@
 
 #define SCAN_PROFILE_ANGLES (25u)  /* -60 to +60 degrees, 5-degree bins */
 #define SCAN_PROFILE_MAX_RANGE_MM (4000u)  /* HC-SR04 nominal limit */
+#define SCAN_PROFILE_BEAM_MAX_DEG (30u)    /* largest beam allowance */
 
 /** Result of validating and classifying a refined scan. */
 typedef enum
@@ -24,11 +25,16 @@ typedef enum
     SCAN_PROFILE_OBSERVED
 } scan_profile_result_t;
 
-/** Provisional depth separates obstacle echoes from a beam beyond it. */
+/**
+ * Provisional depth separates obstacle echoes from a beam beyond it. The
+ * beam allowance (a multiple of 5 degrees, at most 30) pulls each edge in
+ * to that far inside the first ray that misses (S2 decision 18).
+ */
 typedef struct
 {
     uint16_t depth_mm;
     uint16_t range_max_mm;
+    uint16_t beam_deg;
 } scan_profile_config_t;
 
 /**

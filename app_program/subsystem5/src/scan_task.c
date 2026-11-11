@@ -56,13 +56,17 @@ static uint16_t const g_task_hazard_mm    = 250u;
 static uint16_t const g_task_clear_mm     = 500u;
 #define SCAN_TASK_FORWARD_INDEX  (12)     /* 0 degrees, 5 degree steps */
 
-/* Bypass geometry: side extents measured by ruler from the centre line
-   (left to the barcode sensor 82 mm, right to the tyre 63 mm; S2
-   decision 16); margin UNMEASURED; 50 mm clearance and the 500 mm search
-   bound agreed (decisions 5 and 9); assumed depth. */
+/* Bypass geometry, measured by ruler (S2 decisions 16 and 17): 82 mm
+   left of the centre line to the barcode sensor, 63 mm right to the
+   tyre; 132 mm from the axle to the front, 56 mm to the rear, 81 mm to
+   the ultrasonic sensor face. Margin and the 150 mm reverse limit
+   UNMEASURED; 50 mm clearance and the 500 mm sideways search bound agreed
+   (decisions 5 and 9, S2 decision 17); assumed depth. Beam allowance
+   10 degrees: the largest that kept every edge of a centred test box
+   outside the real one in five scans on 2026-11-11 (S2 decision 18). */
 static bypass_plan_config_t const g_task_plan_config =
 {
-    82u, 63u, 50u, 30u, 200u, 500u, 4000u
+    82u, 63u, 132u, 56u, 81u, 50u, 30u, 200u, 150u, 500u, 4000u, 10u
 };
 
 static ID                 g_task_tid = 0;

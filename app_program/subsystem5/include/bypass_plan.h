@@ -4,23 +4,25 @@
  * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
  * Input: the nine coarse medians, index 0 = -60 degrees (right) to index 8
- * = +60 degrees (left), forward at index 4 (decision 4: positive = left).
- * For each side the edge is the last beam that still hits the obstacle
- * before a beam passes it (range beyond the forward distance plus the
- * assumed depth). A side with no passing beam within 60 degrees is
- * unobserved and cannot be used (decision 5).
+ * = +60 degrees (left), forward at index 4 (decision 4: positive = left),
+ * or the 5-degree profile. For each side the edge is the last beam that
+ * still hits the obstacle before a beam passes it (range beyond the
+ * forward distance plus the assumed depth). A side with no passing beam
+ * within 60 degrees is unobserved and cannot be used (decision 5).
  *
- * The route steps sideways by the edge's lateral offset plus the vehicle's
- * extent on the side facing the obstacle (right_side_mm for a left bypass,
- * left_side_mm for a right one), the agreed 50 mm clearance and a planning
- * margin, drives past the obstacle, turns back towards the original line
- * and searches for it within search_max_mm, then aligns with the original
- * direction. Left is used whenever it is valid; right only when left is
- * not (S2 decision 16).
+ * The route turns 45 degrees, never 90 (S2 decision 17): reverse if
+ * needed, turn 45 degrees to the bypass side, drive diagonally until the
+ * axle is the sideways offset across, turn straight, drive past the
+ * obstacle, turn 45 degrees back and search diagonally for the original
+ * line, then align. Each length is the shortest that keeps the whole body
+ * (from the measured extents) clearance + margin from the obstacle,
+ * including the corners swept by each in-place turn. The sideways offset
+ * plus the margin must stay within search_max_mm. Left is used whenever
+ * it has a route; right only when it does not (S2 decision 16).
  *
- * Simplifications, to be reviewed against decision 5: a front scan cannot
- * see the obstacle's depth, so a configured depth is assumed; the swept
- * footprint is approximated by the rectangle the sideways step leaves.
+ * Simplifications: a front scan cannot see the obstacle's depth, so a
+ * configured depth is assumed; the obstacle is the rectangle behind its
+ * nearest observed point, out to the observed edge.
  */
 #ifndef BYPASS_PLAN_H
 #define BYPASS_PLAN_H
@@ -32,7 +34,10 @@
 
 #define BYPASS_PLAN_ANGLES      (9u)
 #define BYPASS_PLAN_FINE_ANGLES SCAN_PROFILE_ANGLES
-#define BYPASS_PLAN_SEGMENTS    (4u)
+#define BYPASS_PLAN_SEGMENTS    (5u)
+
+/* Upper bound on each geometry setting, for the overflow analysis. */
+#define BYPASS_PLAN_GEOMETRY_MAX_MM (1000u)
 
 #define BYPASS_PLAN_TURN        (1u)    /* value: mdeg, positive = left */
 #define BYPASS_PLAN_MOVE        (2u)    /* value: mm, positive = forward */
@@ -61,11 +66,16 @@ typedef struct
 {
     uint16_t left_side_mm;      /* centre line to the left-most point */
     uint16_t right_side_mm;     /* centre line to the right-most point */
+    uint16_t front_mm;          /* axle to the front-most point */
+    uint16_t rear_mm;           /* axle to the rear-most point */
+    uint16_t sensor_mm;         /* axle to the ultrasonic sensor face */
     uint16_t clearance_mm;      /* physical clearance, agreed 50 mm */
     uint16_t margin_mm;         /* sensing and motion error allowance */
     uint16_t depth_mm;          /* assumed obstacle depth */
-    uint16_t search_max_mm;     /* reacquisition bound, agreed 500 mm */
+    uint16_t back_max_mm;       /* longest reverse before the first turn */
+    uint16_t search_max_mm;     /* sideways reacquisition bound, 500 mm */
     uint16_t range_max_mm;      /* sensor range limit, 4000 mm */
+    uint16_t beam_deg;          /* edge beam allowance, 5-degree steps */
 } bypass_plan_config_t;
 
 /** A route the Vehicle Controller can execute segment by segment. */
@@ -79,7 +89,7 @@ typedef struct
     uint16_t              search_mm;      /* forward search bound */
     int32_t               align_mdeg;     /* turn once the line is found */
     uint16_t              obstacle_mm;    /* forward distance */
-    uint16_t              lateral_mm;     /* sideways step */
+    uint16_t              lateral_mm;     /* sideways offset of the axle */
     uint16_t              estimated_min_clearance_mm; /* configured target,
                                                         not physical proof */
     scan_profile_t    profile;        /* observed rays, if fine scan */
@@ -87,6 +97,9 @@ typedef struct
 
 /**
  * @brief Plan a bypass from one complete coarse profile.
+ *
+ * The beam allowance is not applied: at 15-degree steps an allowance of
+ * up to 15 degrees never moves an edge.
  *
  * @param p_distances Nine medians in millimetres, -60 to +60 degrees.
  * @param p_config Geometry and margins.

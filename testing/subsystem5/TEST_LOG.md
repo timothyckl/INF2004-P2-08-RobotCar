@@ -27,7 +27,11 @@ All test cases execute on the **Raspberry Pi Pico W**, not on the build computer
 | S5-U60 | The refined profile selects the left side whenever it is valid, sized by the vehicle's right extent, and the right side, sized by the left extent, only when the left edge is incomplete (revised 2026-11-11, S2 decision 16). | Passed in host simulation. |
 | S5-U61 | Missing or inconsistent fine edges and a second observed obstacle yield no route; missing coarse data is invalid. | Passed in host simulation. |
 | S5-U62 | Refined rays produce an observed span, centre offset and a labelled planning-clearance estimate. | Passed in host simulation. |
-| S5-U63 | Missing one edge keeps the shape unknown; an out-of-range configuration is rejected. | Passed in host simulation. |
+| S5-U63 | Missing one edge keeps the shape unknown; an out-of-range range or geometry configuration is rejected. | Passed in host simulation. |
+| S5-U64 | A close obstacle is reversed from before the first 45 degree turn: 80 mm when the outbound diagonal needs it, 130 mm when the first turn would sweep the face; beyond the reverse limit the right side is used (added 2026-11-11, S2 decision 17; host 42/42). | Passed in host simulation. |
+| S5-U65 | When the turn straight would sweep the near corner, the sideways offset grows (263 to 303 mm) within the 500 mm sideways bound (added 2026-11-11, S2 decision 17). | Passed in host simulation. |
+| S5-U66 | A right route equals the mirrored left route with the vehicle sides swapped, every turn reversed (added 2026-11-11, S2 decision 17). | Passed in host simulation. |
+| S5-U67 | Each edge is placed at most the beam allowance inside the first missing ray: 173/140 mm with none, 106/71 mm with 15 degrees, 0 when the allowance reaches the miss; an allowance not a multiple of 5 degrees is invalid (added 2026-11-11, S2 decision 18). | Passed in host simulation. |
 
 The host-only `s5_view` check also covers the IF-17 decoded getter: non-blocking
 failure leaves output unchanged; fresh, stale, pending, plan and incomplete
@@ -99,7 +103,7 @@ These cases are **planned**, not executed. Each implementation must exercise jus
 | S5-U33 | D6 | Enter FAULT; try unauthorised RESET, authorised RESET with invalid data, then valid fresh data. | No unauthorised recovery; readiness only after validation; no clearing system STOP or initiating movement. |
 | S5-U34 | D5; FR6 | Use independent known-position/width fixtures, including incomplete edges. | Correct position/width within declared uncertainty; incomplete or unobserved space remains unknown. |
 | S5-U35 | D5 | Evaluate vehicle swept footprints around turns at clearance boundaries with synthetic uncertainty margins. | Require 50 mm physical clearance plus the configured planning margins; a ray alone cannot establish clearance. |
-| S5-U36 | D5 | Supply a valid but longer left route, then a left side blocked to 60 degrees (revised 2026-11-11, S2 decision 16). | Select left, with the step sized by the vehicle's right extent; select right when left is blocked. |
+| S5-U36 | D5 | Supply a longer left route that fits, a left side blocked to 60 degrees, and a left edge too wide for the 500 mm sideways bound (revised 2026-11-11, S2 decisions 16 and 17). | Select left, offset at least the edge plus the vehicle's right extent, clearance and margin; select right in the other two cases. |
 | S5-U37 | D5; FR10 | Supply blocked routes, incomplete coverage and no safe candidate. | FAULT, no usable plan and no movement request. |
 | S5-U38 | D5 | Use independent sensor-offset, speed, response, braking and uncertainty fixtures. | Hazard threshold includes all agreed terms; reject speed beyond validated detection coverage. |
 | S5-U39 | D7 | After field contract completion, use golden bytes, boundary values, invalid flags and malformed payloads. | Explicit masks/shifts and little-endian representation decode correctly; no truncation or invalid-as-clear interpretation. |
@@ -160,14 +164,18 @@ S5-U36, S5-U37. New:
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
-| S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | four segments, approach, align, search within bound; with left blocked, the right step includes the vehicle's 82 mm left extent (S2 decision 16) |
+| S5-U53 | plan segments, search bound and alignment | D5 | auto | `test_planning.c` | five segments for a far narrow obstacle (revised 2026-11-11, S2 decision 17): no reverse, +45 degrees, 411 mm diagonal (290 mm across), -45 degrees, 707 mm forward; approach -45, align +45, search 439 mm |
 | S5-U54 | nothing in range ahead is not an obstacle | D5 | auto | `test_planning.c` | NO_OBSTACLE, no plan |
 | S5-U55 | consecutive invalid forward attempts | D3 | auto | `test_planning.c` | first two do not fault; a valid reading resets the count; the third consecutive invalid reading faults |
 | S5-U56 | final forward clearance after a scan | D4, D6 | auto | `test_capture.c` | no plan before a fresh forward reading; a reading more than 20 mm closer than the nearest central median faults without a plan; after stopping inside the 250 mm hazard distance (245 mm), a reading 15 mm closer still plans; a long 0 degree median (296 mm) beside 245 mm at +/-15 degrees still plans at 245 mm |
 | S5-U57 | request expiry | D7 | auto | `test_safety.c` | an unstarted request remains valid through 2 s, then faults and cannot start from late authorisation |
 | S5-U58 | busy and invalid request IDs | D7 | auto | `test_safety.c` | zero ID is refused; a second request cannot replace the active one |
 | S5-U62 | observed profile and planning-clearance estimate | D5; FR6, FR7 | auto | `test_planning.c` | ray span/centre and explicitly modelled clearance, with no claim of physical width |
-| S5-U63 | incomplete profile and range guard | D3, D5; FR6 | auto | `test_planning.c` | missing edge keeps shape unknown; nominal 4 m maximum bounds the geometry |
+| S5-U63 | incomplete profile and range guard | D3, D5; FR6 | auto | `test_planning.c` | missing edge keeps shape unknown; nominal 4 m maximum and the 1000 mm geometry limit are enforced |
+| S5-U64 | reverse before the first turn | D5; S2 D17 | auto | `test_planning.c` | 80 mm reverse for the outbound diagonal, 130 mm for the first turn's sweep; right side used past the reverse limit |
+| S5-U65 | turn straight widens the offset | D5; S2 D17 | auto | `test_planning.c` | offset 303 mm instead of the 263 mm minimum, within the sideways bound |
+| S5-U66 | mirrored right route | D5; S2 D17 | auto | `test_planning.c` | same lengths, reversed turns, with the vehicle sides swapped |
+| S5-U67 | beam allowance on edges | D5; S2 D18 | auto | `test_planning.c` | edges capped at 15 degrees inside the first miss; S5-U62 values become 106/71 mm, width 177 mm |
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
@@ -192,3 +200,6 @@ S5-U36, S5-U37. New:
 | 2026-11-11 | — (stage 3 bypass, run 2) | as run 1 plus S2 decision 15 (0 degree reference) | Dalton | PARTIAL | `logs/2026-11-11_s5-stage3-bypass-2.txt` | PLAN LEFT, obstacle 242 mm, lateral 266 mm, forward 522 mm. TURN 90, MOVE 266, TURN -90 and MOVE 522 each started after the previous DONE. Stopped by GP20 during MOVE 522 because the car was leaving the mat; forward readings 547..2149 mm, no hazard. Search, step and align not reached |
 | 2026-11-11 | — (stage 3 bypass, run 3 and 3b) | as run 2 | Dalton | PARTIAL / NO ROUTE | `logs/2026-11-11_s5-stage3-bypass-3.txt` | Run 3: PLAN LEFT, obstacle 239 mm, lateral 440 mm (readings of 350..366 mm at 30..50 degrees counted as the obstacle within the 200 mm assumed depth); segments ran in order; stopped by GP20 during MOVE 519 (off the mat). Run 3b after RESET: no route (S5 result 3), STOP: left never past 462 mm, right edge at 55 degrees needs a 534 mm step, over the 500 mm search bound |
 | 2026-11-11 | — (stage 3 bypass, run 4) | as run 2 | Dalton | FAIL | `logs/2026-11-11_s5-stage3-bypass-4.txt` | 0 degree median 296 mm while -15/+15 degrees and the fresh reading were 245 mm: the 0 degree reference faulted with nothing moving. Led to the nearest-of-three reference in S2 decision 15 (S5-U56 revised) |
+| 2026-11-11 | — (45 degree bypass) | working tree after `22efcb2`, `_s3line_s5range` | Dalton | PARTIAL | `logs/2026-11-11_s5-bypass45.txt` | Request 1: 45 degree segments ran; the search ended on a marginal left reading (196 against a 164 threshold) and both wheels stalled during the step. Request 3: first complete bypass (reverse 30 mm, 45 degrees, 465 mm diagonal, 275 mm forward, search, 122 mm step, align, following resumed). The robot left the mat |
+| 2026-11-11 | — (obstacle geometry) | as above | Dalton | DATA | `logs/2026-11-11_s5-bypass45-2.txt` | Box 144 x 96 mm centred on the line, 240 mm ahead by ruler; robot read 248 mm at 0 and 239 mm at +/-15 degrees. Box still seen at +30 and -40 degrees (corners at +/-16.7): effective half-beam about 21 degrees (S2 decision 18). Mat room on the start straight: 700 mm left, 145 mm right of the line |
+| 2026-11-11 | — (15 degree beam allowance) | working tree, allowance 15 degrees | Dalton | PASS (3/3 returned) | `logs/2026-11-11_s5-beam15.txt` | Same centred box. Sideways offsets 213, 318 and 252 mm (the last after a 30 mm reverse, box 152 mm ahead); all three found the line, aligned and resumed following. Two scans put the left edge inside the box (50 and 59 mm against 72), so the allowance became 10 degrees (not yet run). Completed only with the obstacle near the start of the straight; farther up, the bypass left the end of the mat |

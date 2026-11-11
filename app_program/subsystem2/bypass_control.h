@@ -25,7 +25,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define BYPASS_CONTROL_SEGMENTS     4u
+#define BYPASS_CONTROL_SEGMENTS     5u
 
 /* Segment kinds: subsystem 5's codes (bypass_plan.h BYPASS_PLAN_*). */
 #define BYPASS_CONTROL_TURN         1u  /* value: mdeg, positive = left */

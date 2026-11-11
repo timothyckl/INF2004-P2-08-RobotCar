@@ -78,13 +78,14 @@
    before it (2 s) and a margin, as on full-system. */
 #define CTRL_SCAN_LIMIT_MS      20000u
 /* Bypass and reacquisition (S2 decision 14). Agreed in S5 decision 9:
-   5 s search, 100 ms of stable line, 15 degrees of heading. Subsystem 5
-   publishes the forward verdict every 65 ms and rejects data older than
-   150 ms (S5 decision 3); an older snapshot counts as a hazard.
-   UNMEASURED: the search speed (500 mm, the plan's largest search, in
-   5 s). Measured by ruler (Dalton, 2026-11-11): the front line sensors
-   are 133 mm ahead of the drive-wheel axle. */
-#define CTRL_BYPASS_SEARCH_MS       5000u
+   100 ms of stable line, 15 degrees of heading. The search runs at 45
+   degrees, so its time limit is 7.5 s: the largest diagonal search,
+   500 mm sideways (708 mm), at the search speed plus 6% (S2 decision 17).
+   Subsystem 5 publishes the forward verdict every 65 ms and rejects data
+   older than 150 ms (S5 decision 3); an older snapshot counts as a hazard.
+   UNMEASURED: the search speed. Measured by ruler (Dalton, 2026-11-11):
+   the front line sensors are 133 mm ahead of the drive-wheel axle. */
+#define CTRL_BYPASS_SEARCH_MS       7500u
 #define CTRL_BYPASS_FOUND_MS        100u
 #define CTRL_BYPASS_HEADING_MDEG    15000
 #define CTRL_BYPASS_FORWARD_AGE_MS  150u

@@ -235,6 +235,70 @@ edges were seen) when every scan ends. S5-U36, S5-U53, S5-U60 and S5-U62
 are revised; the old rule and swapped extents each fail them. Not yet run
 on the robot.
 
+### 17. 45 degree bypass with swept-body clearance (2026-11-11)
+
+Deviation from subsystem 5 decisions 5 and 9, approved by Dalton on the
+integration branch (option A). The team asked that the car never turn
+90 degrees after sensing an obstacle. Subsystem 5's planner now returns
+five segments: reverse (often 0), turn 45 degrees to the bypass side, a
+diagonal until the axle is the sideways offset across, turn straight,
+forward past the obstacle. The controller then turns 45 degrees back,
+searches diagonally, steps onto the line and aligns, as in decision 14.
+Each length is the shortest, in 10 mm steps, that keeps every part of the
+body clearance + margin (50 + 30 mm) from the obstacle rectangle (edge
+to nearest point plus the 200 mm assumed depth): the diagonals and the
+straight by perpendicular distance, each in-place turn by sweeping the
+body rectangle in 5 degree steps against the obstacle outline sampled
+every 20 mm, plus an allowance for both steps. Reversing is allowed up
+to 150 mm (UNMEASURED) along the path the car just drove. Body extents by
+ruler (Dalton, 2026-11-11): 132 mm from the axle to the front, 56 mm to
+the rear, 81 mm to the ultrasonic sensor face, sides as in decision 16;
+nothing at the rear sticks out past the tyres.
+
+Subsystem 5 decision 9 bounds the search at 500 mm. A 45 degree search
+covers only 0.71 of its length sideways, so the bound now applies to the
+sideways offset: offset + margin <= 500 mm, a diagonal search of up to
+708 mm. The 5 s search limit becomes 7.5 s, the time for 708 mm at the
+search speed plus 6%. A float simulation sweeping the body outline every
+2 mm along 17,178 planned routes for random obstacles found no approach
+closer than 80.1 mm. S5-U36, S5-U53 and S5-U63 are revised and S5-U64 to
+S5-U66 added; removing each clearance check fails at least one of them.
+Not yet run on the robot. Only the observed edge and nearest point are
+modelled; anything beyond the assumed depth is not.
+
+### 18. Ultrasonic beam allowance on obstacle edges (2026-11-11)
+
+Revision of subsystem 5 decision 5's edge estimate, approved by Dalton on
+the integration branch. The HC-SR04 datasheet gives a 15 degree measuring
+angle, but a centred 144 mm wide box 240 mm ahead (corners at +/-16.7
+degrees, measured by ruler) was still seen out to +30 and -40 degrees, and
+the scan reported it 340 to 370 mm wide. Together the two sides imply an
+effective half-beam of about 21 degrees. The 10 degree left/right
+imbalance fits the car having stopped about 5 degrees off the line, or a
+servo centre about 5 degrees off (its mapping is still provisional). A
+ray hits anything within its beam, so the first ray that misses shows
+nothing reaches within the half-beam of it. Each hit is now placed at
+most the beam allowance inside the first miss.
+
+The allowance is 10 degrees. Three bypasses on the robot with 15 degrees
+(same centred box, `logs/2026-11-11_s5-beam15.txt`) all returned to the
+line, but replaying all five centred-box scans of the day put the left
+edge at 50 and 59 mm on two of them, inside the real 72 mm: the angle at
+which the box vanished varied from 20 to 35 degrees between stops,
+likely with the car's heading at the stop. With 10 degrees the five left
+edges are 74 to 148 mm, all outside the box, and the sideways offset
+falls by about 20 to 45 mm against no allowance. The coarse-only planner
+is unchanged, since 15 degree steps make the allowance a no-op. S5-U60
+and S5-U62 are revised and S5-U67 added (synthetic 15 degrees). Not yet
+validated for an off-centre obstacle, which the run day may bring.
+
+Also observed: with the obstacle far up the start straight, the bypass
+ran off the end of the mat, and it completed only after the obstacle was
+moved closer to the start. The route reaches roughly the sideways offset
+plus the forward leg plus the return diagonal beyond the stop, about
+0.8 m here, much of it from the 200 mm assumed depth. The space left on
+the straight ahead of the obstacle is not yet measured or checked.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
