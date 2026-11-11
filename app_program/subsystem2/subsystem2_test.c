@@ -28,6 +28,7 @@
 #include "test_controller.h"
 #include "test_line_control.h"
 #include "test_scan_control.h"
+#include "test_bypass_control.h"
 #include "s2_bridge.h"
 #include "../test_report.h"
 
@@ -762,6 +763,14 @@ EXPORT void subsystem2_test(void)
 		   "scan result for this request ends the scan");
 	TEST_CHECK("S2-U63", test_scan_control_end(),
 		   "scan timeout sends CANCEL, abort sends STOP");
+	TEST_CHECK("S2-U64", test_bypass_control_segments(),
+		   "bypass drives the plan in order; a bad plan fails");
+	TEST_CHECK("S2-U65", test_bypass_control_motion(),
+		   "bypass advances only on its own DONE");
+	TEST_CHECK("S2-U66", test_bypass_control_hazard(),
+		   "bypass hazard ignored in turns, stops forward travel");
+	TEST_CHECK("S2-U67", test_bypass_control_reacquire(),
+		   "bounded reacquisition, step onto the line, heading check");
 
 #if S2_HW_TEST
 	hw_test();

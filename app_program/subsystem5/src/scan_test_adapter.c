@@ -61,7 +61,7 @@ scan_test_reset (test_interface_port_t const * p_port,
         scan_test_time_now_us,
         scan_test_publish
     };
-    scan_engine_config_t scan_config = {0u, 0u, 0u};
+    scan_engine_config_t scan_config = {0u, 0u};
 
     g_test_port.p_now_us = NULL;
     g_test_port.p_emit   = NULL;
@@ -74,7 +74,6 @@ scan_test_reset (test_interface_port_t const * p_port,
     if (NULL != p_config)
     {
         scan_config.settling_us = p_config->settling_us;
-        scan_config.hazard_mm   = p_config->hazard_mm;
         scan_config.depth_mm    = p_config->depth_mm;
     }
 

@@ -24,6 +24,11 @@ static uint8_t const  g_scan_invalid_limit     = 3u;
 /* A rise with no fall by the deadline is beyond the 4 m rated range
    (23.5 ms): reported at the 4000 mm range bound (S2 decision 10). */
 static uint16_t const g_scan_beyond_mm         = 4000u;
+/* The fresh forward reading after a scan may be at most this much closer
+   than the nearest central median: twice the 10 mm ranging target
+   (decision 10). A hazard stop always ends inside hazard_mm, so hazard_mm
+   cannot be the bound (S2 decision 15). */
+static uint16_t const g_scan_closer_mm         = 20u;
 
 /** Accept a new request only while the scanner is idle. */
 static void scan_engine_accept_request (scan_engine_t * p_engine,
@@ -455,7 +460,19 @@ scan_engine_complete (scan_engine_t * p_engine, bool b_valid,
 
         if (p_engine->b_awaiting_clearance)
         {
-            if (distance_mm >= p_engine->config.hazard_mm)
+            uint8_t const  mid = SCAN_ENGINE_ANGLES / 2u;
+            uint16_t const near_mm =
+                (p_engine->coarse_mm[mid - 1u] < p_engine->coarse_mm[mid + 1u])
+                ? p_engine->coarse_mm[mid - 1u]
+                : p_engine->coarse_mm[mid + 1u];
+            uint32_t const scanned_mm =
+                (p_engine->coarse_mm[mid] < near_mm)
+                ? p_engine->coarse_mm[mid] : near_mm;
+
+            /* Nothing came closer than the nearest of the -15, 0 and +15
+               degree medians (see g_scan_closer_mm): one of them can be
+               long when the face returns two echoes (2026-11-11 run 4). */
+            if (((uint32_t)distance_mm + g_scan_closer_mm) >= scanned_mm)
             {
                 if (!scan_engine_publish(p_engine, SCAN_ENGINE_PLAN,
                                          g_scan_forward_angle_deg,

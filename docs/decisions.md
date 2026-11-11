@@ -173,6 +173,48 @@ level. The A/B order assumes the Grove cable keeps its wire order. S2-H03
 confirmed it on 2026-11-11: the left encoder still counts up going forward,
 with no decode errors.
 
+### 14. Subsystem 5 integration, stage 3: bypass and reacquisition (2026-11-11)
+
+Approved by Dalton on the integration branch. In the `_s3line` image a PLAN
+no longer stops the run. The pure `bypass_control` module (S2-U64..U67)
+drives subsystem 5's plan: each segment as one MOVE or TURN, then the
+approach turn and a forward search at 100 mm/s (UNMEASURED) for at most the
+plan's search distance or 5 s (S5 decision 9). A front sensor on black for
+100 ms (S5 decision 9) ends the search; the car then moves its axle to
+where the sensors first saw the line (they are 133 mm ahead of the axle,
+measured by ruler) and turns by the align angle. Following resumes only if
+the heading is within 15 degrees of the start (S5 decision 9) and nothing
+is within the hazard distance ahead. The mode is BYPASS during the
+segments and REACQUIRE afterwards. Subsystem 5 raises its hazard flag only
+on an edge, and the bypass starts within the hazard distance, so the
+controller consumes the flag and the bypass checks the forward verdict
+itself: ignored during in-place turns, a stop during forward travel. A
+snapshot older than 150 ms (S5 decision 3) counts as a hazard. Any rejected
+or failed command, hazard, exhausted search or heading error stops the run.
+
+On the robot (2026-11-11) the segments ran in order, but each time the plan
+took the car off the mat and the run was stopped by hand during the move
+past the obstacle, so the search, the step onto the line and the align turn
+are not yet validated. The plan is sized by subsystem 5's provisional
+80 mm half width and 200 mm assumed obstacle depth; the car is 127 mm wide
+(64 mm half width), and the mat is as little as 35 mm from the line, so no
+bypass can be guaranteed to stay on the mat without knowing where it is.
+
+### 15. Fresh forward clearance after a scan (2026-11-11)
+
+Deviation from subsystem 5 decision 4's implementation, approved by Dalton
+on the integration branch. After a scan, subsystem 5 turned the sensor
+forward and accepted the plan only if the fresh reading was at least the
+250 mm hazard distance. A hazard stop always ends inside that distance
+(245 mm in the first stage 3 run), so every scan faulted. The fresh reading
+may now be at most 20 mm (twice the 10 mm ranging target) closer than the
+nearest of the -15, 0 and +15 degree medians, the obstacle's closest seen
+point; the bypass starts with an in-place turn. The nearest of three, not
+the 0 degree median alone, because one run's 0 degree median was 296 mm
+while +/-15 degrees and the fresh reading were 245 mm. The engine no
+longer uses its hazard distance, so that setting was removed from its
+configuration. S5-U56 is revised and fails against both earlier rules.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

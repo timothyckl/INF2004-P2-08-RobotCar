@@ -371,8 +371,45 @@ test_capture_clearance (test_interface_api_t const * p_api)
     test_capture_echo(p_api,
                       g_capture_rise_us + test_capture_width(170u));
 
-    return (b_held && test_subject_no_plan()
-            && (1u == test_fixture_count(TEST_INTERFACE_FAULT))
+    bool const b_closer_faults = b_held && test_subject_no_plan()
+        && (1u == test_fixture_count(TEST_INTERFACE_FAULT))
+        && (!test_fixture_overflowed());
+
+    /* Stopped inside the hazard distance (245 mm everywhere): a fresh
+       reading up to 20 mm closer still plans (S2 decision 15). */
+    test_subject_start(p_api, 0u);
+    test_capture_authorise(p_api);
+
+    for (uint32_t sample = 0u; sample < 28u; sample++)
+    {
+        (void) test_capture_await(p_api, 70u);
+        test_capture_echo(p_api, g_capture_rise_us
+                          + test_capture_width((sample < 27u) ? 245u : 230u));
+    }
+
+    bool const b_inside_plans =
+        (1u == test_fixture_count(TEST_INTERFACE_PLAN))
+        && (0u == test_fixture_count(TEST_INTERFACE_FAULT))
+        && (!test_fixture_overflowed());
+
+    /* A long 0 degree median (296 mm) beside 245 mm at +/-15 degrees: the
+       nearest of the three is the reference, so 245 mm still plans. */
+    test_subject_start(p_api, 0u);
+    test_capture_authorise(p_api);
+
+    for (uint32_t sample = 0u; sample < 28u; sample++)
+    {
+        uint32_t const distance_mm =
+            ((sample / 3u) == (SCAN_ENGINE_ANGLES / 2u)) ? 296u : 245u;
+
+        (void) test_capture_await(p_api, 70u);
+        test_capture_echo(p_api, g_capture_rise_us
+                          + test_capture_width(distance_mm));
+    }
+
+    return (b_closer_faults && b_inside_plans
+            && (1u == test_fixture_count(TEST_INTERFACE_PLAN))
+            && (0u == test_fixture_count(TEST_INTERFACE_FAULT))
             && (!test_fixture_overflowed()));
 }
 
@@ -438,7 +475,7 @@ static bool
 test_capture_limit (test_interface_api_t const * p_api)
 {
     /* 2 s settling per angle cannot finish nine angles inside 15 s. */
-    test_interface_config_t const slow = {2000000u, 200u, 200u};
+    test_interface_config_t const slow = {2000000u, 200u};
     uint32_t elapsed_ms = 0u;
 
     test_fixture_reset(0u);

@@ -70,7 +70,6 @@ typedef struct
 typedef struct
 {
     uint32_t settling_us;
-    uint16_t hazard_mm;
     uint16_t depth_mm;
 } test_interface_config_t;
 

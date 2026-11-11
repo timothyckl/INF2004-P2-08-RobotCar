@@ -158,7 +158,6 @@ scan_task_start (void)
     scan_engine_port_t const   port   = {scan_task_now_us,
                                          scan_task_publish};
     scan_engine_config_t const config = {g_task_settling_us,
-                                         g_task_hazard_mm,
                                          g_task_plan_config.depth_mm};
     ER er = drv_servo_init();
 

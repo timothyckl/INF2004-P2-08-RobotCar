@@ -18,6 +18,7 @@
  */
 #include "task_controller.h"
 
+#include "bypass_control.h"
 #include "controller_logic.h"
 #include "line_control.h"
 #include "scan_control.h"
@@ -76,12 +77,28 @@
 /* Scan & Plan: S5's 15 s scan limit plus the stop and confirmation
    before it (2 s) and a margin, as on full-system. */
 #define CTRL_SCAN_LIMIT_MS      20000u
+/* Bypass and reacquisition (S2 decision 14). Agreed in S5 decision 9:
+   5 s search, 100 ms of stable line, 15 degrees of heading. Subsystem 5
+   publishes the forward verdict every 65 ms and rejects data older than
+   150 ms (S5 decision 3); an older snapshot counts as a hazard.
+   UNMEASURED: the search speed (500 mm, the plan's largest search, in
+   5 s). Measured by ruler (Dalton, 2026-11-11): the front line sensors
+   are 133 mm ahead of the drive-wheel axle. */
+#define CTRL_BYPASS_SEARCH_MS       5000u
+#define CTRL_BYPASS_FOUND_MS        100u
+#define CTRL_BYPASS_HEADING_MDEG    15000
+#define CTRL_BYPASS_FORWARD_AGE_MS  150u
+#define CTRL_BYPASS_SEARCH_MM_S     100
+#define CTRL_BYPASS_SENSOR_AHEAD_MM 133u
 
-/* scan_control mirrors subsystem 5's result codes (IF-13). */
+/* scan_control and bypass_control mirror subsystem 5's codes (IF-13). */
 typedef char ctrl_scan_codes_match_t[
     ((SCAN_CONTROL_RESULT_NONE == SCAN_TASK_RESULT_NONE)
      && (SCAN_CONTROL_RESULT_PLAN == SCAN_TASK_RESULT_PLAN)
-     && (SCAN_CONTROL_RESULT_CLEAR == SCAN_TASK_RESULT_CLEAR)) ? 1 : -1];
+     && (SCAN_CONTROL_RESULT_CLEAR == SCAN_TASK_RESULT_CLEAR)
+     && (BYPASS_CONTROL_TURN == BYPASS_PLAN_TURN)
+     && (BYPASS_CONTROL_MOVE == BYPASS_PLAN_MOVE)
+     && (BYPASS_CONTROL_SEGMENTS == BYPASS_PLAN_SEGMENTS)) ? 1 : -1];
 #endif
 
 #if S2_CAL_TEST == 1
@@ -149,7 +166,14 @@ typedef struct
 } ctrl_line_runtime_t;
 
 static ctrl_line_runtime_t g_line_runtime;
+static bypass_control_cfg_t const g_bypass_cfg =
+{
+    CTRL_BYPASS_SEARCH_MS, CTRL_BYPASS_FOUND_MS, CTRL_BYPASS_HEADING_MDEG,
+    CTRL_BYPASS_SENSOR_AHEAD_MM
+};
+
 static scan_control_t      g_scan;
+static bypass_control_t    g_bypass;
 static scan_task_status_t  g_scan_status;  /* off the stack */
 #endif
 
@@ -184,7 +208,12 @@ static void     scan_update (s2_robot_state_t * p_state,
                              ctrl_input_t const * p_input);
 static void     scan_send (scan_control_output_t const * p_out,
                            uint32_t now);
-static void     scan_report (scan_control_outcome_t outcome);
+static void     scan_report (scan_control_outcome_t outcome,
+                             ctrl_input_t const * p_input);
+static void     bypass_input (ctrl_input_t const * p_input,
+                              bypass_control_input_t * p_in);
+static void     bypass_send (bypass_control_output_t const * p_out);
+static void     bypass_report (bypass_control_output_t const * p_out);
 static void     line_log_mode (line_control_mode_t old_mode,
                                line_control_mode_t new_mode,
                                line_control_action_t action);
@@ -303,6 +332,7 @@ controller_task (INT stacd, void * exinf)
     ctrl_init(&g_ctrl, &cfg, now_ms());
 #if S3_LINE_FOLLOW_TEST
     (void)scan_control_init(&g_scan, CTRL_SCAN_LIMIT_MS);
+    (void)bypass_control_init(&g_bypass, &g_bypass_cfg);
 #endif
 
 #if CTRL_BUTTON
@@ -738,7 +768,9 @@ cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 
 #if S3_LINE_FOLLOW_TEST
 /* A hazard while following starts Scan & Plan instead of the latched
-   STOP; the flag is consumed here. Returns the flags still to handle. */
+   STOP; the flag is consumed here. During a bypass the flag is consumed
+   too: bypass_control checks the hazard level itself, because the bypass
+   starts within the hazard distance. Returns the flags still to handle. */
 static uint32_t
 scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
 {
@@ -750,7 +782,7 @@ scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
         return (ptn);
     }
 
-    if (!scan_control_active(&g_scan))
+    if ((!scan_control_active(&g_scan)) && (!bypass_control_active(&g_bypass)))
     {
         scan_control_begin(&g_scan, p_state->captured_ms, &out);
         tm_printf((UB *)"[S2] S5 HAZARD: stopping to scan, request %u\n",
@@ -763,8 +795,8 @@ scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
     return (ptn & ~(uint32_t)CTRL_FLG_HAZARD);
 }
 
-/* Publish the mode, end the scan on a stop elsewhere, otherwise advance
-   the handshake and act on subsystem 5's result. */
+/* Publish the mode, end a scan or bypass on a stop elsewhere, otherwise
+   advance the handshake or the bypass and act on the outcome. */
 static void
 scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
 {
@@ -776,6 +808,7 @@ scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
     {
         scan_control_abort(&g_scan, &out);
         scan_send(&out, p_input->now_ms);
+        bypass_control_abort(&g_bypass);
         p_state->mode = S2_MODE_NONE;
         return;
     }
@@ -788,11 +821,35 @@ scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
                           g_scan_status.request_id, g_scan_status.result,
                           p_input->now_ms, &out);
         scan_send(&out, p_input->now_ms);
-        scan_report(out.outcome);
+        scan_report(out.outcome, p_input);
+    }
+    else if (bypass_control_active(&g_bypass))
+    {
+        bypass_control_input_t  in;
+        bypass_control_output_t bout;
+
+        (void)scan_task_get(&g_scan_status);  /* keeps the last on E_TMOUT */
+        bypass_input(p_input, &in);
+        bypass_control_step(&g_bypass, &in, &bout);
+        bypass_send(&bout);
+    }
+    else
+    {
+        /* Following. */
     }
 
-    p_state->mode = scan_control_active(&g_scan) ? S2_MODE_SCAN
-                                                 : S2_MODE_FOLLOW;
+    if (scan_control_active(&g_scan))
+    {
+        p_state->mode = S2_MODE_SCAN;
+    }
+    else if (bypass_control_active(&g_bypass))
+    {
+        p_state->mode = bypass_control_mode(&g_bypass);
+    }
+    else
+    {
+        p_state->mode = S2_MODE_FOLLOW;
+    }
 }
 
 static void
@@ -816,15 +873,19 @@ scan_send (scan_control_output_t const * p_out, uint32_t now)
     }
 }
 
-/* Stage 2 (S2 decision 11): print the result. CLEAR resumes following;
-   a plan is not driven yet, so PLAN and failures stop the run. */
+/* Print the result. CLEAR resumes following (S2 decision 11); PLAN starts
+   the bypass (S2 decision 14); failures stop the run. */
 static void
-scan_report (scan_control_outcome_t outcome)
+scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
 {
     bypass_plan_t const * p_plan = &g_scan_status.plan;
 
     if (SCAN_CONTROL_PLAN == outcome)
     {
+        bypass_control_plan_t   plan;
+        bypass_control_input_t  in;
+        bypass_control_output_t out;
+
         tm_printf((UB *)"[S2] scan %u: PLAN side=%s obstacle=%u mm"
                   " lateral=%u mm, %u segments:\n",
                   (UINT)g_scan.request_id,
@@ -844,10 +905,25 @@ scan_report (scan_control_outcome_t outcome)
         }
 
         tm_printf((UB *)"[S2]   then approach %d mdeg, search %u mm,"
-                  " align %d mdeg; bypass not driven yet: STOP\n",
+                  " align %d mdeg; bypass starts\n",
                   (INT)p_plan->approach_mdeg, (UINT)p_plan->search_mm,
                   (INT)p_plan->align_mdeg);
-        (void)s2_local_stop();
+
+        /* Copy now: subsystem 5 clears an unaccepted plan after 2 s. */
+        plan.count = p_plan->count;
+        plan.approach_mdeg = p_plan->approach_mdeg;
+        plan.align_mdeg = p_plan->align_mdeg;
+        plan.search_mm = p_plan->search_mm;
+
+        for (uint8_t i = 0u; i < BYPASS_CONTROL_SEGMENTS; i++)
+        {
+            plan.seg[i].kind = p_plan->segments[i].kind;
+            plan.seg[i].value = p_plan->segments[i].value;
+        }
+
+        bypass_input(p_input, &in);
+        bypass_control_begin(&g_bypass, &plan, &in, &out);
+        bypass_send(&out);
     }
     else if (SCAN_CONTROL_CLEAR == outcome)
     {
@@ -869,12 +945,123 @@ scan_report (scan_control_outcome_t outcome)
     }
 }
 
+/* One cycle's view for bypass_control. A line report counts while fresh
+   and with a sensor on black (CENTER is both white: straddling). The
+   forward verdict counts while its snapshot is fresh; the snapshot may be
+   taken after now_ms, so its age is checked both ways. */
+static void
+bypass_input (ctrl_input_t const * p_input, bypass_control_input_t * p_in)
+{
+    uint8_t const  position = g_line_runtime.position;
+    uint32_t const now = p_input->now_ms;
+    uint32_t const captured = g_scan_status.captured_ms;
+    bool const     b_line_fresh = g_line_runtime.b_have_report
+        && ((now - g_line_runtime.last_report_ms) <= S2_LINE_MAX_AGE_MS);
+    bool const     b_forward_fresh =
+        ((now - captured) <= CTRL_BYPASS_FORWARD_AGE_MS)
+        || ((captured - now) <= CTRL_BYPASS_FORWARD_AGE_MS);
+
+    p_in->now_ms = now;
+    p_in->travel_mm = p_input->status.travel_mm;
+    p_in->heading_mdeg = p_input->status.heading_mdeg;
+    p_in->last_id = p_input->status.last_id;
+    p_in->last_result = p_input->status.last_result;
+    p_in->b_status_ok = p_input->b_status_ok;
+    p_in->b_on_line = b_line_fresh
+                      && ((S2_LINE_LEFT == position)
+                          || (S2_LINE_RIGHT == position)
+                          || (S2_LINE_BOTH_BLACK == position));
+    p_in->b_hazard = (!b_forward_fresh)
+                     || (0u != (g_scan_status.flags & SCAN_TASK_FLAG_HAZARD));
+}
+
+/* Send the requested motion command, report the send, then report the
+   outcome of either. */
+static void
+bypass_send (bypass_control_output_t const * p_out)
+{
+    bypass_control_output_t sent;
+    ER                      er = E_OK;
+
+    switch (p_out->action)
+    {
+        case BYPASS_CONTROL_ACT_MOVE:
+            er = (p_out->value >= 0)
+                 ? motion_move_forward((uint16_t)p_out->value)
+                 : motion_move_backward((uint16_t)(-p_out->value));
+            tm_printf((UB *)"[S2] bypass: MOVE %d mm\n", (INT)p_out->value);
+        break;
+
+        case BYPASS_CONTROL_ACT_TURN:
+            er = (p_out->value >= 0)
+                 ? motion_turn_left((uint32_t)p_out->value)
+                 : motion_turn_right((uint32_t)(-p_out->value));
+            tm_printf((UB *)"[S2] bypass: TURN %d mdeg\n", (INT)p_out->value);
+        break;
+
+        case BYPASS_CONTROL_ACT_SEARCH:
+            er = motion_set_speeds(CTRL_BYPASS_SEARCH_MM_S,
+                                   CTRL_BYPASS_SEARCH_MM_S);
+            tm_printf((UB *)"[S2] bypass: searching for the line at %d mm/s\n",
+                      (INT)CTRL_BYPASS_SEARCH_MM_S);
+        break;
+
+        default:
+            /* Nothing to send. */
+        break;
+    }
+
+    if (BYPASS_CONTROL_ACT_NONE == p_out->action)
+    {
+        bypass_report(p_out);
+    }
+    else
+    {
+        bypass_control_sent(&g_bypass, (E_OK == er), motion_last_command_id(),
+                            &sent);
+        bypass_report(&sent);
+    }
+}
+
+/* DONE resumes line following; a failure stops the run. */
+static void
+bypass_report (bypass_control_output_t const * p_out)
+{
+    static char const * const reasons[] =
+    {
+        "none", "invalid plan", "motion command failed", "forward hazard",
+        "line not found", "heading off the original line"
+    };
+
+    if (BYPASS_CONTROL_DONE == p_out->outcome)
+    {
+        tm_printf((UB *)"[S2] bypass: back on the line, resuming line"
+                  " following\n");
+    }
+    else if (BYPASS_CONTROL_FAILED == p_out->outcome)
+    {
+        tm_printf((UB *)"[S2] bypass: FAILED, %s; STOP\n",
+                  ((uint32_t)p_out->fail
+                   < (sizeof(reasons) / sizeof(reasons[0])))
+                      ? reasons[p_out->fail] : "unknown");
+        (void)s2_local_stop();
+    }
+    else
+    {
+        /* Still bypassing. */
+    }
+}
+
 static void
 line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 {
     s2_line_report_t report;
     bool const b_system_running = (S2_SYS_RUNNING == p_state->state)
                                   && (S2_MODE_FOLLOW == p_state->mode);
+    /* The bypass search reads the latest report too (bypass_input). */
+    bool const b_line_wanted = b_system_running
+                               || ((S2_SYS_RUNNING == p_state->state)
+                                   && (S2_MODE_REACQUIRE == p_state->mode));
     bool b_report_valid = true;
     line_control_action_t action;
     line_control_mode_t old_mode;
@@ -892,7 +1079,7 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
     while (tk_rcv_mbf(line_q, &report, TMO_POL)
            == (INT)sizeof(s2_line_report_t))
     {
-        bool const b_this_valid = b_system_running
+        bool const b_this_valid = b_line_wanted
             && (report.position <= S2_LINE_STOP)
             && (report.strength <= S2_LINE_STRENGTH_MAX)
             && (((S2_LINE_LEFT == report.position)
@@ -903,7 +1090,7 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
             && ((p_input->now_ms - report.captured_ms)
                 <= S2_LINE_MAX_AGE_MS);
 
-        if (b_system_running)
+        if (b_line_wanted)
         {
             b_report_valid = b_report_valid && b_this_valid;
 
@@ -917,19 +1104,19 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
         }
     }
 
+    if (b_line_wanted && (!b_report_valid))
+    {
+        tm_printf((UB *)"[S2] line: invalid report; STOP\n");
+        (void)s2_line_stop();
+        return;
+    }
+
     if (!b_system_running)
     {
         if (g_line_runtime.b_running)
         {
             line_reset(p_input->now_ms);
         }
-        return;
-    }
-
-    if (!b_report_valid)
-    {
-        tm_printf((UB *)"[S2] line: invalid report; STOP\n");
-        (void)s2_line_stop();
         return;
     }
 
