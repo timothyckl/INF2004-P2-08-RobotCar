@@ -54,12 +54,13 @@ is spotted when someone edits this table, not hours later on the bench.
 The proposed robot wiring is in `docs/AAI08_Design_Review.pdf` section 2. The
 authoritative GPIO mapping is `AGENTS.md`, section *Agreed pin mapping*; the
 claims below must match it. Left and right are viewed from behind the robot,
-ultrasonic sensor facing away. Motor 1 (GP8/GP9) and the GP7/GP28 encoder drive
-the left wheel; motor 2 (GP10/GP11) and the GP0/GP1 encoder drive the right
-wheel. The front line sensors' analogue outputs use ADC0/GP26 (left) and
-ADC1/GP27 (right), and the barcode sensor's digital output GP16. The IMU uses
-I2C1 on GP2/GP3, the HC-SR04 GP4/GP5 and the servo GP12. Because GP0/GP1 carry
-an encoder, building with `CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited.
+ultrasonic sensor facing away. Motor 1 (GP8/GP9) and the GP16/GP17 encoder
+drive the left wheel; motor 2 (GP10/GP11) and the GP0/GP1 encoder drive the
+right wheel. The front line sensors' analogue outputs use ADC0/GP26 (left) and
+ADC1/GP27 (right), and the barcode sensor's analogue output ADC2/GP28. The
+IMU uses I2C1 on GP2/GP3, the HC-SR04 GP4/GP5 and the servo GP12. Because
+GP0/GP1 carry an encoder, building with `CRASH_REPORT=1` (UART0 on GP0/GP1) is
+prohibited.
 Reconcile any other wiring with the actual board and datasheets before
 configuring hardware.
 
@@ -79,7 +80,7 @@ fixed.
 | GP4 | S5 | HC-SR04 TRIG |
 | GP5 | S5 | HC-SR04 ECHO |
 | GP6 | | |
-| GP7 | S2 | left encoder A (GPIO interrupt) |
+| GP7 | | |
 | GP8 | S2 | M1A motor 1 PWM (slice 4A), left wheel forward |
 | GP9 | S2 | M1B motor 1 PWM (slice 4B), left wheel backward |
 | GP10 | S2 | M2A motor 2 PWM (slice 5A), right wheel backward |
@@ -88,8 +89,8 @@ fixed.
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | S3 | side barcode sensor DOUT; demo liveness LED must not use this pin |
-| GP17 | | |
+| GP16 | S2 | left encoder A (GPIO interrupt, Grove 4); demo liveness LED must not use this pin |
+| GP17 | S2 | left encoder B (Grove 4) |
 | GP18 | | |
 | GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
 | GP20 | S2 | Robo Pico programmable button; active-low START/STOP in line test |
@@ -97,7 +98,7 @@ fixed.
 | GP22 | | |
 | GP26 | S3 | front-left line sensor AO (ADC0); DOUT disconnected |
 | GP27 | S3 | front-right line sensor AO (ADC1); DOUT disconnected |
-| GP28 | S2 | left encoder B; battery-sense jumper open, ADC2 disabled |
+| GP28 | S3 | side barcode sensor AO (ADC2, Grove 7); DOUT removed; battery-sense jumper open |
 
 ## 3. Peripherals
 
@@ -134,7 +135,7 @@ the drivers have no locking to stop it.
 | I2C1 | S4 | | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | S3 | | ADC0/GP26 and ADC1/GP27; ADC2/GP28 (left encoder) and ADC3/GP29 (radio) disabled |
+| ADC | S3 | | ADC0/GP26, ADC1/GP27 (front sensors) and ADC2/GP28 (barcode sensor); ADC3/GP29 (radio) disabled |
 | PWM slices (list) | S2: slices 4, 5; S5: slice 6 | Motion Control; Obstacle Scan | GP8-GP11; GP12 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 

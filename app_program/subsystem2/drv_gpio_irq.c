@@ -10,7 +10,7 @@
  *
  * The interrupt is enabled in the NVIC of the core that runs init, so only
  * that core's INTE/INTS registers are used. INTE is shared by several
- * owners (GP3 and GP7 are in the same register), so it is changed only
+ * owners (GP0, GP1 and GP5 are in the same register), so it is changed only
  * through the RP2040's atomic SET/CLR register aliases, never by
  * read-modify-write, which would race with the other core.
  */

@@ -6,17 +6,13 @@
 
 #include "s3_ir.h"
 
-#include <tk/syslib.h>
-#include <sys/sysdef.h>
-
-/* AGENTS.md, Agreed pin mapping: front sensors are analogue only. */
-#define S3_IR_BARCODE_PIN     16u
+/* AGENTS.md, Agreed pin mapping: all three sensors are analogue only. */
 #define S3_IR_ADC_LEFT_CH      0    /* ADC0, GP26, front-left AO */
 #define S3_IR_ADC_RIGHT_CH     1    /* ADC1, GP27, front-right AO */
+#define S3_IR_ADC_BARCODE_CH   2    /* ADC2, GP28, side barcode AO */
 
 static ID g_s3_ir_adc_device = 0;
 
-static void s3_ir_gpio_input_init(uint32_t pin);
 static ER s3_ir_gpio_read_channel(W channel, uint16_t * p_value);
 
 ER
@@ -24,7 +20,6 @@ s3_ir_gpio_init (void)
 {
     ID const device = tk_opn_dev((UB const *)"adca", TD_READ);
 
-    s3_ir_gpio_input_init(S3_IR_BARCODE_PIN);
     if (device < E_OK)
     {
         return ((ER)device);
@@ -54,22 +49,10 @@ s3_ir_gpio_read_analog (s3_ir_adc_sample_t * p_sample)
     return (error);
 }
 
-bool
-s3_ir_gpio_read_barcode (void)
+ER
+s3_ir_gpio_read_barcode (uint16_t * p_value)
 {
-    uint32_t const barcode_mask = UINT32_C(1) << S3_IR_BARCODE_PIN;
-
-    return (0u != (in_w(GPIO_IN) & barcode_mask));
-}
-
-static void
-s3_ir_gpio_input_init (uint32_t pin)
-{
-    uint32_t const pin_mask = UINT32_C(1) << pin;
-
-    out_w(GPIO_OE_CLR, pin_mask);
-    out_w(GPIO_CTRL(pin), GPIO_CTRL_FUNCSEL_SIO);
-    out_w(GPIO(pin), GPIO_IE | GPIO_SHEMITT);
+    return (s3_ir_gpio_read_channel(S3_IR_ADC_BARCODE_CH, p_value));
 }
 
 static ER

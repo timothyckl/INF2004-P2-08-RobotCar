@@ -4,10 +4,10 @@ Every build uses the agreed pin mapping in `AGENTS.md`, viewed from behind:
 
 - front-left AO: GP26/ADC0;
 - front-right AO: GP27/ADC1;
-- side barcode DOUT: GP16.
+- side barcode AO: GP28/ADC2 (Grove 7).
 
-The front sensors have analogue outputs only; both front DOUT wires and the
-barcode AO wire are disconnected, and GP6 is unused.
+All three sensors have analogue outputs only; their DOUT wires are
+disconnected, and GP6 is unused. Keep the GP28 battery-sense jumper open.
 
 Subsystem 3 never writes motor PWM. In the line-test integration profile it
 sends line positions to the Vehicle Controller, and only Motion Control writes
@@ -18,8 +18,7 @@ present for the other starter subsystems.
 
 1. Connect all three sensor modules to 3V3 and a common ground. From behind
    the robot, connect front-left AO to GP26, front-right AO to GP27, and the
-   side barcode DOUT to GP16. Disconnect both front DOUT wires and the barcode
-   AO wire.
+   side barcode AO to GP28 (Grove 7). Disconnect all three DOUT wires.
 2. Build the dedicated monitor with `TEST=1`, `S3_HW_TEST=1`, and
    `CRASH_REPORT=0`:
 
@@ -32,18 +31,17 @@ present for the other starter subsystems.
    subsystems and their output are suppressed.
 4. Move each front sensor over representative white, solid black, and faded
    black sections at its installed height. The monitor prints the 12-bit ADC
-   readings at 10 Hz until the Pico is reset. Cover or uncover the side sensor
-   to check the barcode DOUT separately.
+   readings at 10 Hz until the Pico is reset. Move the side sensor over white
+   and black to check the barcode AO the same way.
 
 Example raw diagnostic output:
 
 ```text
-s3 raw: left_adc=742 right_adc=801 barcode_do=1
+s3 raw: left_adc=742 right_adc=801 barcode_adc=760
 ```
 
-`left_adc` and `right_adc` are raw values from 0 through 4095; the example is
-illustrative and is not a validated threshold. `barcode_do` is the raw GP16
-digital level. Record stable ranges for every tested surface. This stage does
+`left_adc`, `right_adc` and `barcode_adc` are raw values from 0 through 4095;
+the example is illustrative and is not a validated threshold. Record stable ranges for every tested surface. This stage does
 not label readings as white or black and does not command the motors.
 
 `S3_LINE_TEST=1` uses these same two AO inputs for line following. The former

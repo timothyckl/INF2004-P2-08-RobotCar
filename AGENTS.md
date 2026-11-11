@@ -81,8 +81,8 @@ forward (away from the viewer).
 | HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; currently powered from 3V3, see below |
 | Front-left line sensor | AO | GP26 | ADC0 | Line Sensor: left line guide; DOUT disconnected |
 | Front-right line sensor | AO | GP27 | ADC1 | Line Sensor: right line guide; DOUT disconnected |
-| Side barcode sensor | DOUT | GP16 | GPIO input / interrupt | Line Sensor: barcode only, never steering; AOUT disconnected |
-| Left wheel encoder | ENC_A / ENC_B | GP7 / GP28 | GPIO interrupts | Motion Control; counts up going forward; keep the GP28 battery-sense jumper open |
+| Side barcode sensor | AO | GP28 | ADC2 (Grove 7) | Line Sensor: barcode only, never steering; DOUT removed; keep the GP28 battery-sense jumper open |
+| Left wheel encoder | ENC_A / ENC_B | GP16 / GP17 | GPIO interrupts (Grove 4) | Motion Control; counts up going forward |
 | Right wheel encoder | ENC_A / ENC_B | GP0 / GP1 | GPIO interrupts | Motion Control; counts down going forward; requires `CRASH_REPORT=0` |
 | Motor 1 (left wheel) | M1A_PWM / M1B_PWM | GP8 (forward) / GP9 (backward) | PWM | Motion Control only |
 | Motor 2 (right wheel) | M2A_PWM / M2B_PWM | GP10 (backward) / GP11 (forward) | PWM | Motion Control only |
@@ -91,9 +91,14 @@ forward (away from the viewer).
 | Pico W radio | Internal WiFi signals | GP23 / GP24 / GP25 / GP29 | Internal SPI/PIO | Reserved; do not use for other functions |
 
 The drivetrain, line-sensor and GP20 rows were confirmed on 2026-11-10: the
-`S3_LINE_TEST` image completed a full lap with this wiring. The IMU,
-HC-SR04 and servo rows follow the team pin mapping of 2026-11-03 and are not
-yet exercised on this branch.
+`S3_LINE_TEST` image completed a full lap with this wiring. On 2026-11-11 the
+Grove 4 and Grove 7 cables were swapped (subsystem 2 decision 13): the left
+encoder moved from GP7/GP28 to GP16/GP17 and the barcode sensor from DOUT on
+GP16 to AO on GP28. The new encoder pins and their A/B order must be
+re-checked with S2-H03 before a drive. The HC-SR04 and servo rows were
+exercised by the obstacle runs of 2026-11-10 and 2026-11-11; the IMU row
+follows the team pin mapping of 2026-11-03 and is not yet exercised on this
+branch.
 
 Configuration constraints:
 
@@ -102,10 +107,11 @@ Configuration constraints:
   `CONSOLE=uart`.
 - Disable or reassign the demo liveness LED from GP16.
 - Enable RP2040 ADC pin initialisation only for ADC0/GP26 and ADC1/GP27, which
-  carry the two front sensors' analogue outputs. Keep ADC2/GP28 disabled
-  because GP28 carries the left encoder, and keep ADC3/GP29 disabled because
-  it is reserved for the Pico W radio.
-- GP6, GP13 to GP15, GP17 to GP19, GP21 and GP22 are unused.
+  carry the two front sensors' analogue outputs, and ADC2/GP28, which carries
+  the barcode sensor's. Keep the GP28 battery-sense jumper open, or VBAT/2
+  would be added to that signal. Keep ADC3/GP29 disabled because it is
+  reserved for the Pico W radio.
+- GP6, GP7, GP13 to GP15, GP18, GP19, GP21 and GP22 are unused.
 - The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently
   powered from 3V3 (team pin mapping, 2026-11-03). That wiring is outside the
   datasheet and is not validated. Obstacle Scan must confirm ranging at 3V3 or

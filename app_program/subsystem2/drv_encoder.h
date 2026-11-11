@@ -6,8 +6,7 @@
  * robot; part number and datasheet unknown, so counts per revolution are
  * provisionally measured by test S2-H03). Encoder 1 = right wheel = GP0 (A)
  * / GP1 (B), so UART0 must stay disabled (CRASH_REPORT=0), and encoder 2 =
- * left wheel = GP7 (A) / GP28 (B). Keep the GP28 battery-sense jumper open
- * and keep ADC2 pin initialisation disabled on GP28.
+ * left wheel = GP16 (A) / GP17 (B), on Grove port 4 (S2 decision 13).
  *
  * Decoding (x2): an interrupt on both edges of A only; A and B levels at
  * that moment give the direction. If RP2040 has latched both A edge bits
@@ -37,7 +36,7 @@
 typedef enum
 {
     DRV_ENCODER_1 = 0,  /* right wheel, GP0/GP1 */
-    DRV_ENCODER_2,      /* left wheel, GP7/GP28 */
+    DRV_ENCODER_2,      /* left wheel, GP16/GP17 */
     DRV_ENCODER_COUNT
 } drv_encoder_id_t;
 

@@ -376,7 +376,7 @@ log_fault (motion_input_t const * p_input,
         && (0u != (p_output->stalled_wheels & MOTION_STALL_LEFT)))
     {
         tm_printf((UB *)"[S2] LEFT stall/no feedback: check wheel and "
-                          "encoder 2 GP7/GP28\n");
+                          "encoder 2 GP16/GP17\n");
     }
 
     if ((MOTION_FAULT_STALL == p_output->fault_reason)

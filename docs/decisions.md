@@ -160,6 +160,19 @@ provisional 250 mm hazard distance); the forward monitor still stops the
 car if it later comes within 250 mm. Closer readings are planned around as
 before. 500 mm is provisional, like the hazard distance.
 
+### 13. Grove 4 and Grove 7 swapped (2026-11-11)
+
+Approved by Dalton on the integration branch. The Grove 4 and Grove 7 cables
+were swapped on the robot. Grove 4 (GP16/GP17, Robo Pico datasheet Grove
+table) now carries the left wheel encoder, A on GP16 and B on GP17. Grove 7
+(GP7/GP28) now carries the side barcode sensor, with its DOUT removed and only
+AO connected, on GP28/ADC2; GP7 is unused. ADC2 pin initialisation is enabled
+for it, and the GP28 battery-sense jumper must stay open. The barcode input
+becomes analogue: subsystem 3 reads it on ADC channel 2 instead of as a GPIO
+level. The A/B order assumes the Grove cable keeps its wire order. S2-H03
+confirmed it on 2026-11-11: the left encoder still counts up going forward,
+with no decode errors.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

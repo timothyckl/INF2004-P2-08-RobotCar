@@ -39,9 +39,10 @@
 #define MC_TRACK_MM             119u        /* effective (S2-H08) */
 
 /* Wiring viewed from behind, ultrasonic sensor forward: left wheel = motor 1
-   + encoder 2 (GP7/GP28), right wheel = motor 2 + encoder 1 (GP0/GP1).
+   + encoder 2 (GP16/GP17), right wheel = motor 2 + encoder 1 (GP0/GP1).
    Positive duty drives motor A. Confirmed by a full line-follow lap on
-   2026-11-10 (AGENTS.md, Agreed pin mapping). */
+   2026-11-10 with encoder 2 on GP7/GP28; moved to Grove port 4 on
+   2026-11-11 (S2 decision 13, AGENTS.md, Agreed pin mapping). */
 #define MC_LEFT_MOTOR           DRV_MOTOR_1
 #define MC_RIGHT_MOTOR          DRV_MOTOR_2
 #define MC_LEFT_MOTOR_INVERT    0           /* forward needs +duty (GP8) */

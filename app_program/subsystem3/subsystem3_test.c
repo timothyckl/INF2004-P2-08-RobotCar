@@ -54,9 +54,9 @@ static UB const * s3_test_line_name(uint8_t position);
 #define S3_RAW_SAMPLE_MS  100u
 
 static UB const g_s3_raw_heading[] =
-    "s3: raw AO monitor: left=GP26 right=GP27 barcode-DO=GP16\n";
+    "s3: raw AO monitor: left=GP26 right=GP27 barcode=GP28\n";
 static UB const g_s3_raw_result[] =
-    "s3 raw: left_adc=%u right_adc=%u barcode_do=%u\n";
+    "s3 raw: left_adc=%u right_adc=%u barcode_adc=%u\n";
 static UB const g_s3_raw_error[] =
     "s3 raw: ADC read failed, error=%d\n";
 
@@ -363,14 +363,20 @@ s3_test_raw_monitor (void)
     for (;;)
     {
         s3_ir_adc_sample_t sample = {0u, 0u};
-        ER const error = s3_ir_gpio_read_analog(&sample);
+        uint16_t barcode = 0u;
+        ER error = s3_ir_gpio_read_analog(&sample);
+
+        if (E_OK == error)
+        {
+            error = s3_ir_gpio_read_barcode(&barcode);
+        }
 
         if (E_OK == error)
         {
             tm_printf(g_s3_raw_result,
                       (UINT)sample.left,
                       (UINT)sample.right,
-                      (UINT)s3_ir_gpio_read_barcode());
+                      (UINT)barcode);
         }
         else
         {
