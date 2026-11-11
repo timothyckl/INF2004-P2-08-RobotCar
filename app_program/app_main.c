@@ -32,6 +32,7 @@
  *	                   (owned by S4)
  *	  IF-04  S4 -> S3  reads app_stats under mutex mtx_stats (owned by S3)
  *	  IF-05  S4 -> S1  suspends/resumes the LED task tid_led (owned by S1)
+ *	  IF-06  S3 -> S2  line reports via line_q (owned by S2)
  *	The subsystem that RECEIVES or OWNS the data creates the object and
  *	publishes its ID in its header; the other side just uses it.
  *
@@ -54,6 +55,18 @@
  */
 
 #include "app.h"
+
+#ifndef S3_HARDWARE_TEST
+#define S3_HARDWARE_TEST 0
+#endif
+
+#ifndef S3_CALIBRATION_TEST
+#define S3_CALIBRATION_TEST 0
+#endif
+
+#ifndef S3_LINE_FOLLOW_TEST
+#define S3_LINE_FOLLOW_TEST 0
+#endif
 
 /*
  * Create and start one task (declared in app.h for every subsystem).
@@ -107,6 +120,20 @@ EXPORT INT usermain(void)
 	tm_printf((UB*)"single-core build\n");
 #endif
 
+
+#if APP_TEST && S3_LINE_FOLLOW_TEST
+	/* Dedicated S3/S2 trial: no unrelated application task runs. */
+	CHECK(subsystem2_init(), "subsystem2_init");
+	CHECK(subsystem3_init(), "subsystem3_init");
+	CHECK(subsystem2_start(), "subsystem2_start");
+	tm_printf((UB *)"S3/S2 line-follow test mode\n");
+	subsystem3_test();
+#elif APP_TEST && (S3_HARDWARE_TEST || S3_CALIBRATION_TEST)
+	/* Dedicated front-IR bench mode: no other application task runs. */
+	CHECK(subsystem3_init(), "subsystem3_init");
+	tm_printf((UB *)"S3 sensor-only test mode\n");
+	subsystem3_test();
+#else
 	/* Phase 1: every subsystem creates its kernel objects */
 	CHECK(subsystem1_init(), "subsystem1_init");
 	CHECK(subsystem2_init(), "subsystem2_init");
@@ -134,6 +161,7 @@ EXPORT INT usermain(void)
 	subsystem4_test();
 	subsystem5_test();
 	tm_printf((UB*)"[TEST] === test run end ===\n");
+#endif
 #endif
 
 	/* Sleep forever.  Returning from usermain() would shut down. */
