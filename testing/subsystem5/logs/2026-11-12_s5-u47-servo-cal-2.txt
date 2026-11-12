@@ -1,0 +1,25 @@
+[S5CAL] pulse 1450 us (-50 us from centre), next step shorter, er 0
+[S5CAL] pulse 1400 us (-100 us from centre), next step shorter, er 0
+[S5CAL] pulse 1350 us (-150 us from centre), next step shorter, er 0
+[S5CAL] pulse 1300 us (-200 us from centre), next step shorter, er 0
+[S5CAL] pulse 1250 us (-250 us from centre), next step shorter, er 0
+[S5CAL] pulse 1200 us (-300 us from centre), next step shorter, er 0
+[S5CAL] pulse 1150 us (-350 us from centre), next step shorter, er 0
+[S5CAL] pulse 1100 us (-400 us from centre), next step shorter, er 0
+[S5CAL] pulse 1050 us (-450 us from centre), next step shorter, er 0
+[S5CAL] pulse 1000 us (-500 us from centre), next step shorter, er 0
+[S5CAL] pulse 950 us (-550 us from centre), next step shorter, er 0
+[S5CAL] pulse 900 us (-600 us from centre), next step shorter, er 0
+[S5CAL] pulse 850 us (-650 us from centre), next step shorter, er 0
+[S5CAL] pulse 800 us (-700 us from centre), next step shorter, er 0
+[S5CAL] pulse 750 us (-750 us from centre), next step shorter, er 0
+[S5CAL] pulse 700 us (-800 us from centre), next step shorter, er 0
+[S5CAL] pulse 650 us (-850 us from centre), next step shorter, er 0
+[S5CAL] pulse 600 us (-900 us from centre), next step shorter, er 0
+[S5CAL] pulse 550 us (-950 us from centre), next step shorter, er 0
+[S5CAL] pulse 500 us (-1000 us from centre), next step shorter, er 0
+[S5CAL] at the 500 us limit
+[S5CAL] at the 500 us limit
+[S5CAL] at the 500 us limit
+[S5CAL] at the 500 us limit
+[S5CAL] at the 500 us limit

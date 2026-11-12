@@ -47,7 +47,7 @@ static void
 test_look_to_sample (scan_look_t * p_look, scan_look_output_t * p_out)
 {
     (void) scan_look_init(p_look, &g_look_config);
-    scan_look_start(p_look, 7u, -60, 0u, p_out);
+    scan_look_start(p_look, 7u, -45, 0u, p_out);
     scan_look_tick(p_look, 10000u, true, true, p_out);
     scan_look_tick(p_look, 310000u, true, true, p_out);
 }
@@ -61,7 +61,7 @@ test_look_sequence (test_interface_api_t const * p_api)
 
     (void) p_api;
     (void) scan_look_init(&look, &g_look_config);
-    scan_look_start(&look, 7u, -60, 0u, &out);
+    scan_look_start(&look, 7u, -45, 0u, &out);
     b_passed = scan_look_active(&look) && (!scan_look_capturing(&look))
                && (!out.b_servo) && (SCAN_LOOK_NONE == out.result);
 
@@ -69,7 +69,7 @@ test_look_sequence (test_interface_api_t const * p_api)
     scan_look_tick(&look, 5000u, false, true, &out);
     b_passed = b_passed && (!out.b_servo);
     scan_look_tick(&look, 10000u, true, true, &out);
-    b_passed = b_passed && out.b_servo && (-60 == out.servo_deg)
+    b_passed = b_passed && out.b_servo && (-45 == out.servo_deg)
                && (!scan_look_capturing(&look));
 
     /* Settling: sampling starts 300 ms after the servo command. */
@@ -105,7 +105,7 @@ test_look_windows (test_interface_api_t const * p_api)
 
     (void) p_api;
     (void) scan_look_init(&look, &g_look_config);
-    scan_look_start(&look, 8u, 60, 0u, &out);
+    scan_look_start(&look, 8u, 45, 0u, &out);
 
     /* Readings while stopping or settling are ignored, even invalid. */
     scan_look_sample(&look, false, 0u, 1000u, &out);
@@ -164,7 +164,7 @@ test_look_faults (test_interface_api_t const * p_api)
 
     /* The wheels never stop within 1 s. */
     (void) scan_look_init(&look, &g_look_config);
-    scan_look_start(&look, 9u, 60, 0u, &out);
+    scan_look_start(&look, 9u, 45, 0u, &out);
     scan_look_tick(&look, 1000000u, false, true, &out);
     b_passed = b_passed && (SCAN_LOOK_NONE == out.result);
     scan_look_tick(&look, 1000001u, false, true, &out);
@@ -177,7 +177,7 @@ test_look_faults (test_interface_api_t const * p_api)
 
     /* An angle beyond the servo's limit faults at once. */
     (void) scan_look_init(&look, &g_look_config);
-    scan_look_start(&look, 10u, 61, 0u, &out);
+    scan_look_start(&look, 10u, 46, 0u, &out);
     b_passed = b_passed && (SCAN_LOOK_FAULT == out.result)
                && (!scan_look_active(&look));
 

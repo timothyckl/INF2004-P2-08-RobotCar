@@ -95,10 +95,12 @@
    Dalton); 3 s for a look's answer, above S5's own 2.5 s look limit, and
    for the wheels to stop once the line is found (S2 decision 20). */
 #define CTRL_BYPASS_STEP_MM          50u
-/* UNMEASURED: align spin wheel speed (S2 decision 21); about 58 degrees/s
-   on the 119 mm track, so the sensors sweep the tape at about 130 mm/s
-   and several 30 ms line reports fall on it. */
-#define CTRL_BYPASS_SPIN_MM_S        60
+/* UNMEASURED: align spin wheel speed (S2 decision 21); about 29 degrees/s
+   on the 119 mm track, so the sensors sweep the tape at about 65 mm/s.
+   Halved from 60 on 2026-11-12: a spin at 60 turned 137 degrees past the
+   line with no report, as the 3-sample mask filter and the averaging take
+   about 40 to 70 ms of the ~140 ms each sensor spent on the tape. */
+#define CTRL_BYPASS_SPIN_MM_S        30
 #define CTRL_BYPASS_WAIT_MS        3000u
 
 /* scan_control and bypass_control mirror subsystem 5's codes (IF-13). */
@@ -957,9 +959,11 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
                           ? "mdeg" : "mm");
         }
 
-        tm_printf((UB *)"[S2]   then pass: look %d deg, passed beyond %u mm,"
-                  " then %u mm (stepping at most %u mm)\n",
-                  (INT)p_plan->look_deg, (UINT)p_plan->clear_mm,
+        tm_printf((UB *)"[S2]   then pass: turn %d mdeg, look %d deg,"
+                  " passed beyond %u mm after %u mm, then %u mm"
+                  " (stepping at most %u mm)\n",
+                  (INT)p_plan->look_turn_mdeg, (INT)p_plan->look_deg,
+                  (UINT)p_plan->clear_mm, (UINT)p_plan->pass_min_mm,
                   (UINT)p_plan->extra_mm, (UINT)p_plan->pass_max_mm);
         tm_printf((UB *)"[S2]   then approach %d mdeg, search %u mm,"
                   " align %d mdeg; bypass starts\n",
@@ -972,6 +976,8 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
         plan.align_mdeg = p_plan->align_mdeg;
         plan.search_mm = p_plan->search_mm;
         plan.look_deg = p_plan->look_deg;
+        plan.look_turn_mdeg = p_plan->look_turn_mdeg;
+        plan.pass_min_mm = p_plan->pass_min_mm;
         plan.clear_mm = p_plan->clear_mm;
         plan.extra_mm = p_plan->extra_mm;
         plan.pass_max_mm = p_plan->pass_max_mm;
@@ -1148,7 +1154,7 @@ bypass_report (bypass_control_output_t const * p_out)
     static char const * const reasons[] =
     {
         "none", "invalid plan", "motion command failed", "forward hazard",
-        "line not found", "heading off the original line",
+        "line not found", "line taken the wrong way",
         "side look failed", "obstacle deeper than the pass allows"
     };
 

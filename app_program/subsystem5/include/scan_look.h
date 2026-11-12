@@ -21,7 +21,7 @@
 #include <stdint.h>
 
 #define SCAN_LOOK_SAMPLES       (3u)
-#define SCAN_LOOK_ANGLE_MAX     (60)    /* servo limit, drv_servo.h */
+#define SCAN_LOOK_ANGLE_MAX     (45)    /* servo limit, drv_servo.h */
 
 typedef enum
 {

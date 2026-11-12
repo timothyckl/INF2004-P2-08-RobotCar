@@ -4,18 +4,24 @@
  *
  * Drives subsystem 5's plan (IF-13) after a PLAN scan result: each plan
  * segment as one MOVE or TURN; then, when the plan has a look angle, the
- * pass (S2 decision 19): look sideways, and until a look reads beyond
- * clear_mm, MOVE step_mm and look again, failing past pass_max_mm; once
- * passed, MOVE extra_mm. Then the approach turn back towards the
- * original line, then a forward search. The search succeeds once a line
- * sensor has been on black for found_ms; the car then stops (S2 decision
- * 20) and moves so its axle reaches the point where the sensors first saw
- * the line. It then spins towards the original direction until a sensor
- * sees the line (S2 decision 21), accepted only once it has turned the
- * align angle less twice heading_tol_mdeg, and failing (FAIL_SEARCH) past
- * the align angle plus 90 degrees; it stops and checks that the
- * heading is within heading_tol_mdeg of the heading at the start (S5
- * decision 9).
+ * pass (S2 decision 19): turn look_turn_mdeg towards the obstacle, look
+ * sideways, turn back to the start heading (S2 decision 22), and until a
+ * look reads beyond clear_mm, and BYPASS_CONTROL_PASS_JUMP_MM beyond the
+ * nearest side reading so far, after at least pass_min_mm of stepping, MOVE
+ * step_mm and look again, failing past pass_max_mm; once passed, MOVE
+ * extra_mm. Then the approach turn, to approach_mdeg from the start
+ * heading, back towards the original line, then a forward search. The
+ * search succeeds once a line sensor has been on black for found_ms; the
+ * car then stops (S2 decision 20) and moves so its axle reaches the point
+ * where the sensors first saw the line. It then spins towards the
+ * original direction until a sensor sees the line (S2 decision 21),
+ * accepted only once it has turned the align angle less twice
+ * heading_tol_mdeg, and failing (FAIL_SEARCH) past
+ * the align angle plus 125 degrees; it stops and checks only that it
+ * has not taken the line the wrong way: within
+ * BYPASS_CONTROL_WRONG_WAY_MDEG of the heading at the start (S5 decision
+ * 9, widened by S2 decision 22). The line itself sets the heading, as it
+ * may curve beyond the obstacle.
  *
  * A rejected, failed or stopped command, a forward hazard while driving
  * forward, a faulted or unanswered look, an obstacle deeper than the
@@ -35,6 +41,18 @@
 
 #define BYPASS_CONTROL_SEGMENTS     4u
 
+/* A passing look must also read this much beyond the nearest side reading
+   while beside the obstacle (UNMEASURED; S5's clear_mm margin). The scan
+   overstates widths, so clear_mm alone can sit just above the side: 287
+   mm against 269 passed a box still beside the car (2026-11-12). */
+#define BYPASS_CONTROL_PASS_JUMP_MM 100u
+
+/* Once aligned, the car must be within this of the start heading: wider
+   would be the line taken the wrong way (S2 decision 22). Not a guess at
+   the line's direction, which can curve beyond the obstacle: 15 degrees
+   failed cars already on a curving line (2026-11-12). */
+#define BYPASS_CONTROL_WRONG_WAY_MDEG   90000
+
 /* Segment kinds: subsystem 5's codes (bypass_plan.h BYPASS_PLAN_*). */
 #define BYPASS_CONTROL_TURN         1u  /* value: mdeg, positive = left */
 #define BYPASS_CONTROL_MOVE         2u  /* value: mm, positive = forward */
@@ -50,6 +68,15 @@ typedef enum
     BYPASS_CONTROL_ALIGN        /* spin towards the original direction
                                    until a sensor sees the line */
 } bypass_control_state_t;
+
+/* One look cycle while passing (S2 decision 22). */
+typedef enum
+{
+    BYPASS_PASS_TURN_IN = 0,    /* turning towards the obstacle */
+    BYPASS_PASS_LOOK,           /* waiting for the look's answer */
+    BYPASS_PASS_TURN_OUT,       /* turning back straight */
+    BYPASS_PASS_MOVE            /* stepping, or driving extra_mm */
+} bypass_pass_phase_t;
 
 typedef enum
 {
@@ -78,7 +105,7 @@ typedef enum
                                        or not still within wait_limit_ms */
     BYPASS_CONTROL_FAIL_HAZARD,     /* forward hazard while going forward */
     BYPASS_CONTROL_FAIL_SEARCH,     /* line not found within the bounds */
-    BYPASS_CONTROL_FAIL_HEADING,    /* aligned, but off the original */
+    BYPASS_CONTROL_FAIL_HEADING,    /* aligned, but the wrong way */
     BYPASS_CONTROL_FAIL_LOOK,       /* look faulted or not answered */
     BYPASS_CONTROL_FAIL_DEPTH       /* not passed within pass_max_mm */
 } bypass_control_fail_t;
@@ -98,8 +125,10 @@ typedef struct
     int32_t                  align_mdeg;
     uint16_t                 search_mm;
     int16_t                  look_deg;      /* 0: no pass, drive on */
+    int32_t                  look_turn_mdeg; /* car turn around each look */
     uint16_t                 clear_mm;      /* a look beyond has passed */
     uint16_t                 extra_mm;      /* forward once passed */
+    uint16_t                 pass_min_mm;   /* stepping before a pass */
     uint16_t                 pass_max_mm;   /* most stepping */
 } bypass_control_plan_t;
 
@@ -107,7 +136,8 @@ typedef struct
 {
     uint32_t search_limit_ms;   /* agreed 5 s */
     uint32_t found_ms;          /* agreed 100 ms of stable line */
-    int32_t  heading_tol_mdeg;  /* agreed 15 degrees */
+    int32_t  heading_tol_mdeg;  /* agreed 15 degrees: the spin turns at
+                                   least the align angle less twice this */
     uint16_t sensor_ahead_mm;   /* line sensors ahead of the axle */
     uint16_t step_mm;           /* forward step between looks */
     uint32_t wait_limit_ms;     /* longest wait for a look or a halt */
@@ -152,6 +182,9 @@ typedef struct
     int32_t                align_start_mdeg;  /* heading at spin start */
     uint32_t               wait_since_ms;  /* look or halt start */
     int32_t                stepped_mm;  /* forward stepped while passing */
+    uint16_t               look_mm;     /* answer of the current look */
+    uint16_t               side_mm;     /* nearest side reading; 0: none */
+    bypass_pass_phase_t    phase;
     uint16_t               cmd_id;      /* last motion command sent */
     uint16_t               look_cmd_id; /* last look sent */
     uint8_t                next;        /* next segment; count = approach */

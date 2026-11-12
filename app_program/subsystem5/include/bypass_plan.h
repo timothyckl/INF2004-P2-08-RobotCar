@@ -3,23 +3,28 @@
  * @brief Bypass route from one coarse or refined profile (pure logic).
  * Subsystem 5 -- Timothy.  Student ID: 2501530.
  *
- * Input: the nine coarse medians, index 0 = -60 degrees (right) to index 8
- * = +60 degrees (left), forward at index 4 (decision 4: positive = left),
- * or the 5-degree profile. For each side the edge is the last beam that
- * still hits the obstacle before a beam passes it (range beyond the
- * forward distance plus the assumed depth). A side with no passing beam
- * within 60 degrees is unobserved and cannot be used (decision 5).
+ * Input: the seven coarse medians, index 0 = -45 degrees (right) to index
+ * 6 = +45 degrees (left), forward at index 3 (decision 4: positive = left;
+ * S2 decision 22 narrowed the scan to the servo's 45 degrees), or the
+ * 5-degree profile. For each side the edge is the last beam that still
+ * hits the obstacle before a beam passes it (range beyond the forward
+ * distance plus the assumed depth). A side with no passing beam within 45
+ * degrees is unobserved and cannot be used (decision 5).
  *
  * The route turns 45 degrees, never 90 (S2 decision 17): reverse if
  * needed, turn 45 degrees to the bypass side, drive diagonally until the
  * axle is the sideways offset across and turn straight. The controller
- * then passes the obstacle by measurement (S2 decision 19): it steps
- * forward, looks sideways at look_deg and stops stepping once a reading
- * exceeds clear_mm, then drives extra_mm, turns 45 degrees back, searches
- * diagonally for the original line and aligns. A look beyond 60 degrees
- * misses only once the far end is within cot(60 + beam allowance) of the
- * sideways gap ahead of the sensor; extra_mm puts the turn back where it
- * clears a far end there. Stepping past pass_max_mm means the obstacle is
+ * then passes the obstacle by measurement (S2 decision 19): it turns
+ * 35 degrees towards the obstacle (look_turn_mdeg), looks a further 45
+ * degrees sideways (look_deg), so 80 degrees in all and close enough to
+ * square for the obstacle's flat side to echo, and turns back (S2
+ * decision 22). It steps forward and looks again until a look reads
+ * beyond clear_mm after at least pass_min_mm of stepping, then drives
+ * extra_mm, turns 45 degrees back, searches diagonally for the original
+ * line and aligns. A look that misses bounds the far end to where its
+ * axis meets the side; extra_mm puts the turn back where it clears a far
+ * end there. pass_min_mm keeps that point past the near face. Stepping
+ * past pass_max_mm means the obstacle is
  * deeper than depth_max_mm. Each length is the shortest that keeps the
  * whole body (from the measured extents) clearance + margin from the
  * obstacle,
@@ -39,10 +44,9 @@
 
 #include "scan_profile.h"
 
-#define BYPASS_PLAN_ANGLES      (9u)
+#define BYPASS_PLAN_ANGLES      (7u)
 #define BYPASS_PLAN_FINE_ANGLES SCAN_PROFILE_ANGLES
 #define BYPASS_PLAN_SEGMENTS    (4u)
-#define BYPASS_PLAN_LOOK_DEG    (60)    /* side look, the servo's limit */
 
 /* Upper bound on each geometry setting, for the overflow analysis. */
 #define BYPASS_PLAN_GEOMETRY_MAX_MM (1000u)
@@ -100,8 +104,10 @@ typedef struct
     uint16_t              obstacle_mm;    /* forward distance */
     uint16_t              lateral_mm;     /* sideways offset of the axle */
     int16_t               look_deg;       /* side look; positive = left */
+    int32_t               look_turn_mdeg; /* car turn before each look */
     uint16_t              clear_mm;       /* a look beyond this has passed */
     uint16_t              extra_mm;       /* forward after the first pass */
+    uint16_t              pass_min_mm;    /* stepping before a pass counts */
     uint16_t              pass_max_mm;    /* most forward stepping */
     uint16_t              estimated_min_clearance_mm; /* configured target,
                                                         not physical proof */

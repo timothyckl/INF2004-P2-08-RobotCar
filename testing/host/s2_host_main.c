@@ -70,6 +70,7 @@ static host_case_t const g_cases[] =
     {"S2-U67", test_bypass_control_reacquire},
     {"S2-U68", test_bypass_control_pass},
     {"S2-U69", test_bypass_control_pass_fail},
+    {"S2-U70", test_bypass_control_look_turn},
 };
 
 int

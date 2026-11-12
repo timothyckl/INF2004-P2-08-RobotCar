@@ -775,6 +775,8 @@ EXPORT void subsystem2_test(void)
 		   "pass: look, step, extra distance once passed");
 	TEST_CHECK("S2-U69", test_bypass_control_pass_fail(),
 		   "pass: look fault, timeout, hazard, depth limit");
+	TEST_CHECK("S2-U70", test_bypass_control_look_turn(),
+		   "pass: turn to look, back, pass only after pass_min");
 
 #if S2_HW_TEST
 	hw_test();

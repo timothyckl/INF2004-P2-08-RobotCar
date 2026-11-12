@@ -10,11 +10,12 @@
 #define BYPASS_HALF_TURN_MDEG   180000
 #define BYPASS_FULL_TURN_MDEG   360000
 
-/* The align spin gives up this far past the align angle: 135 degrees in
-   all for the 45 degree align (agreed with Dalton, S2 decision 21). The
-   total must stay below 180 degrees, the most a wrapped heading change
-   can show. */
-#define BYPASS_SPIN_OVER_MDEG   90000
+/* The align spin gives up this far past the align angle: 170 degrees in
+   all for the 45 degree align (S2 decision 21, widened from 135 by Dalton
+   on 2026-11-12). The total must stay below 180 degrees, the most a
+   wrapped heading change can show; the 10 degrees left keeps one spin
+   sample from wrapping past it. */
+#define BYPASS_SPIN_OVER_MDEG   125000
 
 static void    bypass_clear(bypass_control_output_t * p_out);
 static bool    bypass_plan_valid(bypass_control_plan_t const * p_plan);
@@ -24,6 +25,12 @@ static void    bypass_next(bypass_control_t * p_bypass,
 static void    bypass_look(bypass_control_t * p_bypass,
                            bypass_control_input_t const * p_in,
                            bypass_control_output_t * p_out);
+static void    bypass_look_send(bypass_control_t * p_bypass,
+                                bypass_control_input_t const * p_in,
+                                bypass_control_output_t * p_out);
+static void    bypass_pass_decide(bypass_control_t * p_bypass,
+                                  bypass_control_input_t const * p_in,
+                                  bypass_control_output_t * p_out);
 static void    bypass_pass(bypass_control_t * p_bypass,
                            bypass_control_input_t const * p_in, bool b_done,
                            bypass_control_output_t * p_out);
@@ -132,7 +139,11 @@ bypass_control_begin (bypass_control_t * p_bypass,
     p_bypass->b_aligned = false;
     p_bypass->b_passed = (0 == p_plan->look_deg);
     p_bypass->stepped_mm = 0;
+    p_bypass->look_mm = 0u;
+    p_bypass->side_mm = 0u;
+    p_bypass->phase = BYPASS_PASS_TURN_IN;
     p_bypass->b_seen = false;
+
     p_bypass->state = BYPASS_CONTROL_SEGMENT;
     bypass_next(p_bypass, p_in, p_out);
 }
@@ -272,7 +283,12 @@ bypass_plan_valid (bypass_control_plan_t const * p_plan)
                                      && ((int32_t)p_plan->extra_mm
                                          <= move_max)
                                      && ((int32_t)p_plan->pass_max_mm
-                                         <= move_max)))
+                                         <= move_max)
+                                     && (p_plan->pass_min_mm
+                                         <= p_plan->pass_max_mm)
+                                     && (p_plan->look_turn_mdeg >= -turn_max)
+                                     && (p_plan->look_turn_mdeg
+                                         <= turn_max)))
                              && (p_plan->approach_mdeg >= -turn_max)
                              && (p_plan->approach_mdeg <= turn_max)
                              && (p_plan->align_mdeg >= -turn_max)
@@ -326,12 +342,19 @@ bypass_next (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
 
     if (p_bypass->next == p_bypass->plan.count)
     {
-        p_bypass->next++;                   /* the approach turn, once */
+        /* The approach turn, once, to approach_mdeg from the start
+           heading rather than from wherever the pass left the car: each
+           step drifts (S2 decision 22, 2026-11-12 run). */
+        int32_t const target = bypass_wrap_mdeg(p_bypass->heading_ref_mdeg
+                                                + p_bypass->plan.approach_mdeg);
+        int32_t const turn = (0 != p_bypass->plan.approach_mdeg)
+            ? bypass_wrap_mdeg(target - p_in->heading_mdeg) : 0;
 
-        if (0 != p_bypass->plan.approach_mdeg)
+        p_bypass->next++;
+
+        if (0 != turn)
         {
-            bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_TURN,
-                           p_bypass->plan.approach_mdeg);
+            bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_TURN, turn);
             return;
         }
     }
@@ -343,10 +366,30 @@ bypass_next (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
     bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_SEARCH, 0);
 }
 
+/* Start one look cycle: the turn towards the obstacle, if any, then the
+   look (S2 decision 22). */
 static void
 bypass_look (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
              bypass_control_output_t * p_out)
 {
+    if (0 != p_bypass->plan.look_turn_mdeg)
+    {
+        p_bypass->phase = BYPASS_PASS_TURN_IN;
+        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_TURN,
+                       p_bypass->plan.look_turn_mdeg);
+    }
+    else
+    {
+        bypass_look_send(p_bypass, p_in, p_out);
+    }
+}
+
+static void
+bypass_look_send (bypass_control_t * p_bypass,
+                  bypass_control_input_t const * p_in,
+                  bypass_control_output_t * p_out)
+{
+    p_bypass->phase = BYPASS_PASS_LOOK;
     p_bypass->b_looking = true;
     p_bypass->b_have_look = false;
     p_bypass->wait_since_ms = p_in->now_ms;
@@ -354,8 +397,58 @@ bypass_look (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
                    (int32_t)p_bypass->plan.look_deg);
 }
 
-/* Look; step until a look has passed the obstacle; then drive extra_mm
-   and continue with the approach turn (S2 decision 19). */
+/* Once straight again: a look beyond clear_mm after pass_min_mm of
+   stepping has passed (extra_mm, then on); otherwise step and look
+   again, failing past pass_max_mm (S2 decisions 19 and 22). */
+static void
+bypass_pass_decide (bypass_control_t * p_bypass,
+                    bypass_control_input_t const * p_in,
+                    bypass_control_output_t * p_out)
+{
+    int32_t const  step_mm = (int32_t)p_bypass->cfg.step_mm;
+    uint32_t const look_mm = p_bypass->look_mm;
+    bool const     b_beside = (look_mm <= p_bypass->plan.clear_mm);
+    bool const     b_clear = (!b_beside)
+        && (p_bypass->stepped_mm >= (int32_t)p_bypass->plan.pass_min_mm)
+        && ((0u == p_bypass->side_mm)
+            || (look_mm >= ((uint32_t)p_bypass->side_mm
+                            + BYPASS_CONTROL_PASS_JUMP_MM)));
+
+    p_bypass->phase = BYPASS_PASS_MOVE;
+
+    if (b_beside && ((0u == p_bypass->side_mm)
+                     || (p_bypass->look_mm < p_bypass->side_mm)))
+    {
+        p_bypass->side_mm = p_bypass->look_mm;
+    }
+
+    if (b_clear && (0u == p_bypass->plan.extra_mm))
+    {
+        p_bypass->b_passed = true;
+        p_bypass->state = BYPASS_CONTROL_SEGMENT;
+        bypass_next(p_bypass, p_in, p_out);
+    }
+    else if (b_clear)
+    {
+        p_bypass->b_extra = true;
+        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_MOVE,
+                       (int32_t)p_bypass->plan.extra_mm);
+    }
+    else if ((p_bypass->stepped_mm + step_mm)
+             > (int32_t)p_bypass->plan.pass_max_mm)
+    {
+        bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
+                      BYPASS_CONTROL_FAIL_DEPTH);
+    }
+    else
+    {
+        p_bypass->stepped_mm += step_mm;
+        bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_MOVE, step_mm);
+    }
+}
+
+/* One look cycle at a time, then the step or extra move; after the extra
+   move continue with the approach turn (S2 decisions 19 and 22). */
 static void
 bypass_pass (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
              bool b_done, bypass_control_output_t * p_out)
@@ -363,10 +456,8 @@ bypass_pass (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
     bool const b_answer = p_bypass->b_looking && p_bypass->b_have_look
                           && (p_in->look_id == p_bypass->look_cmd_id);
 
-    if (p_bypass->b_looking)
+    if (BYPASS_PASS_LOOK == p_bypass->phase)
     {
-        int32_t const step_mm = (int32_t)p_bypass->cfg.step_mm;
-
         if (b_answer && p_in->b_look_fault)
         {
             bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
@@ -374,32 +465,23 @@ bypass_pass (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
         }
         else if (b_answer && p_in->b_look_done)
         {
-            p_bypass->b_looking = false;
+            /* Turn back to the start heading itself, not by the look
+               turn, so each step's drift is corrected (S2 decision 22). */
+            int32_t const back = bypass_wrap_mdeg(p_bypass->heading_ref_mdeg
+                                                  - p_in->heading_mdeg);
 
-            if ((p_in->look_mm > p_bypass->plan.clear_mm)
-                && (0u == p_bypass->plan.extra_mm))
+            p_bypass->b_looking = false;
+            p_bypass->look_mm = p_in->look_mm;
+
+            if ((0 != p_bypass->plan.look_turn_mdeg) && (0 != back))
             {
-                p_bypass->b_passed = true;
-                p_bypass->state = BYPASS_CONTROL_SEGMENT;
-                bypass_next(p_bypass, p_in, p_out);
-            }
-            else if (p_in->look_mm > p_bypass->plan.clear_mm)
-            {
-                p_bypass->b_extra = true;
-                bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_MOVE,
-                               (int32_t)p_bypass->plan.extra_mm);
-            }
-            else if ((p_bypass->stepped_mm + step_mm)
-                     > (int32_t)p_bypass->plan.pass_max_mm)
-            {
-                bypass_finish(p_bypass, p_out, BYPASS_CONTROL_FAILED,
-                              BYPASS_CONTROL_FAIL_DEPTH);
+                p_bypass->phase = BYPASS_PASS_TURN_OUT;
+                bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_TURN,
+                               back);
             }
             else
             {
-                p_bypass->stepped_mm += step_mm;
-                bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_MOVE,
-                               step_mm);
+                bypass_pass_decide(p_bypass, p_in, p_out);
             }
         }
         else if ((p_in->now_ms - p_bypass->wait_since_ms)
@@ -415,7 +497,15 @@ bypass_pass (bypass_control_t * p_bypass, bypass_control_input_t const * p_in,
     }
     else if (!b_done)
     {
-        /* Waiting for the step or the extra move. */
+        /* Waiting for a turn, the step or the extra move. */
+    }
+    else if (BYPASS_PASS_TURN_IN == p_bypass->phase)
+    {
+        bypass_look_send(p_bypass, p_in, p_out);
+    }
+    else if (BYPASS_PASS_TURN_OUT == p_bypass->phase)
+    {
+        bypass_pass_decide(p_bypass, p_in, p_out);
     }
     else if (p_bypass->b_extra)
     {
@@ -561,7 +651,7 @@ bypass_check_heading (bypass_control_t * p_bypass,
 {
     int32_t const err = bypass_wrap_mdeg(p_in->heading_mdeg
                                          - p_bypass->heading_ref_mdeg);
-    int32_t const tol = p_bypass->cfg.heading_tol_mdeg;
+    int32_t const tol = BYPASS_CONTROL_WRONG_WAY_MDEG;
 
     if ((err > tol) || (err < -tol))
     {

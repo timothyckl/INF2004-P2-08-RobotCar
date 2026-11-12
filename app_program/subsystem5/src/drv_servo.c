@@ -9,7 +9,7 @@
 #define DRV_SERVO_SLICE         (6u)
 #define DRV_SERVO_DIV           (125u << 4)     /* 8.4 fixed point: 125.0 */
 #define DRV_SERVO_TOP           (19999u)        /* 20 ms frame of 1 us */
-#define DRV_SERVO_CENTRE_US     (1500)
+#define DRV_SERVO_CENTRE_US     (1400)
 #define DRV_SERVO_US_PER_DEG    (10)
 
 /** Pulse width for an angle already checked against the range. */
@@ -66,7 +66,7 @@ drv_servo_set_angle (int16_t angle_deg)
 static uint32_t
 drv_servo_pulse (int16_t angle_deg)
 {
-    /* The cast is safe: |angle| <= 60 gives 900..2100 us. */
+    /* The cast is safe: |angle| <= 45 gives 950..1850 us. */
     return ((uint32_t) (DRV_SERVO_CENTRE_US
                         + ((int32_t) angle_deg * DRV_SERVO_US_PER_DEG)));
 }

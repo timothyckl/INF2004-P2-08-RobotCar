@@ -61,7 +61,7 @@ static bool test_planning_partial_profile (test_interface_api_t const * p_api);
 /** S5-U64: a close obstacle is reversed from before the first turn. */
 static bool test_planning_reverse (test_interface_api_t const * p_api);
 
-/** S5-U65: the turn straight can push the sideways offset out. */
+/** S5-U65: the turn straight and the turned look bound the offset. */
 static bool test_planning_turn_clear (test_interface_api_t const * p_api);
 
 /** S5-U66: a right route mirrors a left one with the sides swapped. */
@@ -69,6 +69,10 @@ static bool test_planning_mirror (test_interface_api_t const * p_api);
 
 /** S5-U67: edges are pulled in to the beam allowance inside the miss. */
 static bool test_planning_beam (test_interface_api_t const * p_api);
+
+/** S5-U71: clear needs every measured bin within +/-15 degrees open. */
+static bool test_planning_clear_window (test_interface_api_t const * p_api);
+
 
 void
 test_planning_run (test_interface_api_t const * p_api)
@@ -97,12 +101,14 @@ test_planning_run (test_interface_api_t const * p_api)
          test_planning_partial_profile},
         {"S5-U64", "close obstacle: reverse before turning",
          test_planning_reverse},
-        {"S5-U65", "turn straight widens the offset",
+        {"S5-U65", "turns to straight and to look set the offset",
          test_planning_turn_clear},
         {"S5-U66", "right route mirrors left",
          test_planning_mirror},
         {"S5-U67", "beam allowance pulls edges in",
-         test_planning_beam}
+         test_planning_beam},
+        {"S5-U71", "clear only if +/-15 degrees is open",
+         test_planning_clear_window}
     };
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
 
@@ -192,17 +198,17 @@ test_planning_shorter (test_interface_api_t const * p_api)
        edge) is longer than right (106 mm) but has a route, so it wins. */
     uint16_t const wide_left[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 420u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 420u, 3000u
     };
-    /* Left edge 450 x 0.707 = 318 mm: no left route within 500 mm. */
+    /* The left side never passes within 45 degrees: right is used. */
     uint16_t const too_wide_left[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 420u, 410u, 400u, 410u, 420u, 450u, 3000u
+        3000u, 420u, 410u, 400u, 410u, 420u, 450u
     };
-    /* The left side never passes within 60 degrees: right is used. */
+    /* The left side never passes within 45 degrees: right is used. */
     uint16_t const left_wall[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 420u, 450u, 460u
+        3000u, 3000u, 410u, 400u, 410u, 420u, 450u
     };
     bypass_plan_t plan;
 
@@ -226,19 +232,20 @@ test_planning_shorter (test_interface_api_t const * p_api)
 static bool
 test_planning_no_route (test_interface_api_t const * p_api)
 {
-    /* Wall: no beam passes on either side within 60 degrees. */
+    /* Wall: no beam passes on either side within 45 degrees. */
     uint16_t const wall[BYPASS_PLAN_ANGLES] =
     {
-        460u, 450u, 430u, 410u, 400u, 410u, 430u, 450u, 460u
+        450u, 430u, 410u, 400u, 410u, 430u, 450u
     };
-    /* Edges observed, but too wide to return within 500 mm. */
+    /* Edges observed (700 x sin 30 = 350 mm), but too wide to return
+       within 500 mm. */
     uint16_t const wide[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 590u, 560u, 540u, 520u, 540u, 560u, 590u, 3000u
+        3000u, 700u, 540u, 520u, 540u, 700u, 3000u
     };
     uint16_t       missing[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     bypass_plan_t plan;
 
@@ -250,7 +257,7 @@ test_planning_no_route (test_interface_api_t const * p_api)
     bool const b_wide = (!bypass_plan_make(wide, &g_planning_config, &plan))
                         && (BYPASS_PLAN_NO_ROUTE == plan.result);
 
-    missing[6] = 0u;    /* an invalid (unobserved) sample */
+    missing[5] = 0u;    /* an invalid (unobserved) sample */
 
     bool const b_invalid =
         (!bypass_plan_make(missing, &g_planning_config, &plan))
@@ -264,20 +271,23 @@ test_planning_no_route (test_interface_api_t const * p_api)
 static bool
 test_planning_segments (test_interface_api_t const * p_api)
 {
-    /* Left edge at +15 degrees and 610 mm: 610 x 0.259 = 157 mm. Far
-       enough that nothing reverses or widens: offset 157 + 133 = 290 mm,
-       diagonal 290 x 1.415 = 411 mm, search (290 + 20) x 1.415 = 439 mm.
-       For the assumed 200 mm depth the far end is 81 + 600 + 200 = 881
-       mm ahead; the return diagonal needs at least 189 + 157 + 881 -
-       2 x 290 = 647 mm forward and the turn onto it 707 (golden), so the
-       turn back is 290 + 707 - 881 = 116 mm past the far end. Passing
-       (S2 decision 19): look -60 degrees; the sideways gap is 290 - 157
-       = 133 mm, so a reading beyond 133 x 1.305 + 100 = 274 mm has
-       passed; then 81 (sensor) + 116 + 133 x cot 75 (36) = 233 mm more.
-       Stepping stops at 707 + (300 - 200) = 807 mm. */
+    /* Left edge at +15 degrees and 610 mm: 610 x 0.259 = 157 mm. Turned
+       35 degrees to look, the front corner reaches 63 x 0.819 + 132 x
+       0.574 = 128 mm towards the obstacle (S2 decision 22), so the offset
+       is 157 + 70 + 128 = 355 mm, diagonal 355 x 1.415 = 503 mm, search
+       (355 + 20) x 1.415 = 531 mm. For the assumed 200 mm depth the far
+       end is 81 + 600 + 200 = 881 mm ahead; the turn back needs 547 mm
+       forward (golden), 355 + 547 - 881 = 21 mm past the far end.
+       Passing: turn -35 degrees, look -45; the turned sensor is 81 x
+       0.574 = 46 mm towards the side and 66 mm ahead, so the gap is 355 -
+       157 - 46 = 152 mm, a reading beyond 152 x 1.065 + 100 = 262 mm has
+       passed, and the axis meets the side 152 x 0.177 = 27 mm ahead of
+       the sensor. A pass counts after 681 + 100 - (355 + 66 + 27) = 333
+       mm of stepping; then 66 + 27 + 21 = 114 mm more. Stepping stops at
+       547 + (300 - 200) = 647 mm. */
     uint16_t const profile[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 610u, 600u, 610u, 3000u, 3000u, 3000u
+        3000u, 3000u, 610u, 600u, 610u, 3000u, 3000u
     };
     bypass_plan_t plan;
 
@@ -291,15 +301,16 @@ test_planning_segments (test_interface_api_t const * p_api)
             && (BYPASS_PLAN_TURN == plan.segments[1].kind)
             && (45000 == plan.segments[1].value)
             && (BYPASS_PLAN_MOVE == plan.segments[2].kind)
-            && (411 == plan.segments[2].value)
+            && (503 == plan.segments[2].value)
             && (BYPASS_PLAN_TURN == plan.segments[3].kind)
             && (-45000 == plan.segments[3].value)
-            && (-60 == plan.look_deg) && (274u == plan.clear_mm)
-            && (233u == plan.extra_mm) && (807u == plan.pass_max_mm)
+            && (-45 == plan.look_deg) && (-35000 == plan.look_turn_mdeg)
+            && (262u == plan.clear_mm) && (333u == plan.pass_min_mm)
+            && (114u == plan.extra_mm) && (647u == plan.pass_max_mm)
             && (-45000 == plan.approach_mdeg)
             && (45000 == plan.align_mdeg)
-            && (290u == plan.lateral_mm)
-            && (439u == plan.search_mm));
+            && (355u == plan.lateral_mm)
+            && (531u == plan.search_mm));
 }
 
 static bool
@@ -307,7 +318,7 @@ test_planning_clear (test_interface_api_t const * p_api)
 {
     uint16_t const open[BYPASS_PLAN_ANGLES] =
     {
-        4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u
+        4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u
     };
     bypass_plan_t plan;
 
@@ -323,7 +334,7 @@ test_planning_fine_edges (test_interface_api_t const * p_api)
     uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
     uint16_t const coarse[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     bypass_plan_t plan;
 
@@ -334,10 +345,10 @@ test_planning_fine_edges (test_interface_api_t const * p_api)
         profile[index * 3u] = coarse[index];
     }
 
-    profile[7] = 3000u;  /* -25 degrees: right beam passes the edge. */
-    profile[8] = 410u;   /* -20 degrees: right beam hits the edge. */
-    profile[16] = 410u;  /* +20 degrees: left beam hits the edge. */
-    profile[17] = 410u;  /* +25 degrees: left edge reaches farther. */
+    profile[4] = 3000u;  /* -25 degrees: right beam passes the edge. */
+    profile[5] = 410u;   /* -20 degrees: right beam hits the edge. */
+    profile[13] = 410u;  /* +20 degrees: left beam hits the edge. */
+    profile[14] = 410u;  /* +25 degrees: left edge reaches farther. */
 
     /* Left edge 106 mm, right 71 mm (S5-U67): left is longer but has a
        route, so it wins, sized by the right side. */
@@ -347,7 +358,7 @@ test_planning_fine_edges (test_interface_api_t const * p_api)
                         && (plan.lateral_mm
                             >= (106u + TEST_PLANNING_PASS_LEFT));
 
-    profile[17] = 0u;     /* Left edge reading missing: right is used. */
+    profile[14] = 0u;     /* Left edge reading missing: right is used. */
 
     bool const b_right = bypass_plan_make_fine(profile, &g_planning_config,
                                                 &plan)
@@ -363,7 +374,7 @@ test_planning_fine_reject (test_interface_api_t const * p_api)
     uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
     uint16_t const coarse[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     bypass_plan_t plan;
 
@@ -379,23 +390,23 @@ test_planning_fine_reject (test_interface_api_t const * p_api)
                                                     &plan))
                            && (BYPASS_PLAN_NO_ROUTE == plan.result);
 
-    profile[7] = 410u;   /* A far blocked ray after a nearer open ray. */
-    profile[8] = 3000u;
+    profile[4] = 410u;   /* A far blocked ray after a nearer open ray. */
+    profile[5] = 3000u;
 
     bool const b_inconsistent = (!bypass_plan_make_fine(profile,
                                                          &g_planning_config,
                                                          &plan))
                                 && (BYPASS_PLAN_NO_ROUTE == plan.result);
 
-    profile[7] = 3000u;
-    profile[8] = 410u;
-    profile[3] = 410u;   /* Another obstacle beyond the first right gap. */
+    profile[4] = 3000u;
+    profile[5] = 410u;
+    profile[0] = 410u;   /* Another obstacle beyond the first right gap. */
 
     bool const b_second_obstacle = (!bypass_plan_make_fine(
                                       profile, &g_planning_config, &plan))
                                    && (BYPASS_PLAN_NO_ROUTE == plan.result);
 
-    profile[12] = 0u;    /* Missing coarse forward measurement is invalid. */
+    profile[9] = 0u;    /* Missing coarse forward measurement is invalid. */
 
     bool const b_invalid = (!bypass_plan_make_fine(profile,
                                                     &g_planning_config,
@@ -411,7 +422,7 @@ test_planning_profile (test_interface_api_t const * p_api)
     uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
     uint16_t const coarse[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     bypass_plan_t plan;
 
@@ -422,10 +433,10 @@ test_planning_profile (test_interface_api_t const * p_api)
         profile[index * 3u] = coarse[index];
     }
 
-    profile[7] = 3000u;
-    profile[8] = 410u;
-    profile[16] = 410u;
-    profile[17] = 410u;
+    profile[4] = 3000u;
+    profile[5] = 410u;
+    profile[13] = 410u;
+    profile[14] = 410u;
 
     bool const b_plan = bypass_plan_make_fine(profile, &g_planning_config,
                                                &plan);
@@ -448,7 +459,7 @@ test_planning_partial_profile (test_interface_api_t const * p_api)
     uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
     uint16_t const coarse[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     bypass_plan_t plan;
 
@@ -459,8 +470,8 @@ test_planning_partial_profile (test_interface_api_t const * p_api)
         profile[index * 3u] = coarse[index];
     }
 
-    profile[7] = 3000u;
-    profile[8] = 410u;
+    profile[4] = 3000u;
+    profile[5] = 410u;
 
     bool const b_plan = bypass_plan_make_fine(profile, &g_planning_config,
                                                &plan);
@@ -493,13 +504,13 @@ test_planning_partial_profile (test_interface_api_t const * p_api)
 static bool
 test_planning_reverse (test_interface_api_t const * p_api)
 {
-    /* Stopped 245 mm away, left edge 300 x 0.707 = 212 mm. The outbound
-       diagonal needs (81 + 245 + back - 212) x 0.707 >= 133 mm, so back
-       >= 75 mm: 80 in 10 mm steps. A longer reverse than allowed is
+    /* Stopped 245 mm away, left edge 420 x sin 30 = 210 mm. The outbound
+       diagonal needs (81 + 245 + back - 210) x 0.707 >= 133 mm, so back
+       >= 73 mm: 80 in 10 mm steps. A longer reverse than allowed is
        refused, and the right side is used. */
     uint16_t profile[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 3000u, 245u, 250u, 260u, 300u, 3000u
+        3000u, 3000u, 3000u, 245u, 250u, 420u, 3000u
     };
     bypass_plan_t plan;
 
@@ -522,7 +533,7 @@ test_planning_reverse (test_interface_api_t const * p_api)
        front would sweep the face in the first turn until 130 (golden). */
     uint16_t const close[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 3000u, 30u, 3000u, 3000u, 3000u, 3000u
+        3000u, 3000u, 3000u, 30u, 3000u, 3000u, 3000u
     };
     bool const b_first_turn = bypass_plan_make(close, &g_planning_config,
                                                &plan)
@@ -536,11 +547,14 @@ static bool
 test_planning_turn_clear (test_interface_api_t const * p_api)
 {
     /* Stopped 245 mm away, left edge 260 x 0.5 = 130 mm: the diagonal
-       alone needs 130 + 133 = 263 mm across, but the turn straight there
-       would sweep the near corner, so the offset grows to 303 (golden). */
+       alone needs 130 + 133 = 263 mm across, and the turn straight there
+       would sweep the near corner until 303 (golden, before S2 decision
+       22). Turning 35 degrees to look reaches 128 mm towards the side, so
+       the offset is 130 + 70 + 128 = 328 mm, which also clears the turn
+       straight; diagonal 328 x 1.415 = 465 mm. */
     uint16_t const profile[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 3000u, 245u, 250u, 260u, 3000u, 3000u
+        3000u, 3000u, 3000u, 245u, 250u, 260u, 3000u
     };
     bypass_plan_t plan;
 
@@ -549,8 +563,8 @@ test_planning_turn_clear (test_interface_api_t const * p_api)
     return (bypass_plan_make(profile, &g_planning_config, &plan)
             && (BYPASS_PLAN_LEFT == plan.side)
             && (0 == plan.segments[0].value)
-            && (303u == plan.lateral_mm)
-            && (429 == plan.segments[2].value)
+            && (328u == plan.lateral_mm)
+            && (465 == plan.segments[2].value)
             && ((plan.lateral_mm + g_planning_config.margin_mm)
                 <= g_planning_config.search_max_mm));
 }
@@ -563,7 +577,7 @@ test_planning_mirror (test_interface_api_t const * p_api)
        with every turn reversed. */
     uint16_t const right_only[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 420u, 450u, 460u
+        3000u, 3000u, 410u, 400u, 410u, 420u, 450u
     };
     uint16_t mirrored[BYPASS_PLAN_ANGLES] = {0u};
     bypass_plan_config_t swapped = g_planning_config;
@@ -589,7 +603,9 @@ test_planning_mirror (test_interface_api_t const * p_api)
              && (right.search_mm == left.search_mm)
              && (right.approach_mdeg == -left.approach_mdeg)
              && (right.align_mdeg == -left.align_mdeg)
-             && (60 == right.look_deg) && (-60 == left.look_deg)
+             && (45 == right.look_deg) && (-45 == left.look_deg)
+             && (right.look_turn_mdeg == -left.look_turn_mdeg)
+             && (right.pass_min_mm == left.pass_min_mm)
              && (right.clear_mm == left.clear_mm)
              && (right.extra_mm == left.extra_mm)
              && (right.pass_max_mm == left.pass_max_mm);
@@ -620,7 +636,7 @@ test_planning_beam (test_interface_api_t const * p_api)
     uint16_t profile[BYPASS_PLAN_FINE_ANGLES] = {0u};
     uint16_t const coarse[BYPASS_PLAN_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     bypass_plan_config_t config = g_planning_config;
     bypass_plan_t plan;
@@ -632,10 +648,10 @@ test_planning_beam (test_interface_api_t const * p_api)
         profile[index * 3u] = coarse[index];
     }
 
-    profile[7] = 3000u;
-    profile[8] = 410u;
-    profile[16] = 410u;
-    profile[17] = 410u;
+    profile[4] = 3000u;
+    profile[5] = 410u;
+    profile[13] = 410u;
+    profile[14] = 410u;
 
     config.beam_deg = 0u;
 
@@ -661,6 +677,32 @@ test_planning_beam (test_interface_api_t const * p_api)
                            && (BYPASS_PLAN_INVALID == plan.result);
 
     return (b_none && b_beam && b_wide && b_invalid);
+}
+
+static bool
+test_planning_clear_window (test_interface_api_t const * p_api)
+{
+    /* Clear only when -15 to +15 all read 500 mm or more (S2 decision
+       22): an angled approach read 592 ahead but 200 at +15. Unmeasured
+       fine bins (0) are skipped. */
+    uint16_t open[BYPASS_PLAN_FINE_ANGLES] =
+    {
+        724u, 0u, 0u, 853u, 0u, 0u, 943u, 0u, 0u, 592u,
+        0u, 0u, 200u, 0u, 0u, 178u, 0u, 0u, 168u
+    };
+
+    (void) p_api;
+
+    bool const b_angled_blocked = !scan_profile_clear(open, 500u);
+
+    open[12] = 500u;
+
+    bool const b_open = scan_profile_clear(open, 500u)
+                        && (!scan_profile_clear(open, 593u));
+
+    open[9] = 0u;               /* the forward bin must be measured */
+
+    return (b_angled_blocked && b_open && (!scan_profile_clear(open, 500u)));
 }
 
 /* End of file. */

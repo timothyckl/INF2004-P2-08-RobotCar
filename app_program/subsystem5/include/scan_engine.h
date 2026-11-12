@@ -36,8 +36,9 @@ typedef struct
     uint32_t                 time_us;
 } scan_engine_event_t;
 
-/** Coarse scan: -60 to +60 degrees in 15 degree steps (decision 4). */
-#define SCAN_ENGINE_ANGLES      (9u)
+/** Coarse scan: -45 to +45 degrees in 15 degree steps (decision 4, revised
+    by S2 decision 22 to the servo's travel). */
+#define SCAN_ENGINE_ANGLES      (7u)
 #define SCAN_ENGINE_SAMPLES     (3u)
 #define SCAN_ENGINE_FINE_MAX    (16u)
 

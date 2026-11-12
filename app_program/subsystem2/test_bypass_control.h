@@ -15,6 +15,7 @@ bool test_bypass_control_hazard(void);      /* S2-U66 */
 bool test_bypass_control_reacquire(void);   /* S2-U67 */
 bool test_bypass_control_pass(void);        /* S2-U68 */
 bool test_bypass_control_pass_fail(void);   /* S2-U69 */
+bool test_bypass_control_look_turn(void);   /* S2-U70 */
 
 #endif
 

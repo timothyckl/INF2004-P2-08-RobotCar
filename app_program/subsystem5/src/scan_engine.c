@@ -9,12 +9,14 @@
 #include "../include/scan_engine.h"
 
 #include "../include/range_measurement.h"
+#include "../include/scan_profile.h"
 
 #include <stddef.h>
 
-static int16_t const  g_scan_first_angle_deg   = -60;
+static int16_t const  g_scan_first_angle_deg   = -SCAN_PROFILE_HALF_DEG;
 static int16_t const  g_scan_forward_angle_deg = 0;
-static int16_t const  g_scan_step_deg          = 15;
+static int16_t const  g_scan_step_deg          =
+    (int16_t)(SCAN_PROFILE_COARSE_BINS * SCAN_PROFILE_STEP_DEG);
 static uint32_t const g_scan_retrigger_us      = 65000u;
 static uint32_t const g_scan_deadline_us       = 30000u;
 static uint32_t const g_scan_stuck_us          = 130000u;

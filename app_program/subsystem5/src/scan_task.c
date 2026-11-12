@@ -55,7 +55,7 @@ static uint16_t const g_task_hazard_mm    = 250u;
    distance means the way ahead is clear to resume following; the
    forward monitor still stops the car later (S2 decision 12). */
 static uint16_t const g_task_clear_mm     = 500u;
-#define SCAN_TASK_FORWARD_INDEX  (12)     /* 0 degrees, 5 degree steps */
+#define SCAN_TASK_FORWARD_INDEX  (SCAN_PROFILE_SIDE_BINS)  /* 0 degrees */
 
 /* Bypass geometry, measured by ruler (S2 decisions 16 and 17): 82 mm
    left of the centre line to the barcode sensor, 63 mm right to the
@@ -433,13 +433,14 @@ scan_task_publish (scan_engine_output_t const * p_output)
 
         case SCAN_ENGINE_DISTANCE:
         {
-            int32_t const angle = (int32_t)p_output->angle_deg + 60;
-            int32_t const index = angle / 5;
+            int32_t const angle = (int32_t)p_output->angle_deg
+                                  + SCAN_PROFILE_HALF_DEG;
+            int32_t const index = angle / SCAN_PROFILE_STEP_DEG;
 
             scan_task_scan_diag("angle", (int32_t)p_output->angle_deg,
                                 p_output->distance_mm);
 
-            if ((angle >= 0) && ((angle % 5) == 0)
+            if ((angle >= 0) && ((angle % SCAN_PROFILE_STEP_DEG) == 0)
                 && (index < (int32_t)BYPASS_PLAN_FINE_ANGLES))
             {
                 g_profile[index] = p_output->distance_mm;
@@ -453,7 +454,7 @@ scan_task_publish (scan_engine_output_t const * p_output)
                                          &g_work.plan);
             g_work.result_us = scan_task_now_us();
 
-            if (g_task_clear_mm <= g_profile[SCAN_TASK_FORWARD_INDEX])
+            if (scan_profile_clear(g_profile, g_task_clear_mm))
             {
                 g_work.result = SCAN_TASK_RESULT_CLEAR;
             }

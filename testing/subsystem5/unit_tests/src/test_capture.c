@@ -34,7 +34,7 @@ static bool test_capture_median (test_interface_api_t const * p_api);
 /** S5-U24: the third consecutive invalid attempt faults. */
 static bool test_capture_retry (test_interface_api_t const * p_api);
 
-/** S5-U26: a complete coarse scan covers -60..60 in 15 degree steps. */
+/** S5-U26: a complete coarse scan covers -45..45 in 15 degree steps. */
 static bool test_capture_coarse (test_interface_api_t const * p_api);
 
 /** A fresh unsafe forward reading cannot release a completed profile. */
@@ -307,12 +307,12 @@ static bool
 test_capture_coarse (test_interface_api_t const * p_api)
 {
     bool    b_angles = true;
-    int16_t expected = -60;
+    int16_t expected = -45;
 
     test_subject_start(p_api, 0u);
     test_capture_authorise(p_api);
 
-    for (uint32_t sample = 0u; sample < 27u; sample++)
+    for (uint32_t sample = 0u; sample < 21u; sample++)
     {
         (void) test_capture_await(p_api, 70u);
         test_capture_echo(p_api,
@@ -342,8 +342,8 @@ test_capture_coarse (test_interface_api_t const * p_api)
     test_fixture_record_t const * const p_last =
         test_fixture_record(test_fixture_size() - 1u);
 
-    return (b_angles && (75 == expected) && b_held && b_forward_trigger
-            && (28u == test_fixture_count(TEST_INTERFACE_TRIGGER))
+    return (b_angles && (60 == expected) && b_held && b_forward_trigger
+            && (22u == test_fixture_count(TEST_INTERFACE_TRIGGER))
             && (1u == test_fixture_count(TEST_INTERFACE_PLAN))
             && (0u == test_fixture_count(TEST_INTERFACE_FAULT))
             && (NULL != p_last)
@@ -358,7 +358,7 @@ test_capture_clearance (test_interface_api_t const * p_api)
     test_subject_start(p_api, 0u);
     test_capture_authorise(p_api);
 
-    for (uint32_t sample = 0u; sample < 27u; sample++)
+    for (uint32_t sample = 0u; sample < 21u; sample++)
     {
         (void) test_capture_await(p_api, 70u);
         test_capture_echo(p_api,
@@ -380,11 +380,11 @@ test_capture_clearance (test_interface_api_t const * p_api)
     test_subject_start(p_api, 0u);
     test_capture_authorise(p_api);
 
-    for (uint32_t sample = 0u; sample < 28u; sample++)
+    for (uint32_t sample = 0u; sample < 22u; sample++)
     {
         (void) test_capture_await(p_api, 70u);
         test_capture_echo(p_api, g_capture_rise_us
-                          + test_capture_width((sample < 27u) ? 245u : 230u));
+                          + test_capture_width((sample < 21u) ? 245u : 230u));
     }
 
     bool const b_inside_plans =
@@ -397,7 +397,7 @@ test_capture_clearance (test_interface_api_t const * p_api)
     test_subject_start(p_api, 0u);
     test_capture_authorise(p_api);
 
-    for (uint32_t sample = 0u; sample < 28u; sample++)
+    for (uint32_t sample = 0u; sample < 22u; sample++)
     {
         uint32_t const distance_mm =
             ((sample / 3u) == (SCAN_ENGINE_ANGLES / 2u)) ? 296u : 245u;
@@ -418,7 +418,7 @@ test_capture_fine_edges (test_interface_api_t const * p_api)
 {
     uint16_t const coarse_mm[SCAN_ENGINE_ANGLES] =
     {
-        3000u, 3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u, 3000u
+        3000u, 3000u, 410u, 400u, 410u, 3000u, 3000u
     };
     int16_t const expected_angles[4] = {-25, -20, 20, 25};
     bool b_angles = true;
@@ -427,7 +427,7 @@ test_capture_fine_edges (test_interface_api_t const * p_api)
     test_subject_start(p_api, 0u);
     test_capture_authorise(p_api);
 
-    for (uint32_t sample = 0u; sample < 27u; sample++)
+    for (uint32_t sample = 0u; sample < 21u; sample++)
     {
         (void) test_capture_await(p_api, 70u);
         test_capture_echo(p_api, g_capture_rise_us
@@ -466,7 +466,7 @@ test_capture_fine_edges (test_interface_api_t const * p_api)
                       + test_capture_width(850u));
 
     return (b_no_early_plan && b_angles && (4u == fine_seen)
-            && (40u == test_fixture_count(TEST_INTERFACE_TRIGGER))
+            && (34u == test_fixture_count(TEST_INTERFACE_TRIGGER))
             && (1u == test_fixture_count(TEST_INTERFACE_PLAN))
             && (!test_fixture_overflowed()));
 }

@@ -7,11 +7,10 @@
 
 #include <stddef.h>
 
-/* sin(5..60 degrees) in thousandths. Range <=4000 mm keeps products in u32. */
-static uint16_t const g_profile_sin_permille[12] =
+/* sin(5..45 degrees) in thousandths. Range <=4000 mm keeps products in u32. */
+static uint16_t const g_profile_sin_permille[SCAN_PROFILE_SIDE_BINS] =
 {
-    87u, 174u, 259u, 342u, 423u, 500u,
-    574u, 643u, 707u, 766u, 819u, 866u
+    87u, 174u, 259u, 342u, 423u, 500u, 574u, 643u, 707u
 };
 
 /** Evaluate a side with both 5-degree readings around its first edge. */
@@ -57,7 +56,8 @@ scan_profile_make (uint16_t const * p_distances,
             uint16_t const value = p_distances[index];
 
             b_valid = (value <= p_config->range_max_mm)
-                      && (((index % 3u) != 0u) || (value > 0u));
+                      && (((index % SCAN_PROFILE_COARSE_BINS) != 0u)
+                          || (value > 0u));
         }
     }
 
@@ -141,20 +141,20 @@ scan_profile_side (uint16_t const * p_distances, uint32_t pass_mm,
     uint16_t extent_mm = 0u;
     bool b_valid = true;
 
-    for (uint32_t coarse_step = 1u;
-         (coarse_step <= 4u) && (0u == coarse_pass); coarse_step++)
+    for (uint32_t step = SCAN_PROFILE_COARSE_BINS;
+         (step <= SCAN_PROFILE_SIDE_BINS) && (0u == coarse_pass);
+         step += SCAN_PROFILE_COARSE_BINS)
     {
-        if ((uint32_t)scan_profile_ray(p_distances, b_left,
-                                       coarse_step * 3u) > pass_mm)
+        if ((uint32_t)scan_profile_ray(p_distances, b_left, step) > pass_mm)
         {
-            coarse_pass = coarse_step * 3u;
+            coarse_pass = step;
         }
     }
 
     b_valid = (0u < coarse_pass);
     miss_step = coarse_pass;
 
-    for (uint32_t step = coarse_pass - 2u;
+    for (uint32_t step = coarse_pass - (SCAN_PROFILE_COARSE_BINS - 1u);
          b_valid && (step < coarse_pass); step++)
     {
         uint32_t const fine_mm = scan_profile_ray(p_distances, b_left, step);
@@ -177,8 +177,9 @@ scan_profile_side (uint16_t const * p_distances, uint32_t pass_mm,
         }
     }
 
-    for (uint32_t step = coarse_pass + 3u; b_valid && (step <= 12u);
-         step += 3u)
+    for (uint32_t step = coarse_pass + SCAN_PROFILE_COARSE_BINS;
+         b_valid && (step <= SCAN_PROFILE_SIDE_BINS);
+         step += SCAN_PROFILE_COARSE_BINS)
     {
         if ((uint32_t)scan_profile_ray(p_distances, b_left, step)
             <= pass_mm)
@@ -211,6 +212,22 @@ scan_profile_side (uint16_t const * p_distances, uint32_t pass_mm,
     *p_extent_mm = b_valid ? extent_mm : 0u;
 
     return (b_valid);
+}
+
+bool
+scan_profile_clear (uint16_t const * p_distances, uint16_t clear_mm)
+{
+    uint32_t const forward = SCAN_PROFILE_ANGLES / 2u;
+    bool b_clear = (NULL != p_distances) && (0u < p_distances[forward]);
+
+    for (uint32_t index = forward - SCAN_PROFILE_CLEAR_BINS;
+         b_clear && (index <= (forward + SCAN_PROFILE_CLEAR_BINS)); index++)
+    {
+        b_clear = (0u == p_distances[index])
+                  || (clear_mm <= p_distances[index]);
+    }
+
+    return (b_clear);
 }
 
 static uint16_t

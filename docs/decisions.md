@@ -376,6 +376,58 @@ without a sensor on black, so the limit was widened from plus 15 to plus
 command and every line-sensor change during reacquisition, to find out
 whether the step leaves the axle past the line.
 
+### 22. Turn to look, a 45 degree servo, and the line sets the heading (2026-11-12)
+
+Approved by Dalton on the integration branch; revises decisions 19 and
+21, S5 decisions 4 and 9 and the servo mapping of S5-U47. Evidence is in
+`testing/subsystem5/logs/2026-11-12_*.txt`.
+
+- **Servo.** The mounted sensor can turn 45 degrees each way before it
+  meets the chassis. With the SG90 calibration image (`S5_SERVO_CAL=1`
+  was used and then removed) the sensor faced forward at 1400 to 1450 us
+  and was last clear at 950 and 1850 us. The centre is now 1400 us and
+  angles are limited to +/-45 degrees (950 to 1850 us) at 10 us per
+  degree. The 10 us per degree is an estimate from a photo, not a
+  protractor reading (UNMEASURED). At the old 1500 us centre a +45 degree
+  command pressed the sensor against the chassis and left looks never saw
+  the box.
+- **Scan.** The coarse scan covers -45 to +45 degrees in 15 degree steps
+  (seven angles, 19 five-degree bins). The 60 degree rays are gone, so a
+  box wider than about 25 to 30 cm at 250 mm shows no edge and the run
+  stops with no route. A scan is CLEAR only if every measured bin within
+  +/-15 degrees reads at least 500 mm (decision 12 checked 0 degrees only).
+- **Turn to look.** A flat side reflected the pulse away from a 60 degree
+  look, so every look read past the obstacle. Each look now turns the car
+  35 degrees towards the obstacle and the servo 45 degrees more, 80
+  degrees in all, then turns back. The turned front corner reaches 128 mm
+  towards the obstacle, so the sideways offset is widened to keep the 50
+  mm clearance. A miss bounds the far end where the look's axis meets the
+  side; a pass counts only after pass_min_mm of stepping, which puts that
+  point at least 100 mm (UNMEASURED) behind the near face; and a passing
+  reading must also be at least 100 mm (UNMEASURED) beyond the nearest
+  side reading so far, because the scan overstates widths (287 mm against
+  a 269 mm threshold once passed a box still beside the car).
+- **Headings.** The turn back after each look and the approach turn are
+  to the heading at the start of the bypass, not relative: each 50 mm step
+  curved about 2 degrees, and the car had drifted 17 degrees by the fifth
+  look.
+- **Align spin.** 30 mm/s per wheel (was 60): a spin at 60 swept past the
+  tape with no report, as the three-sample mask filter and averaging take
+  about 40 to 70 ms of the ~140 ms on the tape. It gives up past 170
+  degrees (was 135), the most the wrapped heading change allows with 10
+  degrees in hand.
+- **Final check.** The line sets the heading: after the spin the bypass
+  fails only if the car is more than 90 degrees from the start heading,
+  that is, it took the line the wrong way. The 15 degree check of S5
+  decision 9 failed cars already on a line that curved beyond the box.
+
+On the robot, three straight-on bypasses returned to the line and resumed
+following (`2026-11-12_s5-recentred.txt`, `2026-11-12_s5-angled.txt`,
+`2026-11-12_s5-straight-final.txt`). Approaches from a curve, at an angle
+to the box, are on hold: the professor has said the obstacle will be on
+a straight with room before and after it. Squaring to the face before
+the scan was tried and removed.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

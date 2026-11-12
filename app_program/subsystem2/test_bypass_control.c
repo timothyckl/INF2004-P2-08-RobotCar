@@ -320,7 +320,7 @@ test_bypass_control_reacquire (void)
     b_passed = b_passed && (BYPASS_CONTROL_DONE == out.outcome)
                && !bypass_control_active(&bypass);
 
-    /* With the robot's 45 degree align, no line within 45 + 90 = 135
+    /* With the robot's 45 degree align, no line within 45 + 125 = 170
        degrees: the line is lost. */
     test_bypass_setup(&bypass, &plan, &in);
     b_passed = b_passed && test_bypass_to_search(&bypass, &in, &id);
@@ -335,14 +335,15 @@ test_bypass_control_reacquire (void)
     bypass_control_step(&bypass, &in, &out);
     test_bypass_send(&bypass, &out, &id);
     in.b_on_line = false;
-    in.heading_mdeg = -45000;                   /* 135 degrees turned */
+    in.heading_mdeg = -10000;                   /* 170 degrees turned */
     bypass_control_step(&bypass, &in, &out);
     b_passed = b_passed && (BYPASS_CONTROL_NONE == out.outcome);
-    in.heading_mdeg = -44999;
+    in.heading_mdeg = -9999;
     bypass_control_step(&bypass, &in, &out);
     b_passed = b_passed && (BYPASS_CONTROL_FAIL_SEARCH == out.fail);
 
-    /* 16 degrees off fails. */
+    /* The line sets the heading (S2 decision 22): spinning from 0 to
+       black at 20 degrees ends 160 degrees off the start, the wrong way. */
     test_bypass_setup(&bypass, &plan, &in);
     b_passed = b_passed && test_bypass_to_search(&bypass, &in, &id);
     in.b_on_line = true;
@@ -355,14 +356,37 @@ test_bypass_control_reacquire (void)
     bypass_control_step(&bypass, &in, &out);
     b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_MOVE, -5);
     test_bypass_send(&bypass, &out, &id);
-    in.heading_mdeg = 90000;
+    bypass.plan.align_mdeg = 45000;
+    in.heading_mdeg = 0;
     test_bypass_done(&bypass, &in, &out, &id);
     test_bypass_send(&bypass, &out, &id);
-    in.heading_mdeg = 180000 - 16000;
+    in.heading_mdeg = 20000;
     bypass_control_step(&bypass, &in, &out);
     test_bypass_send(&bypass, &out, &id);
     bypass_control_step(&bypass, &in, &out);
     b_passed = b_passed && (BYPASS_CONTROL_FAIL_HEADING == out.fail);
+
+    /* A line curving 60 degrees away is followed, not failed. */
+    test_bypass_setup(&bypass, &plan, &in);
+    b_passed = b_passed && test_bypass_to_search(&bypass, &in, &id);
+    in.b_on_line = true;
+    bypass_control_step(&bypass, &in, &out);
+    in.now_ms += TEST_BYPASS_FOUND_MS;
+    in.travel_mm += (int32_t)TEST_BYPASS_AHEAD_MM + 5;   /* overshot */
+    bypass_control_step(&bypass, &in, &out);
+    test_bypass_send(&bypass, &out, &id);
+    in.b_still = true;
+    bypass_control_step(&bypass, &in, &out);
+    test_bypass_send(&bypass, &out, &id);
+    bypass.plan.align_mdeg = 45000;
+    in.heading_mdeg = 90000;
+    test_bypass_done(&bypass, &in, &out, &id);
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 120000;                   /* 60 degrees off */
+    bypass_control_step(&bypass, &in, &out);
+    test_bypass_send(&bypass, &out, &id);
+    bypass_control_step(&bypass, &in, &out);
+    b_passed = b_passed && (BYPASS_CONTROL_DONE == out.outcome);
 
     /* Past the plan's search distance. */
     test_bypass_setup(&bypass, &plan, &in);
@@ -418,7 +442,8 @@ test_bypass_setup (bypass_control_t * p_bypass, bypass_control_plan_t * p_plan,
             {BYPASS_CONTROL_TURN, -TEST_BYPASS_QUARTER},
             {BYPASS_CONTROL_MOVE, 548}
         },
-        4u, -TEST_BYPASS_QUARTER, TEST_BYPASS_QUARTER, 312u, 0, 0u, 0u, 0u
+        4u, -TEST_BYPASS_QUARTER, TEST_BYPASS_QUARTER, 312u, 0, 0, 0u, 0u,
+        0u, 0u
     };
     bypass_control_input_t const in =
     {
@@ -542,6 +567,7 @@ test_bypass_control_pass (void)
     bool                    b_passed;
 
     b_passed = test_bypass_to_look(&bypass, &in, &out, &id);
+    bypass.plan.pass_max_mm = 200u;     /* room for a third step */
     test_bypass_send(&bypass, &out, &id);
 
     /* No answer yet, a motion DONE, or another look's answer: wait. */
@@ -566,8 +592,18 @@ test_bypass_control_pass (void)
     test_bypass_done(&bypass, &in, &out, &id);
     test_bypass_send(&bypass, &out, &id);
 
-    /* 301 mm has passed: the extra 200 mm, then the approach turn. */
+    /* 301 mm is beyond 300 but within 100 mm of the 250 mm side reading
+       (S2 decision 22): step again. */
     test_bypass_answer(&bypass, &in, &out, id, 301u);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_MOVE,
+                                           (int32_t)TEST_BYPASS_STEP_MM);
+    in.b_look_done = false;
+    test_bypass_send(&bypass, &out, &id);
+    test_bypass_done(&bypass, &in, &out, &id);
+    test_bypass_send(&bypass, &out, &id);
+
+    /* 350 mm has passed: the extra 200 mm, then the approach turn. */
+    test_bypass_answer(&bypass, &in, &out, id, 350u);
     b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_MOVE,
                                            200);
     test_bypass_send(&bypass, &out, &id);
@@ -646,6 +682,93 @@ test_bypass_control_pass_fail (void)
     return (b_passed && (BYPASS_CONTROL_FAILED == out.outcome)
             && (BYPASS_CONTROL_FAIL_DEPTH == out.fail)
             && !bypass_control_active(&bypass));
+}
+
+/* Turn to look (S2 decision 22): each look follows a 20 degree turn
+   towards the obstacle; the turn back, and the approach turn, are to the
+   start heading (180 degrees here, at the wrap), so drift is corrected;
+   a miss before pass_min_mm of stepping is not a pass. */
+bool
+test_bypass_control_look_turn (void)
+{
+    bypass_control_t        bypass;
+    bypass_control_input_t  in;
+    bypass_control_output_t out;
+    bypass_control_plan_t   plan;
+    uint16_t                id = 80u;
+    bool                    b_passed = true;
+
+    test_bypass_setup(&bypass, &plan, &in);
+    plan.look_deg = -60;
+    plan.look_turn_mdeg = -20000;
+    plan.clear_mm = 300u;
+    plan.extra_mm = 200u;
+    plan.pass_min_mm = 50u;
+    plan.pass_max_mm = 120u;
+    bypass_control_begin(&bypass, &plan, &in, &out);
+
+    for (uint8_t i = 0u; (i < plan.count)
+                         && (BYPASS_CONTROL_ACT_TURN != out.action
+                             || (-20000 != out.value)); i++)
+    {
+        test_bypass_send(&bypass, &out, &id);
+        test_bypass_done(&bypass, &in, &out, &id);
+    }
+
+    /* Turn in (overshooting to -21.5 degrees), look, turn back by 21.5:
+       4000 mm before 50 mm of stepping is the obstacle still ahead, so
+       step. */
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_TURN,
+                                           -20000);
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 158500;    /* -21.5 from 180 */
+    test_bypass_done(&bypass, &in, &out, &id);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_LOOK, -60);
+    test_bypass_send(&bypass, &out, &id);
+    test_bypass_answer(&bypass, &in, &out, id, 4000u);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_TURN,
+                                           21500);
+    in.b_look_done = false;
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 180000;
+    test_bypass_done(&bypass, &in, &out, &id);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_MOVE,
+                                           (int32_t)TEST_BYPASS_STEP_MM);
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 178000;   /* the step curved 2 degrees */
+    test_bypass_done(&bypass, &in, &out, &id);
+
+    /* After 50 mm, 301 mm has passed: turn back by the full 22 degrees,
+       then the extra 200 mm. */
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_TURN,
+                                           -20000);
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 158000;
+    test_bypass_done(&bypass, &in, &out, &id);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_LOOK, -60);
+    test_bypass_send(&bypass, &out, &id);
+    test_bypass_answer(&bypass, &in, &out, id, 301u);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_TURN,
+                                           22000);
+    in.b_look_done = false;
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 180000;
+    test_bypass_done(&bypass, &in, &out, &id);
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_MOVE, 200);
+    test_bypass_send(&bypass, &out, &id);
+    in.heading_mdeg = 179000;   /* the extra move curved too */
+    test_bypass_done(&bypass, &in, &out, &id);
+
+    /* The approach turn is to -90 degrees from the start: -89. */
+    b_passed = b_passed && test_bypass_act(&out, BYPASS_CONTROL_ACT_TURN,
+                                           -89000);
+
+    /* An oversized turn is an invalid plan. */
+    plan.look_turn_mdeg = (int32_t)MOTION_ANGLE_MAX_MDEG + 1;
+    bypass_control_abort(&bypass);
+    bypass_control_begin(&bypass, &plan, &in, &out);
+
+    return (b_passed && (BYPASS_CONTROL_FAIL_PLAN == out.fail));
 }
 
 #endif /* APP_TEST */

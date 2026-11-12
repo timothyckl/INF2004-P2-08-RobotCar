@@ -45,7 +45,7 @@ test_scanning_run (test_interface_api_t const * p_api)
 {
     test_runner_case_t const cases[] =
     {
-        {"S5-U15", "coarse scan starts at minus sixty",
+        {"S5-U15", "coarse scan starts at minus forty-five",
          test_scanning_first_angle},
         {"S5-U16", "no trigger before calibrated settling",
          test_scanning_settling},
@@ -79,7 +79,7 @@ test_scanning_first_angle (test_interface_api_t const * p_api)
         if ((TEST_INTERFACE_SERVO == p_output->kind)
             && (0 != p_output->angle_deg))
         {
-            b_valid = b_valid && (b_found || (-60 == p_output->angle_deg));
+            b_valid = b_valid && (b_found || (-45 == p_output->angle_deg));
             b_found = true;
         }
 

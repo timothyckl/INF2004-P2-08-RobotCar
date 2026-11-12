@@ -16,7 +16,7 @@
 
 #include <stddef.h>
 
-#define BYPASS_PLAN_FORWARD     (4u)    /* index of 0 degrees */
+#define BYPASS_PLAN_FORWARD     (3u)    /* index of 0 degrees */
 
 /* Turn checks sample the body every 5 degrees and the obstacle outline
    every 20 mm, so they add half of each step to the clearance: 10 mm for
@@ -27,8 +27,11 @@
 #define BYPASS_PLAN_SEARCH_STEP (10)    /* route lengths tried in 10 mm */
 #define BYPASS_PLAN_FORWARD_MAX (1000)  /* longest extra forward tried */
 
-/* sin(15, 30, 45, 60 degrees) in thousandths, for the coarse steps. */
-static uint32_t const g_plan_sin_permille[4] = {259u, 500u, 707u, 866u};
+/* sin(15, 30, 45 degrees) in thousandths, for the coarse steps. */
+static uint32_t const g_plan_sin_permille[BYPASS_PLAN_FORWARD] =
+{
+    259u, 500u, 707u
+};
 
 /* sin and cos of 0 to 45 degrees in 5-degree steps, in thousandths. */
 static int32_t const g_plan_sin_45[BYPASS_PLAN_HEADINGS] =
@@ -42,16 +45,33 @@ static int32_t const g_plan_cos_45[BYPASS_PLAN_HEADINGS] =
 
 static int32_t const g_plan_eighth_mdeg = 45000;
 
-/* cot(60 + allowance) for allowances of 0 to 30 degrees in 5-degree
-   steps, in thousandths: how far ahead of the sensor, per millimetre of
-   sideways gap, a far end can still be when a 60 degree look misses. */
-static int32_t const g_plan_cot_look[7] = {577, 466, 364, 268, 176, 87, 0};
+/* Each look turns the car 35 degrees towards the obstacle and the servo
+   45 degrees more, its limit, 80 degrees in all, so the pulse meets the
+   obstacle's flat side 10 degrees from square and echoes; at 60 degrees
+   alone it reflected away (S2 decision 22). sin and cos(35) in
+   thousandths: the sensor sits 81 x 574 / 1000 = 46 mm towards the
+   obstacle and 66 mm ahead of the axle, and the turned front corner
+   reaches near x cos 35 + front x sin 35 towards it. */
+static int32_t const g_plan_look_turn_mdeg = 35000;
+static int16_t const g_plan_look_deg       = 45;
+static int32_t const g_plan_look_sin_permille = 574;
+static int32_t const g_plan_look_cos_permille = 819;
 
-/* 1 / sin(50 degrees), in thousandths: the farthest a look's 50 to 70
-   degree beam reads the obstacle's side, per millimetre of sideways gap.
-   A reading 100 mm (UNMEASURED) beyond that has passed it. */
-static int32_t const g_plan_side_permille = 1305;
+/* cot(80 degrees), rounded up, in thousandths: how far ahead of the
+   sensor, per millimetre of sideways gap, the look's axis meets the side.
+   A far end beyond that point would echo, so a miss bounds it there. */
+static int32_t const g_plan_cot80_permille = 177;
+
+/* 1 / cos(20 degrees), rounded up, in thousandths: the farthest an 80
+   degree look reads the side, per millimetre of gap, for a 10 degree beam
+   and 10 degrees of heading error. 100 mm (UNMEASURED) beyond has passed. */
+static int32_t const g_plan_side_permille = 1065;
 static int32_t const g_plan_side_gap_mm   = 100;
+
+/* A look counts only once its axis meets the side this far behind the
+   near face (UNMEASURED). With the 30 mm margin a first look 31 mm past
+   the face read 962 mm with the box beside the car (2026-11-12). */
+static int32_t const g_plan_look_past_mm  = 100;
 
 /* sqrt(2) and sqrt(1/2) in thousandths. sqrt(2) is rounded up so the
    diagonal reaches the sideways offset and a bound is never short. */
@@ -82,6 +102,7 @@ typedef struct
     int32_t side_mm;
     int32_t forward_mm;
     int32_t edge_mm;
+    int32_t face_mm;
     int32_t end_mm;
 } bypass_plan_route_t;
 
@@ -264,7 +285,7 @@ bypass_plan_choose (bypass_plan_config_t const * p_config, uint32_t face_mm,
                     bool b_left, uint32_t left_mm, bool b_right,
                     uint32_t right_mm, bypass_plan_t * p_plan)
 {
-    bypass_plan_route_t route = {0, 0, 0, 0, 0};
+    bypass_plan_route_t route = {0, 0, 0, 0, 0, 0};
 
     /* Left whenever it has a route (S2 decision 16): the barcode sensor
        on the left then faces away from the obstacle. */
@@ -296,7 +317,8 @@ bypass_plan_edge (uint16_t const * p_distances,
     uint32_t edge_mm  = 0u;
     bool     b_passed = false;
 
-    for (uint32_t step = 0u; (step < 4u) && (!b_passed); step++)
+    for (uint32_t step = 0u; (step < BYPASS_PLAN_FORWARD) && (!b_passed);
+         step++)
     {
         uint32_t const index = b_left ? (BYPASS_PLAN_FORWARD + 1u + step)
                                       : (BYPASS_PLAN_FORWARD - 1u - step);
@@ -345,6 +367,12 @@ bypass_plan_route (bypass_plan_config_t const * p_config, uint32_t edge_mm,
                              + (int32_t)p_config->margin_mm;
     int32_t const face0_mm = (int32_t)p_config->sensor_mm + (int32_t)face_mm;
     int32_t const pass_mm = side_mm + clear_mm;  /* body side to obstacle */
+    /* Turned 35 degrees to look, the near front corner reaches farther
+       towards the obstacle than the near side (S2 decision 22). */
+    int32_t const look_mm = clear_mm
+        + (((side_mm * g_plan_look_cos_permille)
+            + ((int32_t)p_config->front_mm * g_plan_look_sin_permille) + 999)
+           / 1000);
     int32_t const diagonal_mm =
         ((pass_mm * g_plan_root2_up_permille) + 999) / 1000;
     int32_t const side_max_mm = (int32_t)p_config->search_max_mm
@@ -381,7 +409,8 @@ bypass_plan_route (bypass_plan_config_t const * p_config, uint32_t edge_mm,
     {
         b_found = false;
 
-        for (int32_t side = geom.edge_mm + pass_mm;
+        for (int32_t side = geom.edge_mm
+                            + ((look_mm > pass_mm) ? look_mm : pass_mm);
              (!b_found) && (side <= side_max_mm);
              side += BYPASS_PLAN_SEARCH_STEP)
         {
@@ -412,6 +441,7 @@ bypass_plan_route (bypass_plan_config_t const * p_config, uint32_t edge_mm,
     }
 
     p_route->edge_mm = geom.edge_mm;
+    p_route->face_mm = geom.face_mm;
     p_route->end_mm  = geom.end_mm;
 
     return (b_found);
@@ -507,15 +537,29 @@ bypass_plan_fill (bypass_plan_config_t const * p_config, bool b_left,
 {
     int32_t const turn = b_left ? g_plan_eighth_mdeg : -g_plan_eighth_mdeg;
     int32_t const side = p_route->side_mm;
-    int32_t const gap  = side - p_route->edge_mm;   /* > 0 by the route */
+    int32_t const sensor_side = ((int32_t)p_config->sensor_mm
+                                 * g_plan_look_sin_permille) / 1000;
+    int32_t const sensor_ahead = ((int32_t)p_config->sensor_mm
+                                  * g_plan_look_cos_permille) / 1000;
+    /* Sideways gap from the turned sensor to the side; > 0 by the route,
+       which keeps the turned body clearance + margin from it. */
+    int32_t const gap  = side - p_route->edge_mm - sensor_side;
+    int32_t const axis = ((gap * g_plan_cot80_permille) + 999) / 1000;
 
     /* The turn back must be past the far end by the same amount the
        assumed-depth route needed (the requirement moves with the far
-       end); a passing look bounds the far end to the sensor's position
-       plus gap x cot(60 + allowance). */
+       end); a passing look bounds the far end to where its axis meets
+       the side, sensor_ahead + axis ahead of the axle. */
     int32_t const lead  = (side + p_route->forward_mm) - p_route->end_mm;
-    int32_t const extra = (int32_t)p_config->sensor_mm + lead
-        + (((gap * g_plan_cot_look[p_config->beam_deg / 5u]) + 999) / 1000);
+    int32_t const extra = sensor_ahead + axis + lead;
+
+    /* After the turn straight the axle is side ahead of the origin. A
+       look counts only once its axis meets the side g_plan_look_past_mm
+       behind the near face, or it could miss an obstacle still ahead. */
+    int32_t const pass_max = p_route->forward_mm
+        + ((int32_t)p_config->depth_max_mm - (int32_t)p_config->depth_mm);
+    int32_t const pass_min = (p_route->face_mm + g_plan_look_past_mm)
+                             - (side + sensor_ahead + axis);
 
     /* side + margin is at most search_max_mm <= 1000 (bypass_plan_route,
        bypass_plan_config_ok), so the search fits uint16_t; gap is below
@@ -539,13 +583,17 @@ bypass_plan_fill (bypass_plan_config_t const * p_config, bool b_left,
           + 999) / 1000);
     p_plan->align_mdeg        = turn;
     p_plan->lateral_mm        = (uint16_t)side;
-    p_plan->look_deg          = (int16_t)(b_left ? -BYPASS_PLAN_LOOK_DEG
-                                                 : BYPASS_PLAN_LOOK_DEG);
+    p_plan->look_deg          = (int16_t)(b_left ? -g_plan_look_deg
+                                                 : g_plan_look_deg);
+    p_plan->look_turn_mdeg    = b_left ? -g_plan_look_turn_mdeg
+                                       : g_plan_look_turn_mdeg;
     p_plan->clear_mm          = (uint16_t)
         ((((gap * g_plan_side_permille) + 999) / 1000) + g_plan_side_gap_mm);
     p_plan->extra_mm          = (uint16_t)((extra > 0) ? extra : 0);
-    p_plan->pass_max_mm       = (uint16_t)(p_route->forward_mm
-        + ((int32_t)p_config->depth_max_mm - (int32_t)p_config->depth_mm));
+    p_plan->pass_min_mm       = (uint16_t)((pass_min < 0) ? 0
+                                           : ((pass_min > pass_max)
+                                              ? pass_max : pass_min));
+    p_plan->pass_max_mm       = (uint16_t)pass_max;
     p_plan->estimated_min_clearance_mm = p_config->clearance_mm;
 }
 
