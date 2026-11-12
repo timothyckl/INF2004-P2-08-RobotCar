@@ -46,7 +46,11 @@ typedef void      (*FP)(void);
 #define E_PAR       (-17)
 #define E_ID        (-18)
 #define E_OBJ       (-41)
+#define E_NOEXS     (-42)
+#define E_QOVR      (-43)
 #define E_TMOUT     (-50)
+#define E_IO        (-57)
+#define E_BUSY      (-65)
 
 #define TMO_POL     (0)
 #define TMO_FEVR    (-1)

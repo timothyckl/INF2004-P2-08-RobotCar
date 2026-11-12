@@ -183,6 +183,17 @@ ifeq ($(S5_RANGE_DIAG),1)
 S5_RANGE_DIAG_SUFFIX := _s5range
 endif
 
+# S4_RAW_LOG=1 prints the IMU's acceleration about twice a second, in the
+# sensor's axes and the vehicle's, for the mounting check S4-H02. Opt-in
+# because console formatting runs in the IMU task.
+S4_RAW_LOG ?= 0
+ifneq ($(filter $(S4_RAW_LOG),0 1),$(S4_RAW_LOG))
+$(error Unknown S4_RAW_LOG '$(S4_RAW_LOG)'; use 0 or 1)
+endif
+ifeq ($(S4_RAW_LOG),1)
+S4_RAW_LOG_SUFFIX := _s4raw
+endif
+
 # S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
 S4_HW_TEST ?= 0
 ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
@@ -233,7 +244,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_HW_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_HW_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)$(S4_RAW_LOG_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -300,6 +311,7 @@ CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
 CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
 CFLAGS  += -DS2_HW_TEST=$(S2_HW_TEST)
 CFLAGS  += -DS5_RANGE_DIAGNOSTIC=$(S5_RANGE_DIAG)
+CFLAGS  += -DS4_RAW_LOG=$(S4_RAW_LOG)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 ifeq ($(S3_LINE_TEST),1)
 CFLAGS  += -DS2_DEMO_SCRIPT=0
@@ -336,7 +348,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s2hw$(S2_HW_TEST)-s5range$(S5_RANGE_DIAG)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s2hw$(S2_HW_TEST)-s5range$(S5_RANGE_DIAG)-s4hw$(S4_HW_TEST)-s4raw$(S4_RAW_LOG)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

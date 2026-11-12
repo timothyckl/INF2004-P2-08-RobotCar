@@ -428,6 +428,25 @@ to the box, are on hold: the professor has said the obstacle will be on
 a straight with room before and after it. Squaring to the face before
 the scan was tried and removed.
 
+### 23. Subsystem 4 integration, stage 1: terrain monitor alongside line following (2026-11-12)
+
+Subsystem 4 is integrated from `feature/subsystem4-imu-terrain` (`ba1fb62`)
+in stages. Stage 1 enables the kernel I2C driver for unit 1 only (`iicb`,
+GP2/GP3 per the agreed pin mapping; unit 0 is not started, so its pins are
+untouched) and starts subsystem 4 in the `_s3line` image as well as the
+full image. S4 calibrates while the car waits for GP20 and then prints
+calibration, hump, impact and fault events. It has no interface to the
+controller or motion yet: no movement is authorised or stopped by it, and
+a hump has no height because no distance is supplied. On the robot
+(`testing/subsystem4/logs/2026-11-12_s4-stage1-lap.txt`) S4 calibrated in
+5890 ms and stayed silent and fault-free from START to STOP through a
+scan, a bypass and a CLEAR scan; it reported humps and impacts only while
+the car was carried. The S3 starter
+consumer still sends IF-03 lines, so S4 keeps creating `mbf_summary` and
+`flg_events`. Stage 2 supplies wheel distance from Motion Control for the
+height estimate and a new-run reset at START; stage 3 reports terrain
+events to the controller and telemetry.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
@@ -759,9 +778,9 @@ reduced. These mappings are provisional until verified on the physical track.
 
 ### 1. Standalone ownership and wiring
 
-Subsystem 4 owns the GY-511 / LSM303DLHC and I2C0. Use GP0 for SDA and GP1
+Subsystem 4 owns the GY-511 / LSM303DLHC and I2C1. Use GP2 for SDA and GP3
 for SCL, power the module from 3V3, and use a common ground. Only
-`s4_imu_task` accesses I2C0; the standalone implementation has
+`s4_imu_task` accesses I2C1; the standalone implementation has
 no dependency on motor, encoder, controller, or network subsystems.
 
 ### 2. Sensor mode and calibration
@@ -802,6 +821,41 @@ the live startup check only with `TEST=1 S4_HW_TEST=1` and connected hardware.
 A successful cross-build is not a passed on-board or physical test. Record the
 commit, wiring, mounting, reference instruments, serial log, raw observations,
 and repeated measurements before marking a hardware case passed.
+
+### 6. An overrun is not a fault at the 10 ms kernel tick (2026-11-12)
+
+Approved by Dalton on the integration branch.
+Revises decision 3 for overruns. The kernel tick is 10 ms
+(`CNF_TIMER_PERIOD`), so each `tk_dly_tsk()` lasts 10 to 20 ms and the
+task cannot read every sample of the 100 Hz output. On the robot every
+read soon found `ZYXOR` set (datasheet table 35); decision 3 made that a
+fault, so S4 restarted every second and never calibrated
+(`testing/subsystem4/logs/2026-11-12_s4-h01-2.txt`, `IMU read failed
+(-43)`). Polling every 5 ms was tried first and could not help, because a
+delay cannot be shorter than a tick. Now:
+
+- An overrun is not an error: the outputs hold the newest sample and it is
+  read. A task held off too long is still caught by the 50 ms sample-gap
+  check (stale fault).
+- Opening the device reads the outputs once and discards them, because
+  the sensor keeps sampling while closed and, with BDU, could otherwise
+  hand over a sample from before the close.
+- The calibration line prints how long the 200 samples took, which gives
+  the real read rate for S4-H05. Calibration, confirmation counts and the
+  50 ms gap are in samples, so their time depends on that rate.
+- S4-H01 waits up to 10 s for calibration (was 3.5 s).
+
+### 7. Installed IMU orientation (2026-11-12)
+
+Approved by Dalton on the integration branch. Seen from behind the
+car with the ultrasonic sensor facing away, the GY-511's X points left,
+Y backwards and Z up. This replaces decision 2's assumption of X forward.
+The terrain logic works in the vehicle's axes (x forward, y left, z up),
+so `task_imu.c` turns each sample into them: forward = -Y, left = +X,
+up = +Z. The decoded driver values stay in the sensor's axes. Confirmed
+with `S4_RAW_LOG=1` (`testing/subsystem4/logs/2026-11-12_s4-h02-raw.txt`):
+level reads sensor z +900 mg, nose up gives forward +190 mg (sensor y
+-190) and left side up gives left +145 mg (sensor x +145).
 
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 

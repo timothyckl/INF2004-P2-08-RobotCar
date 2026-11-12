@@ -21,7 +21,7 @@
  *	  subsystem1/  LED       blinks GP19, paced by a cyclic handler
  *	  subsystem2/  Producer  makes a "sample" every 300 ms     (core 1)
  *	  subsystem3/  Consumer  collects samples into statistics  (core 0)
- *	  subsystem4/  Monitor   prints reports, pauses/resumes the LED
+ *	  subsystem4/  IMU       LSM303DLHC on I2C1, terrain and hump events
  *	  subsystem5/  Obstacle Scan task (20): HC-SR04, servo, bypass plan
  *
  *	How they talk to each other (the interfaces, see TEAM.md section 5):
@@ -122,14 +122,17 @@ EXPORT INT usermain(void)
 
 
 #if APP_TEST && S3_LINE_FOLLOW_TEST
-	/* Dedicated S3/S2/S5 trial: line following with the forward
-	   obstacle monitor; no unrelated application task runs. */
+	/* Dedicated S3/S2/S4/S5 trial: line following with the forward
+	   obstacle monitor and the IMU terrain monitor (S4 only reports;
+	   it does not affect motion); no unrelated application task runs. */
 	CHECK(subsystem2_init(), "subsystem2_init");
 	CHECK(subsystem3_init(), "subsystem3_init");
+	CHECK(subsystem4_init(), "subsystem4_init");
 	CHECK(scan_lifecycle_init(), "scan_lifecycle_init");
 	CHECK(subsystem2_start(), "subsystem2_start");
+	CHECK(subsystem4_start(), "subsystem4_start");
 	CHECK(scan_lifecycle_start(), "scan_lifecycle_start");
-	tm_printf((UB *)"S3/S2/S5 line-follow test mode\n");
+	tm_printf((UB *)"S3/S2/S4/S5 line-follow test mode\n");
 	subsystem3_test();
 #elif APP_TEST && S2_CAL_TEST
 	/* Dedicated S2 calibration: GP20 runs one manoeuvre per press. */

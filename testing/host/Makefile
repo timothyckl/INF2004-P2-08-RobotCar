@@ -40,6 +40,12 @@ S3_SRC  := $(APP)/subsystem3/s3_ir.c \
            $(APP)/subsystem3/s3_nav.c \
            $(ROOT)/testing/subsystem3/test_main.c
 
+S4_SRC  := $(APP)/subsystem4/terrain_logic.c \
+           $(APP)/subsystem4/drv_lsm303dlhc.c \
+           $(APP)/subsystem4/subsystem4_test.c \
+           stubs/device_stub.c \
+           s4_host_main.c
+
 S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(APP)/subsystem5/src/scan_test_adapter.c \
            $(APP)/subsystem5/src/scan_engine.c \
@@ -51,9 +57,9 @@ S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(wildcard $(ROOT)/testing/subsystem5/unit_tests/src/*.c) \
            s5_host_main.c
 
-.PHONY: all s2 s3 s5 clean
+.PHONY: all s2 s3 s4 s5 clean
 
-all: s2 s3 s5
+all: s2 s3 s4 s5
 	@echo "[HOST] all suites passed"
 
 s2:
@@ -64,6 +70,14 @@ s3:
 	$(CC) $(STRICT) -Wconversion -I$(APP)/subsystem3 -o $(OUT)/s3_logic \
 	    $(S3_SRC)
 	$(OUT)/s3_logic
+
+# S4-H01 needs the sensor, so the host image is built without it
+# (S4_HARDWARE_TEST=0) and reports it BLOCKED; only FAIL fails here.
+s4:
+	$(CC) $(STRICT) -DAPP_TEST=1 -DS4_HARDWARE_TEST=0 -o $(OUT)/s4_logic \
+	    $(STUBS) $(S4_SRC)
+	$(OUT)/s4_logic | tee $(OUT)/s4.txt
+	@! grep -qE " FAIL " $(OUT)/s4.txt
 
 # The S5 runner prints one line per case; any FAIL or BLOCKED fails here.
 s5:
@@ -77,4 +91,4 @@ s5:
 # encoder; add it back with subsystem 1.
 
 clean:
-	rm -f $(OUT)/s2_logic $(OUT)/s3_logic $(OUT)/s5_logic $(OUT)/s5_view
+	rm -f $(OUT)/s2_logic $(OUT)/s3_logic $(OUT)/s4_logic $(OUT)/s5_logic $(OUT)/s5_view

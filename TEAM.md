@@ -132,7 +132,7 @@ the drivers have no locking to stop it.
 |---|---|---|---|
 | UART1 | | | |
 | I2C0 | | | |
-| I2C1 | S4 | | GP2 (SDA1), GP3 (SCL1) |
+| I2C1 | S4 | `s4_imu_task` (kernel driver `iicb`) | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | S3 | | ADC0/GP26, ADC1/GP27 (front sensors) and ADC2/GP28 (barcode sensor); ADC3/GP29 (radio) disabled |
@@ -179,7 +179,7 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 | 1 | 12–13 | *example:* led_task – 12 – any |
 | 2 | 14–15 | *example:* producer_task – 14 – core 1 |
 | 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
-| 4 | 18–19 | *example:* monitor_task – 18 – any |
+| 4 | 18–19 | s4_imu_task – 18 – any |
 | 5 | 20–21 | |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
@@ -216,13 +216,13 @@ limit there. The numbers below are the example's usage.
 |---|---|---|---|---|---|---|
 | Task | 32 | 1 | 1 | 1 | 1 | |
 | Semaphore | 16 | | 1 | | | |
-| Event flag | 16 | | | | 1 | |
+| Event flag | 16 | | | | 1 (IF-03, starter) | |
 | Mailbox | 12 | | | 1 | | |
-| Mutex | 12 | | | 1 | | |
-| Message buffer | 12 | | 3 | | 1 | |
+| Mutex | 12 | | | 1 | 1 | |
+| Message buffer | 12 | | 3 | | 1 (IF-03, starter) | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
 | Cyclic handler | 12 | 1 | | | | |
-| Alarm handler | 12 | | | | 1 | |
+| Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)
