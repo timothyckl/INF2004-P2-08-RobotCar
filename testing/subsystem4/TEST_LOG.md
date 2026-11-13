@@ -102,6 +102,52 @@ values are not physical calibration evidence.
 | S4-H09 | Apply a safe controlled acceleration impulse. | Impact behavior measured without collision or damage. |
 | S4-H10 | Compare magnetic readings with representative current wiring inactive and active. | Interference and any usable heading limitations documented. |
 
+## Hump-measurement procedures (S4-H03, S4-H07, S4-H08)
+
+Run in this order: the still noise (S4-H03) bounds what the moving and hump
+results can show. All three use one image and one analysis script:
+
+```sh
+make -C build_make TEST=1 S2_CAL_TEST=3 S4_RAW_LOG=1 -j8
+python3 testing/subsystem4/s4_raw_stats.py testing/subsystem4/logs/<log>.txt
+```
+
+The image runs the self-tests, then S4 calibrates (keep the car still) and
+each GP20 press drives 450 mm forward. `S4_RAW_LOG=1` prints one `s4 raw`
+line per IMU sample. The script splits samples into still and moving at the
+`GP20: START requested` and `CAL hump pass ... finished` lines, recomputes the
+firmware's height estimate (`s4_hump_height_um`) from the filtered tilts, and
+reports it against the 2 mm level and 4 mm rise thresholds. Copy its output
+into the result notes. The pass limits below are proposed, not agreed.
+
+**Setup for all three.** Flat, hard floor; battery and USB; the GP28
+battery-sense jumper open. Record the floor surface and the IMU board's
+height above the floor (ruler, for reference; the tilt method does not use
+it).
+
+**S4-H03, still.** After calibration completes, leave the car untouched on
+the floor for 60 s without pressing GP20. Then lift the car so the wheels
+are clear, press GP20 and let the 450 mm pass run in the air, to separate
+motor vibration from tilt; set the car down only after it finishes.
+Proposed pass: no hump or impact event; still height p99 below 2 mm (the
+level threshold), so noise alone can neither start nor hold a hump.
+
+**S4-H07, driving straight on a flat floor.** On the floor, press GP20 for
+at least five 450 mm passes, waiting for each to finish. Proposed pass: no
+hump or impact event while moving; the pitch gate shows `ignored` around
+the start and the stop. Any event names the gate settings (15 mm/s change,
+8-sample hold) or the thresholds to revisit. Repeat later with the
+`_s3line` image on the track (curves, scan and bypass spins).
+
+**S4-H08, known humps.** Measure the hump with a ruler (height at its
+highest point, width, profile) and photograph it. Start each pass with the
+chosen contact about 100 mm before the hump; the 450 mm pass then crosses a
+hump up to 195 mm long and settles (`task_controller.c`, mode 3). Run at least five passes per contact (left wheel, right wheel, and
+both wheels if the hump is wide enough), pressing GP20 once per pass. Record
+for each pass: measured height, reported height and contact, run maximum,
+and any missed or extra event. Proposed pass: every pass detected once with
+the right contact; height error to be agreed from the spread seen here.
+
 ## Acceptance criteria still requiring agreement
 
 The design documents do not establish numerical limits for tilt error, hump
@@ -122,3 +168,10 @@ Results are append-only. Do not record synthetic tests as physical validation.
 | 2026-11-12 | S4-H05, S4-H07 (partial) | `227c7a8` + uncommitted stage 1 | Dalton | OBSERVED | `logs/2026-11-12_s4-stage1-lap.txt` | `_s3line` image, no self-tests: calibration 200 samples in 5890 ms (about 29 ms per sample, under the 50 ms gap limit). From GP20 START to STOP (line following, one scan and left bypass with five turn-to-look cycles, line spin, one CLEAR scan): no S4 event and no fault. Two humps before START and two impacts after STOP occurred while both front IR sensors read about 4000 (car lifted and carried). One lap only; thresholds remain provisional. |
 | 2026-11-12 | S4-H02 (axis check) | `227c7a8` + uncommitted stage 1 | Dalton | INCONCLUSIVE | `logs/2026-11-12_s4-h02-tilt.txt` | Hand tilts with the axis-mapped `_s3line` image: one hump and one impact, but the IR readings cannot separate pitch from roll. Likely cause, from the raw run: nose-up left S4 in ASCENDING (no time limit) and setting the car down completed the hump. |
 | 2026-11-12 | S4-H02 (axis signs) | `227c7a8` + uncommitted stage 1 | Dalton | PASS | `logs/2026-11-12_s4-h02-raw.txt` | `S4_RAW_LOG=1`. Level: sensor x -20, y +27, z +900 mg. Nose up (about 11 deg): sensor y about -190, vehicle fwd +190. Left side up: sensor x about +145, vehicle left +145. Confirms X left, Y backwards, Z up (S4 decision 7). Z is about 100 mg below 1 g, beyond the typical +/-60 mg zero-g offset (datasheet table 3, typical only); calibration removes it. Six-orientation repeatability and angle accuracy not yet done (S4-H03, S4-H04). |
+| 2026-11-13 | S4-H03 (still) | `d6a90ca` (`TEST=1 S2_CAL_TEST=3 S4_RAW_LOG=1`) | Dalton | INCOMPLETE | `logs/2026-11-13_s4-h03.txt` | Cancelled before the motor pass. Calibration 50 samples in 1020 ms (about 20 ms per sample). Two events from handling, not noise: 11 mm (both wheels; up fell to 758 mg, left spiked 120 mg for 0.3 s) and 5 mm (caster). Clean window: height p99 0.89 mm, single-sample spikes to 3.8 mm, no event. |
+| 2026-11-13 | S4-H03 (still) | `d6a90ca` (`TEST=1 S2_CAL_TEST=3 S4_RAW_LOG=1`) | Dalton | MEASURED | `logs/2026-11-13_s4-h03-2.txt` (first boot) | Car on the floor, untouched 60 s after calibration (50 samples in 1360 ms): height mean 0.18 mm, p99 0.48 mm, max 0.85 mm; tilt within +/-9 mg; no event; about 28 ms per sample. Still noise is well below the 2 mm level threshold. |
+| 2026-11-13 | S4-H03 (motor vibration) | as above | Dalton | FAIL (proposed criterion) | `logs/2026-11-13_s4-h03-2.txt` (runs 1 and 2) | Run 1 held in the hand is invalid (car tilted about 19 degrees nose up; the hump timed out, no event). Run 2 on a block, wheels free, hands off: tilt swung -52..+36 mg forward and -14..+69 mg left; two false humps, 6 and 8 mm, left wheel. At rest on the block the offset was about 3 mm (block not level). |
+| 2026-11-13 | S4-H07 (flat floor, straight) | as above | Dalton | FAIL (proposed criterion) | `logs/2026-11-13_s4-h03-2.txt` (after the second boot) | Recalibrated on the start spot (one stale fault and sensor restart just after boot, recovered). Five 450 mm passes, each gave one false hump: 23 (right wheel), 18 (caster), 23 (both wheels), 21 (both wheels), 24 mm (caster). While moving: accel fwd -796..+555 mg, up 403..1403 mg; filtered tilt fwd sd 73..99 mg, left sd 32..51 mg; height p99 20.9 mm, 67 % of samples above the 4 mm rise threshold. The pitch gate covered start and stop only. Vibration, not tilt, dominates: the current filter and thresholds cannot reject driving on this floor, so the 2026-11-12 hump heights include vibration. Other events in the log came from carrying the car between passes. |
+| 2026-11-13 | S4-H07 (trial: 25 Hz output rate) | `d6a90ca` + `CTRL_REG1_A` 0x37, gap limit 120 ms (reverted) | Dalton | FAIL; trial reverted | `logs/2026-11-13_s4-h07-25hz.txt` | Still on the table 60 s: height p99 0.65 mm, max 1.0 mm, samples 39 ms apart (every sample read). Then on the floor, three 450 mm passes: false humps of 35 (caster), 33 (both wheels), 42 (right wheel) and 27 mm (caster); accel fwd -426..+383 mg, left -408..+164 mg, alternating every 2 to 3 samples (about 8 to 12 Hz). The ODR/9 bandwidth (datasheet table 8, about 2.8 Hz) did not remove it. Offline averaging of the cruise samples: 600 ms leaves 10 to 13 mm at 25 Hz against 5 to 8 mm at 100 Hz, so 25 Hz was reverted. At 25 Hz sensor X (vehicle left) repeated its previous value in 83 of 207 moving samples (13 of 1644 at 100 Hz); cause not yet known. Events between passes came from carrying the car (table to floor, back to the start spot). |
+| 2026-11-13 | S4-H07 (line following on straight tape, about 40 mm/s) | `d6a90ca` + 100 Hz, `TEST=1 S3_LINE_TEST=1 S4_RAW_LOG=1` | Dalton | MEASURED; one stall | `logs/2026-11-13_s4-h07-line.txt` (first and second boots) | Floor, straight tape. Run 1 (8 s, ended by an obstacle scan at the tape end) and the first part of run 2: height p99 4.3 mm, max 5.4 mm, up sd 8 mg against 107 mg in the 180 mm/s passes; no false hump. Pressing GP20 jolted the car (a 14 mm hump at START), and the hazard stop's braking rolled it (left tilt +254 mg). During run 2 the IMU task stopped printing with no fault and did not recover until reset; the obstacle task (priority 20) still ran, so it was blocked, not starved. Cause not found. |
+| 2026-11-13 | S4-H07 (line following, stall watcher build) | as above + `s4_watch_task` diagnostic (`S4_RAW_LOG` only) | Dalton | MEASURED | `logs/2026-11-13_s4-h07-line.txt` (third boot) | Four runs of 43 to 46 s (about 177 s of driving), IMU did not stall (no watcher report). Height p99 3.9 to 5.1 mm, up sd 9 to 10 mg. Two false humps while driving: 6 mm (both wheels, run 1) and 7 mm (both wheels, run 4); other events came from GP20 presses, the stop, or carrying the car. Offline, an extra mean of the filtered tilt over 400 ms keeps the cruise maximum at 2.4 to 3.0 mm in all four runs (150 ms: 3.3 to 5.7 mm; 250 ms: 2.7 to 4.1 mm). |

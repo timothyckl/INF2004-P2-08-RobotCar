@@ -61,6 +61,21 @@ subsystem4_start (void)
     ID task_id = app_start_task((FP) s4_imu_task, S4_PRI_IMU, 0u,
                                 "s4_imu_task");
 
+#if S4_RAW_LOG
+    if (task_id >= E_OK)
+    {
+        ID const watch_id = app_start_task((FP) s4_watch_task,
+                                           S4_PRI_IMU + 1, 0u,
+                                           "s4_watch_task");
+
+        s4_watch_imu_id = task_id;
+        if (watch_id < E_OK)
+        {
+            task_id = watch_id;
+        }
+    }
+#endif
+
     return ((task_id < E_OK) ? task_id : E_OK);
 }
 

@@ -99,7 +99,8 @@ make -C build_make TEST=1 S4_HW_TEST=1 -j8
 ```
 
 Add `S4_RAW_LOG=1` to print every sample in the vehicle's axes with the
-filtered tilts, pitch gate and state (S4-H02, S4-H08).
+filtered tilts, pitch gate and state (S4-H02, S4-H03, S4-H07, S4-H08);
+`testing/subsystem4/s4_raw_stats.py` summarises such a log.
 
 The first image includes deterministic terrain and raw-register decoding tests.
 The second also waits for live identity/configuration and stable calibration.

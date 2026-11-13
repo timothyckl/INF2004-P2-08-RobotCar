@@ -33,8 +33,16 @@
 #define S4_PITCH_DV_MM_S            15
 #define S4_PITCH_HOLD_SAMPLES       8u
 
-#ifndef S4_RAW_LOG
-#define S4_RAW_LOG                  0
+#if S4_RAW_LOG
+/* Diagnostic (S4_RAW_LOG only): the loop step the IMU task is in and a
+ * count of completed loops, written only by the IMU task and read by
+ * s4_watch_task. Single aligned writes, so the reader sees whole values. */
+static volatile uint8_t  s4_diag_stage = 0u;
+static volatile uint32_t s4_diag_loops = 0u;
+ID s4_watch_imu_id = 0;
+#define S4_DIAG_STAGE(stage)    (s4_diag_stage = (uint8_t) (stage))
+#else
+#define S4_DIAG_STAGE(stage)    ((void) 0)
 #endif
 
 static s4_terrain_config_t s4_runtime_config(void);
@@ -87,6 +95,7 @@ s4_imu_task (INT start_code,
         if (!driver.b_open)
         {
             s4_terrain_request_recovery(&terrain);
+            S4_DIAG_STAGE(1u);
             error = s4_lsm303_open(&driver);
             if (error < E_OK)
             {
@@ -102,18 +111,24 @@ s4_imu_task (INT start_code,
             calibration_start_us = s4_capture_time_us();
         }
 
+        S4_DIAG_STAGE(2u);
         error = s4_lsm303_read_acceleration(&driver,
                                             s4_capture_time_us(),
                                             &sample);
         if (E_OK == error)
         {
             s4_sample_to_vehicle(&sample);
+            S4_DIAG_STAGE(3u);
             b_pitch_valid = s4_motion_read(&motion, &terrain);
+            S4_DIAG_STAGE(4u);
             s4_terrain_process(&terrain, &sample, b_pitch_valid);
 #if S4_RAW_LOG
+            S4_DIAG_STAGE(5u);
             s4_raw_log(&sample, &terrain.result, b_pitch_valid);
 #endif
+            S4_DIAG_STAGE(6u);
             s4_report_events(&terrain.result, calibration_start_us);
+            S4_DIAG_STAGE(7u);
             (void) s4_status_publish(&terrain.result);
         }
         else if (E_BUSY != error)
@@ -155,10 +170,49 @@ s4_imu_task (INT start_code,
         }
         else
         {
+            S4_DIAG_STAGE(8u);
             (void) tk_dly_tsk(S4_POLL_PERIOD_MS);
+        }
+#if S4_RAW_LOG
+        s4_diag_loops++;
+#endif
+    }
+}
+
+#if S4_RAW_LOG
+/*
+ * Diagnostic task (S4_RAW_LOG only). Once a second, if the IMU loop has
+ * not advanced, prints the step it is in and its kernel wait state
+ * (tk_ref_tsk: tskstat, tskwait factor, wait object ID). Stages: 1 open,
+ * 2 sensor read, 3 motion status, 4 terrain logic, 5 raw log, 6 events,
+ * 7 status publish, 8 poll delay.
+ */
+void
+s4_watch_task (INT start_code,
+               void * p_exinf)
+{
+    (void) start_code;
+    (void) p_exinf;
+
+    for (;;)
+    {
+        uint32_t const loops = s4_diag_loops;
+
+        (void) tk_dly_tsk(1000u);
+        if (s4_diag_loops == loops)
+        {
+            T_RTSK info = {0};
+            ER const error = tk_ref_tsk(s4_watch_imu_id, &info);
+
+            tm_printf((UB *) "s4 watch: IMU loop stalled at stage %u "
+                      "(ref %d, stat 0x%x, wait 0x%lx, wid %d)\n",
+                      (UINT) s4_diag_stage, (INT) error,
+                      (UINT) info.tskstat, (unsigned long) info.tskwait,
+                      (INT) info.wid);
         }
     }
 }
+#endif
 
 static s4_terrain_config_t
 s4_runtime_config (void)
