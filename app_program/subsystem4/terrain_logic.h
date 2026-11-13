@@ -130,7 +130,7 @@ typedef struct
     bool                b_have_previous_time;
     bool                b_impact_active;
     bool                b_wait_level;
-    bool                b_hump_disabled; /* set by the caller each sample */
+    bool                b_detect_disabled; /* set by the caller each sample */
 } s4_terrain_context_t;
 
 void s4_terrain_init(s4_terrain_context_t * p_context,
@@ -140,7 +140,7 @@ void s4_terrain_process(s4_terrain_context_t * p_context,
                         bool b_pitch_valid);
 void s4_terrain_request_recovery(s4_terrain_context_t * p_context);
 void s4_terrain_start_new_run(s4_terrain_context_t * p_context);
-void s4_terrain_set_hump_enable(s4_terrain_context_t * p_context,
+void s4_terrain_set_detect_enable(s4_terrain_context_t * p_context,
                                 bool b_enable);
 s4_terrain_result_t const *
 s4_terrain_get_result(s4_terrain_context_t const * p_context);

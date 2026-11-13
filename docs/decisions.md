@@ -1013,6 +1013,16 @@ highest hump of the run to be reported.
   field; `robot_read_telemetry()` maps it when subsystem 1 is merged. The
   controller does not act on humps.
 
+### 14. Impacts only while driving (2026-11-13)
+
+Approved by Dalton on the integration branch. Extends decision 12 to
+impacts: placing and carrying the car raised impact events between runs.
+`s4_terrain_set_detect_enable()` (renamed from
+`s4_terrain_set_hump_enable()`) now gates both. While disabled the impact
+edge is still tracked, so enabling during a shake does not report it;
+the next crossing while driving does (S4-U34). The `S4_RAW_LOG` line ends
+with `detect on` or `off`.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

@@ -144,18 +144,20 @@ s4_terrain_start_new_run (s4_terrain_context_t * p_context)
 }
 
 /*
- * Hump detection runs only while enabled (decision 12): the caller
- * disables it while the robot is not driving, so lifting the car, a GP20
- * press and braking at a stop are not humps. Disabling drops any hump in
- * progress without reporting it; the tilt average keeps running.
+ * Hump and impact detection run only while enabled (decisions 12 and 14):
+ * the caller disables them while the robot is not driving, so lifting the
+ * car, a GP20 press and braking at a stop are neither humps nor impacts.
+ * Disabling drops any hump in progress without reporting it; the tilt
+ * average and the impact edge keep being tracked, so re-enabling during a
+ * shake does not report a stale impact.
  */
 void
-s4_terrain_set_hump_enable (s4_terrain_context_t * p_context,
+s4_terrain_set_detect_enable (s4_terrain_context_t * p_context,
                             bool b_enable)
 {
     if (NULL != p_context)
     {
-        p_context->b_hump_disabled = !b_enable;
+        p_context->b_detect_disabled = !b_enable;
     }
 }
 
@@ -330,11 +332,11 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
 
     if (dynamic_mg >= p_context->config.impact_threshold_mg)
     {
-        if (!p_context->b_impact_active)
+        if ((!p_context->b_impact_active) && (!p_context->b_detect_disabled))
         {
             p_context->result.events |= S4_TERRAIN_EVENT_IMPACT;
-            p_context->b_impact_active = true;
         }
+        p_context->b_impact_active = true;
     }
     else
     {
@@ -457,7 +459,7 @@ s4_hump_update (s4_terrain_context_t * p_context,
     uint32_t max_hump_us =
         (uint32_t) p_context->config.max_hump_ms * 1000u;
 
-    if (p_context->b_hump_disabled)
+    if (p_context->b_detect_disabled)
     {
         s4_hump_clear(p_context);
     }

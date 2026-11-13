@@ -41,7 +41,8 @@
 #define S4_PITCH_DV_MM_S            15
 #define S4_PITCH_HOLD_SAMPLES       8u
 
-/* Hump detection (decision 12): only while the robot drives (FOLLOW,
+/* Hump and impact detection (decisions 12, 14): only while the robot
+ * drives (FOLLOW,
  * NAVIGATE, BYPASS or REACQUIRE), and not for this many samples after it
  * starts to (about 0.7 s at 21 ms per sample), which covers the GP20 press
  * and lets the 16-sample average clear it. */
@@ -92,12 +93,12 @@ typedef struct
 
 static bool s4_motion_read(s4_motion_t * p_motion,
                            s4_terrain_context_t * p_terrain);
-static bool s4_hump_gate(uint8_t * p_settle);
+static bool s4_detect_gate(uint8_t * p_settle);
 #if S4_RAW_LOG
 static void s4_raw_log(s4_terrain_sample_t const * p_vehicle,
                        s4_terrain_result_t const * p_result,
                        bool b_pitch_valid,
-                       bool b_hump_enabled);
+                       bool b_detect_enabled);
 #endif
 static void s4_report_events(s4_terrain_result_t const * p_result,
                              uint32_t calibration_start_us);
@@ -113,7 +114,7 @@ s4_imu_task (INT start_code,
     uint32_t calibration_start_us = 0u;
     s4_motion_t motion = {0};
     bool b_pitch_valid = false;
-    bool b_hump_enabled = false;
+    bool b_detect_enabled = false;
     uint8_t settle = S4_SETTLE_SAMPLES;
     ER error;
 
@@ -154,14 +155,14 @@ s4_imu_task (INT start_code,
             s4_sample_to_vehicle(&sample);
             S4_DIAG_STAGE(3u);
             b_pitch_valid = s4_motion_read(&motion, &terrain);
-            b_hump_enabled = s4_hump_gate(&settle);
-            s4_terrain_set_hump_enable(&terrain, b_hump_enabled);
+            b_detect_enabled = s4_detect_gate(&settle);
+            s4_terrain_set_detect_enable(&terrain, b_detect_enabled);
             S4_DIAG_STAGE(4u);
             s4_terrain_process(&terrain, &sample, b_pitch_valid);
 #if S4_RAW_LOG
             S4_DIAG_STAGE(5u);
             s4_raw_log(&sample, &terrain.result, b_pitch_valid,
-                       b_hump_enabled);
+                       b_detect_enabled);
 #endif
             S4_DIAG_STAGE(6u);
             s4_report_events(&terrain.result, calibration_start_us);
@@ -395,13 +396,14 @@ s4_motion_read (s4_motion_t * p_motion,
 }
 
 /*
- * Whether hump detection may run this sample (decision 12): the robot is
+ * Whether hump and impact detection may run this sample (decisions 12
+ * and 14): the robot is
  * Running in a driving mode, and has been for S4_SETTLE_SAMPLES samples.
  * *p_settle counts down while driving and is reloaded whenever it is not.
  * A failed state read counts as not driving.
  */
 static bool
-s4_hump_gate (uint8_t * p_settle)
+s4_detect_gate (uint8_t * p_settle)
 {
     s2_robot_state_t state;
     bool b_driving = false;
@@ -458,10 +460,10 @@ static void
 s4_raw_log (s4_terrain_sample_t const * p_vehicle,
             s4_terrain_result_t const * p_result,
             bool b_pitch_valid,
-            bool b_hump_enabled)
+            bool b_detect_enabled)
 {
     tm_printf((UB *) "s4 raw %u: fwd=%d left=%d up=%d mg | tilt fwd=%d "
-              "left=%d mg | pitch %s | state %u | humps %s\n",
+              "left=%d mg | pitch %s | state %u | detect %s\n",
               (UINT) (p_vehicle->capture_time_us / 1000u),
               (INT) p_vehicle->acceleration_x_mg,
               (INT) p_vehicle->acceleration_y_mg,
@@ -470,7 +472,7 @@ s4_raw_log (s4_terrain_sample_t const * p_vehicle,
               (INT) p_result->lateral_tilt_mg,
               b_pitch_valid ? "used" : "ignored",
               (UINT) p_result->state,
-              b_hump_enabled ? "on" : "off");
+              b_detect_enabled ? "on" : "off");
 }
 #endif
 

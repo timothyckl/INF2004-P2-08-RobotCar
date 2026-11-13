@@ -147,7 +147,7 @@ evidence table are in `testing/subsystem4/TEST_LOG.md`.
   agreed acceptance criteria are required before final tuning.
 - Run reset (START, IF-17), driving state (IF-14) and the telemetry read of
   the run maximum (IF-18, `subsystem4_get_status()`, never waits) are in
-  place. Impacts are not yet gated by driving state.
+  place. Impacts use the same driving gate as humps (decision 14).
 - The legacy S3 message buffer and event flag are still created so the starter
   code builds unchanged. Subsystem 4 does not consume them; remove them only in
   a coordinated integration change.

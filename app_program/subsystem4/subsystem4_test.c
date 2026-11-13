@@ -58,6 +58,7 @@ static bool s4_test_average_length_checked(void);
 static bool s4_test_hump_disabled(void);
 static bool s4_test_height_scaled(void);
 static bool s4_test_height_scale_checked(void);
+static bool s4_test_impact_disabled(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -129,6 +130,8 @@ subsystem4_test (void)
                "height scale 500 per mille halves a 10 mm reading");
     TEST_CHECK("S4-U33", s4_test_height_scale_checked(),
                "height scale 0 or above the maximum is rejected");
+    TEST_CHECK("S4-U34", s4_test_impact_disabled(),
+               "no impact while disabled, nor on enabling mid-impact");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -655,13 +658,13 @@ s4_test_hump_disabled (void)
     s4_test_calibrate(&context, 0u);
 
     /* Disabled: a held 10 mm tilt never starts a hump. */
-    s4_terrain_set_hump_enable(&context, false);
+    s4_terrain_set_detect_enable(&context, false);
     b_complete = s4_test_hump(&context, &time_us,
                               S4_TEST_WHEEL_10MM_PITCH_MG,
                               S4_TEST_WHEEL_10MM_ROLL_MG, true);
 
     /* Enabled: a hump starts, then disabling drops it unreported. */
-    s4_terrain_set_hump_enable(&context, true);
+    s4_terrain_set_detect_enable(&context, true);
     for (uint8_t index = 0u; index < S4_TEST_HUMP_SAMPLES; index++)
     {
         time_us += S4_TEST_SAMPLE_PERIOD_US;
@@ -670,7 +673,7 @@ s4_test_hump_disabled (void)
     }
     b_started =
         (S4_TERRAIN_STATE_ON_HUMP == context.result.state);
-    s4_terrain_set_hump_enable(&context, false);
+    s4_terrain_set_detect_enable(&context, false);
     for (uint8_t index = 0u; index < S4_TEST_LEVEL_SAMPLES; index++)
     {
         time_us += S4_TEST_SAMPLE_PERIOD_US;
@@ -725,6 +728,31 @@ s4_test_height_scale_checked (void)
 
     return (b_zero_rejected &&
             (S4_TERRAIN_STATE_FAULT == context.result.state));
+}
+
+static bool
+s4_test_impact_disabled (void)
+{
+    s4_terrain_context_t context;
+    bool b_reported = false;
+
+    s4_test_calibrate(&context, 0u);
+    s4_terrain_set_detect_enable(&context, false);
+    s4_test_feed(&context, 800, 0, 40000u, true);
+    b_reported = (0u != (context.result.events & S4_TERRAIN_EVENT_IMPACT));
+
+    /* Enabled while still above the threshold: not a new crossing. */
+    s4_terrain_set_detect_enable(&context, true);
+    s4_test_feed(&context, 800, 0, 50000u, true);
+    b_reported = b_reported ||
+        (0u != (context.result.events & S4_TERRAIN_EVENT_IMPACT));
+
+    /* Back below, then a new crossing while enabled is reported. */
+    s4_test_feed(&context, 0, 0, 60000u, true);
+    s4_test_feed(&context, 800, 0, 70000u, true);
+
+    return ((!b_reported) &&
+            (0u != (context.result.events & S4_TERRAIN_EVENT_IMPACT)));
 }
 
 #endif

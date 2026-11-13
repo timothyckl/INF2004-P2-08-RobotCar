@@ -34,7 +34,7 @@ For the connected-IMU startup case only, build with:
 make -C build_make TEST=1 S4_HW_TEST=1 -j8
 ```
 
-The logic and decode cases (S4-U03 to S4-U33, less the retired IDs) also run on a computer under
+The logic and decode cases (S4-U03 to S4-U34, less the retired IDs) also run on a computer under
 strict C99 warnings with `make -C testing/host s4`; S4-H01 then reports
 BLOCKED. A host pass checks the logic against synthetic input only.
 
@@ -89,6 +89,7 @@ is no longer executed by Subsystem 4 after the starter monitor is replaced.
 | S4-U31 | Hump detection disabled during a held 10 mm tilt; then enabled until a hump starts, and disabled before level. | No hump either time; the started hump is dropped unreported. |
 | S4-U32 | Height scale 500 per mille; 10 mm under the left wheel. | 5 mm. |
 | S4-U33 | Height scale 0, then `S4_HEIGHT_SCALE_MAX_PERMILLE` + 1. | Both configurations rejected (fault). |
+| S4-U34 | Impact-sized sample while detection is disabled; enabled while still above the threshold; then level and a new crossing. | No impact until the new crossing, which is reported. |
 
 Boundary cases use small synthetic thresholds to remain deterministic. These
 values are not physical calibration evidence.
