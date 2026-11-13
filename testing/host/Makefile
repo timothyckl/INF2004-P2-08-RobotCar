@@ -35,6 +35,13 @@ S2_SRC  := $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/test_bypass_control.c \
            s2_host_main.c
 
+S1_SRC  := $(APP)/subsystem1/command_parser.c \
+           $(APP)/subsystem1/telemetry_encoder.c \
+           $(APP)/subsystem1/comms_timer.c \
+           $(APP)/subsystem1/service_bridge.c \
+           $(APP)/subsystem1/comms_test.c \
+           $(ROOT)/testing/subsystem1/logic_main.c
+
 S3_SRC  := $(APP)/subsystem3/s3_ir.c \
            $(APP)/subsystem3/s3_bar.c \
            $(APP)/subsystem3/s3_nav.c \
@@ -51,10 +58,15 @@ S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(wildcard $(ROOT)/testing/subsystem5/unit_tests/src/*.c) \
            s5_host_main.c
 
-.PHONY: all s2 s3 s5 clean
+.PHONY: all s1 s2 s3 s5 clean
 
-all: s2 s3 s5
+all: s1 s2 s3 s5
 	@echo "[HOST] all suites passed"
+
+s1:
+	$(CC) $(STRICT) -Wconversion -Wsign-conversion -DS1_HOST_TEST \
+	    -o $(OUT)/s1_logic $(S1_SRC)
+	$(OUT)/s1_logic
 
 s2:
 	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s2_logic $(STUBS) $(S2_SRC)
@@ -73,8 +85,7 @@ s5:
 	$(CC) $(STRICT) -DAPP_TEST=1 -Istubs -o $(OUT)/s5_view \
 	    $(APP)/subsystem5/src/scan_telemetry.c s5_telemetry_test.c
 	$(OUT)/s5_view
-# s5_telemetry_header_check.c checks S5 against subsystem 1's telemetry
-# encoder; add it back with subsystem 1.
 
 clean:
-	rm -f $(OUT)/s2_logic $(OUT)/s3_logic $(OUT)/s5_logic $(OUT)/s5_view
+	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic \
+	    $(OUT)/s5_logic $(OUT)/s5_view

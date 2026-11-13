@@ -1,27 +1,23 @@
-/*
- *	subsystem1.h
- *	Subsystem 1 -- LED heartbeat.  Student ID: <student ID>.
- *
- *	This header is subsystem 1's PUBLIC interface: only what other
- *	subsystems are allowed to use.  Everything else stays LOCAL in the .c
- *	files.  Other subsystems include it as "../subsystem1/subsystem1.h".
+/**
+ * @file subsystem1.h
+ * @brief Subsystem 1 WiFi/MQTT communication support.
  */
-
 #ifndef SUBSYSTEM1_H
 #define SUBSYSTEM1_H
 
 #include "../app.h"
 
-#define S1_PRI_LED	12		/* priority band 12-13 (TEAM.md) */
-#define S1_LED_PIN	19		/* GP19: LED + 330R resistor to GND */
-#define S1_TICK_MS	250		/* LED toggles every tick */
+/*
+ * Network calls remain inside the kernel's built-in WiFi service task. The
+ * task calls the narrow hooks declared by mqtt_service.h.
+ */
 
-/* IF-05: the LED task's ID, so subsystem 4 may pause/resume it */
-IMPORT ID	tid_led;
+/* Temporary IF-05 compatibility for subsystem 4's starter monitor. */
+#define S1_PRI_LED 12
 
-/* Private to subsystem 1, shared between its own .c files */
-IMPORT ID	cyc_led;
-IMPORT void	led_task(INT stacd, void *exinf);
-IMPORT void	led_cyclic_handler(void *exinf);
+IMPORT ID tid_led;
+IMPORT void s1_compat_task (INT start_code, void * p_exinf);
 
 #endif /* SUBSYSTEM1_H */
+
+/* End of file. */
