@@ -944,6 +944,25 @@ Not yet addressed: pressing GP20 on the car and hard braking at a hazard
 stop also read as humps, and a 4 mm rise may catch floor undulations.
 The rise threshold should be set from S4-H08 with a measured hump.
 
+### 11. Right-wheel humps and a 6 mm rise (2026-11-13)
+
+Approved by Dalton on the integration branch. Revises decision 8's rise
+threshold. Evidence: `testing/subsystem4/logs/2026-11-13_s4-h08-10mm.txt`
+(S4-H08).
+
+- **Course.** The professor has said a hump passes only under the
+  robot's right side, so S4-H08 tested the right wheel only.
+- **Measured.** A 10 mm hump (ruler; 195 mm across the path, 50 mm
+  along it), line followed at about 40 mm/s: four clean crossings read
+  11, 12, 12 and 12 mm under the right wheel, each detected once, and
+  the car stopped on top read a steady 11.2 mm. Height reads 1 to 2 mm
+  high; with one hump height it is not known whether this is an offset
+  or a scale error, so no correction is applied.
+- **Rise.** A hump now starts at 6 mm (was 4 mm); it still ends below
+  2 mm. Floor undulations read up to about 4 mm while driving
+  (decision 10), and a 10 mm hump reads 11 to 12 mm, so 6 mm leaves
+  margin both ways. Humps under about 6 mm are not reported.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

@@ -27,9 +27,10 @@
 #define S4_TRACK_MM                 119u
 #define S4_WHEELBASE_MM             88u
 
-/* Hump hysteresis (provisional): a hump starts at 4 mm and ends below
- * 2 mm. Tilt noise at rest is about 10 mg, about 1 mm of height. */
-#define S4_RISE_UM                  4000u
+/* Hump hysteresis: a hump starts at 6 mm (decision 11; floor undulations
+ * read up to about 4 mm while driving, a 10 mm hump 11 to 12 mm) and ends
+ * below 2 mm. Tilt noise at rest is about 10 mg, about 1 mm of height. */
+#define S4_RISE_UM                  6000u
 #define S4_LEVEL_UM                 2000u
 
 /* Forward acceleration reads as pitch (200 mg, 17 mm of caster height,
