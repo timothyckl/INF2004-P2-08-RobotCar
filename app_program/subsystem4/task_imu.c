@@ -57,7 +57,19 @@
  * s4_watch_task. Single aligned writes, so the reader sees whole values. */
 static volatile uint8_t  s4_diag_stage = 0u;
 static volatile uint32_t s4_diag_loops = 0u;
-ID s4_watch_imu_id = 0;
+
+#define S4_WATCH_MAX                3u
+
+typedef struct
+{
+    ID                        task_id;
+    volatile uint32_t const * p_loops;
+    char const *              p_name;
+} s4_watch_entry_t;
+
+/* Entries are written before the count is raised, by one task. */
+static s4_watch_entry_t s4_watch_list[S4_WATCH_MAX];
+static volatile uint8_t s4_watch_count = 0u;
 #define S4_DIAG_STAGE(stage)    (s4_diag_stage = (uint8_t) (stage))
 #else
 #define S4_DIAG_STAGE(stage)    ((void) 0)
@@ -205,35 +217,68 @@ s4_imu_task (INT start_code,
 }
 
 #if S4_RAW_LOG
+void
+s4_watch_add (ID task_id,
+              volatile uint32_t const * p_loops,
+              char const * p_name)
+{
+    uint8_t const count = s4_watch_count;
+
+    if ((count < S4_WATCH_MAX) && (NULL != p_loops) && (NULL != p_name))
+    {
+        s4_watch_list[count].task_id = task_id;
+        s4_watch_list[count].p_loops = p_loops;
+        s4_watch_list[count].p_name = p_name;
+        s4_watch_count = (uint8_t) (count + 1u);
+    }
+}
+
+void
+s4_watch_add_imu (ID task_id)
+{
+    s4_watch_add(task_id, &s4_diag_loops, "s4 imu");
+}
+
 /*
- * Diagnostic task (S4_RAW_LOG only). Once a second, if the IMU loop has
- * not advanced, prints the step it is in and its kernel wait state
- * (tk_ref_tsk: tskstat, tskwait factor, wait object ID). Stages: 1 open,
- * 2 sensor read, 3 motion status, 4 terrain logic, 5 raw log, 6 events,
- * 7 status publish, 8 poll delay.
+ * Diagnostic task (S4_RAW_LOG only). Once a second, for each registered
+ * task whose loop count has not advanced, prints its kernel wait state
+ * (tk_ref_tsk: tskstat, tskwait factor TTW_*, wait object ID) and, for the
+ * IMU, the loop stage: 1 open, 2 sensor read, 3 motion status, 4 terrain
+ * logic, 5 raw log, 6 events, 7 status publish, 8 poll delay.
  */
 void
 s4_watch_task (INT start_code,
                void * p_exinf)
 {
+    uint32_t last[S4_WATCH_MAX] = {0u};
+
     (void) start_code;
     (void) p_exinf;
 
     for (;;)
     {
-        uint32_t const loops = s4_diag_loops;
+        uint8_t const count = s4_watch_count;
 
-        (void) tk_dly_tsk(1000u);
-        if (s4_diag_loops == loops)
+        for (uint8_t index = 0u; index < count; index++)
         {
-            T_RTSK info = {0};
-            ER const error = tk_ref_tsk(s4_watch_imu_id, &info);
+            last[index] = *s4_watch_list[index].p_loops;
+        }
+        (void) tk_dly_tsk(1000u);
+        for (uint8_t index = 0u; index < count; index++)
+        {
+            if (*s4_watch_list[index].p_loops == last[index])
+            {
+                T_RTSK info = {0};
+                ER const error =
+                    tk_ref_tsk(s4_watch_list[index].task_id, &info);
 
-            tm_printf((UB *) "s4 watch: IMU loop stalled at stage %u "
-                      "(ref %d, stat 0x%x, wait 0x%lx, wid %d)\n",
-                      (UINT) s4_diag_stage, (INT) error,
-                      (UINT) info.tskstat, (unsigned long) info.tskwait,
-                      (INT) info.wid);
+                tm_printf((UB *) "s4 watch: %s loop stalled (imu stage %u; "
+                          "ref %d, stat 0x%x, wait 0x%lx, wid %d)\n",
+                          s4_watch_list[index].p_name,
+                          (UINT) s4_diag_stage, (INT) error,
+                          (UINT) info.tskstat,
+                          (unsigned long) info.tskwait, (INT) info.wid);
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ subsystem4_start (void)
                                            S4_PRI_IMU + 1, 0u,
                                            "s4_watch_task");
 
-        s4_watch_imu_id = task_id;
+        s4_watch_add_imu(task_id);
         if (watch_id < E_OK)
         {
             task_id = watch_id;
@@ -79,6 +79,11 @@ subsystem4_start (void)
     return ((task_id < E_OK) ? task_id : E_OK);
 }
 
+/*
+ * Copy of the latest terrain result (IF-18). Never waits: subsystem 2's
+ * telemetry reader runs in the WiFi service task, so a busy snapshot
+ * returns E_TMOUT and the caller tries again later (S4 decision 13).
+ */
 ER
 subsystem4_get_status (s4_terrain_result_t * p_result)
 {
@@ -86,7 +91,7 @@ subsystem4_get_status (s4_terrain_result_t * p_result)
 
     if (NULL != p_result)
     {
-        error = tk_loc_mtx(s4_status_mutex, TMO_FEVR);
+        error = tk_loc_mtx(s4_status_mutex, TMO_POL);
         if (E_OK == error)
         {
             *p_result = s4_status;

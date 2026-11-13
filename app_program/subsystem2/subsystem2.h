@@ -181,6 +181,11 @@ ER s2_get_robot_state (s2_robot_state_t * p_state);
 void s2_telemetry_from_state (s2_robot_state_t const * p_state,
                               s2_telemetry_t * p_out);
 
+/* Hump fields from subsystem 4's run maximum (pure; IF-18). Saturates at
+   255 mm; an invalid maximum gives 0 and b_hump_valid false. */
+void s2_telemetry_add_hump (s2_telemetry_t * p_out, uint16_t max_mm,
+                            bool b_valid);
+
 /* ------------------------------------------------------------------------
  *  Distance for S4 (s4_terrain_process wants a uint16_t delta every
  *  10 ms). Every 10 ms: call motion_get_status(), then

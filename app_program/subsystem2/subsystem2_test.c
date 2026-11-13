@@ -366,6 +366,23 @@ static bool test_telemetry_fill(void)
 	       (d.distance_mm == 0u) && !d.b_distance_valid;
 }
 
+/* S2-U71: hump fields from subsystem 4's run maximum (IF-18) */
+static bool test_telemetry_hump(void)
+{
+	s2_telemetry_t a = { 0u }, b = { 0u }, c = { 0u };
+
+	s2_telemetry_add_hump(&a, 10u, true);
+	s2_telemetry_add_hump(&b, 300u, true);
+	c.hump_max_mm = 7u;
+	c.b_hump_valid = true;
+	s2_telemetry_add_hump(&c, 12u, false);
+	s2_telemetry_add_hump(NULL, 10u, true);
+
+	return (a.hump_max_mm == 10u) && a.b_hump_valid &&
+	       (b.hump_max_mm == 255u) && b.b_hump_valid &&
+	       (c.hump_max_mm == 0u) && !c.b_hump_valid;
+}
+
 /* S2-U38: subsystem 4 distance delta */
 static bool test_distance_delta(void)
 {
@@ -777,6 +794,8 @@ EXPORT void subsystem2_test(void)
 		   "pass: look fault, timeout, hazard, depth limit");
 	TEST_CHECK("S2-U70", test_bypass_control_look_turn(),
 		   "pass: turn to look, back, pass only after pass_min");
+	TEST_CHECK("S2-U71", test_telemetry_hump(),
+		   "telemetry hump: run maximum, 255 cap, invalid gives 0");
 
 #if S2_HW_TEST
 	hw_test();

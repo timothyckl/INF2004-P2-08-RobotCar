@@ -707,7 +707,20 @@ button_step (s2_robot_state_t const * p_state,
         {
             if (s2_local_stop())
             {
+                s2_telemetry_t summary;
+
                 tm_printf((UB *)"[S2] GP20: STOP requested\n");
+
+                /* The telemetry the MQTT bridge will publish (IF-18). */
+                if (s2_read_telemetry(&summary))
+                {
+                    tm_printf((UB *)"[S2] run summary: distance %u mm%s, "
+                              "highest hump %u mm%s\n",
+                              (UINT)summary.distance_mm,
+                              summary.b_distance_valid ? "" : " (invalid)",
+                              (UINT)summary.hump_max_mm,
+                              summary.b_hump_valid ? "" : " (none)");
+                }
             }
             else
             {

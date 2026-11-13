@@ -7,9 +7,11 @@
  * hold up the controller for long. The WiFi task's reader never waits.
  */
 #include "robot_state.h"
+#include "../subsystem4/subsystem4.h"   /* subsystem4_get_status (IF-18) */
 
 #define S2_STATE_LOCK_TMO_MS    10      /* task readers, not the WiFi task */
 #define S2_DISTANCE_MAX_MM      65535   /* uint16_t telemetry field */
+#define S2_HUMP_MAX_MM          255u    /* uint8_t telemetry field */
 
 static ID               g_state_mtx = 0;
 static s2_robot_state_t g_state;        /* guarded by g_state_mtx */
@@ -92,7 +94,33 @@ s2_read_telemetry (s2_telemetry_t * p_out)
     (void)tk_unl_mtx(mtx);
     s2_telemetry_from_state(&st, p_out);
 
+    /* After releasing state_mutex, so the two locks never nest. A busy
+     * S4 snapshot reports no hump this publication rather than waiting. */
+    {
+        s4_terrain_result_t hump;
+        bool const b_read = (E_OK == subsystem4_get_status(&hump));
+
+        s2_telemetry_add_hump(p_out, b_read ? hump.maximum_height_mm : 0u,
+                              b_read && hump.b_maximum_height_valid);
+    }
+
     return (true);
+}
+
+void
+s2_telemetry_add_hump (s2_telemetry_t * p_out, uint16_t max_mm,
+                       bool b_valid)
+{
+    if (NULL == p_out)
+    {
+        return;
+    }
+
+    p_out->b_hump_valid = b_valid;
+    p_out->hump_max_mm  = (!b_valid) ? 0u
+                          : ((max_mm > S2_HUMP_MAX_MM)
+                             ? (uint8_t)S2_HUMP_MAX_MM
+                             : (uint8_t)max_mm);
 }
 
 void

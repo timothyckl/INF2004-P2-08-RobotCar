@@ -130,21 +130,24 @@ evidence table are in `testing/subsystem4/TEST_LOG.md`.
 
 ## Known limitations and integration work
 
-- No physical hardware was available during this implementation, so wiring,
-  I2C timing, actual task period, axis orientation, offsets, noise, thresholds,
-  detection rates, height error, and impact behaviour remain unverified.
+- Verified on the robot (`testing/subsystem4/TEST_LOG.md`): wiring, axis
+  orientation, still and driving noise, and the 10 mm right-wheel hump
+  (S4-H08, 9 to 11 mm). Impact behaviour, temperature and other hump heights
+  are not verified.
 - The LSM303DLHC has an accelerometer and magnetometer but no gyroscope. The
   magnetometer is used only for identity checking; heading and turn rate are
   not implemented.
-- Linear acceleration and vibration contaminate gravity-derived tilt. The IIR
-  output and threshold state machine reduce noise but do not solve that
-  observability limit.
+- Linear acceleration and vibration contaminate gravity-derived tilt. The
+  moving average, pitch gate and driving gate (decisions 10 and 12) reduce
+  them; at speeds well above line following (about 180 mm/s) vibration
+  still reads as humps.
 - The 32-bit microsecond timestamp wraps by design; elapsed calculations are
   wrap-safe only for intervals shorter than one full wrap period.
 - Runtime thresholds are fixed provisional constants. Calibration evidence and
   agreed acceptance criteria are required before final tuning.
-- Integration still needs a controller-owned run/reset contract, an
-  encoder-distance interface from Motion Control, and agreed event delivery.
+- Run reset (START, IF-17), driving state (IF-14) and the telemetry read of
+  the run maximum (IF-18, `subsystem4_get_status()`, never waits) are in
+  place. Impacts are not yet gated by driving state.
 - The legacy S3 message buffer and event flag are still created so the starter
   code builds unchanged. Subsystem 4 does not consume them; remove them only in
   a coordinated integration change.

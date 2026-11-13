@@ -16,6 +16,20 @@
 #include "../subsystem2/subsystem2.h"
 #endif
 
+#ifndef S4_RAW_LOG
+#define S4_RAW_LOG 0
+#endif
+
+#if S3_LINE_FOLLOW_TEST && S4_RAW_LOG
+#include "../subsystem4/subsystem4.h"   /* s4_watch_add (diagnostic) */
+
+/* Line-trial loop count, read by subsystem 4's stall watcher. */
+static volatile uint32_t g_s3_line_loops = 0u;
+#define S3_LINE_LOOP_DONE()     (g_s3_line_loops++)
+#else
+#define S3_LINE_LOOP_DONE()     ((void) 0)
+#endif
+
 #ifndef S3_HARDWARE_TEST
 #define S3_HARDWARE_TEST 0
 #endif
@@ -147,8 +161,14 @@ s3_test_line_trial (void)
     tm_printf((UB *)"s3 line: adaptive AO left=GP26 right=GP27\n");
     tm_printf((UB *)"s3 line: continuous supervised trial; no time limit\n");
 
+#if S4_RAW_LOG
+    s4_watch_add(tk_get_tid(), &g_s3_line_loops, "s3 line");
+#endif
+
     for (;;)
     {
+        S3_LINE_LOOP_DONE();    /* each pass, for the stall watcher */
+
         s3_ir_adc_sample_t sample = {0u, 0u};
         uint8_t black_mask = 0u;
         uint8_t position = S2_LINE_STOP;

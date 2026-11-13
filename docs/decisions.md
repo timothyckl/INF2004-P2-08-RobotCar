@@ -989,6 +989,30 @@ Correction to the S4-H08 record: the line-follow stops in runs 6 to 8
 came from line sensors that had been moved and not adjusted back, not
 from line sensing.
 
+### 13. Subsystem 4 integration, stage 3: highest hump in telemetry (2026-11-13)
+
+Approved by Dalton on the integration branch. The brief requires the
+highest hump of the run to be reported.
+
+- **IF-18.** `subsystem4_get_status()` now copies S4's terrain result
+  with `TMO_POL`: subsystem 2's telemetry reader runs in the WiFi service
+  task and must never wait. Its only other caller (S4-H01) already
+  polls.
+- **Telemetry.** `s2_read_telemetry()` reads the run maximum after
+  releasing `state_mutex`, so the two locks never nest, and
+  `s2_telemetry_add_hump()` fills `s2_telemetry_t.hump_max_mm` (uint8_t,
+  saturating at 255 mm; humps are about 10 mm) and `b_hump_valid`. A busy
+  or missing S4 snapshot reports no hump for that publication.
+- **Run.** The maximum is cleared at START (IF-17) and only humps found
+  while driving count (decision 12), so it holds the run's value after
+  STOP until the next START.
+- **Run summary.** On a GP20 STOP the controller prints the run distance
+  and highest hump read through `s2_read_telemetry()`, the path the MQTT
+  bridge will use.
+- **Not yet.** Subsystem 1's `telemetry_encoder_snapshot_t` has no hump
+  field; `robot_read_telemetry()` maps it when subsystem 1 is merged. The
+  controller does not act on humps.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

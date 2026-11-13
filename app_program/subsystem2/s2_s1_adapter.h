@@ -49,6 +49,9 @@ typedef struct
     uint16_t distance_mm;       /* run distance, clamped to 0..65535 */
     bool     b_distance_valid;  /* false if negative, over-range or unknown */
     bool     b_stopped;         /* both wheels confirmed still */
+    uint8_t  hump_max_mm;       /* highest hump this run (S4, IF-18),
+                                   saturated at 255; 0 if none */
+    bool     b_hump_valid;      /* a hump has been measured this run */
 } s2_telemetry_t;
 
 /* One consistent copy from robot_state; false (skip this publication)
