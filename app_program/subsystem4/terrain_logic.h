@@ -42,6 +42,9 @@ typedef uint8_t s4_hump_contact_t;
 #define S4_HUMP_CONTACT_BOTH_WHEELS  ((s4_hump_contact_t) 3u)
 #define S4_HUMP_CONTACT_CASTER       ((s4_hump_contact_t) 4u)
 
+/* Longest tilt moving average, in samples (S4 decision 10). */
+#define S4_AVERAGE_MAX_SAMPLES       16u
+
 #define S4_TERRAIN_EVENT_READY         (UINT8_C(1) << 0u)
 #define S4_TERRAIN_EVENT_HUMP_COMPLETE (UINT8_C(1) << 1u)
 #define S4_TERRAIN_EVENT_IMPACT        (UINT8_C(1) << 2u)
@@ -70,6 +73,8 @@ typedef struct
     uint16_t level_um;          /* height that ends it */
     uint8_t  confirmation_samples;
     uint8_t  invalid_limit;
+    uint8_t  average_samples;   /* tilt moving average, 1 to
+                                   S4_AVERAGE_MAX_SAMPLES */
 } s4_terrain_config_t;
 
 typedef struct
@@ -102,8 +107,14 @@ typedef struct
     int16_t             offset_x_mg;
     int16_t             offset_y_mg;
     int16_t             offset_z_mg;
-    int32_t             filtered_x_mg;
-    int32_t             filtered_y_mg;
+    int32_t             average_x_mg[S4_AVERAGE_MAX_SAMPLES];
+    int32_t             average_y_mg[S4_AVERAGE_MAX_SAMPLES];
+    int32_t             average_sum_x_mg;
+    int32_t             average_sum_y_mg;
+    int32_t             filtered_x_mg;  /* moving average of forward */
+    int32_t             filtered_y_mg;  /* moving average of left */
+    uint8_t             average_index;  /* next slot to write */
+    uint8_t             average_count;  /* samples held, up to the length */
     uint32_t            previous_time_us;
     uint32_t            calibration_count;
     uint32_t            hump_start_us;

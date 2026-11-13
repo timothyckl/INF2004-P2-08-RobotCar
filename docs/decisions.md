@@ -912,6 +912,38 @@ takes 50 samples (about 1.5 s), and a calibration fault prints each
 axis's span and starts again without restarting the sensor. Sensor, I2C
 and stale-data faults still restart it.
 
+### 10. Tilt moving average and a longer hump limit (2026-11-13)
+
+Approved by Dalton on the integration branch. Revises decision 8's tilt
+filter and hump limit. Evidence is in `testing/subsystem4/TEST_LOG.md`
+(2026-11-13 rows) and `testing/subsystem4/logs/2026-11-13_*.txt`.
+
+- **Why.** Driving shakes the car. In 450 mm passes at about 180 mm/s
+  every pass gave a false hump of 18 to 24 mm. At line-follow speed
+  (about 40 mm/s, the speed on the course) the vertical spread fell from
+  107 to about 10 mg, but four runs of 43 to 46 s still gave two false
+  humps (6 and 7 mm) with the filter that halved each change. A 25 Hz
+  output rate was tried and reverted (worse).
+- **Average.** Roll and pitch are now the mean of the last
+  `average_samples` samples (`S4_AVERAGE_SAMPLES` 16, about 470 ms at
+  the measured 29.5 ms per sample; at most `S4_AVERAGE_MAX_SAMPLES`).
+  Replayed on the four line-follow runs, the steady-driving maximum is
+  2.4 to 3.4 mm, under the 4 mm rise. A hump crossed at 40 mm/s lasts
+  seconds, so its peak is kept (S4-U29); the hump thresholds are
+  unchanged. The window is in samples, so it shortens if the read rate
+  rises (about 20 ms per sample without line-sensor logging).
+- **Hump limit.** A hump not ended within 12 s is dropped (was 5 s): a
+  195 mm hump takes about 5 s at 40 mm/s.
+
+On the robot (`testing/subsystem4/logs/2026-11-13_s4-h07-line-avg.txt`),
+about 82 s of line following gave no vibration hump and one 4 mm hump
+from a smooth floor tilt held about 0.6 s; height p99 3.4 to 3.6 mm. The
+image read about 21 ms per sample, so the window was about 340 ms.
+
+Not yet addressed: pressing GP20 on the car and hard braking at a hazard
+stop also read as humps, and a 4 mm rise may catch floor undulations.
+The rise threshold should be set from S4-H08 with a measured hump.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

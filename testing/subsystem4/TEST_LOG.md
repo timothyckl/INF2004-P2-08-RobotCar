@@ -34,7 +34,7 @@ For the connected-IMU startup case only, build with:
 make -C build_make TEST=1 S4_HW_TEST=1 -j8
 ```
 
-The logic and decode cases (S4-U03 to S4-U27, less the retired IDs) also run on a computer under
+The logic and decode cases (S4-U03 to S4-U30, less the retired IDs) also run on a computer under
 strict C99 warnings with `make -C testing/host s4`; S4-H01 then reports
 BLOCKED. A host pass checks the logic against synthetic input only.
 
@@ -83,6 +83,9 @@ is no longer executed by Subsystem 4 after the starter monitor is replaced.
 | S4-U25 | 10 mm under both wheels: pitch -114 mg. | 10 mm, both wheels. |
 | S4-U26 | 10 mm under the caster: pitch +114 mg. | 10 mm, caster. |
 | S4-U27 | Pitch of 114 mg with pitch marked unreadable (accelerating). | No hump. |
+| S4-U28 | 4-sample average; roll alternating +240/-240 mg each sample for 40 samples. | No hump starts. |
+| S4-U29 | 4-sample average; 10 mm under the left wheel held 8 samples, then level. | 10 mm, left wheel. |
+| S4-U30 | Average length 0, then `S4_AVERAGE_MAX_SAMPLES` + 1. | Both configurations rejected (fault). |
 
 Boundary cases use small synthetic thresholds to remain deterministic. These
 values are not physical calibration evidence.
@@ -175,3 +178,4 @@ Results are append-only. Do not record synthetic tests as physical validation.
 | 2026-11-13 | S4-H07 (trial: 25 Hz output rate) | `d6a90ca` + `CTRL_REG1_A` 0x37, gap limit 120 ms (reverted) | Dalton | FAIL; trial reverted | `logs/2026-11-13_s4-h07-25hz.txt` | Still on the table 60 s: height p99 0.65 mm, max 1.0 mm, samples 39 ms apart (every sample read). Then on the floor, three 450 mm passes: false humps of 35 (caster), 33 (both wheels), 42 (right wheel) and 27 mm (caster); accel fwd -426..+383 mg, left -408..+164 mg, alternating every 2 to 3 samples (about 8 to 12 Hz). The ODR/9 bandwidth (datasheet table 8, about 2.8 Hz) did not remove it. Offline averaging of the cruise samples: 600 ms leaves 10 to 13 mm at 25 Hz against 5 to 8 mm at 100 Hz, so 25 Hz was reverted. At 25 Hz sensor X (vehicle left) repeated its previous value in 83 of 207 moving samples (13 of 1644 at 100 Hz); cause not yet known. Events between passes came from carrying the car (table to floor, back to the start spot). |
 | 2026-11-13 | S4-H07 (line following on straight tape, about 40 mm/s) | `d6a90ca` + 100 Hz, `TEST=1 S3_LINE_TEST=1 S4_RAW_LOG=1` | Dalton | MEASURED; one stall | `logs/2026-11-13_s4-h07-line.txt` (first and second boots) | Floor, straight tape. Run 1 (8 s, ended by an obstacle scan at the tape end) and the first part of run 2: height p99 4.3 mm, max 5.4 mm, up sd 8 mg against 107 mg in the 180 mm/s passes; no false hump. Pressing GP20 jolted the car (a 14 mm hump at START), and the hazard stop's braking rolled it (left tilt +254 mg). During run 2 the IMU task stopped printing with no fault and did not recover until reset; the obstacle task (priority 20) still ran, so it was blocked, not starved. Cause not found. |
 | 2026-11-13 | S4-H07 (line following, stall watcher build) | as above + `s4_watch_task` diagnostic (`S4_RAW_LOG` only) | Dalton | MEASURED | `logs/2026-11-13_s4-h07-line.txt` (third boot) | Four runs of 43 to 46 s (about 177 s of driving), IMU did not stall (no watcher report). Height p99 3.9 to 5.1 mm, up sd 9 to 10 mg. Two false humps while driving: 6 mm (both wheels, run 1) and 7 mm (both wheels, run 4); other events came from GP20 presses, the stop, or carrying the car. Offline, an extra mean of the filtered tilt over 400 ms keeps the cruise maximum at 2.4 to 3.0 mm in all four runs (150 ms: 3.3 to 5.7 mm; 250 ms: 2.7 to 4.1 mm). |
+| 2026-11-13 | S4-H07 (line following, 16-sample tilt average, S4 decision 10) | `6625ebf` + decision 10, `TEST=1 S3_LINE_TEST=1 S4_RAW_LOG=1` | Dalton | MEASURED | `logs/2026-11-13_s4-h07-line-avg.txt` | About 21 ms per sample in this image, so the window is about 340 ms. First boot (calibrated off the tape, resting offset about 2.2 mm): runs of 10.9 and 9.1 s, no hump while driving. Second boot, recalibrated on the tape (resting tilt 0/0 mg): runs of 31.0 and 31.5 s; tilt sd 9 to 10 mg forward and 6 mg left (15 and 9 mg with the old filter); height p99 3.4 to 3.6 mm. One hump of 4 mm (right wheel) about 21 s into the first long run: a smooth tilt of about -20 mg forward and -10 to -25 mg left held for about 0.6 s, so a floor undulation, not vibration. In about 82 s of driving, no vibration hump (two in 177 s before). Events after STOP came from handling. No IMU stall. |

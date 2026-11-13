@@ -75,11 +75,12 @@ humps, safe impulses, temperature, mounting, and supply conditions.
 
 Height comes from tilt and the vehicle's contact geometry (decision 8). The car
 stands on its left wheel, right wheel (track 119 mm) and front ball caster
-(88 mm ahead of the axle). Filtered roll and pitch fix the plane through the
+(88 mm ahead of the axle). Roll and pitch, each a moving average of the last
+16 samples (about 470 ms, decision 10), fix the plane through the
 three contacts; with the lowest on the floor, the hump height is the highest
 contact's rise. A hump starts at 4 mm and ends below 2 mm, each held for three
 samples, and reports its peak and the contact that crossed it. A hump not ended
-within 5 s is dropped. These are provisional values, not validated results.
+within 12 s is dropped (decision 10). These are provisional values, not validated results.
 
 Each sample the task reads Motion Control's snapshot (`motion_get_status()`).
 A changed `run_id` means START began a new run, which clears the run maximum.

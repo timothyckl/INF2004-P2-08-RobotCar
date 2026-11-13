@@ -52,6 +52,9 @@ static bool s4_test_decode_signed_limits(void);
 static bool s4_test_decode_null_safety(void);
 static bool s4_test_hump_time_limit(void);
 static bool s4_test_pitch_ignored(void);
+static bool s4_test_vibration_averages_out(void);
+static bool s4_test_average_keeps_height(void);
+static bool s4_test_average_length_checked(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -111,6 +114,12 @@ subsystem4_test (void)
                "10 mm under the caster reads 10 mm, caster");
     TEST_CHECK("S4-U27", s4_test_pitch_ignored(),
                "pitch while accelerating is not a hump");
+    TEST_CHECK("S4-U28", s4_test_vibration_averages_out(),
+               "alternating roll averages out, no hump");
+    TEST_CHECK("S4-U29", s4_test_average_keeps_height(),
+               "held tilt reads its full height through the average");
+    TEST_CHECK("S4-U30", s4_test_average_length_checked(),
+               "average length 0 or above the maximum is rejected");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -137,7 +146,8 @@ s4_test_config (void)
         .rise_um = 4000u,
         .level_um = 2000u,
         .confirmation_samples = 2u,
-        .invalid_limit = 2u
+        .invalid_limit = 2u,
+        .average_samples = 1u
     };
 
     return (config);
@@ -547,6 +557,83 @@ s4_test_hardware_startup (void)
     return (b_ready && (S4_TERRAIN_FAULT_NONE == result.fault));
 }
 #endif
+
+/* Calibrates with a 4-sample tilt average (decision 10). */
+static void
+s4_test_calibrate_averaged (s4_terrain_context_t * p_context)
+{
+    s4_terrain_config_t config = s4_test_config();
+    uint32_t time_us = 0u;
+
+    config.average_samples = 4u;
+    s4_terrain_init(p_context, &config);
+    for (uint16_t index = 0u; index < config.calibration_samples; index++)
+    {
+        s4_test_feed(p_context, 0, 0, time_us, true);
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+    }
+}
+
+static bool
+s4_test_vibration_averages_out (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_started = false;
+
+    s4_test_calibrate_averaged(&context);
+
+    /* Roll of +/-240 mg each sample (about 29 mm one sample at a time)
+     * averages to zero over the 4-sample window. */
+    for (uint8_t index = 0u; index < 40u; index++)
+    {
+        int16_t const left_mg = ((index % 2u) == 0u) ? 240 : -240;
+
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, 0, left_mg, time_us, true);
+        b_started = b_started ||
+            (S4_TERRAIN_STATE_ON_HUMP == context.result.state);
+    }
+
+    return ((!b_started) &&
+            (S4_TERRAIN_STATE_MONITORING == context.result.state));
+}
+
+static bool
+s4_test_average_keeps_height (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_complete;
+
+    s4_test_calibrate_averaged(&context);
+    b_complete = s4_test_hump(&context, &time_us,
+                              S4_TEST_WHEEL_10MM_PITCH_MG,
+                              S4_TEST_WHEEL_10MM_ROLL_MG, true);
+
+    return (b_complete && context.result.b_current_height_valid &&
+            (10u == context.result.current_height_mm) &&
+            (S4_HUMP_CONTACT_LEFT == context.result.hump_contact));
+}
+
+static bool
+s4_test_average_length_checked (void)
+{
+    s4_terrain_context_t context;
+    s4_terrain_config_t config = s4_test_config();
+    bool b_zero_rejected;
+
+    config.average_samples = 0u;
+    s4_terrain_init(&context, &config);
+    b_zero_rejected = (S4_TERRAIN_STATE_FAULT == context.result.state);
+
+    config.average_samples = (uint8_t) (S4_AVERAGE_MAX_SAMPLES + 1u);
+    s4_terrain_init(&context, &config);
+
+    return (b_zero_rejected &&
+            (S4_TERRAIN_STATE_FAULT == context.result.state));
+}
+
 #endif
 
 /* End of file. */

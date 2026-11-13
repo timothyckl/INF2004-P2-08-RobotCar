@@ -8,7 +8,6 @@
 #include <stddef.h>
 
 #define S4_GRAVITY_MG        1000
-#define S4_FILTER_DIVISOR    2
 #define S4_UM_PER_MM         1000
 
 static bool s4_config_is_valid(s4_terrain_config_t const * p_config);
@@ -21,6 +20,9 @@ static void s4_fault_set(s4_terrain_context_t * p_context,
 static void s4_monitor_sample(s4_terrain_context_t * p_context,
                               s4_terrain_sample_t const * p_sample,
                               bool b_pitch_valid);
+static void s4_average_add(s4_terrain_context_t * p_context,
+                           int32_t forward_mg,
+                           int32_t lateral_mg);
 static int32_t s4_hump_height_um(s4_terrain_context_t const * p_context,
                                  bool b_pitch_valid,
                                  s4_hump_contact_t * p_contact);
@@ -168,7 +170,9 @@ s4_config_is_valid (s4_terrain_config_t const * p_config)
                   (p_config->max_hump_ms > 0u) &&
                   (p_config->track_mm > 0u) &&
                   (p_config->wheelbase_mm > 0u) &&
-                  (p_config->level_um < p_config->rise_um);
+                  (p_config->level_um < p_config->rise_um) &&
+                  (p_config->average_samples > 0u) &&
+                  (p_config->average_samples <= S4_AVERAGE_MAX_SAMPLES);
     }
 
     return (b_valid);
@@ -299,13 +303,9 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
     s4_hump_contact_t contact = S4_HUMP_CONTACT_NONE;
     int32_t height_um;
 
-    /* A light filter: a heavier one lowers a short hump's peak. */
-    p_context->filtered_x_mg +=
-        (forward_mg - p_context->filtered_x_mg) / S4_FILTER_DIVISOR;
-    p_context->filtered_y_mg +=
-        (lateral_mg - p_context->filtered_y_mg) / S4_FILTER_DIVISOR;
+    s4_average_add(p_context, forward_mg, lateral_mg);
 
-    /* The filter inputs and accumulators are bounded by int16_t samples. */
+    /* Each average lies within the range of the int16_t samples. */
     p_context->result.forward_tilt_mg = (int16_t) p_context->filtered_x_mg;
     p_context->result.lateral_tilt_mg = (int16_t) p_context->filtered_y_mg;
 
@@ -325,6 +325,45 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
     height_um = s4_hump_height_um(p_context, b_pitch_valid, &contact);
     s4_hump_update(p_context, p_sample->capture_time_us, height_um,
                    contact);
+}
+
+/*
+ * Moving average of the last average_samples tilts (decision 10): driving
+ * vibration averages out, while a hump, crossed in seconds at line-follow
+ * speed, keeps its height. Until the window fills, the mean of the samples
+ * held so far is used. Inputs are differences of int16_t values, so the sum
+ * of at most S4_AVERAGE_MAX_SAMPLES of them fits in int32_t.
+ */
+static void
+s4_average_add (s4_terrain_context_t * p_context,
+                int32_t forward_mg,
+                int32_t lateral_mg)
+{
+    uint8_t const length = p_context->config.average_samples;
+    uint8_t const index = p_context->average_index;
+
+    if (p_context->average_count >= length)
+    {
+        /* The window is full: the oldest sample leaves the sum. */
+        p_context->average_sum_x_mg -= p_context->average_x_mg[index];
+        p_context->average_sum_y_mg -= p_context->average_y_mg[index];
+    }
+    else
+    {
+        p_context->average_count++;
+    }
+
+    p_context->average_x_mg[index] = forward_mg;
+    p_context->average_y_mg[index] = lateral_mg;
+    p_context->average_sum_x_mg += forward_mg;
+    p_context->average_sum_y_mg += lateral_mg;
+    p_context->average_index =
+        ((uint8_t) (index + 1u) >= length) ? 0u : (uint8_t) (index + 1u);
+
+    p_context->filtered_x_mg =
+        p_context->average_sum_x_mg / (int32_t) p_context->average_count;
+    p_context->filtered_y_mg =
+        p_context->average_sum_y_mg / (int32_t) p_context->average_count;
 }
 
 /*

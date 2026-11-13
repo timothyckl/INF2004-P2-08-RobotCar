@@ -13,7 +13,13 @@
 #define S4_MAX_SAMPLE_GAP_MS        50u
 #define S4_CONFIRMATION_SAMPLES     3u
 #define S4_INVALID_SAMPLE_LIMIT     3u
-#define S4_MAX_HUMP_MS              5000u   /* provisional */
+/* A hump not ended within this is dropped (decision 10, provisional): at
+ * line-follow speed (about 40 mm/s) a 195 mm hump takes about 5 s. */
+#define S4_MAX_HUMP_MS              12000u
+
+/* Tilt moving average (decision 10): 16 samples, about 470 ms at the
+ * measured 29.5 ms per sample while line following. */
+#define S4_AVERAGE_SAMPLES          16u
 
 /* Contact geometry (decision 8). Track: S2 odometry track width (S2
  * decision, 119 mm). Wheelbase: wheel axle to the front ball caster,
@@ -229,7 +235,8 @@ s4_runtime_config (void)
         .rise_um = S4_RISE_UM,
         .level_um = S4_LEVEL_UM,
         .confirmation_samples = S4_CONFIRMATION_SAMPLES,
-        .invalid_limit = S4_INVALID_SAMPLE_LIMIT
+        .invalid_limit = S4_INVALID_SAMPLE_LIMIT,
+        .average_samples = S4_AVERAGE_SAMPLES
     };
 
     return (config);
