@@ -203,6 +203,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-13 | S5 → S2 | snapshot under S5's mutex (`TMO_POL`) | `scan_task_get()` | `scan_task_status_t`: forward verdict, result, `bypass_plan_t` | integration owner; review pending |
 | IF-14 | S2 → S5 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE | integration owner; review pending |
 | IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
+| IF-17 | S2 → S4 | snapshot under S2's mutex | `motion_get_status()` | `motion_status_t`: a new `run_id` (START) clears the hump maximum; wheel speed changes mark pitch unreadable while accelerating | integration branch, S2 decision 24 |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).

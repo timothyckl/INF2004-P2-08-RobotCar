@@ -444,8 +444,21 @@ scan, a bypass and a CLEAR scan; it reported humps and impacts only while
 the car was carried. The S3 starter
 consumer still sends IF-03 lines, so S4 keeps creating `mbf_summary` and
 `flg_events`. Stage 2 supplies wheel distance from Motion Control for the
-height estimate and a new-run reset at START; stage 3 reports terrain
+height estimate and a new-run reset at START (decision 24); stage 3 reports terrain
 events to the controller and telemetry.
+
+### 24. Subsystem 4 integration, stage 2: hump height (2026-11-12)
+
+S4 measures a hump from tilt and the contact geometry (S4 decision 8).
+It reads `motion_get_status()` each IMU sample (IF-17, read-only) for
+`run_id`, so START, which already sends `NEW_RUN`, clears the run
+maximum, and for the wheel speeds, so pitch is ignored while the car
+speeds up or brakes. A completed hump prints its height, the contact that
+crossed it and the run maximum. S4 still does not affect motion; stage 3
+reports terrain events to the controller and telemetry.
+
+For the bench, `S2_CAL_TEST=3` drives 450 mm forward per GP20 press and
+also starts subsystem 4, as does `S2_CAL_TEST=1` and 2.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
@@ -856,6 +869,48 @@ up = +Z. The decoded driver values stay in the sensor's axes. Confirmed
 with `S4_RAW_LOG=1` (`testing/subsystem4/logs/2026-11-12_s4-h02-raw.txt`):
 level reads sensor z +900 mg, nose up gives forward +190 mg (sensor y
 -190) and left side up gives left +145 mg (sensor x +145).
+
+### 8. Hump height from tilt and contact geometry (2026-11-12)
+
+Approved by Dalton on the integration branch. Replaces the
+pitch-then-descent state machine of decision 3 and the distance-based
+height of the brief: the course's speed humps are crossed by one wheel
+(the bench ramps are 50 mm wide; other groups test the same way), and a
+one-wheel hump mostly rolls the car, which the pitch method never saw.
+
+- **Geometry.** The car stands on its left wheel, right wheel (track
+  119 mm, S2 odometry) and front ball caster (88 mm ahead of the axle,
+  ruler). Filtered roll and pitch fix the plane through them: wheels at
+  +/-roll x 59.5 mm, caster at pitch x 88 mm. With the lowest contact on
+  the floor, the height is highest minus lowest. One wheel raised h gives
+  roll h/119 and pitch -h/176; both wheels, pitch -h/88; the caster,
+  +h/88. Each reads h. A hump the whole car climbs onto reads level on
+  top and is not measured.
+- **Detection.** A hump starts at 4 mm and ends below 2 mm, each held for
+  3 samples; its height is the peak, and the highest contact at the peak
+  is reported (left wheel, right wheel, both wheels, caster). A hump not
+  ended within 5 s is dropped and the next waits for level. The tilt
+  filter is halved each sample (was a quarter), because a heavier filter
+  lowered a short hump's peak. All of these are provisional.
+- **Acceleration.** Speeding up or braking reads as pitch (200 mg, 17 mm
+  at the caster). The task reads Motion Control's snapshot (IF-17) and
+  ignores pitch while the mean wheel speed changes by more than 15 mm/s
+  between samples and for 8 samples after; the caster is then taken as
+  level with the lower wheel, leaving the roll estimate.
+- **Run.** A new `run_id` (START) clears the run maximum.
+
+Test cases S4-U07, S4-U15 and S4-U22 are retired with the old method;
+S4-U23 to S4-U27 cover the four contacts and the pitch gate.
+
+### 9. Short calibration, retried in place (2026-11-12)
+
+Approved by Dalton on the integration branch. In the first hump-pass run
+(`testing/subsystem4/logs/2026-11-12_s4-h08-one-wheel.txt`) S4 never
+calibrated: 200 samples took about 6 s, the car was being handled, and
+each calibration fault also closed the sensor for 1 s. Calibration now
+takes 50 samples (about 1.5 s), and a calibration fault prints each
+axis's span and starts again without restarting the sensor. Sensor, I2C
+and stale-data faults still restart it.
 
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 

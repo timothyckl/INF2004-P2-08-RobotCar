@@ -54,6 +54,9 @@
 #if S2_CAL_TEST
 #define CTRL_CAL_DISTANCE_MM    1000u
 #define CTRL_CAL_ANGLE_MDEG     360000u
+/* Mode 3: one hump pass. A contact starting about 100 mm before the
+   195 mm hump has crossed it and settled after 450 mm. */
+#define CTRL_CAL_HUMP_MM        450u
 #endif
 
 #if S3_LINE_FOLLOW_TEST
@@ -124,6 +127,13 @@ static const ctrl_step_t g_demo[] =
 static const ctrl_step_t g_demo[] =
 {
     {CTRL_ACT_LEFT, CTRL_CAL_ANGLE_MDEG}
+};
+#define CTRL_SCRIPT     g_demo
+#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
+#elif S2_CAL_TEST == 3
+static const ctrl_step_t g_demo[] =
+{
+    {CTRL_ACT_FORWARD, CTRL_CAL_HUMP_MM}
 };
 #define CTRL_SCRIPT     g_demo
 #define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
@@ -762,6 +772,9 @@ cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 #if S2_CAL_TEST == 1
         tm_printf((UB *)"[S2] CAL forward %u mm finished\n",
                   (UINT)CTRL_CAL_DISTANCE_MM);
+#elif S2_CAL_TEST == 3
+        tm_printf((UB *)"[S2] CAL hump pass, forward %u mm finished\n",
+                  (UINT)CTRL_CAL_HUMP_MM);
 #else
         tm_printf((UB *)"[S2] CAL left %u mdeg finished\n",
                   (UINT)CTRL_CAL_ANGLE_MDEG);

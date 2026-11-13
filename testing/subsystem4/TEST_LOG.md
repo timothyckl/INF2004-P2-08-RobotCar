@@ -34,7 +34,7 @@ For the connected-IMU startup case only, build with:
 make -C build_make TEST=1 S4_HW_TEST=1 -j8
 ```
 
-The logic and decode cases (S4-U03 to S4-U20) also run on a computer under
+The logic and decode cases (S4-U03 to S4-U27, less the retired IDs) also run on a computer under
 strict C99 warnings with `make -C testing/host s4`; S4-H01 then reports
 BLOCKED. A host pass checks the logic against synthetic input only.
 
@@ -60,22 +60,29 @@ is no longer executed by Subsystem 4 after the starter monitor is replaced.
 |---|---|---|
 | S4-U03 | Stable stationary samples through the configured calibration count. | Calibration completes once and reports ready. |
 | S4-U04 | Calibration samples span more than the configured limit. | Calibration fault; no ready or terrain result. |
-| S4-U05 | One above-threshold forward sample between level samples. | No confirmed hump. |
-| S4-U06 | Confirmed positive tilt, confirmed negative tilt, then confirmed level samples. | Exactly one complete ascent/descent hump. |
-| S4-U07 | Confirmed ascent that returns directly to level. | No completed hump result. |
+| S4-U05 | One sample of a 10 mm one-wheel tilt between level samples. | No hump. |
+| S4-U06 | A 10 mm one-wheel tilt held, then level. | One completed hump with a valid height. |
+| S4-U07 | Retired 2026-11-12 with the ascent/descent method (decision 8). | Do not reuse. |
 | S4-U08 | Invalid samples reach the configured consecutive limit. | Sensor fault and invalid current result. |
 | S4-U09 | Invalid sample count below the configured limit followed by valid data. | No sensor fault; invalid streak clears. |
 | S4-U10 | Valid timestamps cross `UINT32_MAX`. | Elapsed-time handling remains correct across wraparound. |
 | S4-U11 | Gap between valid samples exceeds the configured maximum. | Stale-data fault. |
-| S4-U12 | Two valid humps with different injected heights. | Higher valid height becomes the run maximum. |
+| S4-U12 | Humps of 5 mm then 10 mm. | 10 mm becomes the run maximum. |
 | S4-U13 | Local recovery after a valid maximum. | Fresh calibration is required; run maximum is retained. |
 | S4-U14 | Explicit new-run reset after a valid maximum. | Stored maximum and its validity are cleared. |
-| S4-U15 | Hump sequence without valid injected distance. | Hump may be detected, but height remains invalid. |
-| S4-U16 | Acceleration magnitude exceeds the configured impact threshold. | One impact event is reported without changing motor state. |
+| S4-U15 | Retired 2026-11-12: height no longer uses wheel distance (decision 8). | Do not reuse. |
+| S4-U16 | Dynamic acceleration exceeds the configured impact threshold. | One impact event is reported per crossing. |
 | S4-U17 | Null context, configuration, sample, or result access. | Calls reject or ignore invalid pointers without a crash. |
 | S4-U18 | Known raw bytes for +100 mg, -200 mg, and +1000 mg. | Axis order, 1 mg/LSB scaling, validity, and timestamp decode correctly. |
 | S4-U19 | Raw values at the signed 12-bit limits. | Values decode as -2048 mg and +2047 mg without implementation-defined shifting. |
 | S4-U20 | Null raw-data or destination pointer passed to the decode helper. | Decode is rejected without dereferencing the pointer. |
+| S4-U21 | A one-wheel tilt held longer than `max_hump_ms`, then level. | No hump and no maximum; monitoring resumes once level. |
+| S4-U22 | Retired 2026-11-12: height no longer sums distance (decision 8). | Do not reuse. |
+| S4-U23 | 10 mm under the left wheel: roll +84 mg, pitch -57 mg. | 10 mm, left wheel. |
+| S4-U24 | 10 mm under the right wheel: roll -84 mg, pitch -57 mg. | 10 mm, right wheel. |
+| S4-U25 | 10 mm under both wheels: pitch -114 mg. | 10 mm, both wheels. |
+| S4-U26 | 10 mm under the caster: pitch +114 mg. | 10 mm, caster. |
+| S4-U27 | Pitch of 114 mg with pitch marked unreadable (accelerating). | No hump. |
 
 Boundary cases use small synthetic thresholds to remain deterministic. These
 values are not physical calibration evidence.

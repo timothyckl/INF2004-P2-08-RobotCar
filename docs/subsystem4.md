@@ -43,8 +43,8 @@ Robo Pico Grove 2 mapping in `docs/datasheets/Robo-Pico-datasheet.pdf`.
 | `subsystem4.c` | Lifecycle and mutex-protected public snapshot |
 | `subsystem4_test.c` | On-target synthetic and driver-decode tests |
 
-The runtime state sequence is `CALIBRATING -> MONITORING -> ASCENDING ->
-DESCENDING -> MONITORING`. A fault can be entered from active states. Recovery
+The runtime state sequence is `CALIBRATING -> MONITORING -> ON_HUMP ->
+MONITORING`. A fault can be entered from active states. Recovery
 always returns through fresh calibration.
 
 ## Calibration and provisional thresholds
@@ -52,7 +52,7 @@ always returns through fresh calibration.
 At startup, keep the vehicle stationary and level. `task_imu.c` turns each
 sample into the vehicle's axes (x forward, y left, z up) before processing;
 the board is mounted with X left, Y backwards and Z up (decision 7).
-The task collects 200 valid samples, two to four seconds at the 10 ms tick. It rejects
+The task collects 50 valid samples, about 1.5 s at the measured rate. It rejects
 calibration if any axis spans more than 80 mg. The mean X/Y offsets and the Z
 one-g offset are then removed from later samples.
 
@@ -73,17 +73,21 @@ humps, safe impulses, temperature, mounting, and supply conditions.
 
 ## Height and maximum retention
 
-The logic accepts an injected forward-distance increment and estimates ascent
-height as `distance_mm * positive_forward_mg / 1000`. This is a candidate
-small-angle gravity-projection estimate, not a validated measurement. Any
-missing distance during the active ascent invalidates the height. Valid hump
-heights update a run maximum; local sensor recovery retains it, while an
-explicit new-run reset clears it.
+Height comes from tilt and the vehicle's contact geometry (decision 8). The car
+stands on its left wheel, right wheel (track 119 mm) and front ball caster
+(88 mm ahead of the axle). Filtered roll and pitch fix the plane through the
+three contacts; with the lowest on the floor, the hump height is the highest
+contact's rise. A hump starts at 4 mm and ends below 2 mm, each held for three
+samples, and reports its peak and the contact that crossed it. A hump not ended
+within 5 s is dropped. These are provisional values, not validated results.
 
-The standalone task intentionally injects no distance because encoder ownership
-belongs to Motion Control. It can detect a hump, but its height and maximum
-remain invalid until an agreed integration interface supplies timestamp-aligned
-distance increments.
+Each sample the task reads Motion Control's snapshot (`motion_get_status()`).
+A changed `run_id` means START began a new run, which clears the run maximum.
+While the mean wheel speed is changing, forward acceleration would read as
+pitch, so pitch is ignored and only the roll estimate is used. Local sensor
+recovery keeps the run maximum.
+
+A hump that the whole car climbs onto reads level on top and is not measured.
 
 ## Builds and tests
 
@@ -94,8 +98,8 @@ make -C build_make TEST=1 -j8
 make -C build_make TEST=1 S4_HW_TEST=1 -j8
 ```
 
-Add `S4_RAW_LOG=1` to print the acceleration about twice a second in the
-sensor's and the vehicle's axes (mounting check S4-H02).
+Add `S4_RAW_LOG=1` to print every sample in the vehicle's axes with the
+filtered tilts, pitch gate and state (S4-H02, S4-H08).
 
 The first image includes deterministic terrain and raw-register decoding tests.
 The second also waits for live identity/configuration and stable calibration.

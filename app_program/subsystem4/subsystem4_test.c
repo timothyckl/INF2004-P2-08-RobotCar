@@ -1,30 +1,43 @@
 /**
  * @file subsystem4_test.c
- * @brief On-target standalone tests for Subsystem 4 terrain logic.
+ * @brief On-target tests for Subsystem 4 terrain logic and decoding.
+ *
+ * Hump inputs come from the contact geometry (decision 8): a wheel raised
+ * h mm rolls the car h/track and pitches it -h/(2 x wheelbase); both
+ * wheels raised pitch it -h/wheelbase; the caster raised, +h/wheelbase.
+ * With track 119 mm and wheelbase 88 mm, 10 mm is 84 mg roll with -57 mg
+ * pitch, or 114 mg pitch.
  */
 #include "subsystem4_test_internal.h"
 
 #if APP_TEST
 #define S4_TEST_SAMPLE_PERIOD_US    10000u
-#define S4_TEST_TILT_MG             400
+#define S4_TEST_WHEEL_10MM_ROLL_MG  84
+#define S4_TEST_WHEEL_10MM_PITCH_MG (-57)
+#define S4_TEST_AXLE_10MM_PITCH_MG  114
+#define S4_TEST_HUMP_SAMPLES        8u
+#define S4_TEST_LEVEL_SAMPLES       8u
 
 static s4_terrain_config_t s4_test_config(void);
 static void s4_test_calibrate(s4_terrain_context_t * p_context,
                               uint32_t start_time_us);
 static void s4_test_feed(s4_terrain_context_t * p_context,
-                         int16_t acceleration_x_mg,
+                         int16_t forward_mg,
+                         int16_t left_mg,
                          uint32_t capture_time_us,
-                         uint16_t distance_delta_mm,
-                         bool b_distance_valid);
-static void s4_test_complete_hump(s4_terrain_context_t * p_context,
-                                  uint32_t * p_time_us,
-                                  uint16_t distance_delta_mm,
-                                  bool b_distance_valid);
+                         bool b_pitch_valid);
+static bool s4_test_hump(s4_terrain_context_t * p_context,
+                         uint32_t * p_time_us,
+                         int16_t forward_mg,
+                         int16_t left_mg,
+                         bool b_pitch_valid);
+static bool s4_test_hump_reads(int16_t forward_mg,
+                               int16_t left_mg,
+                               s4_hump_contact_t contact);
 static bool s4_test_calibration_ready(void);
 static bool s4_test_calibration_fault(void);
 static bool s4_test_rejects_spike(void);
 static bool s4_test_detects_hump(void);
-static bool s4_test_requires_descent(void);
 static bool s4_test_invalid_limit(void);
 static bool s4_test_invalid_streak_clears(void);
 static bool s4_test_time_wrap(void);
@@ -32,12 +45,13 @@ static bool s4_test_stale_fault(void);
 static bool s4_test_maximum_height(void);
 static bool s4_test_recovery_retains_max(void);
 static bool s4_test_new_run_clears_max(void);
-static bool s4_test_height_needs_distance(void);
 static bool s4_test_impact_edge(void);
 static bool s4_test_null_safety(void);
 static bool s4_test_decode_axes(void);
 static bool s4_test_decode_signed_limits(void);
 static bool s4_test_decode_null_safety(void);
+static bool s4_test_hump_time_limit(void);
+static bool s4_test_pitch_ignored(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -54,9 +68,7 @@ subsystem4_test (void)
     TEST_CHECK("S4-U05", s4_test_rejects_spike(),
                "single tilt spike is not a hump");
     TEST_CHECK("S4-U06", s4_test_detects_hump(),
-               "ascent descent level completes one hump");
-    TEST_CHECK("S4-U07", s4_test_requires_descent(),
-               "ascent returning to level remains incomplete");
+               "rise then level completes one hump");
     TEST_CHECK("S4-U08", s4_test_invalid_limit(),
                "consecutive invalid samples cause sensor fault");
     TEST_CHECK("S4-U09", s4_test_invalid_streak_clears(),
@@ -66,13 +78,11 @@ subsystem4_test (void)
     TEST_CHECK("S4-U11", s4_test_stale_fault(),
                "excess sample gap causes stale fault");
     TEST_CHECK("S4-U12", s4_test_maximum_height(),
-               "larger valid hump becomes run maximum");
+               "larger hump becomes run maximum");
     TEST_CHECK("S4-U13", s4_test_recovery_retains_max(),
                "local recovery preserves run maximum");
     TEST_CHECK("S4-U14", s4_test_new_run_clears_max(),
                "new run clears run maximum");
-    TEST_CHECK("S4-U15", s4_test_height_needs_distance(),
-               "missing distance leaves height invalid");
     TEST_CHECK("S4-U16", s4_test_impact_edge(),
                "impact is reported once per threshold crossing");
     TEST_CHECK("S4-U17", s4_test_null_safety(),
@@ -83,6 +93,24 @@ subsystem4_test (void)
                "driver decodes signed 12-bit limits");
     TEST_CHECK("S4-U20", s4_test_decode_null_safety(),
                "driver decode rejects null pointers");
+    TEST_CHECK("S4-U21", s4_test_hump_time_limit(),
+               "hump not ended in time is dropped until level");
+    TEST_CHECK("S4-U23", s4_test_hump_reads(S4_TEST_WHEEL_10MM_PITCH_MG,
+                                            S4_TEST_WHEEL_10MM_ROLL_MG,
+                                            S4_HUMP_CONTACT_LEFT),
+               "10 mm under the left wheel reads 10 mm, left wheel");
+    TEST_CHECK("S4-U24", s4_test_hump_reads(S4_TEST_WHEEL_10MM_PITCH_MG,
+                                            -S4_TEST_WHEEL_10MM_ROLL_MG,
+                                            S4_HUMP_CONTACT_RIGHT),
+               "10 mm under the right wheel reads 10 mm, right wheel");
+    TEST_CHECK("S4-U25", s4_test_hump_reads(-S4_TEST_AXLE_10MM_PITCH_MG, 0,
+                                            S4_HUMP_CONTACT_BOTH_WHEELS),
+               "10 mm under both wheels reads 10 mm, both wheels");
+    TEST_CHECK("S4-U26", s4_test_hump_reads(S4_TEST_AXLE_10MM_PITCH_MG, 0,
+                                            S4_HUMP_CONTACT_CASTER),
+               "10 mm under the caster reads 10 mm, caster");
+    TEST_CHECK("S4-U27", s4_test_pitch_ignored(),
+               "pitch while accelerating is not a hump");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -101,10 +129,13 @@ s4_test_config (void)
     {
         .calibration_samples = 4u,
         .calibration_span_mg = 10u,
-        .ascent_threshold_mg = 100u,
-        .level_threshold_mg = 40u,
         .impact_threshold_mg = 700u,
         .max_sample_gap_ms = 100u,
+        .max_hump_ms = 1000u,
+        .track_mm = 119u,
+        .wheelbase_mm = 88u,
+        .rise_um = 4000u,
+        .level_um = 2000u,
         .confirmation_samples = 2u,
         .invalid_limit = 2u
     };
@@ -122,57 +153,78 @@ s4_test_calibrate (s4_terrain_context_t * p_context,
     s4_terrain_init(p_context, &config);
     for (uint16_t index = 0u; index < config.calibration_samples; index++)
     {
-        s4_test_feed(p_context, 0, time_us, 0u, false);
+        s4_test_feed(p_context, 0, 0, time_us, true);
         time_us += S4_TEST_SAMPLE_PERIOD_US;
     }
 }
 
 static void
 s4_test_feed (s4_terrain_context_t * p_context,
-              int16_t acceleration_x_mg,
+              int16_t forward_mg,
+              int16_t left_mg,
               uint32_t capture_time_us,
-              uint16_t distance_delta_mm,
-              bool b_distance_valid)
+              bool b_pitch_valid)
 {
     s4_terrain_sample_t sample =
     {
-        .acceleration_x_mg = acceleration_x_mg,
-        .acceleration_y_mg = 0,
+        .acceleration_x_mg = forward_mg,
+        .acceleration_y_mg = left_mg,
         .acceleration_z_mg = 1000,
         .capture_time_us = capture_time_us,
         .b_valid = true
     };
 
-    s4_terrain_process(p_context, &sample, distance_delta_mm,
-                       b_distance_valid);
+    s4_terrain_process(p_context, &sample, b_pitch_valid);
 }
 
-static void
-s4_test_complete_hump (s4_terrain_context_t * p_context,
-                       uint32_t * p_time_us,
-                       uint16_t distance_delta_mm,
-                       bool b_distance_valid)
+/* Holds the tilt for S4_TEST_HUMP_SAMPLES, then level; true if a hump
+ * completed on any sample. */
+static bool
+s4_test_hump (s4_terrain_context_t * p_context,
+              uint32_t * p_time_us,
+              int16_t forward_mg,
+              int16_t left_mg,
+              bool b_pitch_valid)
 {
-    for (uint8_t index = 0u; index < 4u; index++)
+    bool b_complete = false;
+
+    for (uint8_t index = 0u; index < S4_TEST_HUMP_SAMPLES; index++)
     {
         *p_time_us += S4_TEST_SAMPLE_PERIOD_US;
-        s4_test_feed(p_context, S4_TEST_TILT_MG, *p_time_us,
-                     distance_delta_mm, b_distance_valid);
+        s4_test_feed(p_context, forward_mg, left_mg, *p_time_us,
+                     b_pitch_valid);
+        b_complete = b_complete ||
+            (0u != (p_context->result.events &
+                    S4_TERRAIN_EVENT_HUMP_COMPLETE));
+    }
+    for (uint8_t index = 0u; index < S4_TEST_LEVEL_SAMPLES; index++)
+    {
+        *p_time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(p_context, 0, 0, *p_time_us, b_pitch_valid);
+        b_complete = b_complete ||
+            (0u != (p_context->result.events &
+                    S4_TERRAIN_EVENT_HUMP_COMPLETE));
     }
 
-    for (uint8_t index = 0u; index < 2u; index++)
-    {
-        *p_time_us += S4_TEST_SAMPLE_PERIOD_US;
-        s4_test_feed(p_context, -S4_TEST_TILT_MG, *p_time_us,
-                     0u, b_distance_valid);
-    }
+    return (b_complete);
+}
 
-    for (uint8_t index = 0u; index < 2u; index++)
-    {
-        *p_time_us += S4_TEST_SAMPLE_PERIOD_US;
-        s4_test_feed(p_context, 0, *p_time_us, 0u,
-                     b_distance_valid);
-    }
+static bool
+s4_test_hump_reads (int16_t forward_mg,
+                    int16_t left_mg,
+                    s4_hump_contact_t contact)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_complete;
+
+    s4_test_calibrate(&context, 0u);
+    b_complete = s4_test_hump(&context, &time_us, forward_mg, left_mg,
+                              true);
+
+    return (b_complete && context.result.b_current_height_valid &&
+            (10u == context.result.current_height_mm) &&
+            (contact == context.result.hump_contact));
 }
 
 static bool
@@ -194,10 +246,10 @@ s4_test_calibration_fault (void)
     s4_terrain_config_t config = s4_test_config();
 
     s4_terrain_init(&context, &config);
-    s4_test_feed(&context, 0, 0u, 0u, false);
-    s4_test_feed(&context, 20, 10000u, 0u, false);
-    s4_test_feed(&context, 0, 20000u, 0u, false);
-    s4_test_feed(&context, 0, 30000u, 0u, false);
+    s4_test_feed(&context, 0, 0, 0u, true);
+    s4_test_feed(&context, 20, 0, 10000u, true);
+    s4_test_feed(&context, 0, 0, 20000u, true);
+    s4_test_feed(&context, 0, 0, 30000u, true);
 
     return ((S4_TERRAIN_STATE_FAULT == context.result.state) &&
             (S4_TERRAIN_FAULT_CALIBRATION == context.result.fault));
@@ -207,12 +259,22 @@ static bool
 s4_test_rejects_spike (void)
 {
     s4_terrain_context_t context;
+    bool b_complete = false;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_feed(&context, S4_TEST_TILT_MG, 40000u, 0u, false);
-    s4_test_feed(&context, 0, 50000u, 0u, false);
+    s4_test_feed(&context, S4_TEST_WHEEL_10MM_PITCH_MG,
+                 S4_TEST_WHEEL_10MM_ROLL_MG, 40000u, true);
+    for (uint32_t time_us = 50000u; time_us < 150000u;
+         time_us += S4_TEST_SAMPLE_PERIOD_US)
+    {
+        s4_test_feed(&context, 0, 0, time_us, true);
+        b_complete = b_complete ||
+            (0u != (context.result.events &
+                    S4_TERRAIN_EVENT_HUMP_COMPLETE));
+    }
 
-    return (S4_TERRAIN_STATE_MONITORING == context.result.state);
+    return ((!b_complete) &&
+            (S4_TERRAIN_STATE_MONITORING == context.result.state));
 }
 
 static bool
@@ -220,30 +282,16 @@ s4_test_detects_hump (void)
 {
     s4_terrain_context_t context;
     uint32_t time_us = 30000u;
+    bool b_complete;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_complete_hump(&context, &time_us, 50u, true);
+    b_complete = s4_test_hump(&context, &time_us,
+                              S4_TEST_WHEEL_10MM_PITCH_MG,
+                              S4_TEST_WHEEL_10MM_ROLL_MG, true);
 
-    return ((S4_TERRAIN_STATE_MONITORING == context.result.state) &&
-            (0u != (context.result.events &
-                    S4_TERRAIN_EVENT_HUMP_COMPLETE)) &&
+    return (b_complete &&
+            (S4_TERRAIN_STATE_MONITORING == context.result.state) &&
             context.result.b_current_height_valid);
-}
-
-static bool
-s4_test_requires_descent (void)
-{
-    s4_terrain_context_t context;
-
-    s4_test_calibrate(&context, 0u);
-    s4_test_feed(&context, S4_TEST_TILT_MG, 40000u, 0u, true);
-    s4_test_feed(&context, S4_TEST_TILT_MG, 50000u, 0u, true);
-    s4_test_feed(&context, 0, 60000u, 0u, true);
-    s4_test_feed(&context, 0, 70000u, 0u, true);
-
-    return ((S4_TERRAIN_STATE_ASCENDING == context.result.state) &&
-            (0u == (context.result.events &
-                    S4_TERRAIN_EVENT_HUMP_COMPLETE)));
 }
 
 static bool
@@ -253,12 +301,11 @@ s4_test_invalid_limit (void)
     s4_terrain_sample_t invalid = {0};
 
     s4_test_calibrate(&context, 0u);
-    s4_terrain_process(&context, &invalid, 0u, false);
-    s4_terrain_process(&context, &invalid, 0u, false);
+    s4_terrain_process(&context, &invalid, true);
+    s4_terrain_process(&context, &invalid, true);
 
     return ((S4_TERRAIN_STATE_FAULT == context.result.state) &&
-            (S4_TERRAIN_FAULT_SENSOR == context.result.fault) &&
-            (!context.result.b_current_height_valid));
+            (S4_TERRAIN_FAULT_SENSOR == context.result.fault));
 }
 
 static bool
@@ -268,9 +315,9 @@ s4_test_invalid_streak_clears (void)
     s4_terrain_sample_t invalid = {0};
 
     s4_test_calibrate(&context, 0u);
-    s4_terrain_process(&context, &invalid, 0u, false);
-    s4_test_feed(&context, 0, 40000u, 0u, false);
-    s4_terrain_process(&context, &invalid, 0u, false);
+    s4_terrain_process(&context, &invalid, true);
+    s4_test_feed(&context, 0, 0, 40000u, true);
+    s4_terrain_process(&context, &invalid, true);
 
     return (S4_TERRAIN_STATE_MONITORING == context.result.state);
 }
@@ -282,9 +329,8 @@ s4_test_time_wrap (void)
     uint32_t start_time_us = UINT32_MAX - 20000u;
 
     s4_test_calibrate(&context, start_time_us);
-    s4_test_feed(&context, 0,
-                 start_time_us + (4u * S4_TEST_SAMPLE_PERIOD_US),
-                 0u, false);
+    s4_test_feed(&context, 0, 0,
+                 start_time_us + (4u * S4_TEST_SAMPLE_PERIOD_US), true);
 
     return (S4_TERRAIN_STATE_MONITORING == context.result.state);
 }
@@ -295,7 +341,7 @@ s4_test_stale_fault (void)
     s4_terrain_context_t context;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_feed(&context, 0, 200000u, 0u, false);
+    s4_test_feed(&context, 0, 0, 200000u, true);
 
     return ((S4_TERRAIN_STATE_FAULT == context.result.state) &&
             (S4_TERRAIN_FAULT_STALE == context.result.fault));
@@ -308,11 +354,13 @@ s4_test_maximum_height (void)
     uint32_t time_us = 30000u;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_complete_hump(&context, &time_us, 50u, true);
-    s4_test_complete_hump(&context, &time_us, 100u, true);
+    (void) s4_test_hump(&context, &time_us, (S4_TEST_WHEEL_10MM_PITCH_MG / 2),
+                        (S4_TEST_WHEEL_10MM_ROLL_MG / 2), true);
+    (void) s4_test_hump(&context, &time_us, S4_TEST_WHEEL_10MM_PITCH_MG,
+                        S4_TEST_WHEEL_10MM_ROLL_MG, true);
 
     return (context.result.b_maximum_height_valid &&
-            (80u == context.result.maximum_height_mm));
+            (10u == context.result.maximum_height_mm));
 }
 
 static bool
@@ -322,12 +370,13 @@ s4_test_recovery_retains_max (void)
     uint32_t time_us = 30000u;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_complete_hump(&context, &time_us, 50u, true);
+    (void) s4_test_hump(&context, &time_us, S4_TEST_WHEEL_10MM_PITCH_MG,
+                        S4_TEST_WHEEL_10MM_ROLL_MG, true);
     s4_terrain_request_recovery(&context);
 
     return ((S4_TERRAIN_STATE_CALIBRATING == context.result.state) &&
             context.result.b_maximum_height_valid &&
-            (40u == context.result.maximum_height_mm));
+            (10u == context.result.maximum_height_mm));
 }
 
 static bool
@@ -337,25 +386,12 @@ s4_test_new_run_clears_max (void)
     uint32_t time_us = 30000u;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_complete_hump(&context, &time_us, 50u, true);
+    (void) s4_test_hump(&context, &time_us, S4_TEST_WHEEL_10MM_PITCH_MG,
+                        S4_TEST_WHEEL_10MM_ROLL_MG, true);
     s4_terrain_start_new_run(&context);
 
     return ((!context.result.b_maximum_height_valid) &&
             (0u == context.result.maximum_height_mm));
-}
-
-static bool
-s4_test_height_needs_distance (void)
-{
-    s4_terrain_context_t context;
-    uint32_t time_us = 30000u;
-
-    s4_test_calibrate(&context, 0u);
-    s4_test_complete_hump(&context, &time_us, 50u, false);
-
-    return ((0u != (context.result.events &
-                    S4_TERRAIN_EVENT_HUMP_COMPLETE)) &&
-            (!context.result.b_current_height_valid));
 }
 
 static bool
@@ -365,10 +401,10 @@ s4_test_impact_edge (void)
     bool b_first_event;
 
     s4_test_calibrate(&context, 0u);
-    s4_test_feed(&context, 800, 40000u, 0u, false);
+    s4_test_feed(&context, 800, 0, 40000u, true);
     b_first_event = 0u !=
         (context.result.events & S4_TERRAIN_EVENT_IMPACT);
-    s4_test_feed(&context, 800, 50000u, 0u, false);
+    s4_test_feed(&context, 800, 0, 50000u, true);
 
     return (b_first_event &&
             (0u == (context.result.events & S4_TERRAIN_EVENT_IMPACT)));
@@ -382,9 +418,9 @@ s4_test_null_safety (void)
     s4_terrain_sample_t sample = {0};
 
     s4_terrain_init(NULL, &config);
-    s4_terrain_process(NULL, &sample, 0u, false);
+    s4_terrain_process(NULL, &sample, true);
     s4_terrain_init(&context, NULL);
-    s4_terrain_process(&context, NULL, 0u, false);
+    s4_terrain_process(&context, NULL, true);
     s4_terrain_request_recovery(NULL);
     s4_terrain_start_new_run(NULL);
 
@@ -436,6 +472,54 @@ s4_test_decode_null_safety (void)
             (!s4_lsm303_decode_acceleration(raw_data, 0u, NULL)));
 }
 
+static bool
+s4_test_hump_time_limit (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_complete = false;
+
+    s4_test_calibrate(&context, 0u);
+
+    /* A wheel held raised for longer than max_hump_ms (1 s), then level. */
+    for (uint8_t index = 0u; index < 110u; index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, S4_TEST_WHEEL_10MM_PITCH_MG,
+                     S4_TEST_WHEEL_10MM_ROLL_MG, time_us, true);
+        b_complete = b_complete ||
+            (0u != (context.result.events &
+                    S4_TERRAIN_EVENT_HUMP_COMPLETE));
+    }
+    for (uint8_t index = 0u; index < S4_TEST_LEVEL_SAMPLES; index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, 0, 0, time_us, true);
+        b_complete = b_complete ||
+            (0u != (context.result.events &
+                    S4_TERRAIN_EVENT_HUMP_COMPLETE));
+    }
+
+    return ((!b_complete) && (!context.result.b_maximum_height_valid) &&
+            (S4_TERRAIN_STATE_MONITORING == context.result.state));
+}
+
+static bool
+s4_test_pitch_ignored (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_complete;
+
+    s4_test_calibrate(&context, 0u);
+
+    /* Pitch alone (as when accelerating) with pitch marked unreadable. */
+    b_complete = s4_test_hump(&context, &time_us,
+                              S4_TEST_AXLE_10MM_PITCH_MG, 0, false);
+
+    return ((!b_complete) && (!context.result.b_maximum_height_valid));
+}
+
 #if S4_HARDWARE_TEST
 static bool
 s4_test_hardware_startup (void)
@@ -443,15 +527,15 @@ s4_test_hardware_startup (void)
     s4_terrain_result_t result = {0};
     bool b_ready = false;
 
-    /* Up to 10 s: at the 10 ms kernel tick the 200 calibration samples
-     * can take 4 s, after a possible 1 s restart. */
+    /* Up to 10 s: the 50 calibration samples take about 1.5 s, but the
+     * self-tests running at the same time slow the task, and a moved car
+     * restarts calibration. */
     for (uint16_t poll = 0u; (poll < 200u) && (!b_ready); poll++)
     {
         if (E_OK == subsystem4_get_status(&result))
         {
             b_ready = (S4_TERRAIN_STATE_MONITORING == result.state) ||
-                      (S4_TERRAIN_STATE_ASCENDING == result.state) ||
-                      (S4_TERRAIN_STATE_DESCENDING == result.state);
+                      (S4_TERRAIN_STATE_ON_HUMP == result.state);
         }
 
         if (!b_ready)

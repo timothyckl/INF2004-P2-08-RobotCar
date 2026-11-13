@@ -1,6 +1,6 @@
 /**
  * @file terrain_logic.c
- * @brief Deterministic IMU calibration and terrain state machine.
+ * @brief Deterministic IMU calibration, hump and impact detection.
  */
 #include "terrain_logic.h"
 
@@ -8,7 +8,8 @@
 #include <stddef.h>
 
 #define S4_GRAVITY_MG        1000
-#define S4_FILTER_DIVISOR    4
+#define S4_FILTER_DIVISOR    2
+#define S4_UM_PER_MM         1000
 
 static bool s4_config_is_valid(s4_terrain_config_t const * p_config);
 static void s4_calibration_reset(s4_terrain_context_t * p_context);
@@ -19,17 +20,16 @@ static void s4_fault_set(s4_terrain_context_t * p_context,
                          s4_terrain_fault_t fault);
 static void s4_monitor_sample(s4_terrain_context_t * p_context,
                               s4_terrain_sample_t const * p_sample,
-                              uint16_t distance_delta_mm,
-                              bool b_distance_valid);
-static void s4_state_update(s4_terrain_context_t * p_context,
-                            int32_t forward_mg,
-                            uint16_t distance_delta_mm,
-                            bool b_distance_valid);
-static void s4_candidate_add(s4_terrain_context_t * p_context,
-                             int32_t forward_mg,
-                             uint16_t distance_delta_mm,
-                             bool b_distance_valid);
+                              bool b_pitch_valid);
+static int32_t s4_hump_height_um(s4_terrain_context_t const * p_context,
+                                 bool b_pitch_valid,
+                                 s4_hump_contact_t * p_contact);
+static void s4_hump_update(s4_terrain_context_t * p_context,
+                           uint32_t capture_time_us,
+                           int32_t height_um,
+                           s4_hump_contact_t contact);
 static void s4_hump_complete(s4_terrain_context_t * p_context);
+static void s4_hump_clear(s4_terrain_context_t * p_context);
 static int32_t s4_absolute(int32_t value);
 
 void
@@ -55,8 +55,7 @@ s4_terrain_init (s4_terrain_context_t * p_context,
 void
 s4_terrain_process (s4_terrain_context_t * p_context,
                     s4_terrain_sample_t const * p_sample,
-                    uint16_t distance_delta_mm,
-                    bool b_distance_valid)
+                    bool b_pitch_valid)
 {
     if ((NULL != p_context) && (NULL != p_sample))
     {
@@ -105,8 +104,7 @@ s4_terrain_process (s4_terrain_context_t * p_context,
                     else
                     {
                         s4_monitor_sample(p_context, p_sample,
-                                          distance_delta_mm,
-                                          b_distance_valid);
+                                          b_pitch_valid);
                     }
                 }
             }
@@ -139,8 +137,7 @@ s4_terrain_start_new_run (s4_terrain_context_t * p_context)
         p_context->result.maximum_height_mm = 0u;
         p_context->result.b_current_height_valid = false;
         p_context->result.b_maximum_height_valid = false;
-        p_context->candidate_height_mm = 0u;
-        p_context->b_candidate_height_valid = false;
+        p_context->result.hump_contact = S4_HUMP_CONTACT_NONE;
     }
 }
 
@@ -168,8 +165,10 @@ s4_config_is_valid (s4_terrain_config_t const * p_config)
                   (p_config->confirmation_samples > 0u) &&
                   (p_config->invalid_limit > 0u) &&
                   (p_config->max_sample_gap_ms > 0u) &&
-                  (p_config->level_threshold_mg <
-                   p_config->ascent_threshold_mg);
+                  (p_config->max_hump_ms > 0u) &&
+                  (p_config->track_mm > 0u) &&
+                  (p_config->wheelbase_mm > 0u) &&
+                  (p_config->level_um < p_config->rise_um);
     }
 
     return (b_valid);
@@ -280,16 +279,13 @@ s4_fault_set (s4_terrain_context_t * p_context,
     p_context->result.state = S4_TERRAIN_STATE_FAULT;
     p_context->result.fault = fault;
     p_context->result.events = S4_TERRAIN_EVENT_FAULT;
-    p_context->result.current_height_mm = 0u;
-    p_context->result.b_current_height_valid = false;
-    p_context->b_candidate_height_valid = false;
+    s4_hump_clear(p_context);
 }
 
 static void
 s4_monitor_sample (s4_terrain_context_t * p_context,
                    s4_terrain_sample_t const * p_sample,
-                   uint16_t distance_delta_mm,
-                   bool b_distance_valid)
+                   bool b_pitch_valid)
 {
     int32_t forward_mg = (int32_t) p_sample->acceleration_x_mg -
                          p_context->offset_x_mg;
@@ -300,13 +296,18 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
     int32_t dynamic_mg = s4_absolute(forward_mg) +
                          s4_absolute(lateral_mg) +
                          s4_absolute(vertical_mg);
+    s4_hump_contact_t contact = S4_HUMP_CONTACT_NONE;
+    int32_t height_um;
 
+    /* A light filter: a heavier one lowers a short hump's peak. */
     p_context->filtered_x_mg +=
         (forward_mg - p_context->filtered_x_mg) / S4_FILTER_DIVISOR;
+    p_context->filtered_y_mg +=
+        (lateral_mg - p_context->filtered_y_mg) / S4_FILTER_DIVISOR;
 
-    /* The filter input and accumulator are bounded by int16_t samples. */
-    p_context->result.forward_tilt_mg =
-        (int16_t) p_context->filtered_x_mg;
+    /* The filter inputs and accumulators are bounded by int16_t samples. */
+    p_context->result.forward_tilt_mg = (int16_t) p_context->filtered_x_mg;
+    p_context->result.lateral_tilt_mg = (int16_t) p_context->filtered_y_mg;
 
     if (dynamic_mg >= p_context->config.impact_threshold_mg)
     {
@@ -321,31 +322,104 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
         p_context->b_impact_active = false;
     }
 
-    s4_state_update(p_context, forward_mg, distance_delta_mm,
-                    b_distance_valid);
+    height_um = s4_hump_height_um(p_context, b_pitch_valid, &contact);
+    s4_hump_update(p_context, p_sample->capture_time_us, height_um,
+                   contact);
+}
+
+/*
+ * Contact heights (micrometres, mg x mm) of the plane through the three
+ * contacts, relative to the wheel axle's midpoint: left wheel +roll x
+ * track/2, right wheel -roll x track/2, caster +pitch x wheelbase. With
+ * the lowest contact on the floor, the highest one's rise is
+ * highest - lowest. When forward acceleration makes pitch unreadable
+ * (b_pitch_valid false) the caster is taken to be level with the lower
+ * wheel, which leaves the roll-only estimate of a one-wheel hump.
+ * Products are bounded: |tilt| < 4096 mg, distances < 65536 mm.
+ */
+static int32_t
+s4_hump_height_um (s4_terrain_context_t const * p_context,
+                   bool b_pitch_valid,
+                   s4_hump_contact_t * p_contact)
+{
+    int32_t left_um = (p_context->filtered_y_mg *
+                       (int32_t) p_context->config.track_mm) / 2;
+    int32_t right_um = -left_um;
+    int32_t lower_wheel_um = (left_um < right_um) ? left_um : right_um;
+    int32_t upper_wheel_um = (left_um < right_um) ? right_um : left_um;
+    int32_t caster_um = lower_wheel_um;
+    int32_t highest_um;
+    int32_t lowest_um;
+
+    if (b_pitch_valid)
+    {
+        caster_um = p_context->filtered_x_mg *
+                    (int32_t) p_context->config.wheelbase_mm;
+    }
+
+    highest_um = (caster_um > upper_wheel_um) ? caster_um : upper_wheel_um;
+    lowest_um = (caster_um < lower_wheel_um) ? caster_um : lower_wheel_um;
+
+    if (caster_um > upper_wheel_um)
+    {
+        *p_contact = S4_HUMP_CONTACT_CASTER;
+    }
+    else if ((2 * (upper_wheel_um - lower_wheel_um)) <
+             (upper_wheel_um - caster_um))
+    {
+        /* Wheels nearly level with each other and well above the
+         * caster: both wheels are raised (one wheel alone puts the
+         * caster level with the lower wheel). */
+        *p_contact = S4_HUMP_CONTACT_BOTH_WHEELS;
+    }
+    else if (left_um >= right_um)
+    {
+        *p_contact = S4_HUMP_CONTACT_LEFT;
+    }
+    else
+    {
+        *p_contact = S4_HUMP_CONTACT_RIGHT;
+    }
+
+    return (highest_um - lowest_um);
 }
 
 static void
-s4_state_update (s4_terrain_context_t * p_context,
-                 int32_t forward_mg,
-                 uint16_t distance_delta_mm,
-                 bool b_distance_valid)
+s4_hump_update (s4_terrain_context_t * p_context,
+                uint32_t capture_time_us,
+                int32_t height_um,
+                s4_hump_contact_t contact)
 {
-    int32_t ascent_threshold = p_context->config.ascent_threshold_mg;
-    int32_t level_threshold = p_context->config.level_threshold_mg;
+    uint32_t max_hump_us =
+        (uint32_t) p_context->config.max_hump_ms * 1000u;
 
-    switch (p_context->result.state)
+    if (p_context->b_wait_level)
     {
-      case S4_TERRAIN_STATE_MONITORING:
-        if (forward_mg >= ascent_threshold)
+        /* After a hump was dropped, re-arm only once level again. */
+        if (height_um <= (int32_t) p_context->config.level_um)
         {
+            p_context->b_wait_level = false;
+        }
+    }
+    else if (S4_TERRAIN_STATE_MONITORING == p_context->result.state)
+    {
+        if (height_um >= (int32_t) p_context->config.rise_um)
+        {
+            if (0u == p_context->confirmation_count)
+            {
+                p_context->hump_start_us = capture_time_us;
+                p_context->peak_height_um = 0;
+            }
+            if (height_um > p_context->peak_height_um)
+            {
+                p_context->peak_height_um = height_um;
+                p_context->peak_contact = contact;
+            }
             p_context->confirmation_count++;
             if (p_context->confirmation_count >=
                 p_context->config.confirmation_samples)
             {
-                p_context->result.state = S4_TERRAIN_STATE_ASCENDING;
-                p_context->candidate_height_mm = 0u;
-                p_context->b_candidate_height_valid = true;
+                p_context->result.state = S4_TERRAIN_STATE_ON_HUMP;
                 p_context->confirmation_count = 0u;
             }
         }
@@ -353,29 +427,23 @@ s4_state_update (s4_terrain_context_t * p_context,
         {
             p_context->confirmation_count = 0u;
         }
-      break;
-
-      case S4_TERRAIN_STATE_ASCENDING:
-        s4_candidate_add(p_context, forward_mg, distance_delta_mm,
-                         b_distance_valid);
-        if (forward_mg <= -ascent_threshold)
+    }
+    else if ((capture_time_us - p_context->hump_start_us) > max_hump_us)
+    {
+        /* Too long to be a hump (for example the car stopped with a
+         * wheel raised); unsigned subtraction is wrap-safe. */
+        s4_hump_clear(p_context);
+        p_context->b_wait_level = true;
+    }
+    else
+    {
+        if (height_um > p_context->peak_height_um)
         {
-            p_context->confirmation_count++;
-            if (p_context->confirmation_count >=
-                p_context->config.confirmation_samples)
-            {
-                p_context->result.state = S4_TERRAIN_STATE_DESCENDING;
-                p_context->confirmation_count = 0u;
-            }
+            p_context->peak_height_um = height_um;
+            p_context->peak_contact = contact;
         }
-        else
-        {
-            p_context->confirmation_count = 0u;
-        }
-      break;
 
-      case S4_TERRAIN_STATE_DESCENDING:
-        if (s4_absolute(forward_mg) <= level_threshold)
+        if (height_um <= (int32_t) p_context->config.level_um)
         {
             p_context->confirmation_count++;
             if (p_context->confirmation_count >=
@@ -388,71 +456,43 @@ s4_state_update (s4_terrain_context_t * p_context,
         {
             p_context->confirmation_count = 0u;
         }
-      break;
-
-      default:
-        s4_fault_set(p_context, S4_TERRAIN_FAULT_SENSOR);
-      break;
-    }
-}
-
-static void
-s4_candidate_add (s4_terrain_context_t * p_context,
-                  int32_t forward_mg,
-                  uint16_t distance_delta_mm,
-                  bool b_distance_valid)
-{
-    if ((!b_distance_valid) || (forward_mg < 0))
-    {
-        if (!b_distance_valid)
-        {
-            p_context->b_candidate_height_valid = false;
-        }
-    }
-    else
-    {
-        uint32_t height_delta_mm =
-            ((uint32_t) distance_delta_mm * (uint32_t) forward_mg) /
-            S4_GRAVITY_MG;
-        uint32_t candidate = p_context->candidate_height_mm +
-                             height_delta_mm;
-
-        if (candidate > UINT16_MAX)
-        {
-            p_context->candidate_height_mm = UINT16_MAX;
-            p_context->b_candidate_height_valid = false;
-        }
-        else
-        {
-            /* The preceding bound proves the result fits uint16_t. */
-            p_context->candidate_height_mm = (uint16_t) candidate;
-        }
     }
 }
 
 static void
 s4_hump_complete (s4_terrain_context_t * p_context)
 {
-    p_context->result.current_height_mm =
-        p_context->candidate_height_mm;
-    p_context->result.b_current_height_valid =
-        p_context->b_candidate_height_valid;
+    /* Rounded to the nearest mm; the peak is a positive height below
+     * 2 x 4096 mg x 65535 mm, well inside int32_t, and below 65536 mm
+     * for any real chassis. */
+    uint16_t height_mm = (uint16_t)
+        ((p_context->peak_height_um + (S4_UM_PER_MM / 2)) / S4_UM_PER_MM);
 
-    if (p_context->b_candidate_height_valid &&
-        ((!p_context->result.b_maximum_height_valid) ||
-         (p_context->candidate_height_mm >
-          p_context->result.maximum_height_mm)))
+    p_context->result.current_height_mm = height_mm;
+    p_context->result.b_current_height_valid = true;
+    p_context->result.hump_contact = p_context->peak_contact;
+
+    if ((!p_context->result.b_maximum_height_valid) ||
+        (height_mm > p_context->result.maximum_height_mm))
     {
-        p_context->result.maximum_height_mm =
-            p_context->candidate_height_mm;
+        p_context->result.maximum_height_mm = height_mm;
         p_context->result.b_maximum_height_valid = true;
     }
 
     p_context->result.events |= S4_TERRAIN_EVENT_HUMP_COMPLETE;
-    p_context->result.state = S4_TERRAIN_STATE_MONITORING;
+    s4_hump_clear(p_context);
+}
+
+static void
+s4_hump_clear (s4_terrain_context_t * p_context)
+{
+    if (S4_TERRAIN_STATE_ON_HUMP == p_context->result.state)
+    {
+        p_context->result.state = S4_TERRAIN_STATE_MONITORING;
+    }
     p_context->confirmation_count = 0u;
-    p_context->candidate_height_mm = 0u;
-    p_context->b_candidate_height_valid = false;
+    p_context->peak_height_um = 0;
+    p_context->peak_contact = S4_HUMP_CONTACT_NONE;
 }
 
 static int32_t

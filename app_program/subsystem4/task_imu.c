@@ -3,29 +3,61 @@
  * @brief Periodic IMU sampling and terrain processing task.
  */
 #include "subsystem4_internal.h"
+#include "../subsystem2/motion_api.h"   /* motion_get_status (IF-17) */
 
-#define S4_CALIBRATION_SAMPLES      200u
+/* About 1.5 s at the measured 29 ms per sample; the mean of 50 samples
+ * with about 5 mg of noise is within about 1 mg. */
+#define S4_CALIBRATION_SAMPLES      50u
 #define S4_CALIBRATION_SPAN_MG      80u
-#define S4_ASCENT_THRESHOLD_MG      120u
-#define S4_LEVEL_THRESHOLD_MG       50u
 #define S4_IMPACT_THRESHOLD_MG      1200u
 #define S4_MAX_SAMPLE_GAP_MS        50u
-#define S4_CONFIRMATION_SAMPLES     4u
+#define S4_CONFIRMATION_SAMPLES     3u
 #define S4_INVALID_SAMPLE_LIMIT     3u
+#define S4_MAX_HUMP_MS              5000u   /* provisional */
+
+/* Contact geometry (decision 8). Track: S2 odometry track width (S2
+ * decision, 119 mm). Wheelbase: wheel axle to the front ball caster,
+ * measured with a ruler (88 mm). */
+#define S4_TRACK_MM                 119u
+#define S4_WHEELBASE_MM             88u
+
+/* Hump hysteresis (provisional): a hump starts at 4 mm and ends below
+ * 2 mm. Tilt noise at rest is about 10 mg, about 1 mm of height. */
+#define S4_RISE_UM                  4000u
+#define S4_LEVEL_UM                 2000u
+
+/* Forward acceleration reads as pitch (200 mg, 17 mm of caster height,
+ * when Motion Control ramps to speed). Pitch is ignored while the mean
+ * wheel speed changes by more than this between samples, and for a hold
+ * time after (provisional). */
+#define S4_PITCH_DV_MM_S            15
+#define S4_PITCH_HOLD_SAMPLES       8u
 
 #ifndef S4_RAW_LOG
 #define S4_RAW_LOG                  0
 #endif
-#define S4_RAW_LOG_INTERVAL         16u   /* samples, about 0.5 s */
 
 static s4_terrain_config_t s4_runtime_config(void);
 static uint32_t s4_capture_time_us(void);
 static void s4_mark_sensor_error(s4_terrain_context_t * p_context,
                                  uint32_t capture_time_us);
 static void s4_sample_to_vehicle(s4_terrain_sample_t * p_sample);
+
+/* Motion Control snapshot from the previous sample (IF-17). */
+typedef struct
+{
+    int32_t speed_mm_s;
+    uint8_t run_id;
+    uint8_t pitch_hold;
+    bool    b_have_previous;
+} s4_motion_t;
+
+static bool s4_motion_read(s4_motion_t * p_motion,
+                           s4_terrain_context_t * p_terrain);
 #if S4_RAW_LOG
-static void s4_raw_log(s4_terrain_sample_t const * p_sensor,
-                       s4_terrain_sample_t const * p_vehicle);
+static void s4_raw_log(s4_terrain_sample_t const * p_vehicle,
+                       s4_terrain_result_t const * p_result,
+                       bool b_pitch_valid);
 #endif
 static void s4_report_events(s4_terrain_result_t const * p_result,
                              uint32_t calibration_start_us);
@@ -39,6 +71,8 @@ s4_imu_task (INT start_code,
     s4_terrain_config_t config = s4_runtime_config();
     s4_terrain_sample_t sample = {0};
     uint32_t calibration_start_us = 0u;
+    s4_motion_t motion = {0};
+    bool b_pitch_valid = false;
     ER error;
 
     (void) start_code;
@@ -73,16 +107,12 @@ s4_imu_task (INT start_code,
                                             &sample);
         if (E_OK == error)
         {
+            s4_sample_to_vehicle(&sample);
+            b_pitch_valid = s4_motion_read(&motion, &terrain);
+            s4_terrain_process(&terrain, &sample, b_pitch_valid);
 #if S4_RAW_LOG
-            s4_terrain_sample_t sensor_sample = sample;
-
-            s4_sample_to_vehicle(&sample);
-            s4_raw_log(&sensor_sample, &sample);
-#else
-            s4_sample_to_vehicle(&sample);
+            s4_raw_log(&sample, &terrain.result, b_pitch_valid);
 #endif
-            /* Encoder distance is deliberately unavailable pre-integration. */
-            s4_terrain_process(&terrain, &sample, 0u, false);
             s4_report_events(&terrain.result, calibration_start_us);
             (void) s4_status_publish(&terrain.result);
         }
@@ -98,7 +128,25 @@ s4_imu_task (INT start_code,
             /* No new sample yet; the next poll checks again. */
         }
 
-        if (S4_TERRAIN_STATE_FAULT == terrain.result.state)
+        if ((S4_TERRAIN_STATE_FAULT == terrain.result.state) &&
+            (S4_TERRAIN_FAULT_CALIBRATION == terrain.result.fault))
+        {
+            /* The car moved while calibrating: the sensor is fine, so
+             * calibrate again without restarting it. */
+            tm_printf((UB *) "s4: calibration failed, car moved (span "
+                      "fwd %d left %d up %d mg); keep still\n",
+                      (INT) terrain.calibration_max_x -
+                      terrain.calibration_min_x,
+                      (INT) terrain.calibration_max_y -
+                      terrain.calibration_min_y,
+                      (INT) terrain.calibration_max_z -
+                      terrain.calibration_min_z);
+            s4_terrain_request_recovery(&terrain);
+            (void) s4_status_publish(&terrain.result);
+            calibration_start_us = s4_capture_time_us();
+            (void) tk_dly_tsk(S4_POLL_PERIOD_MS);
+        }
+        else if (S4_TERRAIN_STATE_FAULT == terrain.result.state)
         {
             tm_printf((UB *) "s4: terrain fault %u; sensor restart\n",
                       (UINT) terrain.result.fault);
@@ -119,10 +167,13 @@ s4_runtime_config (void)
     {
         .calibration_samples = S4_CALIBRATION_SAMPLES,
         .calibration_span_mg = S4_CALIBRATION_SPAN_MG,
-        .ascent_threshold_mg = S4_ASCENT_THRESHOLD_MG,
-        .level_threshold_mg = S4_LEVEL_THRESHOLD_MG,
         .impact_threshold_mg = S4_IMPACT_THRESHOLD_MG,
         .max_sample_gap_ms = S4_MAX_SAMPLE_GAP_MS,
+        .max_hump_ms = S4_MAX_HUMP_MS,
+        .track_mm = S4_TRACK_MM,
+        .wheelbase_mm = S4_WHEELBASE_MM,
+        .rise_um = S4_RISE_UM,
+        .level_um = S4_LEVEL_UM,
         .confirmation_samples = S4_CONFIRMATION_SAMPLES,
         .invalid_limit = S4_INVALID_SAMPLE_LIMIT
     };
@@ -156,8 +207,65 @@ s4_mark_sensor_error (s4_terrain_context_t * p_context,
          (S4_TERRAIN_STATE_FAULT != p_context->result.state);
          index++)
     {
-        s4_terrain_process(p_context, &invalid_sample, 0u, false);
+        s4_terrain_process(p_context, &invalid_sample, false);
     }
+}
+
+/*
+ * Reads Motion Control's mutex-protected snapshot (S2 owns the encoders).
+ * A new run_id means the controller started a new run (START), so the run
+ * maximum is cleared. Returns whether pitch may be read as tilt: false
+ * while the mean wheel speed is changing (forward acceleration also reads
+ * as pitch), for S4_PITCH_HOLD_SAMPLES after, and when the read fails.
+ */
+static bool
+s4_motion_read (s4_motion_t * p_motion,
+                s4_terrain_context_t * p_terrain)
+{
+    motion_status_t current;
+    bool b_pitch_valid = false;
+
+    if (E_OK != motion_get_status(&current))
+    {
+        p_motion->b_have_previous = false;
+    }
+    else
+    {
+        int32_t speed_mm_s = ((int32_t) current.left_mm_s +
+                              (int32_t) current.right_mm_s) / 2;
+
+        if (p_motion->b_have_previous)
+        {
+            int32_t change_mm_s = speed_mm_s - p_motion->speed_mm_s;
+
+            if (current.run_id != p_motion->run_id)
+            {
+                s4_terrain_start_new_run(p_terrain);
+                tm_printf((UB *) "s4: new run %u; hump maximum cleared\n",
+                          (UINT) current.run_id);
+            }
+
+            if ((change_mm_s > S4_PITCH_DV_MM_S) ||
+                (change_mm_s < -S4_PITCH_DV_MM_S))
+            {
+                p_motion->pitch_hold = S4_PITCH_HOLD_SAMPLES;
+            }
+            else if (p_motion->pitch_hold > 0u)
+            {
+                p_motion->pitch_hold--;
+            }
+            else
+            {
+                b_pitch_valid = true;
+            }
+        }
+
+        p_motion->speed_mm_s = speed_mm_s;
+        p_motion->run_id = current.run_id;
+        p_motion->b_have_previous = true;
+    }
+
+    return (b_pitch_valid);
 }
 
 /*
@@ -178,27 +286,24 @@ s4_sample_to_vehicle (s4_terrain_sample_t * p_sample)
 }
 
 #if S4_RAW_LOG
-/* S4-H02 diagnostic: one line every S4_RAW_LOG_INTERVAL samples. Called
- * only from s4_imu_task, so the static counter has a single user. */
+/* Diagnostic (S4-H02, S4-H08): one line per sample, after processing.
+ * Time in ms; acceleration in the vehicle's axes; the filtered tilts the
+ * hump logic uses; whether pitch was read; the state. */
 static void
-s4_raw_log (s4_terrain_sample_t const * p_sensor,
-            s4_terrain_sample_t const * p_vehicle)
+s4_raw_log (s4_terrain_sample_t const * p_vehicle,
+            s4_terrain_result_t const * p_result,
+            bool b_pitch_valid)
 {
-    static uint8_t s_count = 0u;
-
-    s_count++;
-    if (s_count >= S4_RAW_LOG_INTERVAL)
-    {
-        s_count = 0u;
-        tm_printf((UB *) "s4 raw: sensor x=%d y=%d z=%d mg | vehicle "
-                  "fwd=%d left=%d up=%d mg\n",
-                  (INT) p_sensor->acceleration_x_mg,
-                  (INT) p_sensor->acceleration_y_mg,
-                  (INT) p_sensor->acceleration_z_mg,
-                  (INT) p_vehicle->acceleration_x_mg,
-                  (INT) p_vehicle->acceleration_y_mg,
-                  (INT) p_vehicle->acceleration_z_mg);
-    }
+    tm_printf((UB *) "s4 raw %u: fwd=%d left=%d up=%d mg | tilt fwd=%d "
+              "left=%d mg | pitch %s | state %u\n",
+              (UINT) (p_vehicle->capture_time_us / 1000u),
+              (INT) p_vehicle->acceleration_x_mg,
+              (INT) p_vehicle->acceleration_y_mg,
+              (INT) p_vehicle->acceleration_z_mg,
+              (INT) p_result->forward_tilt_mg,
+              (INT) p_result->lateral_tilt_mg,
+              b_pitch_valid ? "used" : "ignored",
+              (UINT) p_result->state);
 }
 #endif
 
@@ -219,8 +324,19 @@ s4_report_events (s4_terrain_result_t const * p_result,
     }
     if (0u != (p_result->events & S4_TERRAIN_EVENT_HUMP_COMPLETE))
     {
-        tm_printf((UB *) "s4: hump detected; height unavailable without "
-                  "odometry\n");
+        static char const * const s_contact_names[] =
+        {
+            "unknown", "left wheel", "right wheel", "both wheels", "caster"
+        };
+        char const * p_name = s_contact_names[0];
+
+        if (p_result->hump_contact <= S4_HUMP_CONTACT_CASTER)
+        {
+            p_name = s_contact_names[p_result->hump_contact];
+        }
+        tm_printf((UB *) "s4: hump %u mm under the %s (run maximum %u mm)\n",
+                  (UINT) p_result->current_height_mm, p_name,
+                  (UINT) p_result->maximum_height_mm);
     }
     if (0u != (p_result->events & S4_TERRAIN_EVENT_IMPACT))
     {

@@ -135,9 +135,13 @@ EXPORT INT usermain(void)
 	tm_printf((UB *)"S3/S2/S4/S5 line-follow test mode\n");
 	subsystem3_test();
 #elif APP_TEST && S2_CAL_TEST
-	/* Dedicated S2 calibration: GP20 runs one manoeuvre per press. */
+	/* Dedicated S2 calibration: GP20 runs one manoeuvre per press.
+	   S4 reports terrain alongside it (mode 1 drives the hump-height
+	   bench test, S4-H08); it does not affect motion. */
 	CHECK(subsystem2_init(), "subsystem2_init");
+	CHECK(subsystem4_init(), "subsystem4_init");
 	CHECK(subsystem2_start(), "subsystem2_start");
+	CHECK(subsystem4_start(), "subsystem4_start");
 	tm_printf((UB *)"S2 calibration test mode %d\n", (INT)S2_CAL_TEST);
 #elif APP_TEST && S3_HARDWARE_TEST
 	/* Dedicated front-IR bench mode: no other application task runs. */

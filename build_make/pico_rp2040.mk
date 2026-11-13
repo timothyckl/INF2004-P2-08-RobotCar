@@ -127,10 +127,11 @@ $(error Choose either S3_HW_TEST or S3_LINE_TEST, not both)
 endif
 
 # S2_CAL_TEST runs a GP20-started subsystem 2 calibration manoeuvre:
-# 1 = forward 1000 mm (distance scale), 2 = left 360 degrees (track width).
+# 1 = forward 1000 mm (distance scale), 2 = left 360 degrees (track width),
+# 3 = forward 450 mm per press (hump passes for subsystem 4, S4-H08).
 S2_CAL_TEST ?= 0
-ifneq ($(filter $(S2_CAL_TEST),0 1 2),$(S2_CAL_TEST))
-$(error Unknown S2_CAL_TEST '$(S2_CAL_TEST)'; use 0, 1 or 2)
+ifneq ($(filter $(S2_CAL_TEST),0 1 2 3),$(S2_CAL_TEST))
+$(error Unknown S2_CAL_TEST '$(S2_CAL_TEST)'; use 0 to 3)
 endif
 ifneq ($(S2_CAL_TEST),0)
 ifneq ($(TEST),1)
@@ -183,9 +184,9 @@ ifeq ($(S5_RANGE_DIAG),1)
 S5_RANGE_DIAG_SUFFIX := _s5range
 endif
 
-# S4_RAW_LOG=1 prints the IMU's acceleration about twice a second, in the
-# sensor's axes and the vehicle's, for the mounting check S4-H02. Opt-in
-# because console formatting runs in the IMU task.
+# S4_RAW_LOG=1 prints every IMU sample (vehicle axes, filtered tilts,
+# pitch gate, state) for S4-H02 and S4-H08. Opt-in because console
+# formatting runs in the IMU task.
 S4_RAW_LOG ?= 0
 ifneq ($(filter $(S4_RAW_LOG),0 1),$(S4_RAW_LOG))
 $(error Unknown S4_RAW_LOG '$(S4_RAW_LOG)'; use 0 or 1)
