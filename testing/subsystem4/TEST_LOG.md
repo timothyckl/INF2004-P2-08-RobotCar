@@ -34,7 +34,7 @@ For the connected-IMU startup case only, build with:
 make -C build_make TEST=1 S4_HW_TEST=1 -j8
 ```
 
-The logic and decode cases (S4-U03 to S4-U30, less the retired IDs) also run on a computer under
+The logic and decode cases (S4-U03 to S4-U33, less the retired IDs) also run on a computer under
 strict C99 warnings with `make -C testing/host s4`; S4-H01 then reports
 BLOCKED. A host pass checks the logic against synthetic input only.
 
@@ -86,6 +86,9 @@ is no longer executed by Subsystem 4 after the starter monitor is replaced.
 | S4-U28 | 4-sample average; roll alternating +240/-240 mg each sample for 40 samples. | No hump starts. |
 | S4-U29 | 4-sample average; 10 mm under the left wheel held 8 samples, then level. | 10 mm, left wheel. |
 | S4-U30 | Average length 0, then `S4_AVERAGE_MAX_SAMPLES` + 1. | Both configurations rejected (fault). |
+| S4-U31 | Hump detection disabled during a held 10 mm tilt; then enabled until a hump starts, and disabled before level. | No hump either time; the started hump is dropped unreported. |
+| S4-U32 | Height scale 500 per mille; 10 mm under the left wheel. | 5 mm. |
+| S4-U33 | Height scale 0, then `S4_HEIGHT_SCALE_MAX_PERMILLE` + 1. | Both configurations rejected (fault). |
 
 Boundary cases use small synthetic thresholds to remain deterministic. These
 values are not physical calibration evidence.
@@ -180,3 +183,4 @@ Results are append-only. Do not record synthetic tests as physical validation.
 | 2026-11-13 | S4-H07 (line following, stall watcher build) | as above + `s4_watch_task` diagnostic (`S4_RAW_LOG` only) | Dalton | MEASURED | `logs/2026-11-13_s4-h07-line.txt` (third boot) | Four runs of 43 to 46 s (about 177 s of driving), IMU did not stall (no watcher report). Height p99 3.9 to 5.1 mm, up sd 9 to 10 mg. Two false humps while driving: 6 mm (both wheels, run 1) and 7 mm (both wheels, run 4); other events came from GP20 presses, the stop, or carrying the car. Offline, an extra mean of the filtered tilt over 400 ms keeps the cruise maximum at 2.4 to 3.0 mm in all four runs (150 ms: 3.3 to 5.7 mm; 250 ms: 2.7 to 4.1 mm). |
 | 2026-11-13 | S4-H07 (line following, 16-sample tilt average, S4 decision 10) | `6625ebf` + decision 10, `TEST=1 S3_LINE_TEST=1 S4_RAW_LOG=1` | Dalton | MEASURED | `logs/2026-11-13_s4-h07-line-avg.txt` | About 21 ms per sample in this image, so the window is about 340 ms. First boot (calibrated off the tape, resting offset about 2.2 mm): runs of 10.9 and 9.1 s, no hump while driving. Second boot, recalibrated on the tape (resting tilt 0/0 mg): runs of 31.0 and 31.5 s; tilt sd 9 to 10 mg forward and 6 mg left (15 and 9 mg with the old filter); height p99 3.4 to 3.6 mm. One hump of 4 mm (right wheel) about 21 s into the first long run: a smooth tilt of about -20 mg forward and -10 to -25 mg left held for about 0.6 s, so a floor undulation, not vibration. In about 82 s of driving, no vibration hump (two in 177 s before). Events after STOP came from handling. No IMU stall. |
 | 2026-11-13 | S4-H08 (10 mm hump, right wheel) | `159de9b` (`TEST=1 S3_LINE_TEST=1 S4_RAW_LOG=1`, rise 4 mm) | Dalton | MEASURED | `logs/2026-11-13_s4-h08-10mm.txt` | Hump 10 mm high (ruler), 195 mm across the path, 50 mm along it; line following at about 40 mm/s, calibrated on the start spot. Right wheel only (course constraint, S4 decision 11). Clean crossings (runs 2, 4, 5, 9): 11, 12, 12, 12 mm, right wheel, each detected once, no other event while driving; mean about 11.8 mm (+1 to +2 mm). Run 6 stopped on top: steady 11.2 mm (roll -94 mg). Not valid: run 1 (hump on the left; the wheel did not climb it), run 3 (the hump reached under the caster: 8 mm, caster), runs 6 to 8 (the line follower read BOTH BLACK at the hump, confirmed a junction and stopped at its recovery bound). The last is a line-sensing issue for subsystem 3: with the hump about 3 cm right of the tape centre, crossing it stopped line following in three of eight runs. Events between runs came from carrying the car. |
+| 2026-11-13 | S4-H08 (correction to the row above) | — | Dalton | CORRECTION | — | The line-follow stops in runs 6 to 8 were not a subsystem 3 issue: the line sensors had been moved and not adjusted back. Only one hump height (10 mm) is used on the course. |

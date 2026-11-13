@@ -45,6 +45,9 @@ typedef uint8_t s4_hump_contact_t;
 /* Longest tilt moving average, in samples (S4 decision 10). */
 #define S4_AVERAGE_MAX_SAMPLES       16u
 
+/* Largest height correction, per mille (2x; S4 decision 12). */
+#define S4_HEIGHT_SCALE_MAX_PERMILLE 2000u
+
 #define S4_TERRAIN_EVENT_READY         (UINT8_C(1) << 0u)
 #define S4_TERRAIN_EVENT_HUMP_COMPLETE (UINT8_C(1) << 1u)
 #define S4_TERRAIN_EVENT_IMPACT        (UINT8_C(1) << 2u)
@@ -75,6 +78,8 @@ typedef struct
     uint8_t  invalid_limit;
     uint8_t  average_samples;   /* tilt moving average, 1 to
                                    S4_AVERAGE_MAX_SAMPLES */
+    uint16_t height_scale_permille; /* measured-height correction,
+                                       1000 = none (decision 12) */
 } s4_terrain_config_t;
 
 typedef struct
@@ -125,6 +130,7 @@ typedef struct
     bool                b_have_previous_time;
     bool                b_impact_active;
     bool                b_wait_level;
+    bool                b_hump_disabled; /* set by the caller each sample */
 } s4_terrain_context_t;
 
 void s4_terrain_init(s4_terrain_context_t * p_context,
@@ -134,6 +140,8 @@ void s4_terrain_process(s4_terrain_context_t * p_context,
                         bool b_pitch_valid);
 void s4_terrain_request_recovery(s4_terrain_context_t * p_context);
 void s4_terrain_start_new_run(s4_terrain_context_t * p_context);
+void s4_terrain_set_hump_enable(s4_terrain_context_t * p_context,
+                                bool b_enable);
 s4_terrain_result_t const *
 s4_terrain_get_result(s4_terrain_context_t const * p_context);
 

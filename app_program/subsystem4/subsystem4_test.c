@@ -55,6 +55,9 @@ static bool s4_test_pitch_ignored(void);
 static bool s4_test_vibration_averages_out(void);
 static bool s4_test_average_keeps_height(void);
 static bool s4_test_average_length_checked(void);
+static bool s4_test_hump_disabled(void);
+static bool s4_test_height_scaled(void);
+static bool s4_test_height_scale_checked(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -120,6 +123,12 @@ subsystem4_test (void)
                "held tilt reads its full height through the average");
     TEST_CHECK("S4-U30", s4_test_average_length_checked(),
                "average length 0 or above the maximum is rejected");
+    TEST_CHECK("S4-U31", s4_test_hump_disabled(),
+               "no hump while disabled; a hump in progress is dropped");
+    TEST_CHECK("S4-U32", s4_test_height_scaled(),
+               "height scale 500 per mille halves a 10 mm reading");
+    TEST_CHECK("S4-U33", s4_test_height_scale_checked(),
+               "height scale 0 or above the maximum is rejected");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -147,7 +156,8 @@ s4_test_config (void)
         .level_um = 2000u,
         .confirmation_samples = 2u,
         .invalid_limit = 2u,
-        .average_samples = 1u
+        .average_samples = 1u,
+        .height_scale_permille = 1000u
     };
 
     return (config);
@@ -628,6 +638,89 @@ s4_test_average_length_checked (void)
     b_zero_rejected = (S4_TERRAIN_STATE_FAULT == context.result.state);
 
     config.average_samples = (uint8_t) (S4_AVERAGE_MAX_SAMPLES + 1u);
+    s4_terrain_init(&context, &config);
+
+    return (b_zero_rejected &&
+            (S4_TERRAIN_STATE_FAULT == context.result.state));
+}
+
+static bool
+s4_test_hump_disabled (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_complete;
+    bool b_started = false;
+
+    s4_test_calibrate(&context, 0u);
+
+    /* Disabled: a held 10 mm tilt never starts a hump. */
+    s4_terrain_set_hump_enable(&context, false);
+    b_complete = s4_test_hump(&context, &time_us,
+                              S4_TEST_WHEEL_10MM_PITCH_MG,
+                              S4_TEST_WHEEL_10MM_ROLL_MG, true);
+
+    /* Enabled: a hump starts, then disabling drops it unreported. */
+    s4_terrain_set_hump_enable(&context, true);
+    for (uint8_t index = 0u; index < S4_TEST_HUMP_SAMPLES; index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, S4_TEST_WHEEL_10MM_PITCH_MG,
+                     S4_TEST_WHEEL_10MM_ROLL_MG, time_us, true);
+    }
+    b_started =
+        (S4_TERRAIN_STATE_ON_HUMP == context.result.state);
+    s4_terrain_set_hump_enable(&context, false);
+    for (uint8_t index = 0u; index < S4_TEST_LEVEL_SAMPLES; index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, 0, 0, time_us, true);
+        b_complete = b_complete ||
+            (0u != (context.result.events &
+                    S4_TERRAIN_EVENT_HUMP_COMPLETE));
+    }
+
+    return ((!b_complete) && b_started &&
+            (!context.result.b_maximum_height_valid) &&
+            (S4_TERRAIN_STATE_MONITORING == context.result.state));
+}
+
+static bool
+s4_test_height_scaled (void)
+{
+    s4_terrain_context_t context;
+    s4_terrain_config_t config = s4_test_config();
+    uint32_t time_us = 0u;
+    bool b_complete;
+
+    config.height_scale_permille = 500u;
+    s4_terrain_init(&context, &config);
+    for (uint16_t index = 0u; index < config.calibration_samples; index++)
+    {
+        s4_test_feed(&context, 0, 0, time_us, true);
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+    }
+    b_complete = s4_test_hump(&context, &time_us,
+                              S4_TEST_WHEEL_10MM_PITCH_MG,
+                              S4_TEST_WHEEL_10MM_ROLL_MG, true);
+
+    return (b_complete && context.result.b_current_height_valid &&
+            (5u == context.result.current_height_mm));
+}
+
+static bool
+s4_test_height_scale_checked (void)
+{
+    s4_terrain_context_t context;
+    s4_terrain_config_t config = s4_test_config();
+    bool b_zero_rejected;
+
+    config.height_scale_permille = 0u;
+    s4_terrain_init(&context, &config);
+    b_zero_rejected = (S4_TERRAIN_STATE_FAULT == context.result.state);
+
+    config.height_scale_permille =
+        (uint16_t) (S4_HEIGHT_SCALE_MAX_PERMILLE + 1u);
     s4_terrain_init(&context, &config);
 
     return (b_zero_rejected &&

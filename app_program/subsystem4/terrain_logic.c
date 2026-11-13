@@ -143,6 +143,22 @@ s4_terrain_start_new_run (s4_terrain_context_t * p_context)
     }
 }
 
+/*
+ * Hump detection runs only while enabled (decision 12): the caller
+ * disables it while the robot is not driving, so lifting the car, a GP20
+ * press and braking at a stop are not humps. Disabling drops any hump in
+ * progress without reporting it; the tilt average keeps running.
+ */
+void
+s4_terrain_set_hump_enable (s4_terrain_context_t * p_context,
+                            bool b_enable)
+{
+    if (NULL != p_context)
+    {
+        p_context->b_hump_disabled = !b_enable;
+    }
+}
+
 s4_terrain_result_t const *
 s4_terrain_get_result (s4_terrain_context_t const * p_context)
 {
@@ -172,7 +188,10 @@ s4_config_is_valid (s4_terrain_config_t const * p_config)
                   (p_config->wheelbase_mm > 0u) &&
                   (p_config->level_um < p_config->rise_um) &&
                   (p_config->average_samples > 0u) &&
-                  (p_config->average_samples <= S4_AVERAGE_MAX_SAMPLES);
+                  (p_config->average_samples <= S4_AVERAGE_MAX_SAMPLES) &&
+                  (p_config->height_scale_permille > 0u) &&
+                  (p_config->height_scale_permille <=
+                   S4_HEIGHT_SCALE_MAX_PERMILLE);
     }
 
     return (b_valid);
@@ -420,7 +439,13 @@ s4_hump_height_um (s4_terrain_context_t const * p_context,
         *p_contact = S4_HUMP_CONTACT_RIGHT;
     }
 
-    return (highest_um - lowest_um);
+    /* Scaled to the measured hump (decision 12). The difference is below
+     * 2 x 4096 mg x 65535 mm (about 5.4e8 um), the product fits in
+     * int64_t, and with the scale at most 2000 per mille the quotient is
+     * below 1.1e9, inside int32_t. */
+    return ((int32_t) (((int64_t) (highest_um - lowest_um) *
+                        (int64_t) p_context->config.height_scale_permille) /
+                       1000));
 }
 
 static void
@@ -432,7 +457,11 @@ s4_hump_update (s4_terrain_context_t * p_context,
     uint32_t max_hump_us =
         (uint32_t) p_context->config.max_hump_ms * 1000u;
 
-    if (p_context->b_wait_level)
+    if (p_context->b_hump_disabled)
+    {
+        s4_hump_clear(p_context);
+    }
+    else if (p_context->b_wait_level)
     {
         /* After a hump was dropped, re-arm only once level again. */
         if (height_um <= (int32_t) p_context->config.level_um)

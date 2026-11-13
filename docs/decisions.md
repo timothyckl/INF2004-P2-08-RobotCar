@@ -963,6 +963,32 @@ threshold. Evidence: `testing/subsystem4/logs/2026-11-13_s4-h08-10mm.txt`
   (decision 10), and a 10 mm hump reads 11 to 12 mm, so 6 mm leaves
   margin both ways. Humps under about 6 mm are not reported.
 
+### 12. Height scaled to the 10 mm hump; humps only while driving (2026-11-13)
+
+Approved by Dalton on the integration branch. The course uses one hump,
+10 mm high, under the right wheel.
+
+- **Scale.** S4-H08 read a mean of 11.75 mm for the 10 mm hump (decision
+  11), so heights are multiplied by `height_scale_permille` 851
+  (10 / 11.75; at most 2000). With one hump height a scale and an offset
+  are indistinguishable, and only that height matters on the course.
+  Thresholds compare the scaled height.
+- **Only while driving.** Lifting the car, pressing GP20 on it and
+  braking at a stop all read as humps. The IMU task now enables hump
+  detection only while subsystem 2 reports Running in FOLLOW, NAVIGATE,
+  BYPASS or REACQUIRE (`s2_get_robot_state()`, IF-14, the check
+  subsystem 5 uses), and only after 32 samples there (about 0.7 s, which
+  covers the GP20 press and the 16-sample average). A hump in progress
+  when driving stops is dropped unreported; the tilt average keeps
+  running. A hazard stop changes the mode to SCAN, so its braking is not
+  a hump, and carrying the car between runs no longer changes the run
+  maximum. The `S2_CAL_TEST` images never enter a driving mode, so they
+  report no humps. The `S4_RAW_LOG` line ends with `humps on` or `off`.
+
+Correction to the S4-H08 record: the line-follow stops in runs 6 to 8
+came from line sensors that had been moved and not adjusted back, not
+from line sensing.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

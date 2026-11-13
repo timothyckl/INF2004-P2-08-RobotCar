@@ -78,9 +78,15 @@ stands on its left wheel, right wheel (track 119 mm) and front ball caster
 (88 mm ahead of the axle). Roll and pitch, each a moving average of the last
 16 samples (about 470 ms, decision 10), fix the plane through the
 three contacts; with the lowest on the floor, the hump height is the highest
-contact's rise. A hump starts at 6 mm (decision 11) and ends below 2 mm, each held for three
+contact's rise, scaled by 0.851 to the measured 10 mm hump (decision 12). A
+hump starts at 6 mm (decision 11) and ends below 2 mm, each held for three
 samples, and reports its peak and the contact that crossed it. A hump not ended
 within 12 s is dropped (decision 10). These are provisional values, not validated results.
+Humps are detected only while the robot is Running in a driving mode
+(FOLLOW, NAVIGATE, BYPASS or REACQUIRE, read with `s2_get_robot_state()`),
+and not for 32 samples after it starts to; a hump in progress when driving
+stops is dropped (decision 12). The `S2_CAL_TEST` images do not enter a
+driving mode, so they report no humps.
 
 Each sample the task reads Motion Control's snapshot (`motion_get_status()`).
 A changed `run_id` means START began a new run, which clears the run maximum.
