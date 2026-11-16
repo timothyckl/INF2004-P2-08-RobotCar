@@ -1,0 +1,792 @@
+18:17:44 [TEST] S1-U02 PASS  LED task sleeps between ticks
+18:17:44 [TEST] subsystem1 SUMMARY 2 passed, 0 failed
+18:17:44 [TEST] S2-U01 PASS  sample values stay within 0..100
+18:17:44 [TEST] S2-U02 PASS  free slots and free blocks within pool size
+18:17:44 [TEST] S2-U03 PASS  PID proportional term is kp * error
+18:17:44 [TEST] S2-U04 PASS  PID output stays within its limits
+18:17:44 [TEST] S2-U05 PASS  PID integral adds ki * error per sample
+18:17:44 [TEST] S2-U06 PASS  PID integral does not wind up while saturated
+18:17:44 [TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+18:17:44 [TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+18:17:44 [TEST] S2-U09 PASS  PID reset clears history
+18:17:44 [TEST] S2-U10 PASS  counts convert to millimetres
+18:17:44 [TEST] S2-U11 PASS  count delta survives counter wraparound
+18:17:44 [TEST] S2-U12 PASS  speed from counts over an interval
+18:17:44 [TEST] S2-U13 PASS  turn angle sign and magnitude
+18:17:44 [TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+18:17:44 [TEST] S2-U15 PASS  motor duty maps to A/B outputs
+18:17:44 [TEST] S2-U16 PASS  motor rejects out-of-range duty
+18:17:44 [TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+18:17:44 [TEST] S2-U18 PASS  quadrature x2 decode
+18:17:44 [TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+18:17:44 [TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+18:17:44 [TEST] S2-U21 PASS  Speed state reaches the wheel targets
+18:17:44 [TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+18:17:44 [TEST] S2-U23 PASS  TURN sign and angle (left positive)
+18:17:44 [TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+18:17:44 [TEST] S2-U25 PASS  latched STOP in every state
+18:17:44 [TEST] S2-U26 PASS  motion commands rejected while STOP latched
+18:17:44 [TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+18:17:44 [TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+18:17:44 [TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+18:17:44 [TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+18:17:44 [TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+18:17:44 [TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+18:17:44 [TEST] S2-U33 PASS  invalid motion parameters rejected
+18:17:44 s4: calibration failed, car moved (span fwd 405 left 556 up 205 mg); keep still
+18:17:44 [TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+18:17:44 [TEST] S2-U35 PASS  motion API builds and range-checks commands
+18:17:44 [TEST] S2-U36 PASS  remote_q record for START/RESET only
+18:17:44 [TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+18:17:44 [TEST] S2-U38 PASS  S4 distance delta rules
+18:17:44 [TEST] S2-U39 PASS  interface record sizes
+18:17:44 [TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+18:17:44 [TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+18:17:44 [TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+18:17:44 [TEST] S2-U43 PASS  START only in Ready with healthy motion
+18:17:44 [TEST] S2-U44 PASS  demo script steps wait for DONE
+18:17:44 [TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+18:17:44 [TEST] S2-U46 PASS  STOP in other states re-latches only
+18:17:44 [TEST] S2-U47 PASS  fault paths latch STOP with the right code
+18:17:44 [TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+18:17:44 [TEST] S2-U49 PASS  RESET from Fault re-initialises
+18:17:44 [TEST] S2-U50 PASS  remote expiry, duplicate and result
+18:17:44 [TEST] S2-U51 PASS  STOP while remote_q is full
+18:17:44 [TEST] S2-U52 PASS  only START in Ready clears STOP
+18:17:44 [TEST] S2-U53 PASS  robot_state snapshot fields
+18:17:44 [TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+18:17:44 [TEST] S2-U55 PASS  duty ramp limits increases only
+18:17:44 [TEST] S2-U56 PASS  ramp cannot cause a false stall
+18:17:44 [TEST] S2-U57 PASS  line report accepts only agreed positions
+18:17:44 [TEST] S2-U58 PASS  black-black junction and exit are bounded
+18:17:44 [TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+18:17:44 [TEST] S2-U60 PASS  hazard scan: motion STOP and one REQUEST
+18:17:44 [TEST] S2-U61 PASS  STOP_CONFIRM and AUTHORISE only once wheels are still
+18:17:44 [TEST] S2-U62 PASS  scan result for this request ends the scan
+18:17:44 [TEST] S2-U63 PASS  scan timeout sends CANCEL, abort sends STOP
+18:17:44 [TEST] S2-U64 PASS  bypass drives the plan in order; a bad plan fails
+18:17:44 [TEST] S2-U65 PASS  bypass advances only on its own DONE
+18:17:44 [TEST] S2-U66 PASS  bypass hazard ignored in turns, stops forward trav[HW] S2-H03: turn each wheel by hand (60 s)
+18:17:44 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:44 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:45 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 s4: calibration failed, car moved (span fwd 208 left 309 up 218 mg); keep still
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:46 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:47 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 s4: calibration failed, car moved (span fwd 158 left 140 up 102 mg); keep still
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:48 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:49 s4: calibration failed, car moved (span fwd 99 left 89 up 71 mg); keep still
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:50 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 s4: calibration failed, car moved (span fwd 84 left 54 up 34 mg); keep still
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:51 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:52 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 s4: calibration failed, car moved (span fwd 132 left 99 up 78 mg); keep still
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:53 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:54 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 s4: calibration failed, car moved (span fwd 671 left 278 up 122 mg); keep still
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:55 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 0 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:56 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 s4: calibration failed, car moved (span fwd 344 left 321 up 203 mg); keep still
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:57 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:58 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 s4: calibration failed, car moved (span fwd 201 left 301 up 177 mg); keep still
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:17:59 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:00 s4: calibration failed, car moved (span fwd 164 left 172 up 116 mg); keep still
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:01 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 s4: calibration failed, car moved (span fwd 175 left 283 up 158 mg); keep still
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:02 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:03 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 s4: calibration failed, car moved (span fwd 305 left 402 up 118 mg); keep still
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:04 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 0 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 9 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 32 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 43 (err 0)
+18:18:05 [HW] S2-H03 enc1 1 (err 0)  enc2 63 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 86 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 89 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 104 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 120 (err 0)
+18:18:06 s4: calibration failed, car moved (span fwd 167 left 131 up 96 mg); keep still
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 126 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 126 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 126 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 148 (err 0)
+18:18:06 [HW] S2-H03 enc1 1 (err 0)  enc2 169 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 169 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 180 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 217 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 244 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 257 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 286 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 312 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 329 (err 0)
+18:18:07 [HW] S2-H03 enc1 1 (err 0)  enc2 346 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 374 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 395 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 406 (err 0)
+18:18:08 s4: calibration failed, car moved (span fwd 196 left 84 up 44 mg); keep still
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 418 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 435 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 443 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 441 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 441 (err 0)
+18:18:08 [HW] S2-H03 enc1 1 (err 0)  enc2 441 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 441 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 441 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 442 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 459 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 496 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 504 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 521 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 535 (err 0)
+18:18:09 [HW] S2-H03 enc1 1 (err 0)  enc2 560 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 582 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 591 (err 0)
+18:18:10 s4: calibration failed, car moved (span fwd 146 left 147 up 123 mg); keep still
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 609 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 624 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 635 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 652 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 667 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 680 (err 0)
+18:18:10 [HW] S2-H03 enc1 1 (err 0)  enc2 691 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 703 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 723 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:11 s4: calibration failed, car moved (span fwd 179 left 75 up 54 mg); keep still
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 741 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 766 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 806 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 811 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 828 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 861 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 886 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 917 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 954 (err 0)
+18:18:12 [HW] S2-H03 enc1 1 (err 0)  enc2 986 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1012 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1041 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1062 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1080 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1089 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1087 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1087 (err 0)
+18:18:13 s4: calibration failed, car moved (span fwd 181 left 88 up 68 mg); keep still
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1087 (err 0)
+18:18:13 [HW] S2-H03 enc1 1 (err 0)  enc2 1087 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1087 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1087 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1088 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1094 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1150 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1197 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1223 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1249 (err 0)
+18:18:14 [HW] S2-H03 enc1 1 (err 0)  enc2 1284 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1316 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1342 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1366 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1400 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1452 (err 0)
+18:18:15 s4: calibration failed, car moved (span fwd 204 left 160 up 110 mg); keep still
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1497 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1514 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1536 (err 0)
+18:18:15 [HW] S2-H03 enc1 1 (err 0)  enc2 1537 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1537 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1537 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1537 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1560 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1610 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1656 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1687 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1724 (err 0)
+18:18:16 [HW] S2-H03 enc1 1 (err 0)  enc2 1768 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1814 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1839 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1842 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1842 (err 0)
+18:18:17 s4: calibration failed, car moved (span fwd 181 left 130 up 92 mg); keep still
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1841 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1841 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1841 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1841 (err 0)
+18:18:17 [HW] S2-H03 enc1 1 (err 0)  enc2 1842 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 1853 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 1927 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 1991 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 2044 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 2094 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 2131 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 2135 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 2159 (err 0)
+18:18:18 [HW] S2-H03 enc1 1 (err 0)  enc2 2163 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2163 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2163 (err 0)
+18:18:19 s4: calibration failed, car moved (span fwd 186 left 133 up 122 mg); keep still
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2163 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2163 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2163 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2172 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2235 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2309 (err 0)
+18:18:19 [HW] S2-H03 enc1 1 (err 0)  enc2 2370 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2438 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2495 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2523 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2527 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2527 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2527 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2527 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2527 (err 0)
+18:18:20 [HW] S2-H03 enc1 1 (err 0)  enc2 2527 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2570 (err 0)
+18:18:21 s4: calibration failed, car moved (span fwd 257 left 152 up 109 mg); keep still
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2656 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2733 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2802 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2854 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2870 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2870 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2869 (err 0)
+18:18:21 [HW] S2-H03 enc1 1 (err 0)  enc2 2869 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 2869 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 2869 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 2869 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 2870 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 2909 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 2993 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 3087 (err 0)
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 3165 (err 0)
+18:18:22 s4: calibration failed, car moved (span fwd 180 left 178 up 122 mg); keep still
+18:18:22 [HW] S2-H03 enc1 1 (err 0)  enc2 3209 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3227 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:23 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 s4: calibration failed, car moved (span fwd 168 left 100 up 57 mg); keep still
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:24 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 1 (err 0)  enc2 3236 (err 0)
+18:18:25 [HW] S2-H03 enc1 13 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 s4: calibration failed, car moved (span fwd 269 left 484 up 157 mg); keep still
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:26 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 17 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 17 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 17 (err 0)  enc2 3236 (err 0)
+18:18:27 [HW] S2-H03 enc1 17 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 17 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 s4: calibration failed, car moved (span fwd 589 left 1398 up 608 mg); keep still
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:28 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:29 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 s4: calibration failed, car moved (span fwd 562 left 497 up 221 mg); keep still
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:30 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:31 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 s4: calibration failed, car moved (span fwd 297 left 273 up 229 mg); keep still
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:32 [HW] S2-H03 enc1 18 (err 0)  enc2 3236 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:33 s4: calibration failed, car moved (span fwd 490 left 418 up 227 mg); keep still
+18:18:33 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 18 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 19 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 31 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 59 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 85 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 110 (err 0)  enc2 3235 (err 0)
+18:18:34 [HW] S2-H03 enc1 128 (err 0)  enc2 3236 (err 0)
+18:18:34 [HW] S2-H03 enc1 129 (err 0)  enc2 3236 (err 0)
+18:18:35 [HW] S2-H03 enc1 129 (err 0)  enc2 3287 (err 0)
+18:18:35 [HW] S2-H03 enc1 129 (err 0)  enc2 3317 (err 0)
+18:18:35 [HW] S2-H03 enc1 131 (err 0)  enc2 3353 (err 0)
+18:18:35 [HW] S2-H03 enc1 131 (err 0)  enc2 3405 (err 0)
+18:18:35 [HW] S2-H03 enc1 131 (err 0)  enc2 3453 (err 0)
+18:18:35 [HW] S2-H03 enc1 131 (err 0)  enc2 3454 (err 0)
+18:18:35 s4: calibration failed, car moved (span fwd 437 left 296 up 109 mg); keep still
+18:18:35 [HW] S2-H03 enc1 131 (err 0)  enc2 3378 (err 0)
+18:18:35 [HW] S2-H03 enc1 143 (err 0)  enc2 3276 (err 0)
+18:18:35 [HW] S2-H03 enc1 183 (err 0)  enc2 3278 (err 0)
+18:18:36 [HW] S2-H03 enc1 217 (err 0)  enc2 3278 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3278 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3293 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3326 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3377 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3425 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3467 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3507 (err 0)
+18:18:36 [HW] S2-H03 enc1 223 (err 0)  enc2 3517 (err 0)
+18:18:37 [HW] S2-H03 enc1 223 (err 0)  enc2 3517 (err 0)
+18:18:37 [HW] S2-H03 enc1 223 (err 0)  enc2 3515 (err 0)
+18:18:37 [HW] S2-H03 enc1 224 (err 0)  enc2 3515 (err 0)
+18:18:37 [HW] S2-H03 enc1 236 (err 0)  enc2 3515 (err 0)
+18:18:37 s4: calibration failed, car moved (span fwd 309 left 349 up 149 mg); keep still
+18:18:37 [HW] S2-H03 enc1 258 (err 0)  enc2 3516 (err 0)
+18:18:37 [HW] S2-H03 enc1 263 (err 0)  enc2 3556 (err 0)
+18:18:37 [HW] S2-H03 enc1 263 (err 0)  enc2 3649 (err 0)
+18:18:37 [HW] S2-H03 enc1 263 (err 0)  enc2 3695 (err 0)
+18:18:37 [HW] S2-H03 enc1 264 (err 0)  enc2 3714 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3739 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3752 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3749 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3748 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3748 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3748 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3750 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3794 (err 0)
+18:18:38 [HW] S2-H03 enc1 265 (err 0)  enc2 3872 (err 0)
+18:18:39 [HW] S2-H03 enc1 265 (err 0)  enc2 3908 (err 0)
+18:18:39 [HW] S2-H03 enc1 265 (err 0)  enc2 3921 (err 0)
+18:18:39 [HW] S2-H03 enc1 265 (err 0)  enc2 3927 (err 0)
+18:18:39 s4: calibration failed, car moved (span fwd 222 left 168 up 153 mg); keep still
+18:18:39 [HW] S2-H03 enc1 265 (err 0)  enc2 3927 (err 0)
+18:18:39 [HW] S2-H03 enc1 265 (err 0)  enc2 3927 (err 0)
+18:18:39 [HW] S2-H03 enc1 273 (err 0)  enc2 3927 (err 0)
+18:18:39 [HW] S2-H03 enc1 307 (err 0)  enc2 3927 (err 0)
+18:18:39 [HW] S2-H03 enc1 337 (err 0)  enc2 3927 (err 0)
+18:18:39 [HW] S2-H03 enc1 339 (err 0)  enc2 3927 (err 0)
+18:18:40 [HW] S2-H03 enc1 339 (err 0)  enc2 3943 (err 0)
+18:18:40 [HW] S2-H03 enc1 339 (err 0)  enc2 3988 (err 0)
+18:18:40 [HW] S2-H03 enc1 340 (err 0)  enc2 3987 (err 0)
+18:18:40 [HW] S2-H03 enc1 350 (err 0)  enc2 3994 (err 0)
+18:18:40 [HW] S2-H03 enc1 367 (err 0)  enc2 4029 (err 0)
+18:18:40 [HW] S2-H03 enc1 385 (err 0)  enc2 4090 (err 0)
+18:18:40 [HW] S2-H03 enc1 407 (err 0)  enc2 4128 (err 0)
+18:18:40 [HW] S2-H03 enc1 419 (err 0)  enc2 4128 (err 0)
+18:18:40 [HW] S2-H03 enc1 419 (err 0)  enc2 4117 (err 0)
+18:18:41 [HW] S2-H03 enc1 419 (err 0)  enc2 4103 (err 0)
+18:18:41 s4: calibration failed, car moved (span fwd 437 left 254 up 397 mg); keep still
+18:18:41 [HW] S2-H03 enc1 419 (err 0)  enc2 4077 (err 0)
+18:18:41 [HW] S2-H03 enc1 419 (err 0)  enc2 4062 (err 0)
+18:18:41 [HW] S2-H03 enc1 418 (err 0)  enc2 4042 (err 0)
+18:18:41 [HW] S2-H03 enc1 416 (err 0)  enc2 4037 (err 0)
+18:18:41 [HW] S2-H03 enc1 416 (err 0)  enc2 4061 (err 0)
+18:18:41 [HW] S2-H03 enc1 416 (err 0)  enc2 4138 (err 0)
+18:18:41 [HW] S2-H03 enc1 416 (err 0)  enc2 4221 (err 0)
+18:18:41 [HW] S2-H03 enc1 416 (err 0)  enc2 4270 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4269 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4269 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4269 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4269 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4269 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4269 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4270 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4280 (err 0)
+18:18:42 [HW] S2-H03 enc1 416 (err 0)  enc2 4361 (err 0)
+18:18:42 s4: calibration failed, car moved (span fwd 430 left 306 up 427 mg); keep still
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4439 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:43 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4456 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4459 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4540 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4642 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4667 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4690 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4714 (err 0)
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4699 (err 0)
+18:18:44 s4: calibration failed, car moved (span fwd 337 left 268 up 241 mg); keep still
+18:18:44 [HW] S2-H03 enc1 416 (err 0)  enc2 4672 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4667 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4667 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4667 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4675 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4728 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4825 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4896 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:45 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4915 (err 0)
+18:18:46 s4: calibration failed, car moved (span fwd 324 left 388 up 184 mg); keep still
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 4937 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 5009 (err 0)
+18:18:46 [HW] S2-H03 enc1 416 (err 0)  enc2 5081 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5141 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5179 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5203 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5204 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5204 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5204 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5204 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5209 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5261 (err 0)
+18:18:47 [HW] S2-H03 enc1 416 (err 0)  enc2 5328 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5404 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5455 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5457 (err 0)
+18:18:48 s4: calibration failed, car moved (span fwd 314 left 294 up 158 mg); keep still
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5457 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5457 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5456 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5441 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5438 (err 0)
+18:18:48 [HW] S2-H03 enc1 416 (err 0)  enc2 5438 (err 0)
+18:18:49 [HW] S2-H03 enc1 416 (err 0)  enc2 5438 (err 0)
+18:18:49 [HW] S2-H03 enc1 416 (err 0)  enc2 5418 (err 0)
+18:18:49 [HW] S2-H03 enc1 416 (err 0)  enc2 5409 (err 0)
+18:18:49 [HW] S2-H03 enc1 416 (err 0)  enc2 5409 (err 0)
+18:18:49 [HW] S2-H03 enc1 416 (err 0)  enc2 5376 (err 0)
+18:18:49 [HW] S2-H03 enc1 414 (err 0)  enc2 5347 (err 0)
+18:18:49 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:49 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:49 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 s4: calibration failed, car moved (span fwd 956 left 2060 up 815 mg); keep still
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [HW] S2-H03 enc1 415 (err 0)  enc2 5345 (err 0)
+18:18:50 [TEST] subsystem2 SUMMARY 71 passed, 0 failed
+18:18:50 [TEST] S3-H01..H03 BLOCKED  use S3_HW_TEST=1 for raw input or S3_LINE_TEST=1 for line following
+18:18:52 s4: calibration failed, car moved (span fwd 651 left 636 up 338 mg); keep still
+18:18:53 [TEST] INT-01 PASS  samples flow from subsystem 2 to subsystem 3
+18:18:53 [TEST] S3-U01 PASS  legacy statistics remain self-consistent
+18:18:53 [TEST] subsystem3 SUMMARY 2 passed, 0 failed
+18:18:53 [TEST] S4-U03 PASS  stable samples complete calibration
+18:18:53 [TEST] S4-U04 PASS  unstable samples cause calibration fault
+18:18:53 [TEST] S4-U05 PASS  single tilt spike is not a hump
+18:18:53 [TEST] S4-U06 PASS  rise then level completes one hump
+18:18:53 [TEST] S4-U08 PASS  consecutive invalid samples cause sensor fault
+18:18:53 [TEST] S4-U09 PASS  valid sample clears invalid streak
+18:18:53 [TEST] S4-U10 PASS  timestamp wrap does not cause stale fault
+18:18:53 [TEST] S4-U11 PASS  excess sample gap causes stale fault
+18:18:53 [TEST] S4-U12 PASS  larger hump becomes run maximum
+18:18:53 [TEST] S4-U13 PASS  local recovery preserves run maximum
+18:18:53 [TEST] S4-U14 PASS  new run clears run maximum
+18:18:53 [TEST] S4-U16 PASS  impact is reported once per threshold crossing
+18:18:53 [TEST] S4-U17 PASS  null API inputs do not crash
+18:18:53 [TEST] S4-U18 PASS  driver decodes axis order and scale
+18:18:53 [TEST] S4-U19 PASS  driver decodes signed 12-bit limits
+18:18:53 [TEST] S4-U20 PASS  driver decode rejects null pointers
+18:18:53 [TEST] S4-U21 PASS  hump not ended in time is dropped until level
+18:18:53 [TEST] S4-U23 PASS  10 mm under the left wheel reads 10 mm, left wheel
+18:18:53 [TEST] S4-U24 PASS  10 mm under the right wheel reads 10 mm, right wheel
+18:18:53 [TEST] S4-U25 PASS  10 mm under both wheels reads 10 mm, both wheels
+18:18:53 [TEST] S4-U26 PASS  10 mm under the caster reads 10 mm, caster
+18:18:53 [TEST] S4-U27 PASS  pitch while accelerating is not a hump
+18:18:53 [TEST] S4-U28 PASS  alternating roll averages out, no hump
+18:18:53 [TEST] S4-U29 PASS  held tilt reads its full height through the average
+18:18:53 [TEST] S4-U30 PASS  average length 0 or above the maximum is rejected
+18:18:53 [TEST] S4-U31 PASS  no hump while disabled; a hump in progress is dropped
+18:18:53 [TEST] S4-U32 PASS  height scale 500 per mille halves a 10 mm reading
+18:18:53 [TEST] S4-U33 PASS  height scale 0 or above the maximum is rejected
+18:18:53 [TEST] S4-U34 PASS  no impact while disabled, nor on enabling mid-impact
+18:18:53 [TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+18:18:53 [TEST] subsystem4 SUMMARY 29 passed, 0 failed
+18:18:53 [TEST] S5-U03 PASS  known integral pulse conversions
+18:18:53 [TEST] S5-U04 PASS  minimum physical range boundary
+18:18:53 [TEST] S5-U05 PASS  maximum physical range boundary
+18:18:53 [TEST] S5-U06 PASS  invalid conversion preserves output
+18:18:53 [TEST] S5-U07 PASS  null conversion output is rejected
+18:18:53 [TEST] S5-U08 PASS  oversized pulses cannot overflow valid
+18:18:53 [TEST] S5-U09 PASS  permission without stop cannot scan
+18:18:53 [TEST] S5-U10 PASS  wrong request stop cannot scan
+18:18:53 [TEST] S5-U11 PASS  stop without permission cannot scan
+18:18:53 [TEST] S5-U12 PASS  matched permission and stop allow scan
+18:18:53 [TEST] S5-U13 PASS  cancel invalidates scan and acknowledges
+18:18:53 [TEST] S5-U14 PASS  new STOP aborts an authorised scan
+18:18:53 [TEST] S5-U57 PASS  unstarted request expires after two seconds
+18:18:53 [TEST] S5-U58 PASS  busy request cannot replace the active scan
+18:18:53 [TEST] S5-U15 PASS  coarse scan starts at minus forty-five
+18:18:53 [TEST] S5-U16 PASS  no trigger before calibrated settling
+18:18:53 [TEST] S5-U17 PASS  withdrawn permission prevents scanning
+18:18:53 [TEST] S5-U51 PASS  rejected servo command prevents scanning
+18:18:53 [TEST] S5-U52 PASS  rejected trigger command aborts scanning
+18:18:53 [TEST] S5-U19 PASS  trigger spacing at least 65 ms
+18:18:53 [TEST] S5-U20 PASS  completion after 30 ms or past 4 m is 4000 mm
+18:18:53 [TEST] S5-U21 PASS  malformed capture and stuck ECHO
+18:18:53 [TEST] S5-U22 PASS  old completion cannot complete new capture
+18:18:53 [TEST] S5-U23 PASS  angle distance is the median of three
+18:18:53 [TEST] S5-U24 PASS  third consecutive invalid attempt faults
+18:18:53 [TEST] S5-U26 PASS  coarse scan angles and three samples
+18:18:53 [TEST] S5-U56 PASS  plan waits for safe forward clearance
+18:18:53 [TEST] S5-U59 PASS  coarse edges receive five-degree samples
+18:18:53 [TEST] S5-U28 PASS  scan past 15 s faults
+18:18:53 [TEST] S5-U25 PASS  unsafe, invalid or stale data stops
+18:18:53 [TEST] S5-U55 PASS  third invalid forward attempt faults
+18:18:53 [TEST] S5-U36 PASS  left whenever valid, else right
+18:18:53 [TEST] S5-U37 PASS  blocked or unobserved sides give no plan
+18:18:53 [TEST] S5-U53 PASS  plan segments, search bound and align
+18:18:53 [s4: calibration failed, car moved (span fwd 842 left 1880 up 1146 mg); keep still
+18:18:55 s4: calibration failed, car moved (span fwd 440 left 705 up 241 mg); keep still
+18:18:57 s4: calibration failed, car moved (span fwd 592 left 839 up 383 mg); keep still
+18:18:59 s4: calibration failed, car moved (span fwd 601 left 729 up 207 mg); keep still
+18:19:01 s4: calibration failed, car moved (span fwd 610 left 583 up 238 mg); keep still
+18:19:03 s4: calibration failed, car moved (span fwd 444 left 583 up 301 mg); keep still
+18:19:04 s4: calibration failed, car moved (span fwd 546 left 865 up 278 mg); keep still
+18:19:06 s4: calibration failed, car moved (span fwd 973 left 922 up 1267 mg); keep still
+18:19:08 s4: calibration failed, car moved (span fwd 311 left 261 up 272 mg); keep still
+18:19:10 s4: calibration failed, car moved (span fwd 328 left 259 up 774 mg); keep still
+18:19:11 s4: calibration failed, car moved (span fwd 622 left 1097 up 321 mg); keep still
+18:19:13 s4: calibration failed, car moved (span fwd 1235 left 1336 up 904 mg); keep still
+18:19:15 s4: calibration failed, car moved (span fwd 217 left 353 up 87 mg); keep still
+18:19:17 s4: calibration failed, car moved (span fwd 292 left 191 up 69 mg); keep still
+18:19:18 s4: calibration failed, car moved (span fwd 183 left 214 up 141 mg); keep still
+18:19:20 s4: stationary calibration complete (50 samples in 1750 ms)
