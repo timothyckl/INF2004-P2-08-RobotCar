@@ -787,6 +787,27 @@ small speed difference. A single-side reading that persists for 200 ms still
 uses the existing 5/35 or 35/5 sustained-curve target so curve authority is not
 reduced. These mappings are provisional until verified on the physical track.
 
+### 8. Wider left black margin for the hump (2026-11-16)
+
+Approved by Dalton on the integration branch. The right front sensor worked
+loose and was refitted; the sensors are now 30 mm apart, centre to centre,
+on 18 mm tape, so each sits about 6 mm outside the tape edge when centred.
+The raw ranges did not change (left white 113..164, black 1467..1532; right
+white 168..221, black 3345..3378).
+
+With the right wheel on the 10 mm hump the car rolls left and the left sensor
+comes closer to the floor: over white it read 175..210, above its threshold
+of about 170, so it reported BLACK and steered left (S3 log, 2026-11-16).
+Two of three hump runs then lost the line. The right sensor on the hump still
+read about 3290 over the tape.
+
+`S3_LEFT_BLACK_MARGIN` goes from 32 to 100 counts and `S3_LEFT_WHITE_MARGIN`
+from 20 to 80, giving thresholds of about 236 (black) and 216 (release) at
+the 136 baseline, both above the tilted white. Both are kept above 210 so a
+tilt can neither set nor hold BLACK. Cost: faded left patches, measured at
+206..310 in decision 3, are only detected above about 236. The right sensor
+is unchanged. Not yet validated on the track.
+
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
 ### 1. Standalone ownership and wiring

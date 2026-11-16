@@ -73,8 +73,9 @@ Each channel has an independent filtered threshold because the measured sensor
 ranges differ. The initial white baselines are 136 counts on the left and 180
 on the right. While a channel remains white, its baseline moves by at most one
 count per eight samples and the threshold follows it. The left baseline is
-bounded to 96..168 counts and uses 32-count detection and 20-count release
-margins. The right baseline is bounded to 100..300 counts and uses 500-count
+bounded to 96..168 counts and uses 100-count detection and 80-count release
+margins (raised from 32 and 20 on 2026-11-16, decision 8, so that the car
+rolling on the hump does not read white as black). The right baseline is bounded to 100..300 counts and uses 500-count
 detection and 350-count release margins. A black reading freezes baseline
 adaptation so the algorithm cannot learn the line as white. These values come
 from the 2026-11-05 bench observations and still require on-track validation.

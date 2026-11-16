@@ -46,8 +46,9 @@ static volatile uint32_t g_s3_line_loops = 0u;
 #define S3_LEFT_INITIAL_WHITE       136u
 #define S3_LEFT_MINIMUM_WHITE        96u
 #define S3_LEFT_MAXIMUM_WHITE       168u
-#define S3_LEFT_BLACK_MARGIN         32u
-#define S3_LEFT_WHITE_MARGIN         20u
+/* Left margins clear the tilted white on the hump (S3 decision 8). */
+#define S3_LEFT_BLACK_MARGIN        100u
+#define S3_LEFT_WHITE_MARGIN         80u
 #define S3_LEFT_BLACK_REFERENCE    1500u
 #define S3_RIGHT_INITIAL_WHITE      180u
 #define S3_RIGHT_MINIMUM_WHITE      100u
