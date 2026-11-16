@@ -107,18 +107,14 @@ bool
 s2_line_make (uint8_t position, uint32_t captured_ms,
               s2_line_report_t * p_report)
 {
-    if ((NULL == p_report) || (position > S2_LINE_STOP))
+    uint8_t strength = 0u;
+
+    if ((S2_LINE_LEFT == position) || (S2_LINE_RIGHT == position))
     {
-        return (false);
+        strength = S2_LINE_STRENGTH_MAX;
     }
 
-    p_report->captured_ms = captured_ms;
-    p_report->position    = position;
-    p_report->reserved[0] = 0u;
-    p_report->reserved[1] = 0u;
-    p_report->reserved[2] = 0u;
-
-    return (true);
+    return (s2_line_make_scaled(position, strength, captured_ms, p_report));
 }
 
 bool
@@ -128,6 +124,42 @@ s2_line_submit (uint8_t position, uint32_t captured_ms)
     ID const q = line_q;
 
     return ((q > 0) && s2_line_make(position, captured_ms, &report)
+            && (tk_snd_mbf(q, &report, (INT)sizeof(report), TMO_POL)
+                >= E_OK));
+}
+
+bool
+s2_line_make_scaled (uint8_t position, uint8_t strength,
+                     uint32_t captured_ms, s2_line_report_t * p_report)
+{
+    bool const b_side = (S2_LINE_LEFT == position)
+                     || (S2_LINE_RIGHT == position);
+    bool const b_valid = (NULL != p_report)
+                      && (position <= S2_LINE_STOP)
+                      && (strength <= S2_LINE_STRENGTH_MAX)
+                      && (b_side || (0u == strength));
+
+    if (b_valid)
+    {
+        p_report->captured_ms = captured_ms;
+        p_report->position    = position;
+        p_report->strength    = strength;
+        p_report->reserved[0] = 0u;
+        p_report->reserved[1] = 0u;
+    }
+
+    return (b_valid);
+}
+
+bool
+s2_line_submit_scaled (uint8_t position, uint8_t strength,
+                       uint32_t captured_ms)
+{
+    s2_line_report_t report;
+    ID const q = line_q;
+
+    return ((q > 0)
+            && s2_line_make_scaled(position, strength, captured_ms, &report)
             && (tk_snd_mbf(q, &report, (INT)sizeof(report), TMO_POL)
                 >= E_OK));
 }

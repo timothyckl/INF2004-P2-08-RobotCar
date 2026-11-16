@@ -19,6 +19,14 @@
 #ifndef	__DEV_ADC_CNF_RP2040_H__
 #define	__DEV_ADC_CNF_RP2040_H__
 
+#ifndef S3_HARDWARE_TEST
+#define S3_HARDWARE_TEST 0
+#endif
+
+#ifndef S3_LINE_FOLLOW_TEST
+#define S3_LINE_FOLLOW_TEST 0
+#endif
+
 /* 
  * Release A/DC reset
  *	Enable when not performed in the OS initialization process.
@@ -39,8 +47,13 @@
  *	  channel 0 = GP26, channel 1 = GP27, channel 2 = GP28
  *	  channel 3 = GP29 is the Pico W RADIO CLOCK: never set _3 to TRUE.
  */
+#if S3_HARDWARE_TEST || S3_LINE_FOLLOW_TEST
+#define	DEVCONF_ADC_PIN_INIT_0	TRUE
+#define	DEVCONF_ADC_PIN_INIT_1	TRUE
+#else
 #define	DEVCONF_ADC_PIN_INIT_0	FALSE
 #define	DEVCONF_ADC_PIN_INIT_1	FALSE
+#endif
 #define	DEVCONF_ADC_PIN_INIT_2	FALSE
 #define	DEVCONF_ADC_PIN_INIT_3	FALSE
 

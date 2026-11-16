@@ -23,6 +23,15 @@ static void test_ir(void)
 {
     s3_calibration_t calibration = {0};
     s3_filter_t filter = {0};
+    s3_ir_adaptive_t adaptive = {0};
+    s3_ir_adaptive_config_t const adaptive_config =
+    {
+        136U, 96U, 168U, 32U, 20U
+    };
+    s3_ir_adaptive_config_t const invalid_config =
+    {
+        136U, 170U, 168U, 32U, 20U
+    };
     uint8_t mask = 0U;
     s3_line_t const decisions[S3_IR_PATTERNS] =
     {
@@ -63,6 +72,61 @@ static void test_ir(void)
         check(s3_ir_filter(&filter, 2U, 1U), "filter saturation");
     }
 
+    check(!s3_ir_adaptive_init(NULL, &adaptive_config),
+          "adaptive null state rejected");
+    check(!s3_ir_adaptive_init(&adaptive, NULL),
+          "adaptive null config rejected");
+    check(!s3_ir_adaptive_init(&adaptive, &invalid_config),
+          "adaptive invalid white bounds rejected");
+    check(s3_ir_adaptive_init(&adaptive, &adaptive_config),
+          "adaptive configuration accepted");
+    check(168U == adaptive.threshold, "adaptive initial threshold");
+    check(0U == s3_ir_adaptive_strength(NULL, 1500U),
+          "null adaptive strength rejected");
+    check(0U == s3_ir_adaptive_strength(&adaptive, 136U),
+          "invalid black reference rejected");
+    for (uint8_t idx = 0U; idx < 16U; ++idx)
+    {
+        check(!s3_ir_adaptive_update(&adaptive, 136U),
+              "steady white remains white");
+    }
+    check(s3_ir_adaptive_update(&adaptive, 206U),
+          "filtered faded patch becomes black");
+    check(s3_ir_adaptive_update(&adaptive, 206U),
+          "filtered faded patch remains black");
+    check((s3_ir_adaptive_strength(&adaptive, 1500U) > 0U)
+          && (s3_ir_adaptive_strength(&adaptive, 1500U) < 10U),
+          "faded patch gives a gentle steering strength");
+    uint16_t const black_baseline = adaptive.white_baseline;
+
+    for (uint8_t idx = 0U; idx < 16U; ++idx)
+    {
+        check(s3_ir_adaptive_update(&adaptive, 206U),
+              "steady black remains black");
+    }
+    check(black_baseline == adaptive.white_baseline,
+          "black cannot alter white baseline");
+    check(s3_ir_adaptive_update(&adaptive, 136U),
+          "hysteresis holds first white sample");
+    check(!s3_ir_adaptive_update(&adaptive, 136U),
+          "hysteresis releases on stable white");
+    for (uint8_t idx = 0U; idx < 80U; ++idx)
+    {
+        check(!s3_ir_adaptive_update(&adaptive, 154U),
+              "elevated white remains white");
+    }
+    check((adaptive.white_baseline > black_baseline)
+          && (adaptive.white_baseline <= adaptive_config.maximum_white),
+          "white baseline adapts within bounds");
+    check(!s3_ir_adaptive_update(&adaptive, 4096U),
+          "out-of-range ADC sample rejected");
+    adaptive.filtered = 1500U;
+    check(100U == s3_ir_adaptive_strength(&adaptive, 1500U),
+          "reference black gives full steering strength");
+    adaptive.filtered = S3_IR_ADC_MAX;
+    check(100U == s3_ir_adaptive_strength(&adaptive, 1500U),
+          "steering strength saturates at one hundred");
+
     for (uint8_t idx = 0U; idx < S3_IR_PATTERNS; ++idx)
     {
         check(s3_ir_line(idx, decisions) == decisions[idx],
@@ -70,14 +134,14 @@ static void test_ir(void)
     }
     check(S3_LINE_UNKNOWN == s3_ir_line(4U, decisions), "invalid mask");
     check(S3_LINE_UNKNOWN == s3_ir_line(0U, NULL), "missing line table");
-    check(S3_LINE_LOST == s3_ir_follow_decision(0U),
-          "white-white means line lost");
+    check(S3_LINE_STRAIGHT == s3_ir_follow_decision(0U),
+          "white-white drives straight");
     check(S3_LINE_LEFT == s3_ir_follow_decision(S3_IR_LEFT_MASK),
           "left black requests left correction");
     check(S3_LINE_RIGHT == s3_ir_follow_decision(S3_IR_RIGHT_MASK),
           "right black requests right correction");
-    check(S3_LINE_STRAIGHT == s3_ir_follow_decision(3U),
-          "black-black drives straight");
+    check(S3_LINE_JUNCTION == s3_ir_follow_decision(3U),
+          "black-black reports a crossing");
     check(S3_LINE_UNKNOWN == s3_ir_follow_decision(4U),
           "invalid follow mask rejected");
 }

@@ -1,6 +1,6 @@
 /**
  * @file test_line_control.c
- * @brief Test the pure two-sensor line-following and recovery policy.
+ * @brief Test the two-sensor line-following and junction policy.
  */
 #include "test_line_control.h"
 
@@ -11,69 +11,121 @@
 #include "line_control.h"
 #include "subsystem2.h"
 
-bool
-test_line_control_lost (void)
+static line_control_cfg_t const g_cfg =
 {
-    line_control_cfg_t const cfg = {200u, 300u, 150u, 100u};
+    200u, 300u, 100u, 100u, 1500u, 600u, 100u, 150u, 2500u
+};
+
+bool
+test_line_control_junction (void)
+{
     line_control_t control;
     bool b_passed;
 
-    b_passed = line_control_init(&control, &cfg, 0u);
+    b_passed = line_control_init(&control, &g_cfg, 0u);
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STRAIGHT
             == line_control_step(&control, S2_LINE_CENTER, 0u));
     b_passed = b_passed
-        && (LINE_CONTROL_ACTION_STOP
-            == line_control_step(&control, S2_LINE_LOST, 10u));
-
-    b_passed = b_passed && line_control_init(&control, &cfg, 0u);
-    b_passed = b_passed
         && (LINE_CONTROL_ACTION_CORRECT_LEFT
-            == line_control_step(&control, S2_LINE_LEFT, 0u));
-    b_passed = b_passed
-        && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_CENTER, 50u));
+            == line_control_step(&control, S2_LINE_LEFT, 10u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CURVE_LEFT
-            == line_control_step(&control, S2_LINE_LOST, 149u))
-        && (LINE_CONTROL_MODE_LOST_RECOVERY
+            == line_control_step(&control, S2_LINE_LEFT, 210u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CURVE_LEFT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 220u))
+        && (LINE_CONTROL_MODE_JUNCTION_CONFIRM
             == line_control_mode(&control));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CURVE_LEFT
-            == line_control_step(&control, S2_LINE_LOST, 448u));
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 319u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 320u))
+        && (LINE_CONTROL_MODE_CROSSING == line_control_mode(&control));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 330u))
+        && (LINE_CONTROL_MODE_EXIT == line_control_mode(&control));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_LEFT, 929u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_LEFT, 930u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 940u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 1039u))
+        && (LINE_CONTROL_MODE_EXIT == line_control_mode(&control));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 1040u))
+        && (LINE_CONTROL_MODE_FOLLOW == line_control_mode(&control));
+
+    b_passed = b_passed && line_control_init(&control, &g_cfg, 0u);
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 0u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 100u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 1599u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STOP
-            == line_control_step(&control, S2_LINE_LOST, 449u));
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 1600u));
 
-    b_passed = b_passed && line_control_init(&control, &cfg, 0u);
+    b_passed = b_passed && line_control_init(&control, &g_cfg, 0u);
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CORRECT_RIGHT
             == line_control_step(&control, S2_LINE_RIGHT, 0u));
     b_passed = b_passed
-        && (LINE_CONTROL_ACTION_CURVE_RIGHT
-            == line_control_step(&control, S2_LINE_LOST, 10u));
+        && (LINE_CONTROL_ACTION_CORRECT_RIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 10u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_CENTER, 50u))
+            == line_control_step(&control, S2_LINE_CENTER, 109u))
         && (LINE_CONTROL_MODE_FOLLOW == line_control_mode(&control));
+
+    b_passed = b_passed && line_control_init(&control, &g_cfg, 0u);
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 0u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 100u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 110u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STOP
-            == line_control_step(&control, S2_LINE_LOST, 151u));
+            == line_control_step(&control, S2_LINE_CENTER, 2610u));
 
-    b_passed = b_passed && line_control_init(&control, &cfg, 0u);
-    b_passed = b_passed
-        && (LINE_CONTROL_ACTION_CORRECT_LEFT
-            == line_control_step(&control, S2_LINE_LEFT, 0u));
-    b_passed = b_passed
-        && (LINE_CONTROL_ACTION_CURVE_LEFT
-            == line_control_step(&control, S2_LINE_LOST, 10u));
+    b_passed = b_passed && line_control_init(&control, &g_cfg, 0u);
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_RIGHT, 20u))
-        && (LINE_CONTROL_MODE_FOLLOW == line_control_mode(&control));
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 0u));
     b_passed = b_passed
-        && (LINE_CONTROL_ACTION_CORRECT_RIGHT
-            == line_control_step(&control, S2_LINE_RIGHT, 120u));
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_BOTH_BLACK, 100u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 110u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_LEFT, 710u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_LEFT, 859u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CORRECT_LEFT
+            == line_control_step(&control, S2_LINE_LEFT, 860u))
+        && (LINE_CONTROL_MODE_FOLLOW == line_control_mode(&control));
 
     return (b_passed);
 }
@@ -81,15 +133,20 @@ test_line_control_lost (void)
 bool
 test_line_control_curve (void)
 {
-    line_control_cfg_t const cfg = {200u, 300u, 150u, 100u};
-    line_control_cfg_t const invalid_curve = {0u, 300u, 150u, 100u};
-    line_control_cfg_t const invalid_lost = {200u, 0u, 150u, 100u};
-    line_control_cfg_t const invalid_memory = {200u, 300u, 0u, 100u};
-    line_control_cfg_t const invalid_change = {200u, 300u, 150u, 0u};
+    line_control_cfg_t const invalid_curve =
+        {0u, 300u, 100u, 100u, 1500u, 600u, 100u, 150u, 2500u};
+    line_control_cfg_t const invalid_hold =
+        {200u, 0u, 100u, 100u, 1500u, 600u, 100u, 150u, 2500u};
+    line_control_cfg_t const invalid_exit_order =
+        {200u, 300u, 100u, 100u, 1500u, 600u, 100u, 150u, 600u};
+    line_control_cfg_t const invalid_center =
+        {200u, 300u, 100u, 100u, 1500u, 600u, 1901u, 150u, 2500u};
+    line_control_cfg_t const invalid_side =
+        {200u, 300u, 100u, 100u, 1500u, 600u, 100u, 0u, 2500u};
     line_control_t control;
     bool b_passed;
 
-    b_passed = line_control_init(&control, &cfg, 0u);
+    b_passed = line_control_init(&control, &g_cfg, 0u);
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CORRECT_LEFT
             == line_control_step(&control, S2_LINE_LEFT, 0u));
@@ -100,20 +157,39 @@ test_line_control_curve (void)
         && (LINE_CONTROL_ACTION_CURVE_LEFT
             == line_control_step(&control, S2_LINE_LEFT, 200u));
     b_passed = b_passed
-        && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_CENTER, 201u));
+        && (LINE_CONTROL_ACTION_CURVE_LEFT
+            == line_control_step(&control, S2_LINE_CENTER, 499u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_RIGHT, 210u));
-    b_passed = b_passed
-        && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_RIGHT, 309u));
+            == line_control_step(&control, S2_LINE_CENTER, 500u));
+
+    b_passed = b_passed && line_control_init(&control, &g_cfg, 0u);
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CORRECT_RIGHT
-            == line_control_step(&control, S2_LINE_RIGHT, 310u));
+            == line_control_step(&control, S2_LINE_RIGHT, 0u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CURVE_RIGHT
+            == line_control_step(&control, S2_LINE_RIGHT, 200u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CURVE_RIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 299u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_step(&control, S2_LINE_CENTER, 300u));
+
+    b_passed = b_passed && line_control_init(&control, &g_cfg, 0u);
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CORRECT_LEFT
+            == line_control_step(&control, S2_LINE_LEFT, 0u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CURVE_LEFT
+            == line_control_step(&control, S2_LINE_LEFT, 200u));
+    b_passed = b_passed
+        && (LINE_CONTROL_ACTION_CORRECT_RIGHT
+            == line_control_step(&control, S2_LINE_RIGHT, 210u));
 
     b_passed = b_passed
-        && line_control_init(&control, &cfg, UINT32_MAX - 50u);
+        && line_control_init(&control, &g_cfg, UINT32_MAX - 50u);
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CORRECT_RIGHT
             == line_control_step(&control, S2_LINE_RIGHT,
@@ -126,20 +202,21 @@ test_line_control_curve (void)
             == line_control_step(&control, S2_LINE_RIGHT, 149u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_CURVE_RIGHT
-            == line_control_step(&control, S2_LINE_LOST, 150u));
+            == line_control_step(&control, S2_LINE_CENTER, 248u));
     b_passed = b_passed
         && (LINE_CONTROL_ACTION_STRAIGHT
-            == line_control_step(&control, S2_LINE_CENTER, 151u));
+            == line_control_step(&control, S2_LINE_CENTER, 249u));
 
     b_passed = b_passed
         && (!line_control_init(&control, &invalid_curve, 0u))
-        && (!line_control_init(&control, &invalid_lost, 0u))
-        && (!line_control_init(&control, &invalid_memory, 0u))
-        && (!line_control_init(&control, &invalid_change, 0u))
+        && (!line_control_init(&control, &invalid_hold, 0u))
+        && (!line_control_init(&control, &invalid_exit_order, 0u))
+        && (!line_control_init(&control, &invalid_center, 0u))
+        && (!line_control_init(&control, &invalid_side, 0u))
         && (LINE_CONTROL_MODE_INVALID == line_control_mode(&control))
         && (LINE_CONTROL_ACTION_STOP
             == line_control_step(&control, S2_LINE_CENTER, 0u))
-        && (!line_control_init(NULL, &cfg, 0u))
+        && (!line_control_init(NULL, &g_cfg, 0u))
         && (!line_control_init(&control, NULL, 0u));
 
     return (b_passed);

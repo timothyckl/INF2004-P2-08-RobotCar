@@ -92,8 +92,9 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 #define S2_LINE_CENTER          0u
 #define S2_LINE_LEFT            1u
 #define S2_LINE_RIGHT           2u
-#define S2_LINE_LOST            3u
+#define S2_LINE_BOTH_BLACK      3u
 #define S2_LINE_STOP            4u
+#define S2_LINE_STRENGTH_MAX    UINT8_C(100)
 #define S2_LINE_MAX_AGE_MS      100u
 #define S2_LINE_Q_BYTES         48
 
@@ -101,7 +102,8 @@ typedef struct
 {
     uint32_t captured_ms;
     uint8_t  position;       /* one of S2_LINE_* */
-    uint8_t  reserved[3];
+    uint8_t  strength;       /* 0..100; meaningful for LEFT/RIGHT only */
+    uint8_t  reserved[2];
 } s2_line_report_t;
 
 IMPORT ID line_q;
@@ -109,6 +111,11 @@ IMPORT ID line_q;
 bool s2_line_make (uint8_t position, uint32_t captured_ms,
                    s2_line_report_t * p_report);
 bool s2_line_submit (uint8_t position, uint32_t captured_ms);
+bool s2_line_make_scaled (uint8_t position, uint8_t strength,
+                          uint32_t captured_ms,
+                          s2_line_report_t * p_report);
+bool s2_line_submit_scaled (uint8_t position, uint8_t strength,
+                            uint32_t captured_ms);
 bool s2_line_start (void);   /* queued request; controller authorises it */
 bool s2_line_stop (void);    /* urgent local STOP flag */
 

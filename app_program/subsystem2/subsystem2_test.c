@@ -310,7 +310,7 @@ static bool test_remote_make(void)
 static bool test_line_make(void)
 {
 	s2_line_report_t report;
-	s2_line_report_t keep = { 99u, 98u, { 1u, 2u, 3u } };
+	s2_line_report_t keep = { 99u, 98u, 97u, { 1u, 2u } };
 	UINT position;
 	bool ok = true;
 
@@ -318,15 +318,24 @@ static bool test_line_make(void)
 		ok = s2_line_make((uint8_t)position, 1234u, &report) && ok;
 		ok = (report.captured_ms == 1234u) &&
 		     (report.position == (uint8_t)position) &&
+		     (report.strength == (((S2_LINE_LEFT == position) ||
+		                           (S2_LINE_RIGHT == position))
+		                          ? S2_LINE_STRENGTH_MAX : 0u)) &&
 		     (report.reserved[0] == 0u) &&
-		     (report.reserved[1] == 0u) &&
-		     (report.reserved[2] == 0u) && ok;
+		     (report.reserved[1] == 0u) && ok;
 	}
 
-	return ok && !s2_line_make(5u, 0u, &keep) &&
+	ok = s2_line_make_scaled(S2_LINE_LEFT, 35u, 4321u, &report) &&
+	     (report.captured_ms == 4321u) &&
+	     (report.position == S2_LINE_LEFT) &&
+	     (report.strength == 35u) && ok;
+
+	return ok && !s2_line_make_scaled(S2_LINE_CENTER, 1u, 0u, &keep) &&
+	       !s2_line_make_scaled(S2_LINE_LEFT, 101u, 0u, &keep) &&
+	       !s2_line_make(5u, 0u, &keep) &&
 	       !s2_line_make(S2_LINE_CENTER, 0u, NULL) &&
 	       (keep.captured_ms == 99u) && (keep.position == 98u) &&
-	       (keep.reserved[2] == 3u);
+	       (keep.strength == 97u) && (keep.reserved[1] == 2u);
 }
 
 /* S2-U37: telemetry fields from robot_state */
@@ -741,8 +750,8 @@ EXPORT void subsystem2_test(void)
 		   "ramp cannot cause a false stall");
 	TEST_CHECK("S2-U57", test_line_make(),
 		   "line report accepts only agreed positions");
-	TEST_CHECK("S2-U58", test_line_control_lost(),
-		   "white-white loss recovery is bounded");
+	TEST_CHECK("S2-U58", test_line_control_junction(),
+		   "black-black junction and exit are bounded");
 	TEST_CHECK("S2-U59", test_line_control_curve(),
 		   "persistent correction becomes a curve without pivoting");
 
