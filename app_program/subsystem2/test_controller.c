@@ -305,7 +305,8 @@ test_ctrl_stop_running (void)
 {
     return (stop_bit_in_running(CTRL_FLG_REMOTE_STOP)
             && stop_bit_in_running(CTRL_FLG_LOCAL_STOP)
-            && stop_bit_in_running(CTRL_FLG_HAZARD));
+            && stop_bit_in_running(CTRL_FLG_HAZARD)
+            && stop_bit_in_running(CTRL_FLG_PICKUP));
 }
 
 bool

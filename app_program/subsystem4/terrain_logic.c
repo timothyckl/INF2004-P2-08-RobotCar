@@ -32,6 +32,11 @@ static void s4_hump_update(s4_terrain_context_t * p_context,
                            s4_hump_contact_t contact);
 static void s4_hump_complete(s4_terrain_context_t * p_context);
 static void s4_hump_clear(s4_terrain_context_t * p_context);
+static void s4_lift_update(s4_terrain_context_t * p_context,
+                           int32_t forward_mg,
+                           int32_t lateral_mg,
+                           int32_t vertical_mg);
+static uint8_t s4_count_at(uint8_t count, int32_t value, int32_t limit);
 static int32_t s4_absolute(int32_t value);
 
 void
@@ -193,7 +198,12 @@ s4_config_is_valid (s4_terrain_config_t const * p_config)
                   (p_config->average_samples <= S4_AVERAGE_MAX_SAMPLES) &&
                   (p_config->height_scale_permille > 0u) &&
                   (p_config->height_scale_permille <=
-                   S4_HEIGHT_SCALE_MAX_PERMILLE);
+                   S4_HEIGHT_SCALE_MAX_PERMILLE) &&
+                  (p_config->lift_up_mg > 0u) &&
+                  (p_config->lift_tilt_mg > 0u) &&
+                  (p_config->lift_samples > 0u) &&
+                  (p_config->lift_raw_tilt_mg > 0u) &&
+                  (p_config->lift_raw_samples > 0u);
     }
 
     return (b_valid);
@@ -342,6 +352,8 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
     {
         p_context->b_impact_active = false;
     }
+
+    s4_lift_update(p_context, forward_mg, lateral_mg, vertical_mg);
 
     height_um = s4_hump_height_um(p_context, b_pitch_valid, &contact);
     s4_hump_update(p_context, p_sample->capture_time_us, height_um,
@@ -563,6 +575,79 @@ s4_hump_clear (s4_terrain_context_t * p_context)
     p_context->confirmation_count = 0u;
     p_context->peak_height_um = 0;
     p_context->peak_contact = S4_HUMP_CONTACT_NONE;
+}
+
+/*
+ * Lift detection (decision 15). A hand lifting the car accelerates it
+ * upwards harder than driving does, and tips it for longer than a driving
+ * jolt; a car carried at an angle holds a tilt that driving never reaches.
+ * Upward only: dropping off a hump reads as less than one g. Disabling
+ * re-arms it, so each drive reports at most one lift. The inputs are
+ * differences of int16_t values, so they fit.
+ */
+static void
+s4_lift_update (s4_terrain_context_t * p_context,
+                int32_t forward_mg,
+                int32_t lateral_mg,
+                int32_t vertical_mg)
+{
+    s4_terrain_config_t const * p_config = &p_context->config;
+    int32_t const tilt_limit_mg = (int32_t) p_config->lift_tilt_mg;
+    int32_t raw_tilt_mg = s4_absolute(forward_mg);
+    bool b_lifted;
+
+    if (s4_absolute(lateral_mg) > raw_tilt_mg)
+    {
+        raw_tilt_mg = s4_absolute(lateral_mg);
+    }
+
+    if (p_context->b_detect_disabled)
+    {
+        p_context->lift_count = 0u;
+        p_context->lift_tilt_count = 0u;
+        p_context->b_lift_reported = false;
+    }
+    else
+    {
+        p_context->lift_count =
+            s4_count_at(p_context->lift_count, vertical_mg,
+                        (int32_t) p_config->lift_up_mg);
+        p_context->lift_tilt_count =
+            s4_count_at(p_context->lift_tilt_count, raw_tilt_mg,
+                        (int32_t) p_config->lift_raw_tilt_mg);
+
+        b_lifted = (p_context->lift_count >= p_config->lift_samples) ||
+                   (p_context->lift_tilt_count >=
+                    p_config->lift_raw_samples) ||
+                   (s4_absolute(p_context->filtered_x_mg) >= tilt_limit_mg) ||
+                   (s4_absolute(p_context->filtered_y_mg) >= tilt_limit_mg);
+
+        if (b_lifted && (!p_context->b_lift_reported))
+        {
+            p_context->result.events |= S4_TERRAIN_EVENT_LIFT;
+            p_context->b_lift_reported = true;
+        }
+    }
+}
+
+/* Consecutive samples with value at or above limit, saturating. */
+static uint8_t
+s4_count_at (uint8_t count,
+             int32_t value,
+             int32_t limit)
+{
+    uint8_t next = 0u;
+
+    if (value >= limit)
+    {
+        next = count;
+        if (next < UINT8_MAX)
+        {
+            next++;
+        }
+    }
+
+    return (next);
 }
 
 static int32_t

@@ -59,6 +59,14 @@ static bool s4_test_hump_disabled(void);
 static bool s4_test_height_scaled(void);
 static bool s4_test_height_scale_checked(void);
 static bool s4_test_impact_disabled(void);
+static void s4_test_feed_up(s4_terrain_context_t * p_context,
+                            int16_t up_mg,
+                            uint32_t capture_time_us);
+static bool s4_test_lift_up(void);
+static bool s4_test_lift_tilt(void);
+static bool s4_test_lift_once(void);
+static bool s4_test_lift_config_checked(void);
+static bool s4_test_lift_raw_tilt(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -132,6 +140,16 @@ subsystem4_test (void)
                "height scale 0 or above the maximum is rejected");
     TEST_CHECK("S4-U34", s4_test_impact_disabled(),
                "no impact while disabled, nor on enabling mid-impact");
+    TEST_CHECK("S4-U35", s4_test_lift_up(),
+               "upward lift needs consecutive samples; a drop is no lift");
+    TEST_CHECK("S4-U36", s4_test_lift_tilt(),
+               "averaged tilt at the limit is a lift, below it is not");
+    TEST_CHECK("S4-U37", s4_test_lift_once(),
+               "one lift per drive; none while disabled");
+    TEST_CHECK("S4-U38", s4_test_lift_config_checked(),
+               "zero lift thresholds or samples are rejected");
+    TEST_CHECK("S4-U39", s4_test_lift_raw_tilt(),
+               "held unaveraged tilt is a lift, a two-sample jolt is not");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -160,7 +178,12 @@ s4_test_config (void)
         .confirmation_samples = 2u,
         .invalid_limit = 2u,
         .average_samples = 1u,
-        .height_scale_permille = 1000u
+        .height_scale_permille = 1000u,
+        .lift_up_mg = 200u,
+        .lift_tilt_mg = 300u,
+        .lift_samples = 2u,
+        .lift_raw_tilt_mg = 250u,
+        .lift_raw_samples = 3u
     };
 
     return (config);
@@ -753,6 +776,194 @@ s4_test_impact_disabled (void)
 
     return ((!b_reported) &&
             (0u != (context.result.events & S4_TERRAIN_EVENT_IMPACT)));
+}
+
+/* One sample with up_mg of vertical acceleration and no tilt. */
+static void
+s4_test_feed_up (s4_terrain_context_t * p_context,
+                 int16_t up_mg,
+                 uint32_t capture_time_us)
+{
+    s4_terrain_sample_t sample =
+    {
+        .acceleration_x_mg = 0,
+        .acceleration_y_mg = 0,
+        .acceleration_z_mg = up_mg,
+        .capture_time_us = capture_time_us,
+        .b_valid = true
+    };
+
+    s4_terrain_process(p_context, &sample, true);
+}
+
+static bool
+s4_test_lift_up (void)
+{
+    s4_terrain_context_t context;
+    bool b_early = false;
+
+    /* Calibrated at 1000 mg up. A drop off a hump reads low: no lift. */
+    s4_test_calibrate(&context, 0u);
+    s4_test_feed_up(&context, 100, 40000u);
+    s4_test_feed_up(&context, 100, 50000u);
+    b_early = (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+
+    /* One upward sample, then rest: not yet a lift. */
+    s4_test_feed_up(&context, 1200, 60000u);
+    b_early = b_early ||
+        (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    s4_test_feed_up(&context, 1000, 70000u);
+    b_early = b_early ||
+        (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+
+    /* One below the threshold twice, then at it twice. */
+    s4_test_feed_up(&context, 1199, 80000u);
+    s4_test_feed_up(&context, 1199, 90000u);
+    b_early = b_early ||
+        (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    s4_test_feed_up(&context, 1200, 100000u);
+    b_early = b_early ||
+        (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    s4_test_feed_up(&context, 1200, 110000u);
+
+    return ((!b_early) &&
+            (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT)));
+}
+
+static bool
+s4_test_lift_tilt (void)
+{
+    s4_terrain_context_t context;
+    bool b_below = false;
+
+    /* The test configuration averages one sample. */
+    s4_test_calibrate(&context, 0u);
+    s4_test_feed(&context, -299, 299, 40000u, true);
+    b_below = (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    s4_test_feed(&context, 0, -300, 50000u, true);
+
+    return ((!b_below) &&
+            (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT)));
+}
+
+static bool
+s4_test_lift_once (void)
+{
+    s4_terrain_context_t context;
+    bool b_reported = false;
+    bool b_first = false;
+
+    s4_test_calibrate(&context, 0u);
+    s4_terrain_set_detect_enable(&context, false);
+    s4_test_feed(&context, 400, 0, 40000u, true);
+    b_reported = (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+
+    s4_terrain_set_detect_enable(&context, true);
+    s4_test_feed(&context, 400, 0, 50000u, true);
+    b_first = (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+
+    /* Still lifted, then level and lifted again: not reported again. */
+    s4_test_feed(&context, 400, 0, 60000u, true);
+    s4_test_feed(&context, 0, 0, 70000u, true);
+    s4_test_feed(&context, 400, 0, 80000u, true);
+    b_reported = b_reported ||
+        (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+
+    /* Disabling (the controller stopped) re-arms it. */
+    s4_terrain_set_detect_enable(&context, false);
+    s4_test_feed(&context, 0, 0, 90000u, true);
+    s4_terrain_set_detect_enable(&context, true);
+    s4_test_feed(&context, 400, 0, 100000u, true);
+
+    return ((!b_reported) && b_first &&
+            (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT)));
+}
+
+static bool
+s4_test_lift_config_checked (void)
+{
+    s4_terrain_context_t context;
+    s4_terrain_config_t config = s4_test_config();
+    bool b_rejected = true;
+
+    config.lift_up_mg = 0u;
+    s4_terrain_init(&context, &config);
+    b_rejected = (S4_TERRAIN_STATE_FAULT == context.result.state);
+
+    config = s4_test_config();
+    config.lift_tilt_mg = 0u;
+    s4_terrain_init(&context, &config);
+    b_rejected = b_rejected &&
+        (S4_TERRAIN_STATE_FAULT == context.result.state);
+
+    config = s4_test_config();
+    config.lift_samples = 0u;
+    s4_terrain_init(&context, &config);
+    b_rejected = b_rejected &&
+        (S4_TERRAIN_STATE_FAULT == context.result.state);
+
+    config = s4_test_config();
+    config.lift_raw_tilt_mg = 0u;
+    s4_terrain_init(&context, &config);
+    b_rejected = b_rejected &&
+        (S4_TERRAIN_STATE_FAULT == context.result.state);
+
+    config = s4_test_config();
+    config.lift_raw_samples = 0u;
+    s4_terrain_init(&context, &config);
+
+    return (b_rejected &&
+            (S4_TERRAIN_STATE_FAULT == context.result.state));
+}
+
+static bool
+s4_test_lift_raw_tilt (void)
+{
+    s4_terrain_context_t context;
+    s4_terrain_config_t config = s4_test_config();
+    uint32_t time_us = 0u;
+    bool b_early = false;
+
+    /* Average over 16 samples, so the averaged rule stays well below
+     * its 300 mg; the raw rule needs three samples at 250 mg. */
+    config.average_samples = S4_AVERAGE_MAX_SAMPLES;
+    s4_terrain_init(&context, &config);
+    /* Calibrate, then fill the average with level samples. */
+    for (uint16_t index = 0u;
+         index < (config.calibration_samples + S4_AVERAGE_MAX_SAMPLES);
+         index++)
+    {
+        s4_test_feed(&context, 0, 0, time_us, true);
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+    }
+
+    /* A two-sample jolt, level, then 249 mg held: no lift. */
+    s4_test_feed(&context, -900, 0, time_us, true);
+    time_us += S4_TEST_SAMPLE_PERIOD_US;
+    s4_test_feed(&context, 0, 260, time_us, true);
+    b_early = (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    for (uint8_t index = 0u; index < 4u; index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, (int16_t) ((0u == index) ? 0 : 249), 0,
+                     time_us, true);
+        b_early = b_early ||
+            (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    }
+
+    /* Three samples at 250 mg lateral: a lift on the third. */
+    for (uint8_t index = 0u; index < 2u; index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, 0, -250, time_us, true);
+        b_early = b_early ||
+            (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT));
+    }
+    time_us += S4_TEST_SAMPLE_PERIOD_US;
+    s4_test_feed(&context, 0, -250, time_us, true);
+
+    return ((!b_early) &&
+            (0u != (context.result.events & S4_TERRAIN_EVENT_LIFT)));
 }
 
 #endif

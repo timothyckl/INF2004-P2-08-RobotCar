@@ -10,6 +10,12 @@
  * (decision 8): the car stands on its left wheel, right wheel and front
  * caster, and the tilt fixes the plane through them. With the lowest
  * contact on the floor, the height of the highest one is the hump height.
+ *
+ * Lift (decision 15): while detection is enabled, the car is reported as
+ * picked up, once until detection is next disabled, when the vertical
+ * acceleration stays lift_up_mg above rest for lift_samples samples,
+ * either unaveraged tilt stays at lift_raw_tilt_mg for lift_raw_samples
+ * samples, or either averaged tilt reaches lift_tilt_mg.
  */
 #ifndef TERRAIN_LOGIC_H
 #define TERRAIN_LOGIC_H
@@ -52,6 +58,7 @@ typedef uint8_t s4_hump_contact_t;
 #define S4_TERRAIN_EVENT_HUMP_COMPLETE (UINT8_C(1) << 1u)
 #define S4_TERRAIN_EVENT_IMPACT        (UINT8_C(1) << 2u)
 #define S4_TERRAIN_EVENT_FAULT         (UINT8_C(1) << 3u)
+#define S4_TERRAIN_EVENT_LIFT          (UINT8_C(1) << 4u)
 
 /* Acceleration in the vehicle's axes: x forward, y left, z up. */
 typedef struct
@@ -80,6 +87,11 @@ typedef struct
                                    S4_AVERAGE_MAX_SAMPLES */
     uint16_t height_scale_permille; /* measured-height correction,
                                        1000 = none (decision 12) */
+    uint16_t lift_up_mg;        /* upward acceleration of a lift */
+    uint16_t lift_tilt_mg;      /* averaged tilt of a carried car */
+    uint8_t  lift_samples;      /* consecutive samples at lift_up_mg */
+    uint16_t lift_raw_tilt_mg;  /* unaveraged tilt of a lift */
+    uint8_t  lift_raw_samples;  /* consecutive samples at that tilt */
 } s4_terrain_config_t;
 
 typedef struct
@@ -127,6 +139,9 @@ typedef struct
     s4_hump_contact_t   peak_contact;
     uint8_t             confirmation_count;
     uint8_t             invalid_count;
+    uint8_t             lift_count;     /* samples at lift_up_mg */
+    uint8_t             lift_tilt_count; /* samples at lift_raw_tilt_mg */
+    bool                b_lift_reported;
     bool                b_have_previous_time;
     bool                b_impact_active;
     bool                b_wait_level;

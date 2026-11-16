@@ -431,7 +431,7 @@ static bool test_interface_codes(void)
 {
 	UW const bits[] = { CTRL_FLG_HAZARD, CTRL_FLG_SCAN_FAULT,
 			    CTRL_FLG_MOTION_FAULT, CTRL_FLG_REMOTE_STOP,
-			    CTRL_FLG_LOCAL_STOP };
+			    CTRL_FLG_LOCAL_STOP, CTRL_FLG_PICKUP };
 	UW seen = 0u;
 	UINT i;
 	bool ok = true;

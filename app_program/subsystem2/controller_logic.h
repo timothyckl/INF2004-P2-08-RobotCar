@@ -12,8 +12,8 @@
  *   Running. Only START in Ready clears it, after motion_q is drained.
  * - START is accepted only in Ready with Motion Control healthy (Idle,
  *   valid, no fault) and the wheels confirmed stopped.
- * - REMOTE_STOP, LOCAL_STOP and HAZARD latch STOP and wake Motion
- *   Control; from Running they go to Stopped. MOTION_FAULT and
+ * - REMOTE_STOP, LOCAL_STOP, HAZARD and PICKUP latch STOP and wake
+ *   Motion Control; from Running they go to Stopped. MOTION_FAULT and
  *   SCAN_FAULT latch STOP and go to Fault.
  * - RESET from Stopped (to Ready) or Fault (to Initialising) only with
  *   the wheels confirmed stopped; motion_q is drained.

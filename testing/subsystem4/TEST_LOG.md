@@ -90,6 +90,11 @@ is no longer executed by Subsystem 4 after the starter monitor is replaced.
 | S4-U32 | Height scale 500 per mille; 10 mm under the left wheel. | 5 mm. |
 | S4-U33 | Height scale 0, then `S4_HEIGHT_SCALE_MAX_PERMILLE` + 1. | Both configurations rejected (fault). |
 | S4-U34 | Impact-sized sample while detection is disabled; enabled while still above the threshold; then level and a new crossing. | No impact until the new crossing, which is reported. |
+| S4-U35 | Calibrated at 1 g. Two samples at 100 mg (a drop); one at +200 mg, then rest; two at +199 mg; then two at +200 mg, with a two-sample setting. | No lift until the second +200 mg sample. |
+| S4-U36 | Averaged tilt of 299 mg forward and left, then 300 mg lateral (average of one sample). | No lift at 299 mg; lift at 300 mg. |
+| S4-U37 | 400 mg tilt while disabled; enabled; held, levelled and tilted again; disabled and re-enabled with a new tilt. | No lift while disabled, one on enabling, none again until re-armed, then one. |
+| S4-U38 | Lift up threshold 0, tilt threshold 0, samples 0, unaveraged tilt threshold 0, unaveraged samples 0. | Each configuration rejected (fault). |
+| S4-U39 | 16-sample average filled level; a two-sample jolt (-900 mg forward, 260 mg left); 249 mg held three samples; then 250 mg lateral held three samples (unaveraged rule 250 mg, 3 samples). | No lift until the third 250 mg sample. |
 
 Boundary cases use small synthetic thresholds to remain deterministic. These
 values are not physical calibration evidence.
@@ -108,6 +113,7 @@ values are not physical calibration evidence.
 | S4-H08 | Traverse known humps repeatedly with reference observations. | Detection and candidate-height error recorded; method remains experimental until accepted. |
 | S4-H09 | Apply a safe controlled acceleration impulse. | Impact behavior measured without collision or damage. |
 | S4-H10 | Compare magnetic readings with representative current wiring inactive and active. | Interference and any usable heading limitations documented. |
+| S4-H11 | Line following (`S3_LINE_TEST=1 S4_RAW_LOG=1`): lift the car by hand during a run, at least five times, including once slowly and level; also full laps over the hump without lifting. | Every lift latches STOP (`[S2] S4 PICKUP`) and the wheels stop; record the delay from the lift. No pickup during laps or over the hump. |
 
 ## Hump-measurement procedures (S4-H03, S4-H07, S4-H08)
 

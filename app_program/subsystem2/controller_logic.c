@@ -7,7 +7,7 @@
 #include "motion_logic.h"   /* motion_state_t values */
 
 #define CTRL_STOP_BITS  (CTRL_FLG_REMOTE_STOP | CTRL_FLG_LOCAL_STOP \
-                         | CTRL_FLG_HAZARD)
+                         | CTRL_FLG_HAZARD | CTRL_FLG_PICKUP)
 
 static void enter (ctrl_t * p_c, uint8_t state, uint32_t now_ms);
 static void latch (ctrl_t * p_c, ctrl_output_t * p_out);

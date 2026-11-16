@@ -52,6 +52,21 @@
  * 11.75 mm over four crossings (S4-H08), so 10 / 11.75 = 0.851. */
 #define S4_HEIGHT_SCALE_PERMILLE    851u
 
+/* Lift detection (decision 15, provisional), with the hump gate above.
+ * In logs/2026-11-16_s4-raw-d14.txt, about 2900 driving samples read at
+ * most +106 mg up and 97 mg of averaged tilt; in seven handling episodes
+ * a single sample reached +209 to +622 mg up (rarely two in a row), and
+ * the averaged tilt 309 to 478 mg in most. 300 mg of tilt is about
+ * 17 degrees, or a 36 mm rise under one wheel. The averaged tilt took
+ * about 0.5 s to reach it (S4-H11), so an unaveraged tilt of 200 mg held
+ * for 3 samples (about 70 ms) also counts: driving jolts, such as leaving
+ * the hump, held it for at most 2 in about 3300 samples. */
+#define S4_LIFT_UP_MG               200u
+#define S4_LIFT_SAMPLES             1u
+#define S4_LIFT_TILT_MG             300u
+#define S4_LIFT_RAW_TILT_MG         200u
+#define S4_LIFT_RAW_SAMPLES         3u
+
 #if S4_RAW_LOG
 /* Diagnostic (S4_RAW_LOG only): the loop step the IMU task is in and a
  * count of completed loops, written only by the IMU task and read by
@@ -302,7 +317,12 @@ s4_runtime_config (void)
         .confirmation_samples = S4_CONFIRMATION_SAMPLES,
         .invalid_limit = S4_INVALID_SAMPLE_LIMIT,
         .average_samples = S4_AVERAGE_SAMPLES,
-        .height_scale_permille = S4_HEIGHT_SCALE_PERMILLE
+        .height_scale_permille = S4_HEIGHT_SCALE_PERMILLE,
+        .lift_up_mg = S4_LIFT_UP_MG,
+        .lift_tilt_mg = S4_LIFT_TILT_MG,
+        .lift_samples = S4_LIFT_SAMPLES,
+        .lift_raw_tilt_mg = S4_LIFT_RAW_TILT_MG,
+        .lift_raw_samples = S4_LIFT_RAW_SAMPLES
     };
 
     return (config);
@@ -510,6 +530,22 @@ s4_report_events (s4_terrain_result_t const * p_result,
     if (0u != (p_result->events & S4_TERRAIN_EVENT_IMPACT))
     {
         tm_printf((UB *) "s4: candidate impact detected\n");
+    }
+    if (0u != (p_result->events & S4_TERRAIN_EVENT_LIFT))
+    {
+        ID const flags = controller_flags;
+
+        /* The Vehicle Controller latches STOP (IF-19, decision 15). The
+         * flag is created by subsystem 2, so it may be absent. */
+        if ((flags > 0) &&
+            (tk_set_flg(flags, CTRL_FLG_PICKUP) >= E_OK))
+        {
+            tm_printf((UB *) "s4: car lifted; STOP requested\n");
+        }
+        else
+        {
+            tm_printf((UB *) "s4: car lifted; STOP request failed\n");
+        }
     }
 }
 

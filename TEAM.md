@@ -205,6 +205,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
 | IF-17 | S2 → S4 | snapshot under S2's mutex | `motion_get_status()` | `motion_status_t`: a new `run_id` (START) clears the hump maximum; wheel speed changes mark pitch unreadable while accelerating | integration branch, S2 decision 24 |
 | IF-18 | S4 → S2 | snapshot under S4's mutex (`TMO_POL`) | `subsystem4_get_status()` | `s4_terrain_result_t`: the run's highest hump (`maximum_height_mm`, valid flag), copied into `s2_telemetry_t` as `hump_max_mm` (8 bits, saturates at 255) | integration branch, S4 decision 13 |
+| IF-19 | S4 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_PICKUP`: the car was lifted while driving; the controller latches STOP | integration branch, S4 decision 15 |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).

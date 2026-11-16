@@ -1044,6 +1044,51 @@ edge is still tracked, so enabling during a shake does not report it;
 the next crossing while driving does (S4-U34). The `S4_RAW_LOG` line ends
 with `detect on` or `off`.
 
+### 15. Stop when the car is picked up (2026-11-16)
+
+Approved by Dalton on the integration branch. The demo rubric requires the
+motors to stop when the car is picked up, which ends the demo. Subsystem 4
+reports a lift (`S4_TERRAIN_EVENT_LIFT`) when either:
+
+- one sample reads at least 200 mg of upward acceleration above rest (a hand
+  lifting the car); or
+- either unaveraged tilt is at least 200 mg for 3 samples in a row, about
+  70 ms (the car tipped as it is lifted); or
+- either averaged tilt (the 16-sample hump average) reaches 300 mg, about
+  17 degrees (a car carried at an angle).
+
+Lift detection uses the same gate as humps and impacts (decisions 12 and
+14): only while driving and after the settle time, so a GP20 press, which
+read up to +280 mg up, is not a lift. It is reported once per drive and
+re-armed when detection is next disabled (S4-U35 to S4-U39). Dropping off a
+hump reads below one g, so only upward acceleration counts.
+
+The IMU task sets `CTRL_FLG_PICKUP` on subsystem 2's `controller_flags`
+(IF-19), the way subsystem 5 raises `CTRL_FLG_HAZARD`. The Vehicle
+Controller treats it like a local STOP: it latches STOP, goes from Running
+to Stopped, and prints `[S2] S4 PICKUP: car lifted, STOP latched` and the
+run summary. GP20 then resets and starts a new run as after any STOP.
+
+Thresholds come from `testing/subsystem4/logs/2026-11-16_s4-raw-d14.txt`:
+about 2900 gated driving samples, including a 10 mm hump, read at most
++106 mg up and 97 mg of averaged tilt. Seven handling episodes read
++209 to +622 mg up on a single sample (two in a row only once, so a
+two-sample rule was rejected), and most reached 309 to 478 mg of averaged
+tilt. Provisional: the margin is about two times on one log only. A hump
+taller than about 36 mm under one wheel would reach the tilt limit. A car
+lifted slowly and level may be caught only by the tilt rule, or not at
+all. Lifting during a scan, when the gate is off, is not detected.
+
+The first car trial (S4-H11, without the unaveraged rule) stopped two
+deliberate lifts: one by the upward rule in about 200 ms, one by the
+averaged tilt in about 530 ms, because the average needs about 0.5 s to
+reach 300 mg. A light lift (about 100 mg of tilt, +184 mg up) was not
+detected; it reads like a hump. The unaveraged rule was added for the
+delay: replayed on that log it stops the second lift after about 290 ms.
+Driving jolts, such as leaving the hump, held 200 mg for at most 2 samples
+in about 3300 driving samples, so the margin is one sample; obstacle
+bypass manoeuvres are not in that data.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

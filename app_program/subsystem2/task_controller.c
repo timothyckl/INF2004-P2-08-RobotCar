@@ -206,6 +206,7 @@ static void     read_input (ctrl_input_t * p_in);
 static void     apply (ctrl_output_t * p_out, ctrl_input_t const * p_in);
 static ER       send_action (ctrl_action_t action, uint32_t value);
 static uint32_t now_ms (void);
+static void     run_summary (void);
 #if CTRL_BUTTON
 static ER       button_init (void);
 static bool     button_press_event (uint32_t now);
@@ -387,6 +388,14 @@ controller_task (INT stacd, void * exinf)
                       (0u != (ptn & CTRL_FLG_HAZARD)) ? "HAZARD" : "",
                       (0u != (ptn & CTRL_FLG_SCAN_FAULT)) ? " SCAN_FAULT"
                                                           : "");
+        }
+
+        if ((0u != (ptn & CTRL_FLG_PICKUP))
+            && (S2_SYS_RUNNING == g_ctrl.state))
+        {
+            /* Picking the car up ends the demo (S4 decision 15). */
+            tm_printf((UB *)"[S2] S4 PICKUP: car lifted, STOP latched\n");
+            run_summary();
         }
 
         ctrl_output_clear(&out);
@@ -575,6 +584,24 @@ now_ms (void)
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 
+/* Print the telemetry the MQTT bridge will publish (IF-18) when a run
+   ends. */
+static void
+run_summary (void)
+{
+    s2_telemetry_t summary;
+
+    if (s2_read_telemetry(&summary))
+    {
+        tm_printf((UB *)"[S2] run summary: distance %u mm%s, "
+                  "highest hump %u mm%s\n",
+                  (UINT)summary.distance_mm,
+                  summary.b_distance_valid ? "" : " (invalid)",
+                  (UINT)summary.hump_max_mm,
+                  summary.b_hump_valid ? "" : " (none)");
+    }
+}
+
 #if CTRL_BUTTON
 static ER
 button_init (void)
@@ -707,20 +734,8 @@ button_step (s2_robot_state_t const * p_state,
         {
             if (s2_local_stop())
             {
-                s2_telemetry_t summary;
-
                 tm_printf((UB *)"[S2] GP20: STOP requested\n");
-
-                /* The telemetry the MQTT bridge will publish (IF-18). */
-                if (s2_read_telemetry(&summary))
-                {
-                    tm_printf((UB *)"[S2] run summary: distance %u mm%s, "
-                              "highest hump %u mm%s\n",
-                              (UINT)summary.distance_mm,
-                              summary.b_distance_valid ? "" : " (invalid)",
-                              (UINT)summary.hump_max_mm,
-                              summary.b_hump_valid ? "" : " (none)");
-                }
+                run_summary();
             }
             else
             {

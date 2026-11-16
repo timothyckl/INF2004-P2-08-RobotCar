@@ -40,7 +40,8 @@
 #define CTRL_FLG_MOTION_FAULT   (1u << 2)   /* S2 Motion Control fault */
 #define CTRL_FLG_REMOTE_STOP    (1u << 3)   /* S1: via the STOP adapter */
 #define CTRL_FLG_LOCAL_STOP     (1u << 4)   /* on-board STOP (test, demo) */
-#define CTRL_FLG_ALL            (0x1Fu)
+#define CTRL_FLG_PICKUP         (1u << 5)   /* S4: car lifted (IF-19) */
+#define CTRL_FLG_ALL            (0x3Fu)
 
 /* ------------------------------------------------------------------------
  *  safety_flags (event flag, owned by S2): latched STOP. Set at boot,
