@@ -1,4 +1,4 @@
-/** @file s3_ir.h Digital IR calibration and configurable line decisions. */
+/** @file s3_ir.h IR classification and configurable line decisions. */
 #ifndef S3_IR_H
 #define S3_IR_H
 
@@ -73,6 +73,11 @@ bool s3_ir_adaptive_init(s3_ir_adaptive_t * p_state,
                          s3_ir_adaptive_config_t const * p_config);
 /** Update one 12-bit ADC channel. The return value is true over black. */
 bool s3_ir_adaptive_update(s3_ir_adaptive_t * p_state, uint16_t sample);
+/** Update without low-pass delay. Intended for short barcode runs only;
+ * threshold hysteresis and white-baseline adaptation remain active.
+ */
+bool s3_ir_adaptive_update_unfiltered(s3_ir_adaptive_t * p_state,
+                                      uint16_t sample);
 /** Return filtered contrast as 0..100 relative to a measured black level. */
 uint8_t s3_ir_adaptive_strength(s3_ir_adaptive_t const * p_state,
                                 uint16_t black_reference);

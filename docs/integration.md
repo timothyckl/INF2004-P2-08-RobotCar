@@ -25,8 +25,8 @@ evidence that the robot works.
 
 Start-up: every `subsystemN_init()` creates objects (STOP is latched at
 creation), then every `subsystemN_start()` starts tasks. Subsystem 2 creates
-the shared GPIO dispatcher in its init, so S3 (GP16) and S5 (GP5) can register
-in their start. The robot never moves at boot: START must arrive over MQTT
+the shared GPIO dispatcher in its init for the encoders (GP16/GP17 and
+GP0/GP1) and S5 ECHO (GP5). The robot never moves at boot: START must arrive over MQTT
 (or from the optional, default-off `S2_DEMO_AUTOSTART`).
 
 ## 2. Data flows (all connected and invoked at runtime)
@@ -34,7 +34,7 @@ in their start. The robot never moves at boot: START must arrive over MQTT
 | Path | Mechanism | Code |
 |---|---|---|
 | IR sensors → S3 → controller → Motion → motors | ADC0/GP26 and ADC1/GP27 every 10 ms → adaptive thresholds → `s3_track` → IF-06 snapshot → FOLLOW policy renews `motion_drive()` → `motion_logic` → `drv_motor` | `task_line.c`, `controller_logic.c` (`follow`), `task_motion.c` |
-| Barcode → decoder → nav command → manoeuvre | GP16 edges (dispatcher) → ring → `s3_scan` → `s3_bar_decode` → `s3_nav_stage`/`take` at a junction → IF-06 `nav_cmd`/`nav_id` → NAVIGATE turn or move | `task_line.c`, `controller_logic.c` (`navigate`) |
+| Barcode → decoder → status and optional nav request | ADC2/GP28 every 10 ms → adaptive threshold and timestamped level changes → `s3_scan` → standard Code 39 A--Z symbol in IF-06; only a separately mapped A--D command can pass `s3_nav_stage`/`take` at a junction | `task_line.c`, `controller_logic.c` (`navigate`) |
 | Ultrasonic → hazard → scan → plan → bypass → reacquire | forward monitor every 65 ms → `CTRL_FLG_HAZARD` → SCAN (`motion_stop`, `scan_q`) → `scan_engine` sweep → `bypass_plan` → BYPASS segments → REACQUIRE | `scan_task.c`, `scan_engine.c`, `bypass_plan.c`, `controller_logic.c` |
 | IMU → terrain → status | I2C1 every 10 ms → `s4_terrain_process` → `subsystem4_get_status()` | `task_imu.c`, `terrain_logic.c` |
 | Encoders → odometry → Motion and S4 | dispatcher ISR → `drv_encoder` snapshot → `motion_logic` pose → `motion_get_status()` → `s4_odometry` | `task_motion.c`, `s4_odometry.c` |
@@ -74,7 +74,7 @@ does not act on terrain results; the design makes them report-only.
 | Speed lease 100 ms | `motion_config.h` | UNMEASURED |
 | IR polarity 1 = black (all three) | `s3_config.h` | documented, not verified (S3-H01) |
 | Straddle geometry table, filter 2 samples, fault 2 s, steer 500 ‰ | `s3_track.c` | UNMEASURED; both-white is centred and cannot also prove loss |
-| Code 39 `*`, A..D patterns; run max 400 ms, quiet 250 ms | `s3_config.h` | assumed symbology; confirm with course barcodes |
+| Standard Code 39 A--Z table; run max 800 ms, quiet 700 ms | `s3_code39.c`, `s3_config.h` | table host-tested in both directions; printed hardware repeatability remains unvalidated |
 | Navigation command age 5 s | `s3_config.h` | UNMEASURED |
 | Servo 1500 µs + 10 µs/°, ±60° | `drv_servo.c` | Tower Pro SG90 sheet; calibrate (S5-U47) |
 | Servo settling 300 ms, hazard 250 mm | `scan_task.c` | UNMEASURED |

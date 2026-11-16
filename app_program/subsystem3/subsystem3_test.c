@@ -79,17 +79,25 @@ static void s3_ir_diagnostic(void)
         S3_RIGHT_MAXIMUM_WHITE, S3_RIGHT_BLACK_MARGIN,
         S3_RIGHT_WHITE_MARGIN
     };
+    s3_ir_adaptive_config_t const barcode_config =
+    {
+        S3_BARCODE_INITIAL_WHITE, S3_BARCODE_MINIMUM_WHITE,
+        S3_BARCODE_MAXIMUM_WHITE, S3_BARCODE_BLACK_MARGIN,
+        S3_BARCODE_WHITE_MARGIN
+    };
     s3_ir_adaptive_t left = {0};
     s3_ir_adaptive_t right = {0};
+    s3_ir_adaptive_t barcode = {0};
     bool const b_ready = s3_ir_adaptive_init(&left, &left_config)
-                         && s3_ir_adaptive_init(&right, &right_config);
+                         && s3_ir_adaptive_init(&right, &right_config)
+                         && s3_ir_adaptive_init(&barcode, &barcode_config);
 
     tm_printf((UB *)"[S3 IR] diagnostic start: 60 seconds; "
               "move white and black under each sensor\n");
 
     for (uint16_t sample = 0U; sample < S3_IR_DIAG_SAMPLES; sample++)
     {
-        s3_ir_adc_sample_t adc = {0U, 0U};
+        s3_ir_adc_sample_t adc = {0U, 0U, 0U};
         ER const er = s3_ir_gpio_read_analog(&adc);
         bool const b_valid = b_ready && (E_OK == er);
 
@@ -97,17 +105,21 @@ static void s3_ir_diagnostic(void)
         {
             bool const b_left = s3_ir_adaptive_update(&left, adc.left);
             bool const b_right = s3_ir_adaptive_update(&right, adc.right);
+            bool const b_barcode = s3_ir_adaptive_update_unfiltered(
+                &barcode, adc.barcode);
 
             if ((0U == (sample % S3_IR_DIAG_HEARTBEAT))
-                || b_left || b_right)
+                || b_left || b_right || b_barcode)
             {
-                tm_printf((UB *)"[S3 IR] adc=%u/%u filtered=%u/%u "
-                          "threshold=%u/%u black=%u/%u barcode=%u\n",
+                tm_printf((UB *)"[S3 IR] adc=%u/%u/%u "
+                          "filtered=%u/%u/%u threshold=%u/%u/%u "
+                          "black=%u/%u/%u\n",
                           (UINT)adc.left, (UINT)adc.right,
-                          (UINT)left.filtered, (UINT)right.filtered,
+                          (UINT)adc.barcode, (UINT)left.filtered,
+                          (UINT)right.filtered, (UINT)barcode.filtered,
                           (UINT)left.threshold, (UINT)right.threshold,
-                          (UINT)b_left, (UINT)b_right,
-                          (UINT)s3_ir_gpio_read_barcode());
+                          (UINT)barcode.threshold, (UINT)b_left,
+                          (UINT)b_right, (UINT)b_barcode);
             }
         }
         else if (!b_valid)

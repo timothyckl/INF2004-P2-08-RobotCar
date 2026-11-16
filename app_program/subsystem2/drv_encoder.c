@@ -15,6 +15,10 @@
 
 #define DRV_ENCODER_SNAP_TRIES  8u  /* an update takes ~1 us; 8 is ample */
 #define DRV_ENCODER_EDGES       (DRV_GPIO_IRQ_EDGE_FALL | DRV_GPIO_IRQ_EDGE_RISE)
+#define DRV_ENCODER_1_PIN_A      16u
+#define DRV_ENCODER_1_PIN_B      17u
+#define DRV_ENCODER_2_PIN_A       0u
+#define DRV_ENCODER_2_PIN_B       1u
 
 typedef struct
 {
@@ -24,8 +28,8 @@ typedef struct
 
 static const drv_encoder_hw_t g_encoder_hw[DRV_ENCODER_COUNT] =
 {
-    {7u,  28u},     /* DRV_ENCODER_1: left wheel, blue = A GP7, green = B GP28 */
-    {0u,  1u}       /* DRV_ENCODER_2: right wheel, blue = A GP0, green = B GP1 */
+    {DRV_ENCODER_1_PIN_A, DRV_ENCODER_1_PIN_B},
+    {DRV_ENCODER_2_PIN_A, DRV_ENCODER_2_PIN_B}
 };
 
 static volatile uint32_t g_seq;

@@ -2,13 +2,13 @@
 
 This is host-tested logic, not hardware-tested robot firmware.
 
-**Integration status (2026-11-06).** `task_line.c` runs a 10 ms Line Sensor
+**Integration status (2026-11-11).** `task_line.c` runs a 10 ms Line Sensor
 task. It reads front-left AOUT through ADC0/GP26 and front-right AOUT through
 ADC1/GP27, classifies them with independent adaptive white baselines and
-hysteresis, and reads side-barcode DOUT on GP16 through subsystem 2's shared
-GPIO dispatcher. It publishes IF-06 (`subsystem3.h`) to the Vehicle Controller,
-which remains the movement authority. Both front DOUT wires and barcode AOUT
-are disconnected in this mapping. Thresholds, geometry and the printed
+hysteresis. It reads side-barcode AOUT through ADC2/GP28 and classifies it
+independently; the barcode never steers the robot. It publishes IF-06
+(`subsystem3.h`) to the Vehicle Controller, which remains the movement
+authority. All three DOUT wires are disconnected. Thresholds, geometry and the printed
 symbology still require S3-H01..H04 (`docs/integration.md`).
 
 ## Modules
@@ -16,26 +16,37 @@ symbology still require S3-H01..H04 (`docs/integration.md`).
 - `s3_ir`: bounded 12-bit adaptive classification for each front analogue
   channel, with hysteresis and a 0..100 side contrast strength. It also keeps
   the consecutive-sample filter and line decision table used by `s3_track`.
-- `s3_ir_gpio`: opens the kernel ADC device, reads ADC0/ADC1 synchronously and
-  reads the GP16 barcode input. ADC read failure is latched as an S3 fault
+- `s3_ir_gpio`: opens the kernel ADC device and reads ADC0/ADC1/ADC2
+  synchronously. ADC read failure is latched as an S3 fault
   until the line task restarts.
 - `s3_track`: both-white is STRAIGHT, one black sensor selects that side and
   both-black is a junction. Because centred and missing line are both-white,
   this geometry cannot infer line loss from those readings alone.
-- `s3_bar`: bounded timestamped edge capture, explicit timeout polling and
-  a configurable nine-element, one-payload-symbol framed decoder prototype.
-  It requires sentinel/gap/payload/gap/sentinel (29 runs). Width windows,
-  sentinel and alphabet are supplied by the caller; NONE are calibrated defaults.
-  Input is normalized black/white, starting at the first black run. Begin/finish
-  boundaries and surrounding quiet zones must be verified by the future scanner.
-  Ambiguous widths, invalid gaps/framing, duplicate dictionary matches,
-  overflow and timeout are rejected. Reverse travel, multiple payload characters,
-  automatic framing, adaptive speed compensation and checksums are not implemented.
-  The prototype format must be checked against the printed course barcode before
-  selecting an alphabet. Tests deliberately use synthetic patterns.
+- `s3_bar` and `s3_scan`: bounded timestamped edge capture, explicit timeout
+  polling, adaptive width classification and forward/reverse decoding. Normal
+  decoding requires sentinel/gap/payload/gap/sentinel (29 runs). A bounded
+  24--28 run fallback requires one intact sentinel, both gaps and the complete
+  payload; it reconstructs only the damaged terminal sentinel. Ambiguous
+  widths, invalid gaps, ambiguous dictionary matches, overflow and timeout are
+  rejected. The shared lookup table contains the standard Code 39 A--Z
+  alphabet; every letter is decoded in either travel direction. Printed
+  hardware repeatability remains subject to validation.
 - `s3_nav`: example A/B/C/D mapping to left/right/straight/U-turn, one pending
   request, duplicate scan suppression, age expiry and STOP cancellation. A request
   is held until an authorised junction. No turn angles or motor actions are set.
+- `barcode_test`: test-only ADC2/GP28 diagnostic, enabled with
+  `TEST=1 S3_BAR_DIAG=1`. It first gathers 50 samples each from white,
+  solid black and faded black at the final mounted height. It rejects
+  overlapping ranges and calculates a provisional runtime threshold before
+  logging classified transitions, observed run durations, decoded letters and
+  errors. The startup path does not create any robot subsystem or motor task.
+  The isolated and moving diagnostics use the same standard A--Z lookup table
+  as the normal Line Sensor task.
+- `barcode_drive_test`: moving diagnostic enabled with `S3_BAR_DRIVE=1`.
+  GP20 submits START/STOP/RESET requests to the Vehicle Controller, and a
+  low-priority observer reports wheel speed and barcode results. It also
+  prints a bounded duration list and narrow/wide pattern after the measured
+  quiet period. It never writes motor PWM.
 
 ## Simulated-input tests (Windows PowerShell)
 
@@ -43,6 +54,18 @@ From the project root, with GCC on PATH:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
+```
+
+For the separate on-target barcode bench diagnostic, build from `build_make`:
+
+```sh
+make SMP=0 WIFI=none TEST=1 S3_BAR_DIAG=1 CRASH_REPORT=0 -j8
+```
+
+After stationary colour detection passes, build the controlled moving test:
+
+```sh
+make SMP=0 WIFI=none S3_BAR_DRIVE=1 CRASH_REPORT=0 -j8
 ```
 
 The runner builds in the system temporary directory and removes its executable.
@@ -55,18 +78,17 @@ sampling rates, voltage compatibility or RTOS timing on the robot.
 
 1. Keep the wiring aligned with `AGENTS.md` and `TEAM.md`. Do not connect a
    sensor output to another claimed GPIO.
-2. Record raw ADC values for each front sensor on white and black, then validate
+2. Record raw ADC values for all three sensors on white and black, then validate
    the provisional limits and margins in `s3_config.h` under course lighting.
 3. Confirm the straddle spacing and truth table. Both-white must remain centred
    through every curve; both-black must be a real junction before the bounded
    crossing logic is accepted.
-4. Capture barcode edges through the team's shared interrupt dispatcher. Keep
-   decoding in the owning task; do not share capture state with an ISR/core
-   without an agreed bounded queue. Feed raw edges, not line-filtered samples.
-   Poll timeout without edges. Verify quiet zones/framing before finishing.
-5. Confirm symbology and A-D mapping using the course materials. Supply measured
-   width windows/alphabet; test at stated speeds and lighting conditions. Replace
-   this decoder prototype if the printed format differs.
+4. Capture barcode ADC2 level changes in the owning Line Sensor task. Record
+   stationary white, printed-black and faded-black values at final mounting
+   height before accepting the adaptive threshold. Poll timeout without level
+   changes and verify the 10 ms sampling period, quiet zones and framing.
+5. Validate every supplied A--Z pattern at stated speeds and lighting
+   conditions. Record repeated moving passes before accepting S3-H04.
 6. Agree the controller message format, queue ownership, junction event and
    acknowledgement with Dalton. Stage each validated scan once with a unique ID.
    Call `s3_nav_take` each iteration with the controller's latched STOP state.

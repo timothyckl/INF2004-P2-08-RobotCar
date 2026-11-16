@@ -43,6 +43,8 @@ bool s3_bar_finish(s3_capture_t * p_capture);
 /** Prototype format: sentinel, gap, ONE symbol, gap, sentinel.
  * Each symbol has nine alternating black/white runs, starting black.
  * Pattern bit 8 is first run; 1 means wide. No built-in alphabet is assumed.
+ * Sentinels and gaps must match exactly. The payload may differ from one
+ * dictionary entry by one element only when that entry is uniquely closest.
  * Durations between narrow_max_us and wide_min_us are rejected.
  * Caller must verify framing/quiet zones and the actual printed symbology.
  */

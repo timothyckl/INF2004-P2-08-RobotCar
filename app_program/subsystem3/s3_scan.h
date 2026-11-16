@@ -1,14 +1,17 @@
 /** @file s3_scan.h Side barcode sensor: edges in, decoded symbols out.
  *
  * Pure logic on top of s3_bar. The owning task feeds timestamped edges of
- * the side barcode sensor (GP16, normalised: true = black) and polls it
+ * the side barcode sensor (ADC2/GP28, normalised: true = black) and polls it
  * every sample period. A capture starts at a white-to-black edge and ends
  * after quiet_us of white. Width windows are derived from each capture
  * (midway between its narrowest and widest run), so a steady change in
  * speed does not need new constants. The frame is the s3_bar prototype:
- * sentinel, gap, one symbol, gap, sentinel (29 runs). The read is tried
- * forwards, then reversed. The sentinel and alphabet are supplied by the
- * caller and must match the printed course barcodes.
+ * sentinel, gap, one symbol, gap, sentinel (29 runs). A bounded fallback
+ * accepts 24--28 captured runs only when one intact end still supplies a
+ * sentinel, both gaps and the complete payload; only the damaged terminal
+ * sentinel is reconstructed. Reads are tried forwards, then reversed. The
+ * sentinel and alphabet are supplied by the caller and must match the
+ * printed course barcodes.
  */
 #ifndef S3_SCAN_H
 #define S3_SCAN_H

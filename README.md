@@ -195,6 +195,8 @@ make S2_LOG=1 -j8                 # print controller diagnostics every 500 ms
 make LINE_ONLY=1 -j8              # diagnostic line following; no obstacle task
 make S5_RANGE_DIAG=1 -j8          # print every forward HC-SR04 reading (S5-U48)
 make TEST=1 S3_IR_DIAG=1 -j8      # print live IR sensor colours for 60 s
+make SMP=0 WIFI=none TEST=1 S3_BAR_DIAG=1 -j8 # isolated barcode test
+make SMP=0 WIFI=none S3_BAR_DRIVE=1 -j8 # controlled barcode drive
 make NET=lwip MQTT=1 -j8          # WiFi + MQTT commands and telemetry (see below)
 ```
 
@@ -220,6 +222,8 @@ the next plain `make` goes back to the defaults.
 | `LINE_ONLY` | **`0`**, `1` | Diagnostic profile that keeps line following and motion but does not initialise or start obstacle scanning; cannot be combined with `TEST=1` | `_lineonly` / *(nothing)* | `APP_LINE_ONLY` (1 or 0) |
 | `S5_RANGE_DIAG` | **`0`**, `1` | Prints every forward HC-SR04 attempt: echo duration, validity, distance and the consecutive-invalid count. Console formatting runs in the Obstacle Scan task, so use it for bench ranging only; cannot be combined with `LINE_ONLY=1` | `_s5range` / *(nothing)* | `S5_RANGE_DIAGNOSTIC` (1 or 0) |
 | `S3_IR_DIAG` | **`0`**, `1` | With `TEST=1`, prints normalised left, right and barcode sensor readings for 60 seconds | `_s3irdiag` / *(nothing)* | `S3_IR_DIAGNOSTIC` (1 or 0) |
+| `S3_BAR_DIAG` | **`0`**, `1` | With `TEST=1`, logs ADC2/GP28 values, adaptive thresholds, transitions, run durations, decoded letters and errors for 120 seconds | `_s3bardiag` / *(nothing)* | `S3_BARCODE_DIAGNOSTIC` (1 or 0) |
+| `S3_BAR_DRIVE` | **`0`**, `1` | Single-core, no-WiFi controlled line-follow barcode diagnostic. GP20 requests START/STOP/RESET; only subsystems 2 and 3 start | `_s3bardrive` / *(nothing)* | `S3_BARCODE_DRIVE_DIAGNOSTIC` (1 or 0) |
 | `CRASH_REPORT` | **`0`**, `1` | `1` also copies the console to UART0 on **GP0 (TX) / GP1 (RX)**, 115200 baud, so you can see the last messages and the kernel's crash report (see below). **Uses GP0/GP1.** `CONSOLE=uart` always does this. | `_crash` / *(nothing)* | `TM_CONSOLE_UART` (1 or 0) |
 
 **Why `CRASH_REPORT` exists.** USB output is not sent the moment you call
@@ -239,9 +243,28 @@ console; for a crash, add prints before the failing step instead.
 and the `_s4hw` image suffix; see `docs/subsystem4.md`.
 
 `S3_IR_DIAG=1` (only with `TEST=1`) reads the front analogue outputs on
-ADC0/GP26 (left), ADC1/GP27 (right), and the side barcode digital output on
-GP16. It prints once per second. The diagnostic runs for 60 seconds;
+ADC0/GP26 (left), ADC1/GP27 (right), and side-barcode ADC2/GP28. It prints
+raw, filtered and threshold values once per second. The diagnostic runs for 60 seconds;
 reset the Pico W to run it again. It does not enable motor movement.
+
+`S3_BAR_DIAG=1` (only with `TEST=1`) enters the separate barcode bench mode
+before any robot subsystem is created or started. The diagnostic in
+`app_program/subsystem3/barcode_test.c` samples AOUT on ADC2/GP28, logs its
+raw/filtered value, adaptive threshold, each classified transition and
+duration, and runs the barcode decoder locally. It runs for 120 seconds and cannot command the motors. Build
+it with `SMP=0 WIFI=none` to remove the unused second core and radio task.
+Keep barcode DOUT disconnected and the GP28 battery-sense jumper open.
+
+`S3_BAR_DRIVE=1` is the moving follow-up test. It starts only the Vehicle
+Controller, Motion Control and Line Sensor, uses the normal provisional
+40 mm/s line-follow profile, and reports measured left/right wheel speed plus
+barcode decode/error counters every 100 ms. Each observed barcode colour
+transition is also logged with the preceding run duration. After 700 ms of
+white, it prints the bounded frame's duration list and derived narrow/wide
+pattern. Robo Pico button 1 on GP20 is active low. Press it in Ready to START
+and in Running to STOP. After stopping or a fault, press once to RESET, wait
+for Ready, then press again to START. Build with
+`SMP=0 WIFI=none CRASH_REPORT=0`; test first with the wheels raised.
 
 `S2_LOG=1` enables a controller diagnostic line every 500 ms. Use it for
 bench diagnosis, then return to `S2_LOG=0` for timing tests because console

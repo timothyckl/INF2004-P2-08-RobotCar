@@ -6,6 +6,9 @@
 #define S3_IR_ADAPTATION_SAMPLES  8U
 
 static uint16_t s3_ir_threshold(uint16_t baseline, uint16_t margin);
+static bool s3_ir_adaptive_update_internal(s3_ir_adaptive_t * p_state,
+                                            uint16_t sample,
+                                            uint16_t filter_divisor);
 
 bool s3_ir_calibrate(s3_calibration_t * p_cal, uint8_t white_levels,
                      uint8_t black_levels)
@@ -116,25 +119,45 @@ s3_ir_adaptive_init (s3_ir_adaptive_t * p_state,
 bool
 s3_ir_adaptive_update (s3_ir_adaptive_t * p_state, uint16_t sample)
 {
+    return s3_ir_adaptive_update_internal(p_state, sample,
+                                          S3_IR_FILTER_DIVISOR);
+}
+
+bool
+s3_ir_adaptive_update_unfiltered (s3_ir_adaptive_t * p_state,
+                                  uint16_t sample)
+{
+    return s3_ir_adaptive_update_internal(p_state, sample, 1U);
+}
+
+static bool
+s3_ir_adaptive_update_internal (s3_ir_adaptive_t * p_state,
+                                uint16_t sample,
+                                uint16_t filter_divisor)
+{
     if ((NULL == p_state) || (!p_state->b_valid)
-        || (sample > S3_IR_ADC_MAX))
+        || (sample > S3_IR_ADC_MAX) || (0U == filter_divisor))
     {
         return false;
     }
 
-    if (sample > p_state->filtered)
+    if (1U == filter_divisor)
+    {
+        p_state->filtered = sample;
+    }
+    else if (sample > p_state->filtered)
     {
         uint16_t const difference = sample - p_state->filtered;
 
         p_state->filtered += (uint16_t)((difference + 1U)
-                                       / S3_IR_FILTER_DIVISOR);
+                                       / filter_divisor);
     }
     else
     {
         uint16_t const difference = p_state->filtered - sample;
 
         p_state->filtered -= (uint16_t)((difference + 1U)
-                                       / S3_IR_FILTER_DIVISOR);
+                                       / filter_divisor);
     }
 
     p_state->threshold = s3_ir_threshold(p_state->white_baseline,

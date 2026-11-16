@@ -46,6 +46,8 @@ typedef struct
 	uint32_t seq;		/* samples since start, wraps */
 	uint32_t nav_id;	/* ID of nav_cmd; 0 until the first offer */
 	int16_t  steer_permille; /* +left/-right, |x| <= 1000; 0 unless VALID */
+	uint16_t barcode_adc;	/* side barcode AOUT sample, 0..4095 */
+	uint16_t barcode_threshold; /* current adaptive black threshold */
 	uint8_t  line;		/* s3_line_t (s3_ir.h) */
 	uint8_t  flags;		/* S3_ST_* */
 	uint8_t  strength;	/* side contrast, 0..100; zero otherwise */

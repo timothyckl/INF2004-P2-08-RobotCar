@@ -8,12 +8,13 @@ _No decisions recorded yet._
 
 ### 1. Encoder and IMU pins
 
-The wheel encoders use GP7 (A) / GP28 (B) and GP0 (A) / GP1 (B), agreed with Khang (subsystem 4) on 2026-11-02 to match the
+The wheel encoders originally used GP7 (A) / GP28 (B) and GP0 (A) / GP1 (B), agreed with Khang (subsystem 4) on 2026-11-02 to match the
 robot's wiring. The team pin mapping of 2026-11-03 then put the IMU on I2C1 at
 GP2 (SDA1) / GP3 (SCL1) and confirmed the wheels: motor 1 (GP8/GP9) drives the
 right wheel and motor 2 (GP10/GP11) the left. Which encoder is on which
 wheel is decision 4. Consequence: `CRASH_REPORT=1` (UART0 on GP0/GP1)
-cannot be used.
+cannot be used. Subsystem 3 decision 5 supersedes encoder 1's pins with
+GP16/GP17; encoder 2 remains on GP0/GP1.
 
 ### 2. PWM block reset
 
@@ -37,7 +38,7 @@ and agreed by the subsystem 2 owner. Revises the encoder sides in
 decision 1 and the pin mapping of 2026-11-03.
 
 - Motor 1 drives encoder 1 and motor 2 drives encoder 2. With motor 1 on
-  the right wheel, encoder 1 (GP7/GP28) is the right encoder and encoder 2
+  the right wheel, encoder 1 is the right encoder and encoder 2
   (GP0/GP1) the left. The wiring is unchanged; `motion_config.h`,
   `AGENTS.md` and `TEAM.md` were corrected. Before this, each wheel's speed
   loop read the other wheel's encoder.
@@ -69,13 +70,16 @@ was zero decode errors.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
-### 1. Analogue front sensors and barcode remap (2026-11-06)
+### 1. Analogue front sensors and original barcode remap (2026-11-06)
 
 The team selected the wiring contained in Edmund's supplied ZIP for the
 integrated robot: front-left AOUT uses ADC0/GP26, front-right AOUT uses
 ADC1/GP27, and the side barcode DOUT uses GP16. Both front DOUT wires and the
 barcode AOUT wire are disconnected. ADC2/GP28 remains disabled for the right
 encoder and ADC3/GP29 remains disabled for the Pico W radio.
+
+Decision 5 supersedes only the barcode and encoder-1 pins in this paragraph;
+the front analogue mapping and line-following policy below remain current.
 
 The Line Sensor task filters both 12-bit channels independently, adapts only
 their white baselines, applies hysteresis, and publishes a 0..100 side
@@ -87,6 +91,171 @@ uses the ZIP's provisional 40 mm/s straight profile, strength-scaled gentle
 corrections, 5/35 mm/s sustained curves, and bounded crossing/exit state
 machine. All thresholds, speeds and times are bench-derived starting values;
 they are not validated course acceptance results.
+
+### 2. Separate barcode bench diagnostic (2026-11-11)
+
+Barcode hardware testing is separate from front-sensor line diagnostics.
+`barcode_test.c`, enabled only by `TEST=1 S3_BAR_DIAG=1`, is entered before
+any robot subsystem task is created. Following decision 5, it samples
+side-sensor AOUT on ADC2/GP28, logs raw/filtered values, the adaptive threshold,
+classified transitions and polling-based run durations, and runs `s3_scan`
+locally. It does not start the line task, motors, IMU, obstacle scanner, or
+application network tasks, and does not change barcode framing, timing windows,
+or the active A/F/Z alphabet.
+
+### 3. Controlled barcode-drive diagnostic (2026-11-11)
+
+After the stationary ADC2/GP28 colour test passes, `S3_BAR_DRIVE=1` starts only
+subsystems 2 and 3 in a single-core, no-WiFi image. Robo Pico button 1 on GP20
+is an active-low diagnostic input owned by subsystem 3; it submits START,
+STOP, or RESET requests to the Vehicle Controller. It does not access PWM.
+The controller retains the provisional 40 mm/s line-follow profile and Motion
+Control remains the only motor writer. A low-priority observer reports actual
+wheel speeds and production barcode decoder results without changing barcode
+timing or symbols.
+
+### 4. Provisional barcode timing from controlled drive (2026-11-11)
+
+One controlled pass at the provisional 40 mm/s follow speed observed narrow
+runs of approximately 120 to 220 ms and wide runs of approximately 420 to
+540 ms. The earlier 250 ms quiet period split valid wide white runs, while
+the 400 ms run limit rejected them. The team therefore selected provisional
+700 ms quiet and 800 ms maximum-run bounds for the next S3-H04 capture. These
+values are evidence-based test settings, not validated acceptance limits;
+repeat every printed symbol under course lighting before finalising them.
+
+### 5. Grove 4/7 swap and analogue barcode input (2026-11-11)
+
+The team swapped the Grove 4 and Grove 7 connections. Encoder 1 on the right
+wheel now uses GP16/GP17 through Grove 4. The side barcode sensor now uses its
+AOUT on ADC2/GP28 through Grove 7; its DOUT on GP7 is disconnected. The GP28
+battery-sense jumper remains open. The two front AOUT signals remain on
+ADC0/GP26 and ADC1/GP27.
+
+The Line Sensor task is the sole ADC owner and samples all three channels every
+10 ms. Only ADC0 and ADC1 affect steering. ADC2 is independently filtered and
+classified for barcode capture; the raw sample and adaptive threshold are
+published for calibration. The initial ADC2 threshold and the 10 ms barcode
+sampling rate are provisional until S3-H04 records stationary white, printed
+black and faded-black values at final height and repeated driven passes.
+The moving diagnostic prints a bounded full-frame duration and N/W pattern
+after the quiet period so the assumed Code 39 framing can be checked.
+
+### 6. Calibrated barcode threshold and A/F/Z alphabet (2026-11-11)
+
+At the final mounted height, 50 ADC2 samples per surface measured white at
+154..184, solid printed black at 1679..1709 and faded printed black at
+1637..1672. Subsystem 3 therefore uses an initial white baseline of 169, a
+black margin of 741 and a white-release margin of 378 for the next moving
+test. These values remain provisional until repeated driven passes complete
+S3-H04.
+
+The active course alphabet is A, F and Z in mission and diagnostic builds.
+Patterns measured from the supplied artwork are A=`WNNNNWNNW`,
+F=`NNWNWWNNN` and Z=`WWWNNNNNN`; wide elements are encoded as one from bit 8
+to bit 0. The observed Z capture matched the supplied Z payload exactly.
+This decision does not assign navigation meanings. The older prototype still
+maps A to LEFT; F and Z do not stage a navigation request. That separate
+mapping remains unvalidated and must not be treated as a course requirement.
+
+### 7. Thin-bar capture and bounded decode tolerance (2026-11-11)
+
+A lower-sensor pass over the small Z captured 27 of the required 29 runs,
+including a thin black transition at ADC 682 while steady white remained about
+156..233. The provisional barcode black margin is therefore reduced from 741
+to 400 ADC counts (initial threshold 569), with a 340-count white-release
+margin. This threshold change must be rechecked at the fixed test height; it is
+not a validated calibration result.
+
+The decoder still requires a complete 29-run frame, exact start and stop
+sentinels, and exact narrow inter-character gaps. Within the nine-element
+payload only, it may accept one narrow/wide error (8/9 correct) when exactly
+one of A, F or Z is the uniquely closest pattern. Incomplete frames and a tie
+between symbols remain decode errors. A generic 70% match is not accepted
+because it can turn missed transitions or ambiguous payloads into a false
+letter.
+
+A subsequent pass still captured 27 runs. Its shortest detected bars were
+20..40 ms, comparable with the delay of the two-sample low-pass filter used by
+the front line sensors. Barcode ADC2 classification therefore bypasses that
+low-pass filter while retaining threshold hysteresis and white-baseline
+adaptation. The front ADC0/ADC1 line sensors keep their existing filtering.
+
+### 8. Smaller Z observed variant (2026-11-12)
+
+Three normal-direction passes over the smaller Z were reviewed. One complete
+29-run observer frame had exact `NWNNWNWNN` start and stop sentinels, narrow
+inter-character gaps, and payload `NWWNWNNNN` (`0x0D0`). The other two
+observer frames contained 27 runs and remain rejected as incomplete; they are
+not stored as symbol variants.
+
+The previously accepted larger-Z pattern `WWWNNNNNN` (`0x1C0`) remains in the
+alphabet. The complete smaller-Z payload is added as a second dictionary entry
+for the same `Z` symbol. The decoder's existing whole-frame reversal is applied
+before dictionary matching, so both Z entries are accepted in either travel
+direction. Exact sentinels, exact gaps, a complete 29-run frame, and a unique
+closest dictionary entry are still required. A 27-run observation cannot be
+repaired or decoded.
+
+The moving diagnostic reconstructs its duration list from published line-task
+snapshots. Its observed run count is evidence for diagnosis, but the next
+hardware pass must confirm the production decoder result through
+`[S3 BAR RESULT] DECIPHERED=Z` in both directions.
+
+### 9. Bounded partial-frame decode (2026-11-12)
+
+Three opposite-direction smaller-Z passes produced complete 29-run frames and
+decoded Z. A separate normal-direction failure produced 25 runs. Its first 20
+runs were an exact sentinel, gap, `NWWNWNNNN` payload and gap; only the final
+sentinel had collapsed from nine runs to five.
+
+The decoder therefore does not use a generic 80% pattern match. It accepts a
+24--28 run capture only when an intact end contains a complete 20-run core:
+sentinel, gap, payload and gap, or gap, payload, gap and sentinel. It rebuilds
+only the damaged terminal sentinel and then applies the normal exact sentinel,
+gap, unique-nearest-payload and forward/reverse checks. If both ends decode to
+different symbols, or fewer than 24 runs were captured, the frame is rejected.
+
+This supersedes decision 8 only for a damaged terminal sentinel. Missing or
+ambiguous payload elements are not inferred, and a general percentage match
+remains prohibited.
+
+### 10. Smallest-Z barcode-only ADC threshold (2026-11-12)
+
+Three controlled passes over the smallest Z produced repeatable 7-run and
+3-run fragments instead of the required 29 runs. Detected transitions were
+120..160 ms and 520 ms, so the 10 ms sampling period is not the immediate
+limit. The sensor reliably saw the wide printed bars, but missed most thin
+black bars. Samples still classified as white rose to ADC 491..523 over the
+print while ordinary moving white readings remained at or below 352; the
+barcode threshold was 554..584.
+
+The ADC2 barcode-only black margin is reduced from 400 to 250 and its release
+margin from 340 to 180. With the bounded white baseline this gives a black
+threshold of 404..434 and a release level of 334..364. Front ADC0/ADC1 sensor
+thresholds, the 10 ms task period, decoder patterns and framing rules are not
+changed. Repeated hardware passes must confirm 29-run frames without false
+edges on white paper before this calibration is accepted.
+
+### 11. Full standard Code 39 letter table (2026-11-12)
+
+Testing is reported to select an arbitrary letter from A through Z, rather
+than only the example artwork reviewed so far. The local project notes did not
+contain a definitive A--Z statement, so this remains subject to confirmation
+against the assessment brief; accepting the complete standard table is the
+safer implementation and does not weaken frame validation.
+
+Mission and diagnostic builds now share one standard Code 39 A--Z lookup table
+in `s3_code39.c`. Host tests feed all 26 letters forwards and backwards. This
+supersedes the restricted-alphabet parts of decisions 6 through 8. In
+particular, `0x1C0` is the standard Code 39 pattern for W and `0x0D0` is Z;
+the former is no longer retained as a non-standard Z alias. Framing, sentinel,
+gap, contrast and ambiguity checks are unchanged.
+
+Decoded E--Z letters are reported through IF-06 but do not automatically
+command a turn. The existing separate navigation policy maps only A--D to
+left, right, straight and U-turn. Any different letter-to-manoeuvre mapping
+requires an explicit course requirement.
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
@@ -312,9 +481,10 @@ results can be trusted.
 
 Builds that would give GP0/GP1 to UART0 are refused: the makefile rejects
 `CRASH_REPORT=1` and `CONSOLE=uart`, and `hw_setting.c` and
-`config_device.h` fail to compile if UART0 would claim the pins. I2C0, which
-is never started, has placeholder pins GP20/GP21 with a compile-time check
-against the claimed pins.
+`config_device.h` fail to compile if UART0 would claim the pins. I2C0 is never
+started. Its dormant GP20/GP21 placeholders are not configured; GP20 is now
+claimed by the subsystem 3 barcode-drive diagnostic and I2C0 must be remapped
+before anyone enables unit 0.
 
 ### 5. Network hook in the shared MQTT client
 

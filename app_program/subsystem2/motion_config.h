@@ -31,7 +31,7 @@
 /* Wiring, viewed from behind, as measured in S2-H01/H03 on 2026-11-04
    (docs/decisions.md, subsystem 2, decision 4):
    left wheel = motor 2 (GP10 back, GP11 forward) and encoder 2 (GP0/GP1);
-   right wheel = motor 1 (GP8 forward, GP9 back) and encoder 1 (GP7/GP28).
+   right wheel = motor 1 (GP8 forward, GP9 back) and encoder 1 (GP16/GP17).
    Positive duty drives the A pin (GP8, GP10), so the left motor is
    inverted (motor 2 runs backward on positive duty). Positive duty made
    each wheel's encoder count up, so the left encoder counts down going

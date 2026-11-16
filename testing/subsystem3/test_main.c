@@ -3,6 +3,7 @@
 #include "s3_ir.h"
 #include "s3_bar.h"
 #include "s3_nav.h"
+#include "s3_config.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -24,6 +25,8 @@ static void test_ir(void)
     s3_calibration_t calibration = {0};
     s3_filter_t filter = {0};
     s3_ir_adaptive_t adaptive = {0};
+    s3_ir_adaptive_t unfiltered = {0};
+    s3_ir_adaptive_t barcode = {0};
     s3_ir_adaptive_config_t const adaptive_config =
     {
         136U, 96U, 168U, 32U, 20U
@@ -31,6 +34,12 @@ static void test_ir(void)
     s3_ir_adaptive_config_t const invalid_config =
     {
         136U, 170U, 168U, 32U, 20U
+    };
+    s3_ir_adaptive_config_t const barcode_config =
+    {
+        S3_BARCODE_INITIAL_WHITE, S3_BARCODE_MINIMUM_WHITE,
+        S3_BARCODE_MAXIMUM_WHITE, S3_BARCODE_BLACK_MARGIN,
+        S3_BARCODE_WHITE_MARGIN
     };
     uint8_t mask = 0U;
     s3_line_t const decisions[S3_IR_PATTERNS] =
@@ -77,11 +86,28 @@ static void test_ir(void)
           "adaptive invalid white bounds rejected");
     check(s3_ir_adaptive_init(&adaptive, &adaptive_config),
           "adaptive configuration accepted");
+    check(s3_ir_adaptive_init(&unfiltered, &adaptive_config),
+          "unfiltered adaptive configuration accepted");
     check(168U == adaptive.threshold, "adaptive initial threshold");
     check(0U == s3_ir_adaptive_strength(NULL, 1500U),
           "null adaptive strength rejected");
     check(0U == s3_ir_adaptive_strength(&adaptive, 136U),
           "invalid black reference rejected");
+    check(s3_ir_adaptive_update_unfiltered(&unfiltered, 180U),
+          "unfiltered barcode sample crosses threshold immediately");
+    check(180U == unfiltered.filtered,
+          "unfiltered barcode path retains the current ADC sample");
+    check(!s3_ir_adaptive_update_unfiltered(&unfiltered, 136U),
+          "unfiltered barcode sample releases immediately on white");
+    check(s3_ir_adaptive_init(&barcode, &barcode_config)
+          && (569U == barcode.threshold),
+          "proven barcode threshold configuration accepted");
+    check(!s3_ir_adaptive_update_unfiltered(&barcode, 292U),
+          "observed moving white remains below barcode threshold");
+    check(s3_ir_adaptive_update_unfiltered(&barcode, 1637U),
+          "measured faded black crosses barcode threshold");
+    check(!s3_ir_adaptive_update_unfiltered(&barcode, 292U),
+          "barcode classifier releases on observed white");
 
     for (uint8_t idx = 0U; idx < 16U; ++idx)
     {
@@ -122,6 +148,8 @@ static void test_ir(void)
           "white baseline adapts within bounds");
     check(!s3_ir_adaptive_update(&adaptive, 4096U),
           "out-of-range ADC sample rejected");
+    check(!s3_ir_adaptive_update_unfiltered(&unfiltered, 4096U),
+          "unfiltered out-of-range ADC sample rejected");
     adaptive.filtered = 1500U;
     check(100U == s3_ir_adaptive_strength(&adaptive, 1500U),
           "reference black gives full steering strength");

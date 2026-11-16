@@ -1,7 +1,7 @@
 /** @file task_line.c Subsystem 3 Line Sensor task (IF-06 publisher).
  *
  * Every S3_PERIOD_MS a cyclic handler wakes the task, which:
- *   1. moves barcode edges from the interrupt ring into s3_scan;
+ *   1. samples and classifies the barcode ADC channel for s3_scan;
  *   2. finishes or expires a barcode capture, staging decoded commands;
  *   3. samples the two front analogue sensors and runs
  *      s3_track (debounce, decision table, loss, fault, steering);
@@ -11,9 +11,8 @@
  * It only reports. The Vehicle Controller decides and Motion Control alone
  * drives the motors (AGENTS.md).
  *
- * Barcode edges come from subsystem 2's shared GPIO dispatcher on GP16.
- * The interrupt only timestamps the new level into a single-producer,
- * single-consumer ring; DMB barriers order it for either core.
+ * Barcode level changes are derived from ADC2/GP28 in this task. The barcode
+ * sensor never contributes to steering; only the two front ADC channels do.
  */
 #include "subsystem3.h"
 
@@ -23,36 +22,17 @@
 #include "s3_nav.h"
 #include "s3_scan.h"
 #include "s3_track.h"
-#include "../subsystem2/drv_gpio_irq.h"
 #include "../subsystem2/subsystem2.h"
 
-#define S3_LINE_CORE        TP_PRC1     /* core 0, with the dispatcher */
+#define S3_LINE_CORE        TP_PRC1     /* core 0, owns the ADC reads */
 #define S3_PUBLISH_TMO_MS   2           /* readers copy, never hold long */
 static ID               g_line_tid = 0;
 static ID               g_line_cyc = 0;
 static ID               g_line_mtx = 0;
 static s3_line_status_t g_status;               /* guarded by g_line_mtx */
 
-/* Edge ring: written by the interrupt, read by the task. */
-static volatile uint32_t g_edge_us[S3_EDGE_RING_SIZE];
-static volatile uint8_t  g_edge_level[S3_EDGE_RING_SIZE];
-static volatile uint32_t g_edge_head = 0U;      /* interrupt only */
-static volatile uint32_t g_edge_tail = 0U;      /* task only */
-static volatile bool     gb_edge_lost = false;  /* set by interrupt */
-static uint8_t           g_isr_level = 0U;      /* interrupt only */
-
-static s3_symbol_t const g_alphabet[4] =
-{
-    {S3_BAR_PATTERN_A, 'A'}, {S3_BAR_PATTERN_B, 'B'},
-    {S3_BAR_PATTERN_C, 'C'}, {S3_BAR_PATTERN_D, 'D'}
-};
-
 static void     line_task(INT stacd, void * p_exinf);
 static void     line_cyclic(void * p_exinf);
-static void     line_edge_isr(uint32_t gpio, uint32_t events, uint32_t now_us);
-static void     line_barrier(void);
-static uint8_t  line_barcode_level(void);
-static bool     line_barcode_black(uint8_t level);
 static uint32_t line_now_ms(void);
 static bool     line_navigation_allowed(bool * p_stopped);
 
@@ -89,18 +69,6 @@ ER s3_line_start(void)
     if (input_er < E_OK)
     {
         return input_er;
-    }
-
-    g_isr_level = line_barcode_level();
-
-    ER const er = drv_gpio_irq_register(S3_PIN_BARCODE,
-                                        DRV_GPIO_IRQ_EDGE_RISE
-                                        | DRV_GPIO_IRQ_EDGE_FALL,
-                                        line_edge_isr);
-
-    if (er < E_OK)
-    {
-        return er;
     }
 
     ID const tid = app_start_task((FP)line_task, S3_PRI_LINE, S3_LINE_CORE,
@@ -161,8 +129,17 @@ static void line_task(INT stacd, void * p_exinf)
         S3_RIGHT_BLACK_MARGIN,
         S3_RIGHT_WHITE_MARGIN
     };
+    static s3_ir_adaptive_config_t const barcode_config =
+    {
+        S3_BARCODE_INITIAL_WHITE,
+        S3_BARCODE_MINIMUM_WHITE,
+        S3_BARCODE_MAXIMUM_WHITE,
+        S3_BARCODE_BLACK_MARGIN,
+        S3_BARCODE_WHITE_MARGIN
+    };
     s3_ir_adaptive_t left_state = {0};
     s3_ir_adaptive_t right_state = {0};
+    s3_ir_adaptive_t barcode_state = {0};
     s3_track_cfg_t   track_cfg;
     s3_track_t       track;
     s3_scan_t        scan;
@@ -170,7 +147,8 @@ static void line_task(INT stacd, void * p_exinf)
     s3_line_status_t st = {0};
     s3_scan_cfg_t const scan_cfg =
     {
-        S3_BAR_RUN_MAX_US, S3_BAR_QUIET_US, S3_BAR_SENTINEL, g_alphabet, 4U
+        S3_BAR_RUN_MAX_US, S3_BAR_QUIET_US, S3_BAR_SENTINEL,
+        g_s3_code39_alphabet, S3_CODE39_SYMBOL_COUNT
     };
     uint32_t scan_id = 0U;
     bool     b_was_stopped = true;
@@ -183,6 +161,8 @@ static void line_task(INT stacd, void * p_exinf)
 
     bool const b_ready = s3_ir_adaptive_init(&left_state, &left_config)
                          && s3_ir_adaptive_init(&right_state, &right_config)
+                         && s3_ir_adaptive_init(&barcode_state,
+                                                &barcode_config)
                          && s3_track_init(&track, &track_cfg, line_now_ms());
 
     s3_scan_init(&scan);
@@ -193,6 +173,8 @@ static void line_task(INT stacd, void * p_exinf)
         s3_track_out_t out = {S3_LINE_UNKNOWN, 0, 0U, 0U, false, false, true};
         char           symbol = '\0';
         bool           b_stopped = true;
+        bool           b_barcode_black = false;
+        s3_ir_adc_sample_t sample = {0U, 0U, 0U};
 
         (void)tk_slp_tsk(TMO_FEVR);
 
@@ -205,31 +187,24 @@ static void line_task(INT stacd, void * p_exinf)
             st.overruns = (uint8_t)(st.overruns + (uint8_t)missed);
         }
 
-        /* 1. Barcode edges, oldest first. */
-        while (g_edge_tail != g_edge_head)
-        {
-            uint32_t const idx = g_edge_tail;
-            uint8_t        lvl;
-            uint32_t       t_us;
+        ER const adc_er = s3_ir_gpio_read_analog(&sample);
 
-            line_barrier();
-            lvl  = g_edge_level[idx];
-            t_us = g_edge_us[idx];
-            line_barrier();
-            g_edge_tail = (idx + 1U) % S3_EDGE_RING_SIZE;
+        if (adc_er < E_OK)
+        {
+            b_adc_fault = true;
+        }
+
+        /* 1. Convert the side AOUT sample to a timestamped level change. */
+        if (b_ready && (!b_adc_fault))
+        {
+            b_barcode_black = s3_ir_adaptive_update_unfiltered(
+                &barcode_state, sample.barcode);
 
             if (S3_SCAN_ERROR == s3_scan_edge(&scan, &scan_cfg,
-                                              line_barcode_black(lvl), t_us))
+                                              b_barcode_black, now_us))
             {
                 st.barcode_errors = (uint8_t)(st.barcode_errors + 1U);
             }
-        }
-
-        if (gb_edge_lost)
-        {
-            gb_edge_lost = false;
-            s3_scan_abort(&scan);           /* a hole in the edge record */
-            st.barcode_errors = (uint8_t)(st.barcode_errors + 1U);
         }
 
         /* 2. Finish or expire a capture. */
@@ -254,14 +229,6 @@ static void line_task(INT stacd, void * p_exinf)
 
         /* 3. Front sensors: read both 12-bit ADC channels, then classify
          * them with independent adaptive white baselines. */
-        s3_ir_adc_sample_t sample = {0U, 0U};
-        ER const adc_er = s3_ir_gpio_read_analog(&sample);
-
-        if (adc_er < E_OK)
-        {
-            b_adc_fault = true;
-        }
-
         if (b_ready && (!b_adc_fault))
         {
             if (s3_ir_adaptive_update(&left_state, sample.left))
@@ -311,6 +278,8 @@ static void line_task(INT stacd, void * p_exinf)
         /* 5. Publish. */
         st.captured_ms    = now_ms;
         st.seq++;
+        st.barcode_adc = sample.barcode;
+        st.barcode_threshold = barcode_state.threshold;
         uint8_t strength = 0U;
 
         if (S3_LINE_LEFT == out.line)
@@ -342,8 +311,7 @@ static void line_task(INT stacd, void * p_exinf)
                             | (out.fault ? S3_ST_FAULT : 0U)
                             | ((0U != (black & S3_TRACK_FRONT_BITS))
                                ? S3_ST_SEEN : 0U)
-                            | (line_barcode_black(line_barcode_level())
-                               ? S3_ST_BAR_BLACK : 0U));
+                            | (b_barcode_black ? S3_ST_BAR_BLACK : 0U));
 
         if (tk_loc_mtx(g_line_mtx, S3_PUBLISH_TMO_MS) >= E_OK)
         {
@@ -361,61 +329,6 @@ static void line_cyclic(void * p_exinf)
     {
         (void)tk_wup_tsk(g_line_tid);
     }
-}
-
-/* Dispatcher callback, interrupt context: one register read and a ring
- * store. Both edges in one service mean a pulse too short to time. */
-static void line_edge_isr(uint32_t gpio, uint32_t events, uint32_t now_us)
-{
-    uint8_t const level = line_barcode_level();
-
-    (void)gpio;
-
-    if ((DRV_GPIO_IRQ_EDGE_RISE | DRV_GPIO_IRQ_EDGE_FALL)
-        == (events & (DRV_GPIO_IRQ_EDGE_RISE | DRV_GPIO_IRQ_EDGE_FALL)))
-    {
-        gb_edge_lost = true;
-    }
-
-    if (level != g_isr_level)
-    {
-        uint32_t const head = g_edge_head;
-        uint32_t const next = (head + 1U) % S3_EDGE_RING_SIZE;
-
-        g_isr_level = level;
-
-        if (next == g_edge_tail)
-        {
-            gb_edge_lost = true;            /* ring full */
-        }
-        else
-        {
-            g_edge_us[head]    = now_us;
-            g_edge_level[head] = level;
-            line_barrier();
-            g_edge_head = next;
-        }
-    }
-}
-
-/* Orders ring accesses as seen by the other core (ARMv6-M DMB). */
-static void line_barrier(void)
-{
-    __asm volatile ("dmb" ::: "memory");
-}
-
-static uint8_t line_barcode_level(void)
-{
-    return s3_ir_gpio_read_barcode() ? 1U : 0U;
-}
-
-static bool line_barcode_black(uint8_t level)
-{
-#if S3_BARCODE_BLACK_HIGH
-    return (0U != level);
-#else
-    return (0U == level);
-#endif
 }
 
 static uint32_t line_now_ms(void)

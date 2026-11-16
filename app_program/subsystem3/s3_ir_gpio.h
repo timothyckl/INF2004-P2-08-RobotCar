@@ -13,16 +13,14 @@ typedef struct
 {
     uint16_t left;
     uint16_t right;
+    uint16_t barcode;
 } s3_ir_adc_sample_t;
 
-/** Open the ADC device and configure the barcode digital input. */
+/** Open the ADC device for all three infrared AOUT signals. */
 ER s3_ir_gpio_init(void);
 
-/** Read front-left ADC0/GP26 and front-right ADC1/GP27. */
+/** Read front-left ADC0, front-right ADC1 and barcode ADC2. */
 ER s3_ir_gpio_read_analog(s3_ir_adc_sample_t * p_sample);
-
-/** Read the side barcode sensor's raw digital level on GP16. */
-bool s3_ir_gpio_read_barcode(void);
 
 #endif /* S3_IR_GPIO_H */
 

@@ -1,27 +1,17 @@
 /** @file test_track_scan.c Synthetic cases for s3_track and s3_scan.
  *
  * Inputs are invented timings and sensor masks, not robot measurements.
- * Barcode cases use the standard Code 39 patterns for '*' and A..D, which
- * the task wires in; the printed course barcodes still have to be checked.
+ * Barcode cases use the standard Code 39 A-to-Z lookup table. Hardware
+ * repeatability still has to be checked.
  */
 #include "s3_scan.h"
+#include "s3_config.h"
 #include "s3_track.h"
 #include <stddef.h>
 #include <stdio.h>
 
-#define T_SENTINEL  0x094U  /* Code 39 '*' */
-#define T_SYM_A     0x109U
-#define T_SYM_B     0x049U
-#define T_SYM_C     0x148U
-#define T_SYM_D     0x019U
-
 static unsigned int g_checks = 0U;
 static unsigned int g_failures = 0U;
-
-static s3_symbol_t const g_alphabet[4] =
-{
-    {T_SYM_A, 'A'}, {T_SYM_B, 'B'}, {T_SYM_C, 'C'}, {T_SYM_D, 'D'}
-};
 
 static void check(bool passed, char const * p_name)
 {
@@ -169,7 +159,9 @@ static void test_track_config(void)
 
 static s3_scan_cfg_t scan_cfg(void)
 {
-    s3_scan_cfg_t cfg = {400000U, 250000U, T_SENTINEL, g_alphabet, 4U};
+    s3_scan_cfg_t cfg = {S3_BAR_RUN_MAX_US, S3_BAR_QUIET_US,
+                         S3_BAR_SENTINEL, g_s3_code39_alphabet,
+                         S3_CODE39_SYMBOL_COUNT};
 
     return cfg;
 }
@@ -197,7 +189,10 @@ static s3_scan_result_t feed_code(s3_scan_t * p_scan, uint16_t symbol,
                                   char * p_out)
 {
     s3_scan_cfg_t const cfg = scan_cfg();
-    uint16_t const order[3] = {T_SENTINEL, symbol, T_SENTINEL};
+    uint16_t const order[3] =
+    {
+        S3_BAR_SENTINEL, symbol, S3_BAR_SENTINEL
+    };
     bool black = true;
     s3_scan_result_t result = S3_SCAN_NONE;
 
@@ -232,7 +227,46 @@ static s3_scan_result_t feed_code(s3_scan_t * p_scan, uint16_t symbol,
         }
     }
 
-    for (uint8_t tick = 0U; (tick < 40U) && (S3_SCAN_NONE == result); ++tick)
+    for (uint8_t tick = 0U; (tick < 100U) && (S3_SCAN_NONE == result); ++tick)
+    {
+        *p_now += 10000U;
+        result = s3_scan_poll(p_scan, &cfg, *p_now, p_out);
+    }
+
+    return result;
+}
+
+/* Replay the observed 25-run smaller-Z failure. Its first 20 runs contain
+ * sentinel, gap, payload and gap; only the terminal sentinel is damaged. */
+static s3_scan_result_t feed_partial_z(s3_scan_t * p_scan, bool reverse,
+                                       uint8_t run_count, uint32_t * p_now,
+                                       char * p_out)
+{
+    uint32_t const runs[25] =
+    {
+        100000U, 360000U, 80000U, 120000U, 300000U,
+        120000U, 280000U, 140000U, 60000U, 160000U,
+        60000U, 320000U, 300000U, 100000U, 300000U,
+        120000U, 80000U, 120000U, 80000U, 120000U,
+        100000U, 200000U, 660000U, 20000U, 560000U
+    };
+    s3_scan_cfg_t const cfg = scan_cfg();
+    bool black = true;
+    s3_scan_result_t result = S3_SCAN_NONE;
+
+    (void)s3_scan_edge(p_scan, &cfg, true, *p_now);
+    for (uint8_t idx = 0U; idx < run_count; ++idx)
+    {
+        uint8_t const source = reverse
+            ? (uint8_t)((sizeof(runs) / sizeof(runs[0])) - 1U - idx)
+            : idx;
+
+        *p_now += runs[source];
+        black = !black;
+        (void)s3_scan_edge(p_scan, &cfg, black, *p_now);
+    }
+
+    for (uint8_t tick = 0U; (tick < 100U) && (S3_SCAN_NONE == result); ++tick)
     {
         *p_now += 10000U;
         result = s3_scan_poll(p_scan, &cfg, *p_now, p_out);
@@ -243,35 +277,68 @@ static s3_scan_result_t feed_code(s3_scan_t * p_scan, uint16_t symbol,
 
 static void test_scan_decode(void)
 {
-    uint16_t const symbols[4] = {T_SYM_A, T_SYM_B, T_SYM_C, T_SYM_D};
-    char const expected[4] = {'A', 'B', 'C', 'D'};
     s3_scan_t scan;
     uint32_t now = 5000000U;
     char symbol = '\0';
 
     s3_scan_init(&scan);
-    for (uint8_t idx = 0U; idx < 4U; ++idx)
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
     {
         symbol = '\0';
-        check((S3_SCAN_DECODED == feed_code(&scan, symbols[idx], 2000U, 5000U,
-                                            false, &now, &symbol))
-              && (expected[idx] == symbol), "decode A..D forwards");
+        check((S3_SCAN_DECODED == feed_code(
+                  &scan, g_s3_code39_alphabet[idx].pattern, 2000U, 5000U,
+                  false, &now, &symbol))
+              && (g_s3_code39_alphabet[idx].symbol == symbol),
+              "decode each Code 39 letter forwards");
+
+        symbol = '\0';
+        check((S3_SCAN_DECODED == feed_code(
+                  &scan, g_s3_code39_alphabet[idx].pattern, 2000U, 5000U,
+                  true, &now, &symbol))
+              && (g_s3_code39_alphabet[idx].symbol == symbol),
+              "decode each Code 39 letter in reverse");
     }
 
     symbol = '\0';
-    check((S3_SCAN_DECODED == feed_code(&scan, T_SYM_B, 2000U, 5000U, true,
-                                        &now, &symbol)) && ('B' == symbol),
-          "decode a code read in reverse");
+    check((S3_SCAN_DECODED == feed_partial_z(&scan, false, 25U,
+                                              &now, &symbol))
+          && ('Z' == symbol),
+          "decode observed 25-run smaller Z with damaged trailing sentinel");
 
     symbol = '\0';
-    check((S3_SCAN_DECODED == feed_code(&scan, T_SYM_C, 900U, 2000U, false,
-                                        &now, &symbol)) && ('C' == symbol),
+    check((S3_SCAN_DECODED == feed_partial_z(&scan, true, 25U,
+                                              &now, &symbol))
+          && ('Z' == symbol),
+          "decode observed 25-run smaller Z in reverse");
+
+    symbol = '\0';
+    check(S3_SCAN_ERROR == feed_partial_z(&scan, false, 23U,
+                                           &now, &symbol),
+          "reject a capture below the 80 percent floor");
+
+    symbol = '\0';
+    check(S3_SCAN_ERROR == feed_code(&scan,
+                                     S3_CODE39_PATTERN_Z ^ 0x001U,
+                                     2000U, 5000U, false,
+                                     &now, &symbol),
+          "one-bit payload ambiguous between V and Z is rejected");
+
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_F, 900U,
+                                        2000U, false, &now, &symbol))
+          && ('F' == symbol),
           "windows follow a faster pass");
+
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_A, 160000U,
+                                        500000U, false, &now, &symbol))
+          && ('A' == symbol), "observed 40 mm/s widths fit framing");
 
     now = UINT32_MAX - 20000U;
     symbol = '\0';
-    check((S3_SCAN_DECODED == feed_code(&scan, T_SYM_D, 2000U, 5000U, false,
-                                        &now, &symbol)) && ('D' == symbol),
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_Z, 2000U,
+                                        5000U, false, &now, &symbol))
+          && ('Z' == symbol),
           "decode across the timer wrap");
 }
 
@@ -284,19 +351,22 @@ static void test_scan_failures(void)
     s3_scan_result_t result = S3_SCAN_NONE;
 
     s3_scan_init(&scan);
-    check(S3_SCAN_ERROR == feed_code(&scan, T_SYM_A, 3000U, 3000U, false,
-                                     &now, &symbol),
+    check(S3_SCAN_ERROR == feed_code(&scan, S3_CODE39_PATTERN_A, 3000U, 3000U,
+                                     false, &now, &symbol),
           "equal widths have no contrast");
     check(S3_SCAN_ERROR == feed_code(&scan, 0x111U, 2000U, 5000U, false,
                                      &now, &symbol),
           "unknown payload rejected");
+    check(S3_SCAN_ERROR == feed_code(&scan, 0x188U, 2000U, 5000U, false,
+                                     &now, &symbol),
+          "two-error payload ambiguous between A and Z is rejected");
     check('x' == symbol, "failed decode leaves the symbol");
 
     (void)s3_scan_edge(&scan, &cfg, true, now);
     now += 20000U;
     (void)s3_scan_edge(&scan, &cfg, false, now);
     result = S3_SCAN_NONE;
-    for (uint8_t tick = 0U; (tick < 40U) && (S3_SCAN_NONE == result); ++tick)
+    for (uint8_t tick = 0U; (tick < 100U) && (S3_SCAN_NONE == result); ++tick)
     {
         now += 10000U;
         result = s3_scan_poll(&scan, &cfg, now, &symbol);
@@ -305,7 +375,7 @@ static void test_scan_failures(void)
 
     (void)s3_scan_edge(&scan, &cfg, true, now);
     result = S3_SCAN_NONE;
-    for (uint8_t tick = 0U; (tick < 50U) && (S3_SCAN_NONE == result); ++tick)
+    for (uint8_t tick = 0U; (tick < 100U) && (S3_SCAN_NONE == result); ++tick)
     {
         now += 10000U;
         result = s3_scan_poll(&scan, &cfg, now, &symbol);
@@ -327,8 +397,9 @@ static void test_scan_failures(void)
     (void)s3_scan_edge(&scan, &cfg, false, now + 1000U);
     symbol = '\0';
     now += 1000000U;
-    check((S3_SCAN_DECODED == feed_code(&scan, T_SYM_A, 2000U, 5000U, false,
-                                        &now, &symbol)) && ('A' == symbol),
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_A, 2000U,
+                                        5000U, false, &now, &symbol))
+          && ('A' == symbol),
           "decodes again after an abort");
 }
 

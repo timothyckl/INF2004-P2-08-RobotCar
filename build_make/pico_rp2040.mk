@@ -144,6 +144,45 @@ endif
 S3_IR_DIAG_SUFFIX := _s3irdiag
 endif
 
+# S3_BAR_DIAG=1 enters the separate ADC2/GP28 barcode diagnostic before the
+# on-target test runner. It does not start robot subsystem tasks.
+S3_BAR_DIAG ?= 0
+ifneq ($(filter $(S3_BAR_DIAG),0 1),$(S3_BAR_DIAG))
+$(error Unknown S3_BAR_DIAG '$(S3_BAR_DIAG)'; use 0 or 1)
+endif
+ifeq ($(S3_BAR_DIAG),1)
+ifneq ($(TEST),1)
+$(error S3_BAR_DIAG=1 requires TEST=1)
+endif
+S3_BAR_DIAG_SUFFIX := _s3bardiag
+endif
+
+# S3_BAR_DRIVE=1 starts only the Vehicle Controller, Motion Control, line
+# sensor, and the GP20 barcode-drive observer. The controller retains movement
+# authority and Motion Control remains the only PWM writer.
+S3_BAR_DRIVE ?= 0
+ifneq ($(filter $(S3_BAR_DRIVE),0 1),$(S3_BAR_DRIVE))
+$(error Unknown S3_BAR_DRIVE '$(S3_BAR_DRIVE)'; use 0 or 1)
+endif
+ifeq ($(S3_BAR_DRIVE),1)
+ifneq ($(TEST),0)
+$(error S3_BAR_DRIVE=1 requires TEST=0)
+endif
+ifneq ($(SMP),0)
+$(error S3_BAR_DRIVE=1 requires SMP=0)
+endif
+ifneq ($(WIFI),none)
+$(error S3_BAR_DRIVE=1 requires WIFI=none)
+endif
+ifneq ($(LINE_ONLY),0)
+$(error S3_BAR_DRIVE=1 is already isolated; use LINE_ONLY=0)
+endif
+ifneq ($(S3_BAR_DIAG),0)
+$(error S3_BAR_DRIVE=1 cannot be combined with S3_BAR_DIAG=1)
+endif
+S3_BAR_DRIVE_SUFFIX := _s3bardrive
+endif
+
 # S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
 S4_HW_TEST ?= 0
 ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
@@ -186,7 +225,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(S2_LOG_SUFFIX)$(LINE_ONLY_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(S2_LOG_SUFFIX)$(LINE_ONLY_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(TEST_SUFFIX)$(S3_IR_DIAG_SUFFIX)$(S3_BAR_DIAG_SUFFIX)$(S3_BAR_DRIVE_SUFFIX)$(S4_HW_TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -251,6 +290,8 @@ CFLAGS  += -DS2_DEMO_LOG=$(S2_LOG)
 CFLAGS  += -DAPP_LINE_ONLY=$(LINE_ONLY)
 CFLAGS  += -DS5_RANGE_DIAGNOSTIC=$(S5_RANGE_DIAG)
 CFLAGS  += -DS3_IR_DIAGNOSTIC=$(S3_IR_DIAG)
+CFLAGS  += -DS3_BARCODE_DIAGNOSTIC=$(S3_BAR_DIAG)
+CFLAGS  += -DS3_BARCODE_DRIVE_DIAGNOSTIC=$(S3_BAR_DRIVE)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
 ifeq ($(CRASH_REPORT),0)
@@ -284,7 +325,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-s2log$(S2_LOG)-lineonly$(LINE_ONLY)-s5range$(S5_RANGE_DIAG)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s4hw$(S4_HW_TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-s2log$(S2_LOG)-lineonly$(LINE_ONLY)-s5range$(S5_RANGE_DIAG)-test$(TEST)-s3irdiag$(S3_IR_DIAG)-s3bardiag$(S3_BAR_DIAG)-s3bardrive$(S3_BAR_DRIVE)-s4hw$(S4_HW_TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

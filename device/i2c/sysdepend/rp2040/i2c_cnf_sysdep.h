@@ -30,9 +30,10 @@
  *   I2C1: SDA on GP2/6/10/14/18/22/26, SCL on GP3/7/11/15/19/27
  * Subsystem 4 uses I2C1 on GP2/GP3.  I2C0 is not initialized by the current
  * Pico W device-startup configuration (devinit.c starts unit 1 only).  Its
- * placeholder pins are GP20/GP21, which no subsystem claims, so enabling
- * I2C0 by mistake cannot take the encoder (GP0/GP1, GP7/GP28), ultrasonic
- * (GP4/GP5) or line sensor (GP16/GP17) pins. */
+ * dormant placeholder pins are GP20/GP21. GP20 is claimed by the S3
+ * barcode-drive diagnostic, so unit 0 must be remapped before it is added to
+ * devinit.c. The current firmware starts unit 1 only and never configures
+ * these two placeholders. */
 #define	DEVCNF_I2C0_SDA_PIN	20
 #define	DEVCNF_I2C0_SCL_PIN	21
 #define	DEVCNF_I2C1_SDA_PIN	2

@@ -15,8 +15,8 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 | Motor 2 (left wheel) | GP10 (M2A, backward) / GP11 (M2B, forward), PWM slice 5 | as above |
 | Motor PWM | 20 kHz: 125 MHz clk_sys, divider 1, TOP 6249; duty -6250..+6250 | Robo Pico datasheet table 1 row 10 |
 | Driver truth table | A high B low forward; A low B high backward; both low brake; both high coast | Robo Pico datasheet section 4 |
-| Encoder 1 (left wheel) | GP7 (A, blue) / GP28 (B, green); keep the GP28 battery-sense jumper open | wiring on the robot; team pin mapping 2026-11-03 |
-| Encoder 2 (right wheel) | GP0 (A, blue) / GP1 (B, green); needs `CRASH_REPORT=0` (UART0 mirror) | as above |
+| Encoder 1 (right wheel) | GP16 (A) / GP17 (B), Grove 4 | wiring on the robot; Grove 4/7 swap 2026-11-11 |
+| Encoder 2 (left wheel) | GP0 (A) / GP1 (B); needs `CRASH_REPORT=0` (UART0 mirror) | team pin mapping |
 | Encoder power | 3V3 and GND | as above |
 | Motor plug | PH2.0-6P: 01 encoder GND, 02 encoder A, 03 encoder B, 04 encoder VCC, 05 motor +, 06 motor - | as above |
 | Motor wires | M1A GP8 yellow, M1B GP9 black; M2A GP10 yellow, M2B GP11 black | as above |
@@ -24,17 +24,13 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 | Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control (normal firmware only) | Pico SDK register headers; RP2040 datasheet not in `docs/datasheets` |
 | GPIO interrupt | IO_IRQ_BANK0, IRQ 13, NVIC priority 2, on core 0 | SDK `hardware/regs/intctrl.h` |
 
-The encoder pins were swapped with subsystem 4 to match the robot's wiring;
-the IMU is on GP2 (SDA1) / GP3 (SCL1), I2C1. The sample ADC driver does not
-touch GP26 to GP28 at start-up: `DEVCONF_ADC_PIN_INIT_*` are all FALSE in
-`device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` (an earlier version of this
-document said otherwise). GP28 is an encoder input, so no code may configure
-it as an ADC input.
+The IMU is on GP2 (SDA1) / GP3 (SCL1), I2C1. After the Grove 4/7 swap,
+encoder 1 moved to GP16/GP17 and GP28 became the side barcode ADC input.
+The ADC driver configures GP26 to GP28 as ADC0 to ADC2; the GP28 battery-sense
+jumper must remain open.
 
-Wheel pairing: the left wheel is motor 2 with encoder 1, and the right wheel is
-motor 1 with encoder 2 (team pin mapping, 2026-11-03). Code before that paired
-motor 1 with encoder 1 as "left", so each wheel's speed loop read the other
-wheel's encoder. `motion_config.h` now follows the pin mapping.
+Wheel pairing: the right wheel is motor 1 with encoder 1, and the left wheel is
+motor 2 with encoder 2. `motion_config.h` follows this mapping.
 
 ### Bench findings, 2026-11-02
 

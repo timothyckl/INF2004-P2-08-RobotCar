@@ -55,14 +55,13 @@ is spotted when someone edits this table, not hours later on the bench.
 The authoritative GPIO mapping is `AGENTS.md`, section *Agreed pin mapping*;
 the claims below must match it. The proposed robot wiring is in
 `docs/AAI08_Design_Review.pdf` section 2. The rows below follow the team pin
-mapping of 2026-11-03, which records the assembled robot (`docs/decisions.md`,
-subsystem 2, decision 1): the wheel encoders use GP7/GP28 (right) and GP0/GP1
-(left; subsystem 2, decision 4), the IMU uses I2C1 on GP2/GP3, the HC-SR04 GP4/GP5, the servo GP12,
-and the line and barcode sensors use GP26/GP27 (front analogue) and GP16
-(barcode digital). Because GP0/GP1 carry an encoder, building with
+mapping revised by the agreed Grove 4/7 swap of 2026-11-11
+(`docs/decisions.md`, subsystem 3, decision 5): the wheel encoders use
+GP16/GP17 (right) and GP0/GP1 (left), the IMU uses I2C1 on GP2/GP3, the
+HC-SR04 GP4/GP5, the servo GP12, and the three IR analogue outputs use
+GP26/GP27 (front) and GP28 (barcode). Because GP0/GP1 carry an encoder, building with
 `CRASH_REPORT=1` (UART0 on GP0/GP1) is prohibited. The kernel ADC driver owns
-ADC0/GP26 and ADC1/GP27 for the two front line sensors. ADC2/GP28 stays disabled
-because GP28 carries the right encoder. Reconcile any other wiring with the
+ADC0/GP26, ADC1/GP27 and ADC2/GP28 for the three IR sensors. Reconcile any other wiring with the
 actual board and datasheets before configuring hardware.
 
 **No instructor check needed.** The team keeps this table itself. You do not
@@ -81,7 +80,7 @@ fixed.
 | GP4 | S5 | HC-SR04 TRIG |
 | GP5 | S5 | HC-SR04 ECHO; input level must not exceed Pico limits |
 | GP6 | | front-right DOUT disconnected in the active analogue mapping |
-| GP7 | S2 | ENC1_A, right encoder (GPIO interrupt) |
+| GP7 | | barcode DOUT disconnected; unused second signal on Grove 7 |
 | GP8 | S2 | M1A motor 1 PWM (slice 4A), right wheel forward |
 | GP9 | S2 | M1B motor 1 PWM (slice 4B), right wheel backward |
 | GP10 | S2 | M2A motor 2 PWM (slice 5A), left wheel backward |
@@ -90,16 +89,16 @@ fixed.
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | S3 | side barcode sensor DOUT; demo liveness LED must not use this pin |
-| GP17 | | unused; old front-left analogue cable disconnected; not ADC-capable |
+| GP16 | S2 | ENC1_A, right encoder (GPIO interrupt); demo liveness LED must not use this pin |
+| GP17 | S2 | ENC1_B, right encoder (GPIO interrupt) |
 | GP18 | | |
 | GP19 | | |
-| GP20 | | |
+| GP20 | S3 | Robo Pico button 1, diagnostic START/STOP/RESET request to Vehicle Controller |
 | GP21 | | |
 | GP22 | | |
 | GP26 | S3 | front-left line sensor AOUT, ADC0 |
 | GP27 | S3 | front-right line sensor AOUT, ADC1 |
-| GP28 | S2 | ENC1_B, right encoder; battery-sense jumper open |
+| GP28 | S3 | side barcode sensor AOUT, ADC2; DOUT disconnected; battery-sense jumper open |
 
 ## 3. Peripherals
 
@@ -132,15 +131,15 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | not initialised; placeholder pins GP20/GP21 are never configured (`i2c_cnf_sysdep.h` refuses claimed pins) |
+| I2C0 | | | not initialised; placeholder GP20/GP21 are never configured, and GP20 must be remapped before enabling unit 0 |
 | I2C1 | S4 | `s4_imu_task` | GP2 (SDA1), GP3 (SCL1) |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | S3 | Line Sensor task | ADC0/GP26 front-left AOUT; ADC1/GP27 front-right AOUT; ADC2/GP28 disabled for S2 encoder; ADC3/GP29 disabled for radio |
+| ADC | S3 | Line Sensor task | ADC0/GP26 front-left AOUT; ADC1/GP27 front-right AOUT; ADC2/GP28 side-barcode AOUT; ADC3/GP29 disabled for radio |
 | PWM slice 4 | S2 | Motion Control task (`motion`) | GP8 / GP9 |
 | PWM slice 5 | S2 | Motion Control task (`motion`) | GP10 / GP11 |
 | PWM slice 6 channel A | S5 | Obstacle Scan task (`obstacle_scan`) | GP12 |
-| GPIO edge interrupt (IO_IRQ_BANK0) | S2 dispatcher (`drv_gpio_irq`) | callbacks per pin: S2 encoders (GP7, GP0), S3 barcode (GP16), S5 ECHO (GP5) | one callback per pin |
+| GPIO edge interrupt (IO_IRQ_BANK0) | S2 dispatcher (`drv_gpio_irq`) | callbacks per pin: S2 encoders (GP16, GP0), S5 ECHO (GP5) | one callback per pin |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special

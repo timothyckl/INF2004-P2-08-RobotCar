@@ -43,6 +43,12 @@
  */
 
 #include "app.h"
+#if APP_TEST && S3_BARCODE_DIAGNOSTIC
+#include "subsystem3/barcode_test.h"
+#endif
+#if S3_BARCODE_DRIVE_DIAGNOSTIC
+#include "subsystem3/barcode_drive_test.h"
+#endif
 #if APP_TEST
 #include "test_report.h"	/* TEST_DRAIN, TEST_DROPPED */
 #endif
@@ -97,6 +103,26 @@ EXPORT INT usermain(void)
 		  tk_get_prc() - 1);	/* tk_get_prc() counts from 1 */
 #else
 	tm_printf((UB*)"single-core build\n");
+#endif
+
+#if APP_TEST && S3_BARCODE_DIAGNOSTIC
+	tm_printf((UB *)"[S3 BAR] isolated barcode mode; "
+		  "robot subsystem tasks are disabled\n");
+	s3_barcode_test_run();
+	tk_slp_tsk(TMO_FEVR);
+	return 0;
+#endif
+
+#if S3_BARCODE_DRIVE_DIAGNOSTIC
+	tm_printf((UB *)"[S3 BAR DRIVE] controlled diagnostic; "
+		  "only subsystems 2 and 3 are enabled\n");
+	CHECK(subsystem2_init(), "subsystem2_init");
+	CHECK(subsystem3_init(), "subsystem3_init");
+	CHECK(subsystem2_start(), "subsystem2_start");
+	CHECK(subsystem3_start(), "subsystem3_start");
+	CHECK(s3_barcode_drive_test_start(), "barcode_drive_test");
+	tk_slp_tsk(TMO_FEVR);
+	return 0;
 #endif
 
 #if APP_LINE_ONLY

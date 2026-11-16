@@ -12,7 +12,6 @@
 
 static ID g_s3_ir_adc_device = 0;
 
-static void s3_ir_gpio_input_init(uint32_t pin);
 static ER s3_ir_gpio_read_channel(W channel, uint16_t * p_value);
 
 ER
@@ -20,8 +19,6 @@ s3_ir_gpio_init (void)
 {
     /* T-Kernel device names use UB rather than plain char. */
     ID const device = tk_opn_dev((UB const *)"adca", TD_READ);
-
-    s3_ir_gpio_input_init(S3_PIN_BARCODE);
 
     if (device < E_OK)
     {
@@ -52,25 +49,13 @@ s3_ir_gpio_read_analog (s3_ir_adc_sample_t * p_sample)
                                         &p_sample->right);
     }
 
+    if (E_OK == error)
+    {
+        error = s3_ir_gpio_read_channel(S3_ADC_BARCODE,
+                                        &p_sample->barcode);
+    }
+
     return error;
-}
-
-bool
-s3_ir_gpio_read_barcode (void)
-{
-    uint32_t const mask = UINT32_C(1) << S3_PIN_BARCODE;
-
-    return (0U != (in_w(GPIO_IN) & mask));
-}
-
-static void
-s3_ir_gpio_input_init (uint32_t pin)
-{
-    uint32_t const mask = UINT32_C(1) << pin;
-
-    out_w(GPIO_OE_CLR, mask);
-    out_w(GPIO_CTRL(pin), GPIO_CTRL_FUNCSEL_SIO);
-    out_w(GPIO(pin), GPIO_IE | GPIO_SHEMITT | GPIO_PUE);
 }
 
 static ER

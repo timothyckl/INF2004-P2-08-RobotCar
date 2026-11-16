@@ -6,9 +6,17 @@
  * (Code 39 prints wide:narrow between 2:1 and 3:1). */
 #define S3_SCAN_CONTRAST_NUM    3U
 #define S3_SCAN_CONTRAST_DEN    2U
+#define S3_SCAN_PARTIAL_MIN_RUNS 24U
+#define S3_SCAN_CORE_RUNS        ((S3_BAR_ELEMENTS * 2U) + 2U)
 
 static bool s3_scan_decode(s3_capture_t const * p_capture,
                            s3_scan_cfg_t const * p_cfg, char * p_symbol);
+static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
+                                 s3_scan_cfg_t const * p_cfg,
+                                 char * p_symbol);
+static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
+                                   s3_scan_cfg_t const * p_cfg,
+                                   char * p_symbol);
 
 void s3_scan_init(s3_scan_t * p_scan)
 {
@@ -111,6 +119,29 @@ s3_scan_result_t s3_scan_poll(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
 static bool s3_scan_decode(s3_capture_t const * p_capture,
                            s3_scan_cfg_t const * p_cfg, char * p_symbol)
 {
+    bool decoded = false;
+
+    if (S3_BAR_FRAME_RUNS == p_capture->count)
+    {
+        decoded = s3_scan_decode_frame(p_capture, p_cfg, p_symbol);
+    }
+    else if ((p_capture->count >= S3_SCAN_PARTIAL_MIN_RUNS)
+             && (p_capture->count < S3_BAR_FRAME_RUNS))
+    {
+        decoded = s3_scan_decode_partial(p_capture, p_cfg, p_symbol);
+    }
+    else
+    {
+        /* Less than 80 percent cannot use the bounded partial fallback. */
+    }
+
+    return decoded;
+}
+
+static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
+                                 s3_scan_cfg_t const * p_cfg,
+                                 char * p_symbol)
+{
     uint32_t narrowest = UINT32_MAX;
     uint32_t widest = 0U;
     bool decoded = false;
@@ -157,6 +188,54 @@ static bool s3_scan_decode(s3_capture_t const * p_capture,
     }
 
     return decoded;
+}
+
+static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
+                                   s3_scan_cfg_t const * p_cfg,
+                                   char * p_symbol)
+{
+    s3_capture_t prefix = *p_capture;
+    s3_capture_t suffix = *p_capture;
+    uint8_t const suffix_start =
+        (uint8_t)(p_capture->count - S3_SCAN_CORE_RUNS);
+    char prefix_symbol = '\0';
+    char suffix_symbol = '\0';
+    bool prefix_ok;
+    bool suffix_ok;
+
+    /* Repair only the terminal sentinel. The retained 20-run core is still
+     * sentinel, gap, payload, gap, so no payload element is guessed. */
+    for (uint8_t idx = 0U; idx < S3_BAR_ELEMENTS; ++idx)
+    {
+        prefix.runs[S3_SCAN_CORE_RUNS + idx] = p_capture->runs[idx];
+        suffix.runs[idx] = p_capture->runs[
+            suffix_start + S3_BAR_ELEMENTS + 2U + idx];
+    }
+    prefix.count = S3_BAR_FRAME_RUNS;
+
+    /* A retained suffix is gap, payload, gap, sentinel. Prepend a copy of
+     * its intact sentinel to form a complete frame for normal validation. */
+    for (uint8_t idx = 0U; idx < S3_SCAN_CORE_RUNS; ++idx)
+    {
+        suffix.runs[S3_BAR_ELEMENTS + idx] =
+            p_capture->runs[suffix_start + idx];
+    }
+    suffix.count = S3_BAR_FRAME_RUNS;
+
+    prefix_ok = s3_scan_decode_frame(&prefix, p_cfg, &prefix_symbol);
+    suffix_ok = s3_scan_decode_frame(&suffix, p_cfg, &suffix_symbol);
+
+    if (prefix_ok && suffix_ok && (prefix_symbol != suffix_symbol))
+    {
+        return false;
+    }
+    if (prefix_ok || suffix_ok)
+    {
+        *p_symbol = prefix_ok ? prefix_symbol : suffix_symbol;
+        return true;
+    }
+
+    return false;
 }
 
 /** End of file. */
