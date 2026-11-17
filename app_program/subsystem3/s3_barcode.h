@@ -39,7 +39,7 @@ s3_scan_result_t s3_barcode_update(s3_barcode_t * p_barcode, uint16_t adc,
 void s3_barcode_abort(s3_barcode_t * p_barcode);
 
 /** True while a capture in progress looks like a barcode: at least three
- * stored runs, each at least 60 ms. A single crossing line, or short
+ * stored runs, the first three each at least 60 ms. A single crossing line, or short
  * blips from a sensor edge, never qualify. It ends when the capture
  * decodes, is rejected or is abandoned; the scan timeouts bound it.
  */

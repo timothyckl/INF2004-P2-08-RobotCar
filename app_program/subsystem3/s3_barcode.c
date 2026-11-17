@@ -119,8 +119,10 @@ s3_barcode_active (s3_barcode_t const * p_barcode)
                     && (p_barcode->scan.capture.count
                         >= S3_BARCODE_ACTIVE_RUNS);
 
-    for (uint8_t idx = 0U; b_active
-         && (idx < p_barcode->scan.capture.count); ++idx)
+    /* Only the first runs decide: a later short run (59 ms seen on
+     * 2026-11-17) must not switch softening off mid-barcode. */
+    for (uint8_t idx = 0U; b_active && (idx < S3_BARCODE_ACTIVE_RUNS);
+         ++idx)
     {
         b_active = (p_barcode->scan.capture.runs[idx]
                     >= S3_BARCODE_ACTIVE_MIN_US);

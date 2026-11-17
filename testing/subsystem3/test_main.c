@@ -793,6 +793,11 @@ static void test_sampled_barcode(void)
     sample_level(&run, true, 150000U);
     sample_level(&run, false, 10000U);
     check(s3_barcode_active(&run.barcode), "three plausible runs: active");
+    sample_level(&run, false, 140000U);
+    sample_level(&run, true, 50000U);
+    sample_level(&run, false, 10000U);
+    check(s3_barcode_active(&run.barcode),
+          "a later short run keeps it active");
     sample_level(&run, false, 1000000U);
     check(!s3_barcode_active(&run.barcode), "quiet white ends it");
     sample_level(&run, true, 150000U);
