@@ -2,6 +2,8 @@
 #include "s3_bar.h"
 #include <stddef.h>
 
+#define S3_BAR_SYMBOL_ERROR_MAX    1U
+
 void s3_bar_begin(s3_capture_t * p_capture, uint32_t now_us)
 {
     if (NULL != p_capture)
@@ -111,6 +113,20 @@ static bool s3_bar_pattern(uint32_t const * p_runs, uint32_t narrow_max,
     return valid;
 }
 
+static uint8_t s3_bar_pattern_distance(uint16_t first, uint16_t second)
+{
+    uint16_t differences = (uint16_t)(first ^ second);
+    uint8_t distance = 0U;
+
+    while (0U != differences)
+    {
+        distance = (uint8_t)(distance + (differences & 1U));
+        differences = (uint16_t)(differences >> 1U);
+    }
+
+    return distance;
+}
+
 bool s3_bar_decode(s3_capture_t const * p_capture,
                    uint32_t narrow_max_us, uint32_t wide_min_us,
                    uint32_t wide_max_us, uint16_t sentinel,
@@ -118,7 +134,8 @@ bool s3_bar_decode(s3_capture_t const * p_capture,
                    char * p_symbol)
 {
     uint16_t patterns[3] = {0U};
-    uint8_t matches = 0U;
+    uint8_t best_distance = S3_BAR_ELEMENTS + 1U;
+    uint8_t best_matches = 0U;
     char decoded = '\0';
     bool valid = (NULL != p_capture) && (NULL != p_symbols) &&
                  (NULL != p_symbol) && (narrow_max_us > 0U) &&
@@ -153,18 +170,32 @@ bool s3_bar_decode(s3_capture_t const * p_capture,
     {
         for (uint8_t idx = 0U; idx < symbol_count; ++idx)
         {
-            if (p_symbols[idx].pattern == patterns[1])
+            uint8_t const distance = s3_bar_pattern_distance(
+                p_symbols[idx].pattern, patterns[1]);
+
+            if (distance < best_distance)
             {
-                if (matches < 2U)
-                {
-                    ++matches;
-                }
+                best_distance = distance;
+                best_matches = 1U;
                 decoded = p_symbols[idx].symbol;
+            }
+            else if (distance == best_distance)
+            {
+                if (best_matches < 2U)
+                {
+                    ++best_matches;
+                }
+            }
+            else
+            {
+                /* This symbol is not the closest candidate. */
             }
         }
     }
 
-    valid = valid && (1U == matches) && ('\0' != decoded);
+    valid = valid && (1U == best_matches)
+            && (best_distance <= S3_BAR_SYMBOL_ERROR_MAX)
+            && ('\0' != decoded);
     if (valid)
     {
         *p_symbol = decoded;

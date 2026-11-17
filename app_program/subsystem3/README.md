@@ -166,16 +166,27 @@ powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
 ```
 
 These tests cover the adaptive analogue thresholds, filtering, the verified
-four-state steering table, and the existing synthetic
-barcode/navigation foundation. They do not verify
+four-state steering table, the synthetic barcode/navigation foundation,
+and Code 39 A--Z scan decoding in both travel directions. On macOS or Linux,
+`make -C testing/host s3` runs the same cases. They do not verify
 wiring, optical distance, surface contrast, ambient-light immunity, sampling
 performance, line following, motor behaviour, or the printed course barcode.
 
 ## Existing software foundation
 
 - `s3_bar` provides bounded edge capture, timeout handling, and a configurable
-  synthetic one-symbol decoder. Its framing, width windows, alphabet, reverse
-  travel, and speed tolerance are not validated against the course barcode.
+  one-symbol decoder. Sentinels and gaps must match exactly; the payload may
+  differ from one dictionary entry by one element only when that entry is
+  uniquely closest.
+- `s3_scan` frames captures from timestamped side-sensor edges, derives the
+  narrow/wide boundary from each capture, and decodes forwards then reversed.
+  A 24--28 run capture is accepted only when one intact end supplies a
+  sentinel, both gaps and the full payload.
+- `s3_code39` holds the standard Code 39 A--Z patterns and the `*` sentinel.
+- `s3_scan`, `s3_code39` and the `s3_bar` near-match rule were ported from
+  `feature/subsystem3-ir-line-barcode` (commit `e6a7027`) and are host-tested
+  only. No task on this branch samples ADC2 for them yet, and reads of the
+  printed course barcodes at speed are not validated.
 - `s3_nav` provides the current synthetic A/B/C/D command mapping, duplicate
   suppression, expiry, STOP cancellation, and controller-authority gating. It
   contains no motor actions or validated turn angles.

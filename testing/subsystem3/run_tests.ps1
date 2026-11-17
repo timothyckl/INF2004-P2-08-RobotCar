@@ -6,6 +6,8 @@ try {
     & gcc -std=c99 -Wall -Wextra -Werror -Wconversion -Wshadow -pedantic `
         -I $sourceRoot (Join-Path $sourceRoot 's3_ir.c') `
         (Join-Path $sourceRoot 's3_bar.c') `
+        (Join-Path $sourceRoot 's3_scan.c') `
+        (Join-Path $sourceRoot 's3_code39.c') `
         (Join-Path $sourceRoot 's3_nav.c') `
         (Join-Path $PSScriptRoot 'test_main.c') -o $testExe
     if ($LASTEXITCODE -ne 0) { throw 'Host compilation failed.' }

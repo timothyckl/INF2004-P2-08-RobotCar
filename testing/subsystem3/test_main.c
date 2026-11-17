@@ -2,9 +2,17 @@
 #include "test_main.h"
 #include "s3_ir.h"
 #include "s3_bar.h"
+#include "s3_code39.h"
 #include "s3_nav.h"
+#include "s3_scan.h"
 #include <stddef.h>
 #include <stdio.h>
+
+/* Scan limits used by these synthetic cases. They equal the provisional
+ * values on feature/subsystem3-ir-line-barcode; the firmware values are
+ * owned by the Line Sensor task and still require S3 hardware validation. */
+#define TEST_BAR_RUN_MAX_US     800000U
+#define TEST_BAR_QUIET_US       700000U
 
 static unsigned int g_checks = 0U;
 static unsigned int g_failures = 0U;
@@ -259,12 +267,257 @@ static void test_pipeline(void)
                                     30U, 100U), "pipeline navigation request");
 }
 
+static s3_scan_cfg_t scan_cfg(void)
+{
+    s3_scan_cfg_t cfg = {TEST_BAR_RUN_MAX_US, TEST_BAR_QUIET_US,
+                         S3_CODE39_SENTINEL, g_s3_code39_alphabet,
+                         S3_CODE39_SYMBOL_COUNT};
+
+    return cfg;
+}
+
+/* Feed one 9-element character starting on a bar: one edge per element,
+ * at its end, to the opposite level. */
+static void feed_char(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
+                      uint16_t pattern, uint32_t narrow, uint32_t wide,
+                      bool * p_black, uint32_t * p_now)
+{
+    for (uint8_t idx = 0U; idx < S3_BAR_ELEMENTS; ++idx)
+    {
+        bool const b_wide = (0U != (pattern & (1U << (8U - idx))));
+
+        *p_now += b_wide ? wide : narrow;
+        *p_black = !*p_black;
+        (void)s3_scan_edge(p_scan, p_cfg, *p_black, *p_now);
+    }
+}
+
+/* Poll until a capture finishes or 100 sample periods pass. */
+static s3_scan_result_t scan_settle(s3_scan_t * p_scan,
+                                    s3_scan_cfg_t const * p_cfg,
+                                    uint32_t step_us, uint32_t * p_now,
+                                    char * p_out)
+{
+    s3_scan_result_t result = S3_SCAN_NONE;
+
+    for (uint8_t tick = 0U; (tick < 100U) && (S3_SCAN_NONE == result);
+         ++tick)
+    {
+        *p_now += step_us;
+        result = s3_scan_poll(p_scan, p_cfg, *p_now, p_out);
+    }
+
+    return result;
+}
+
+/* Drive one framed code past the sensor; reverse feeds it backwards. */
+static s3_scan_result_t feed_code(s3_scan_t * p_scan, uint16_t symbol,
+                                  uint32_t narrow, uint32_t wide,
+                                  bool b_reverse, uint32_t * p_now,
+                                  char * p_out)
+{
+    s3_scan_cfg_t const cfg = scan_cfg();
+    uint16_t const order[3] =
+    {
+        S3_CODE39_SENTINEL, symbol, S3_CODE39_SENTINEL
+    };
+    bool black = true;
+
+    (void)s3_scan_edge(p_scan, &cfg, true, *p_now);     /* first bar */
+
+    for (uint8_t ch = 0U; ch < 3U; ++ch)
+    {
+        uint16_t pattern = order[ch];
+
+        if (b_reverse)
+        {
+            uint16_t flipped = 0U;
+
+            pattern = order[2U - ch];
+            for (uint8_t bit = 0U; bit < S3_BAR_ELEMENTS; ++bit)
+            {
+                flipped = (uint16_t)(flipped << 1U);
+                flipped = (uint16_t)(flipped | ((pattern >> bit) & 1U));
+            }
+            pattern = flipped;
+        }
+
+        feed_char(p_scan, &cfg, pattern, narrow, wide, &black, p_now);
+
+        if (ch < 2U)
+        {
+            *p_now += narrow;               /* inter-character gap */
+            black = true;
+            (void)s3_scan_edge(p_scan, &cfg, true, *p_now);
+        }
+    }
+
+    return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
+}
+
+/* Replay the 25-run smaller-Z capture recorded on the barcode branch. Its
+ * first 20 runs hold sentinel, gap, payload and gap; only the terminal
+ * sentinel is damaged. */
+static s3_scan_result_t feed_partial_z(s3_scan_t * p_scan, bool b_reverse,
+                                       uint8_t run_count, uint32_t * p_now,
+                                       char * p_out)
+{
+    uint32_t const runs[25] =
+    {
+        100000U, 360000U, 80000U, 120000U, 300000U,
+        120000U, 280000U, 140000U, 60000U, 160000U,
+        60000U, 320000U, 300000U, 100000U, 300000U,
+        120000U, 80000U, 120000U, 80000U, 120000U,
+        100000U, 200000U, 660000U, 20000U, 560000U
+    };
+    uint8_t const last = (uint8_t)((sizeof(runs) / sizeof(runs[0])) - 1U);
+    s3_scan_cfg_t const cfg = scan_cfg();
+    bool black = true;
+
+    (void)s3_scan_edge(p_scan, &cfg, true, *p_now);
+    for (uint8_t idx = 0U; idx < run_count; ++idx)
+    {
+        uint8_t const source = b_reverse ? (uint8_t)(last - idx) : idx;
+
+        *p_now += runs[source];
+        black = !black;
+        (void)s3_scan_edge(p_scan, &cfg, black, *p_now);
+    }
+
+    return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
+}
+
+static void test_scan_decode(void)
+{
+    s3_scan_t scan;
+    uint32_t now = 5000000U;
+    char symbol = '\0';
+
+    s3_scan_init(&scan);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        symbol = '\0';
+        check((S3_SCAN_DECODED == feed_code(
+                  &scan, g_s3_code39_alphabet[idx].pattern, 2000U, 5000U,
+                  false, &now, &symbol))
+              && (g_s3_code39_alphabet[idx].symbol == symbol),
+              "decode each Code 39 letter forwards");
+
+        symbol = '\0';
+        check((S3_SCAN_DECODED == feed_code(
+                  &scan, g_s3_code39_alphabet[idx].pattern, 2000U, 5000U,
+                  true, &now, &symbol))
+              && (g_s3_code39_alphabet[idx].symbol == symbol),
+              "decode each Code 39 letter in reverse");
+    }
+
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_partial_z(&scan, false, 25U,
+                                              &now, &symbol))
+          && ('Z' == symbol),
+          "decode 25-run Z with damaged trailing sentinel");
+
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_partial_z(&scan, true, 25U,
+                                              &now, &symbol))
+          && ('Z' == symbol),
+          "decode 25-run Z in reverse");
+
+    symbol = '\0';
+    check(S3_SCAN_ERROR == feed_partial_z(&scan, false, 23U,
+                                           &now, &symbol),
+          "reject a capture below the 24-run floor");
+
+    symbol = '\0';
+    check(S3_SCAN_ERROR == feed_code(&scan,
+                                     S3_CODE39_PATTERN_Z ^ 0x001U,
+                                     2000U, 5000U, false,
+                                     &now, &symbol),
+          "one-bit payload ambiguous between V and Z is rejected");
+
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_F, 900U,
+                                        2000U, false, &now, &symbol))
+          && ('F' == symbol),
+          "windows follow a faster pass");
+
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_A, 160000U,
+                                        500000U, false, &now, &symbol))
+          && ('A' == symbol), "slow-pass widths fit framing");
+
+    now = UINT32_MAX - 20000U;
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_Z, 2000U,
+                                        5000U, false, &now, &symbol))
+          && ('Z' == symbol),
+          "decode across the timer wrap");
+}
+
+static void test_scan_failures(void)
+{
+    s3_scan_cfg_t const cfg = scan_cfg();
+    s3_scan_t scan;
+    uint32_t now = 1000000U;
+    char symbol = 'x';
+    s3_scan_result_t result = S3_SCAN_NONE;
+
+    s3_scan_init(&scan);
+    check(S3_SCAN_ERROR == feed_code(&scan, S3_CODE39_PATTERN_A, 3000U, 3000U,
+                                     false, &now, &symbol),
+          "equal widths have no contrast");
+    check(S3_SCAN_ERROR == feed_code(&scan, 0x111U, 2000U, 5000U, false,
+                                     &now, &symbol),
+          "unknown payload rejected");
+    check(S3_SCAN_ERROR == feed_code(&scan, 0x188U, 2000U, 5000U, false,
+                                     &now, &symbol),
+          "two-error payload ambiguous between A and Z is rejected");
+    check('x' == symbol, "failed decode leaves the symbol");
+
+    (void)s3_scan_edge(&scan, &cfg, true, now);
+    now += 20000U;
+    (void)s3_scan_edge(&scan, &cfg, false, now);
+    result = scan_settle(&scan, &cfg, 10000U, &now, &symbol);
+    check(S3_SCAN_SINGLE_BAR == result, "one bar is a crossing line");
+
+    (void)s3_scan_edge(&scan, &cfg, true, now);
+    result = scan_settle(&scan, &cfg, 10000U, &now, &symbol);
+    check(S3_SCAN_ERROR == result, "black longer than run_max aborts");
+
+    (void)s3_scan_edge(&scan, &cfg, false, now);
+    result = S3_SCAN_NONE;
+    for (uint8_t idx = 0U; (idx < 70U) && (S3_SCAN_NONE == result); ++idx)
+    {
+        now += 1000U;
+        result = s3_scan_edge(&scan, &cfg, (0U == (idx % 2U)), now);
+    }
+    check(S3_SCAN_ERROR == result, "too many runs overflow");
+
+    s3_scan_init(&scan);
+    (void)s3_scan_edge(&scan, &cfg, true, now);
+    s3_scan_abort(&scan);
+    (void)s3_scan_edge(&scan, &cfg, false, now + 1000U);
+    symbol = '\0';
+    now += 1000000U;
+    check((S3_SCAN_DECODED == feed_code(&scan, S3_CODE39_PATTERN_A, 2000U,
+                                        5000U, false, &now, &symbol))
+          && ('A' == symbol),
+          "decodes again after an abort");
+
+    check(S3_SCAN_NONE == s3_scan_poll(NULL, &cfg, now, &symbol),
+          "null scan poll");
+    check(S3_SCAN_NONE == s3_scan_edge(&scan, NULL, true, now),
+          "null scan config");
+}
+
 int main(void)
 {
     test_ir();
     test_barcode();
     test_navigation();
     test_pipeline();
+    test_scan_decode();
+    test_scan_failures();
     printf("%u checks, %u failures\n", g_checks, g_failures);
     return (0U == g_failures) ? 0 : 1;
 }

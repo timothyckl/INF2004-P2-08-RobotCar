@@ -44,6 +44,8 @@ S1_SRC  := $(APP)/subsystem1/command_parser.c \
 
 S3_SRC  := $(APP)/subsystem3/s3_ir.c \
            $(APP)/subsystem3/s3_bar.c \
+           $(APP)/subsystem3/s3_scan.c \
+           $(APP)/subsystem3/s3_code39.c \
            $(APP)/subsystem3/s3_nav.c \
            $(ROOT)/testing/subsystem3/test_main.c
 
