@@ -3531,3 +3531,45 @@ mqtt: telemetry periods 20 sent 19 refused 0 err 0 nosnap 1 nolink 0
 [S5] range t 3355797886 ms echo 2102 us valid 1 357 mm invalid 0
 [S5] range t 3355797956 ms echo 2101 us valid 1 357 mm invalid 0
 [S5] range t 3355798026 ms echo 2103 us valid 1 357 mm invalid 0
+s3 line: adc=1455/182 filtered=1449/180 threshold=236/680 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1433/177 filtered=1436/179 threshold=236/681 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+wifi: joining "Pixel_1232" ...
+s4: stationary calibration complete (50 samples in 1410 ms)
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=1462/172 filtered=1448/176 threshold=236/681 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1425/184 filtered=1437/185 threshold=236/682 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1430/187 filtered=1435/184 threshold=236/681 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1461/185 filtered=1457/180 threshold=236/678 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1424/170 filtered=1439/175 threshold=236/680 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1427/181 filtered=1428/181 threshold=236/679 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=10.126.176.101
+wifi: power save off (0)
+s3 line: adc=1448/180 filtered=1445/180 threshold=236/678 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+mqtt: connected to 10.126.176.224
+mqtt: subscribed to p2-08/p2-08-car-01/command
+s3 line: adc=1460/177 filtered=1453/182 threshold=236/679 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1438/174 filtered=1437/174 threshold=236/677 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1427/171 filtered=1436/176 threshold=236/678 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1448/182 filtered=1448/182 threshold=236/679 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1425/182 filtered=1433/180 threshold=236/678 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1440/181 filtered=1443/180 threshold=236/679 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1445/186 filtered=1452/183 threshold=236/679 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1438/180 filtered=1438/177 threshold=236/678 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1455/188 filtered=1446/185 threshold=236/679 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+s3 line: adc=1457/178 filtered=1455/178 threshold=236/677 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1460/181 filtered=1456/181 threshold=236/678 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1458/187 filtered=1451/186 threshold=236/679 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1444/188 filtered=1445/186 threshold=236/679 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1426/185 filtered=1440/185 threshold=236/681 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1436/176 filtered=1442/176 threshold=236/680 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1456/181 filtered=1447/182 threshold=236/677 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1425/161 filtered=1430/169 threshold=236/679 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1427/186 filtered=1434/181 threshold=236/677 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1458/181 filtered=1446/178 threshold=236/676 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+mqtt: telemetry periods 10 sent 9 refused 0 err 0 nosnap 1 nolink 0
+s3 line: adc=1459/182 filtered=1444/182 threshold=236/678 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1460/173 filtered=1454/174 threshold=236/679 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1451/189 filtered=1449/186 threshold=236/677 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
