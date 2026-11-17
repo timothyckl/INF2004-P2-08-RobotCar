@@ -897,3 +897,10 @@
 1794891395.895413000 t=3355845036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
 1794891396.890991000 t=3355846016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
 1794891397.891374000 t=3355847036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891398.917825000 t=3355848036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891399.956769000 p2-08/p2-08-car-01/heartbeat b'hb 12'
+1794891399.985380000 t=3355849036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891400.895923000 t=3355850036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891401.887877000 t=3355851036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891402.938498000 t=3355852036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891403.937412000 t=3355853036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
