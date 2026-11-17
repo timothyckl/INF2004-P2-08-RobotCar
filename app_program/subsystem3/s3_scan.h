@@ -7,15 +7,17 @@
  * (midway between its narrowest and widest run), so a steady change in
  * speed does not need new constants. The frame is the s3_bar prototype:
  * sentinel, gap, one symbol, gap, sentinel (29 runs). A bounded fallback
- * accepts 24--28 captured runs only when one intact end still supplies a
+ * accepts 24--29 captured runs when one intact end still supplies a
  * sentinel, both gaps and the complete payload; only the damaged terminal
- * sentinel is reconstructed. Reads are tried forwards, then reversed. The
- * sentinel and alphabet are supplied by the caller and must match the
- * printed course barcodes.
+ * sentinel is reconstructed. A 31-run capture (one stray mark beside the
+ * code) is decoded from its first and last 29 runs; if both decode, they
+ * must agree. Reads are tried forwards, then reversed. The sentinel and
+ * alphabet are supplied by the caller and must match the printed course
+ * barcodes.
  *
- * Stack: a finished capture copies the capture buffer while decoding. The
- * 24--28 run path needs about 1 KB below s3_scan_poll (arm-none-eabi-gcc
- * -O2, 2026-11-17); size the owning task's stack for it.
+ * Stack: decoding copies the capture buffer. The 31-run path needs about
+ * 1.3 KB below s3_scan_poll (arm-none-eabi-gcc -O2, 2026-11-17); size the
+ * owning task's stack for it.
  */
 #ifndef S3_SCAN_H
 #define S3_SCAN_H

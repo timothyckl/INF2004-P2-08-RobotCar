@@ -388,6 +388,93 @@ static s3_scan_result_t feed_partial_z(s3_scan_t * p_scan, bool b_reverse,
     return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
 }
 
+/* Replay recorded run durations in ms, first run black. */
+static s3_scan_result_t feed_runs_ms(s3_scan_t * p_scan,
+                                     uint16_t const * p_runs_ms,
+                                     uint8_t count, uint32_t * p_now,
+                                     char * p_out)
+{
+    s3_scan_cfg_t const cfg = scan_cfg();
+    bool black = true;
+
+    (void)s3_scan_edge(p_scan, &cfg, true, *p_now);
+    for (uint8_t idx = 0U; idx < count; ++idx)
+    {
+        *p_now += (uint32_t)p_runs_ms[idx] * 1000U;
+        black = !black;
+        (void)s3_scan_edge(p_scan, &cfg, black, *p_now);
+    }
+
+    return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
+}
+
+/* Car captures of barcode F, 2026-11-17 (logs/2026-11-17_s3-bar-drive-4):
+ * a stretched first bar and a 39..40 ms stray mark after the code. */
+static void test_scan_recorded(void)
+{
+    static uint16_t const pass_517[31] =
+    {
+        540U, 99U, 440U, 200U, 599U, 220U, 159U, 500U,
+        160U, 200U, 179U, 200U, 179U, 560U, 460U, 159U,
+        459U, 180U, 119U, 200U, 160U, 240U, 439U, 179U,
+        439U, 200U, 120U, 479U, 139U, 179U, 40U
+    };
+    static uint16_t const pass_642[31] =
+    {
+        500U, 100U, 419U, 179U, 520U, 239U, 160U, 559U,
+        160U, 159U, 159U, 200U, 180U, 579U, 459U, 160U,
+        460U, 180U, 139U, 200U, 180U, 220U, 420U, 199U,
+        420U, 199U, 100U, 499U, 139U, 200U, 39U
+    };
+    uint16_t lead[31] = {0U};
+    uint16_t two_marks[33] = {0U};
+    s3_scan_t scan;
+    uint32_t now = 1000000U;
+    char symbol = '\0';
+
+    s3_scan_init(&scan);
+    check((S3_SCAN_DECODED == feed_runs_ms(&scan, pass_517, 31U, &now,
+                                           &symbol)) && ('F' == symbol),
+          "recorded pass 517 decodes F despite stray mark and first bar");
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_runs_ms(&scan, pass_642, 31U, &now,
+                                           &symbol)) && ('F' == symbol),
+          "recorded pass 642 decodes F despite stray mark and first bar");
+
+    /* The same code with its stray mark before it instead of after. */
+    lead[0] = 40U;
+    lead[1] = 200U;
+    for (uint8_t idx = 0U; idx < 29U; ++idx)
+    {
+        lead[2U + idx] = pass_642[idx];
+    }
+    lead[2] = 160U;                     /* repaired first bar */
+    symbol = '\0';
+    check((S3_SCAN_DECODED == feed_runs_ms(&scan, lead, 31U, &now,
+                                           &symbol)) && ('F' == symbol),
+          "stray mark before the code is ignored");
+
+    /* Two stray marks are more than the bounded allowance. */
+    for (uint8_t idx = 0U; idx < 31U; ++idx)
+    {
+        two_marks[idx] = pass_642[idx];
+    }
+    two_marks[31] = 200U;
+    two_marks[32] = 40U;
+    symbol = 'x';
+    check((S3_SCAN_ERROR == feed_runs_ms(&scan, two_marks, 33U, &now,
+                                         &symbol)) && ('x' == symbol),
+          "33 runs are rejected");
+
+    /* Both sentinels damaged leaves nothing intact to rebuild from. */
+    lead[2] = 500U;
+    lead[28] = 500U;                    /* inside the closing sentinel */
+    symbol = 'x';
+    check((S3_SCAN_ERROR == feed_runs_ms(&scan, &lead[2], 29U, &now,
+                                         &symbol)) && ('x' == symbol),
+          "29 runs with both sentinels damaged are rejected");
+}
+
 static void test_scan_decode(void)
 {
     s3_scan_t scan;
@@ -713,6 +800,7 @@ int main(void)
     test_pipeline();
     test_scan_decode();
     test_scan_failures();
+    test_scan_recorded();
     test_sampled_barcode();
     printf("%u checks, %u failures\n", g_checks, g_failures);
     return (0U == g_failures) ? 0 : 1;

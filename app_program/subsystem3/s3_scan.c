@@ -8,9 +8,18 @@
 #define S3_SCAN_CONTRAST_DEN    2U
 #define S3_SCAN_PARTIAL_MIN_RUNS 24U
 #define S3_SCAN_CORE_RUNS        ((S3_BAR_ELEMENTS * 2U) + 2U)
+/* One stray mark (a bar and a space) beside the code, as seen on the car
+ * on 2026-11-17 (testing/subsystem3/TEST_LOG.md). */
+#define S3_SCAN_STRAY_RUNS       2U
 
 static bool s3_scan_decode(s3_capture_t const * p_capture,
                            s3_scan_cfg_t const * p_cfg, char * p_symbol);
+static bool s3_scan_decode_29(s3_capture_t const * p_capture,
+                              s3_scan_cfg_t const * p_cfg, char * p_symbol);
+static bool s3_scan_decode_window(s3_capture_t const * p_capture,
+                                  uint8_t offset,
+                                  s3_scan_cfg_t const * p_cfg,
+                                  char * p_symbol);
 static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
                                  s3_scan_cfg_t const * p_cfg,
                                  char * p_symbol);
@@ -123,12 +132,30 @@ static bool s3_scan_decode(s3_capture_t const * p_capture,
 
     if (S3_BAR_FRAME_RUNS == p_capture->count)
     {
-        decoded = s3_scan_decode_frame(p_capture, p_cfg, p_symbol);
+        decoded = s3_scan_decode_29(p_capture, p_cfg, p_symbol);
     }
     else if ((p_capture->count >= S3_SCAN_PARTIAL_MIN_RUNS)
              && (p_capture->count < S3_BAR_FRAME_RUNS))
     {
         decoded = s3_scan_decode_partial(p_capture, p_cfg, p_symbol);
+    }
+    else if ((S3_BAR_FRAME_RUNS + S3_SCAN_STRAY_RUNS) == p_capture->count)
+    {
+        char first = '\0';
+        char last = '\0';
+        bool const first_ok = s3_scan_decode_window(p_capture, 0U, p_cfg,
+                                                    &first);
+        bool const last_ok = s3_scan_decode_window(p_capture,
+                                                   S3_SCAN_STRAY_RUNS,
+                                                   p_cfg, &last);
+
+        /* Two different letters from one pass is ambiguous. */
+        if ((first_ok || last_ok) && !(first_ok && last_ok
+                                       && (first != last)))
+        {
+            *p_symbol = first_ok ? first : last;
+            decoded = true;
+        }
     }
     else
     {
@@ -136,6 +163,33 @@ static bool s3_scan_decode(s3_capture_t const * p_capture,
     }
 
     return decoded;
+}
+
+/* A complete 29-run frame; if one sentinel is damaged, the partial
+ * fallback rebuilds it from the intact one. */
+static bool s3_scan_decode_29(s3_capture_t const * p_capture,
+                              s3_scan_cfg_t const * p_cfg, char * p_symbol)
+{
+    return s3_scan_decode_frame(p_capture, p_cfg, p_symbol)
+           || s3_scan_decode_partial(p_capture, p_cfg, p_symbol);
+}
+
+/* Decode the 29 runs starting at offset, which must be even so that the
+ * window starts on a bar. */
+static bool s3_scan_decode_window(s3_capture_t const * p_capture,
+                                  uint8_t offset,
+                                  s3_scan_cfg_t const * p_cfg,
+                                  char * p_symbol)
+{
+    s3_capture_t window = *p_capture;
+
+    for (uint8_t idx = 0U; idx < S3_BAR_FRAME_RUNS; ++idx)
+    {
+        window.runs[idx] = p_capture->runs[offset + idx];
+    }
+    window.count = S3_BAR_FRAME_RUNS;
+
+    return s3_scan_decode_29(&window, p_cfg, p_symbol);
 }
 
 static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
