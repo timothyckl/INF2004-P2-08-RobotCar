@@ -1,0 +1,736 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms
+s4: LSM303DLHC ready; calibrating
+s4diag: read error -57 status 0xff
+s4: terrain fault 2; sensor restart
+s4diag: before fault ok 0 busy 0 max gap 0 ms

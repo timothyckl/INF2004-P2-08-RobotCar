@@ -1,0 +1,502 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[S2] state 1 fault 0 motion 1 dist 0 mm flags 0x1
+s4: LSM303DLHC ready; calibrating
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: joining "SINGTEL-SYBAU" ...
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+s4: stationary calibration complete
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.2
+mqtt: connected to 172.20.10.3
+mqtt: subscribed to p2-08/p2-08-car-01/command
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 0"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 1"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 2"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 3"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 4"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 5"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 6"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 7"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 8"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 9"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 10"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 11"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 12"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 13"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+s4: candidate impact detected
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 14"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 15"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 16"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 17"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 18"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 19"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 20"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+s4: candidate impact detected
+s4: candidate impact detected
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 21"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 705 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 22"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 23"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+s4: candidate impact detected
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+s4: hump complete; run maximum 0 mm (provisional estimate)
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 24"
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us
+[S2] state 2 fault 0 motion 1 dist 0 mm flags 0x3
+[S2] last STOP: latch to motor off 685 us

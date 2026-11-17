@@ -1,0 +1,12 @@
+command_parser.c
+telemetry_encoder.c
+comms_timer.c
+service_bridge.c
+comms_test.c
+logic_main.c
+Running Code Analysis for C/C++...
+Generating Code...
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS

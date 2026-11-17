@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P2-08 Telemetry Flight Recorder</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="masthead">
+    <div class="identity">
+      <span class="eyebrow">INF2004 // ROBOT CAR</span>
+      <h1>FLIGHT<br>RECORDER</h1>
+    </div>
+    <div class="connection-block">
+      <div class="connection-state" id="connectionState">
+        <span class="status-lamp" id="statusLamp"></span>
+        <span id="statusText">INITIALISING</span>
+      </div>
+      <dl>
+        <div><dt>BROKER</dt><dd id="brokerValue">—</dd></div>
+        <div><dt>SESSION</dt><dd id="sessionValue">—</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <main>
+    <section class="instrument-grid" aria-label="Live robot telemetry">
+      <article class="instrument instrument-distance">
+        <p class="label">RUN DISTANCE</p>
+        <div class="reading"><span id="distanceValue">—</span><small>mm</small></div>
+        <p class="subreading" id="distanceValidity">WAITING FOR FRAME</p>
+      </article>
+      <article class="instrument">
+        <p class="label">SAFETY STATE</p>
+        <div class="state-reading" id="stopValue">UNKNOWN</div>
+        <p class="subreading">controller-confirmed wheel state</p>
+      </article>
+      <article class="instrument">
+        <p class="label">ROBOT CLOCK</p>
+        <div class="reading reading-compact"><span id="clockValue">—</span><small>ms</small></div>
+        <p class="subreading" id="deltaValue">DELTA —</p>
+      </article>
+      <article class="instrument">
+        <p class="label">FRAME HEALTH</p>
+        <div class="state-reading" id="healthValue">NO DATA</div>
+        <p class="subreading" id="ageValue">AGE —</p>
+      </article>
+    </section>
+
+    <section class="plot-panel panel">
+      <div class="panel-heading">
+        <div>
+          <p class="kicker">01 / DISTANCE TRACE</p>
+          <h2>Robot time, not broker arrival time</h2>
+        </div>
+        <div class="legend"><span></span> valid distance</div>
+      </div>
+      <canvas id="distanceChart" height="250" aria-label="Run distance telemetry chart"></canvas>
+    </section>
+
+    <section class="two-column">
+      <article class="panel diagnostics-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">02 / DELIVERY</p>
+            <h2>Transport diagnostics</h2>
+          </div>
+        </div>
+        <div class="diagnostic-grid">
+          <div><span id="frameCount">0</span><small>frames</small></div>
+          <div><span id="gapCount">0</span><small>robot-time gaps</small></div>
+          <div><span id="missingCount">0</span><small>estimated missing</small></div>
+          <div><span id="invalidCount">0</span><small>invalid frames</small></div>
+          <div><span id="heartbeatCount">0</span><small>heartbeats</small></div>
+          <div><span id="reconnectCount">0</span><small>broker connects</small></div>
+        </div>
+        <div class="raw-frame">
+          <span>LAST RAW FRAME</span>
+          <code id="rawFrame">—</code>
+        </div>
+      </article>
+
+      <article class="panel schema-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">03 / COVERAGE</p>
+            <h2>What this firmware actually publishes</h2>
+          </div>
+        </div>
+        <div class="schema-columns">
+          <div>
+            <h3><span class="schema-dot published"></span>AVAILABLE</h3>
+            <ul id="publishedFields"></ul>
+          </div>
+          <div>
+            <h3><span class="schema-dot absent"></span>NOT ON WIRE</h3>
+            <ul id="missingFields"></ul>
+          </div>
+        </div>
+        <p class="schema-note">Missing fields are shown explicitly so a blank dashboard is never mistaken for a valid zero.</p>
+      </article>
+    </section>
+
+    <section class="panel command-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="kicker">04 / COMMAND CHANNEL</p>
+          <h2>Controlled test input</h2>
+        </div>
+        <label class="arm-switch">
+          <input type="checkbox" id="armCommands">
+          <span>ARM START / RESET</span>
+        </label>
+      </div>
+      <div class="safety-strip">
+        <strong>PHYSICAL SAFETY CHECK REQUIRED</strong>
+        <span>The Vehicle Controller decides whether a command is accepted. Arming this panel does not make movement safe.</span>
+      </div>
+      <div class="command-row">
+        <button class="command command-stop" data-command="STOP">STOP</button>
+        <button class="command" data-command="RESET" disabled>RESET</button>
+        <button class="command command-start" data-command="START" disabled>START</button>
+        <output id="commandResult">No command sent.</output>
+      </div>
+    </section>
+
+    <section class="panel event-panel">
+      <div class="panel-heading event-heading">
+        <div>
+          <p class="kicker">05 / EVENT TAPE</p>
+          <h2>Timestamped evidence</h2>
+        </div>
+        <div class="event-tools">
+          <label>SHOW
+            <select id="eventFilter">
+              <option value="all">ALL EVENTS</option>
+              <option value="telemetry">TELEMETRY</option>
+              <option value="broker">BROKER</option>
+              <option value="heartbeat">HEARTBEAT</option>
+              <option value="command">COMMANDS</option>
+              <option value="errors">WARNINGS / ERRORS</option>
+            </select>
+          </label>
+          <button id="clearView" class="utility">CLEAR VIEW</button>
+          <button id="exportCsv" class="utility">EXPORT CSV</button>
+          <button id="exportJson" class="utility">EXPORT JSON</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>HOST TIME</th><th>TYPE</th><th>DETAIL</th></tr></thead>
+          <tbody id="eventRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>P2-08 // DIAGNOSTIC TOOL</span>
+    <span>JSONL RECORDING CONTINUES EVEN IF THIS VIEW IS CLEARED</span>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>
+

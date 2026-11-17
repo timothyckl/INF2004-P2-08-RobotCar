@@ -1,0 +1,152 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+s4: stationary calibration complete
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[TEST] S2-U67 PASS  strong curves and junction bounds
+[TEST] subsystem2 SUMMARY 65 passed, 0 failed
+[TEST] INT-03 PASS  line sensor publishes IF-06 every 10 ms
+[TEST] S3-U02 PASS  IF-06 snapshot fields consistent
+[TEST] subsystem3 SUMMARY 2 passed, 0 failed
+[TEST] S4-U03 PASS  stable samples complete calibration
+[TEST] S4-U04 PASS  unstable samples cause calibration fault
+[TEST] S4-U05 PASS  single tilt spike is not a hump
+[TEST] S4-U06 PASS  ascent descent level completes one hump
+[TEST] S4-U07 PASS  ascent returning to level remains incomplete
+[TEST] S4-U08 PASS  consecutive invalid samples cause sensor fault
+[TEST] S4-U09 PASS  valid sample clears invalid streak
+[TEST] S4-U10 PASS  timestamp wrap does not cause stale fault
+[TEST] S4-U11 PASS  excess sample gap causes stale fault
+[TEST] S4-U12 PASS  larger valid hump becomes run maximum
+[TEST] S4-U13 PASS  local recovery preserves run maximum
+[TEST] S4-U14 PASS  new run clears run maximum
+[TEST] S4-U15 PASS  missing distance leaves height invalid
+[TEST] S4-U16 PASS  impact is reported once per threshold crossing
+[TEST] S4-U17 PASS  null API inputs do not crash
+[TEST] S4-U18 PASS  driver decodes axis order and scale
+[TEST] S4-U19 PASS  driver decodes signed 12-bit limits
+[TEST] S4-U20 PASS  driver decode rejects null pointers
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 18 passed, 0 failed
+[TEST] S5-U03 PASS  known integral pulse conversions
+[TEST] S5-U04 PASS  minimum physical range boundary
+[TEST] S5-U05 PASS  maximum physical range boundary
+[TEST] S5-U06 PASS  invalid conversion preserves output
+[TEST] S5-U07 PASS  null conversion output is rejected
+[TEST] S5-U08 PASS  oversized pulses cannot overflow valid
+[TEST] S5-U09 PASS  permission without stop cannot scan
+[TEST] S5-U10 PASS  wrong request stop cannot scan
+[TEST] S5-U11 PASS  stop without permission cannot scan
+[TEST] S5-U12 PASS  matched permission and stop allow scan
+[TEST] S5-U13 PASS  cancel invalidates scan and acknowledges
+[TEST] S5-U14 PASS  new STOP aborts an authorised scan
+[TEST] S5-U57 PASS  unstarted request expires after two seconds
+[TEST] S5-U58 PASS  busy request cannot replace the active scan
+[TEST] S5-U15 PASS  coarse scan starts at minus sixty
+[TEST] S5-U16 PASS  no trigger before calibrated settling
+[TEST] S5-U17 PASS  withdrawn permission prevents scanning
+[TEST] S5-U51 PASS  rejected servo command prevents scanning
+[TEST] S5-U52 PASS  rejected trigger command aborts scanning
+[TEST] S5-U19 PASS  trigger spacing at least 65 ms
+[TEST] S5-U20 PASS  completion after 30 ms is no sample
+[TEST] S5-U21 PASS  malformed capture and stuck ECHO
+[TEST] S5-U22 PASS  old completion cannot complete new capture
+[TEST] S5-U23 PASS  angle distance is the median of three
+[TEST] S5-U24 PASS  third consecutive invalid attempt faults
+[TEST] S5-U26 PASS  coarse scan angles and three samples
+[TEST] S5-U56 PASS  plan waits for safe forward clearance
+[TEST] S5-U59 PASS  coarse edges receive five-degree samples
+[TEST] S5-U28 PASS  scan past 15 s faults
+[TEST] S5-U25 PASS  unsafe, invalid or stale data stops
+[TEST] S5-U55 PASS  third invalid forward attempt faults
+[TEST] S5-U36 PASS  shorter route wins, left on a tie
+[TEST] S5-U37 PASS  blocked or unobserved sides give no plan
+[TEST] S5-U53 PASS  plan segments, search bound and align
+[TEST] S5-U54 PASS  nothing ahead in range is no obstacle
+[TEST] S5-U60 PASS  fine edge chooses shorter side
+[TEST] S5-U61 PASS  missing or inconsistent edge has no route
+[TEST] S5-U62 PASS  observed span and plan clearance estimate
+[TEST] S5-U63 PASS  missing edge keeps shape unknown
+[TEST] subsystem5 SUMMARY 39 passed, 0 failed, 0 blocked
+[TEST] console dropped 0 bytes
+[TEST] === test run end ===
+s4: candidate impact detected

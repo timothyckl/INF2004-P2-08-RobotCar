@@ -1,0 +1,11 @@
+
+
+microT-Kernel Version 3.00
+
+S3/S2 bounded line-follow test mode
+[S2] GP20 button ready: press to START or STOP
+s3: using saved calibration: WHITE=LOW, BLACK=HIGH
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+s3 line: S2 did not reach READY; trial aborted

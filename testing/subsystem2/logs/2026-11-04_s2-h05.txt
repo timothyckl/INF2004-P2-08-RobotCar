@@ -1,0 +1,1734 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1021 y 941 z 584 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1473 y 442 z 517 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 84 y 97 z 67 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 247 y 140 z 227 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 127 y 121 z 125 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 587 y 152 z 427 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 295 y 179 z 207 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 454 y 233 z 226 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 107 y 66 z 107 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 342 y 166 z 192 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 129 y 126 z 127 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 283 y 181 z 198 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 121 y 113 z 147 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 577 y 250 z 541 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: stationary calibration complete
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 625 y 275 z 317 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 687 y 390 z 688 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 209 y 102 z 125 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 254 y 174 z 294 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 1 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1403 y 1084 z 780 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 398 y 347 z 211 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+[S2] previous reset: WATCHDOG
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 2 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 2 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1454 y 1295 z 715 mg (limit 80) after 200 samples
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)
+[HW] S2-H05 wait enc1 -1 (err 0)  enc2 1 (err 0)

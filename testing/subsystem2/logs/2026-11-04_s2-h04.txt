@@ -1,0 +1,396 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] S1-U04 PASS  command parser logic
+[TEST] S1-U05 PASS  telemetry codec logic
+[TEST] S1-U06 PASS  heartbeat and retry logic
+[TEST] S1-U07 PASS  MQTT service bridge logic
+[TEST] subsystem1 SUMMARY 4 passed, 0 failed
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+s4: LSM303DLHC ready; calibrating
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 PASS  Speed state reaches the wheel targets
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  unrenewed speed command brakes (lease)
+[TEST] S2-U58 PASS  renewed speed holds; STOP is not a lease stop
+[TEST] S2-U59 PASS  speed command bounds (motion_drive)
+[TEST] S2-U60 PASS  START needs a fresh valid line (mission)
+[TEST] S2-U61 PASS  follow steers; stale line holds then faults
+[TEST] S2-U62 PASS  barcode command runs once at its junction
+[TEST] S2-U63 PASS  hazard: scan, plan, bypass, search, align
+[TEST] S2-U64 PASS  scan clear resumes; no route or limit faults
+[TEST] S2-U65 PASS  reacquisition bounded; heading checked
+[TEST] S2-U66 PASS  STOP preempts every mission mode
+[HW] S2-H04 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 542 y 467 z 411 mg (limit 80) after 200 samples
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only: m1 100% m2 0% for 3 s
+[HW] S2-H04a motor 1 only enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 311 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 819 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 1357 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 1902 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 2441 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 2990 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 3537 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 4077 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 4623 (err 0)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 5163 (err 0)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1174 y 1285 z 789 mg (limit 80) after 200 samples
+[HW] S2-H04a motor 1 only enc1 5706 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 6254 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 6806 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 7355 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 7903 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 8452 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 9006 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 9556 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 10104 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 10652 (err 1)  enc2 0 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H04a motor 1 only enc1 11193 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 11736 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 12278 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 12817 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 13363 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 13902 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 14444 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 14982 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only enc1 15524 (err 1)  enc2 0 (err 0)
+[HW] S2-H04a motor 1 only done: counts/s enc1 5355 enc2 0, new errors 1 0
+[HW] S2-H04 braked enc1 16070 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16283 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 0 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1222 y 1087 z 1008 mg (limit 80) after 200 samples
+[HW] S2-H04b motor 2 only: m1 0% m2 100% for 3 s
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 0 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 315 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 828 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 1365 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 1901 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 2446 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 2990 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 3535 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 4077 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 4613 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 5150 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 5680 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 6211 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 6745 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 7279 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 7814 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 8346 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 8877 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 9409 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 9943 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 10474 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 11007 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 11540 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 12073 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 12608 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 13143 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 13678 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 14207 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 14743 (err 0)
+[HW] S2-H04b motor 2 only enc1 16288 (err 1)  enc2 15278 (err 0)
+[HW] S2-H04b motor 2 only done: counts/s enc1 0 enc2 5271, new errors 0 0
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 15817 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16035 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1047 y 1051 z 700 mg (limit 80) after 200 samples
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04 braked enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04c both: m1 100% m2 100% for 5 s
+[HW] S2-H04c both enc1 16288 (err 1)  enc2 16043 (err 0)
+[HW] S2-H04c both enc1 16582 (err 1)  enc2 16335 (err 0)
+[HW] S2-H04c both enc1 17081 (err 1)  enc2 16829 (err 0)
+[HW] S2-H04c both enc1 17611 (err 1)  enc2 17345 (err 0)
+[HW] S2-H04c both enc1 18142 (err 1)  enc2 17868 (err 0)
+[HW] S2-H04c both enc1 18684 (err 1)  enc2 18392 (err 0)
+[HW] S2-H04c both enc1 19212 (err 1)  enc2 18922 (err 0)
+[HW] S2-H04c both enc1 19745 (err 1)  enc2 19452 (err 0)
+[HW] S2-H04c both enc1 20281 (err 1)  enc2 19973 (err 0)
+[HW] S2-H04c both enc1 20816 (err 1)  enc2 20501 (err 0)
+[HW] S2-H04c both enc1 21345 (err 1)  enc2 21034 (err 0)
+[HW] S2-H04c both enc1 21882 (err 1)  enc2 21561 (err 0)
+[HW] S2-H04c both enc1 22418 (err 1)  enc2 22087 (err 0)
+[HW] S2-H04c both enc1 22953 (err 1)  enc2 22622 (err 0)
+[HW] S2-H04c both enc1 23486 (err 1)  enc2 23153 (err 0)
+[HW] S2-H04c both enc1 24015 (err 1)  enc2 23683 (err 0)
+[HW] S2-H04c both enc1 24551 (err 1)  enc2 24208 (err 0)
+[HW] S2-H04c both enc1 25087 (err 1)  enc2 24732 (err 0)
+[HW] S2-H04c both enc1 25619 (err 1)  enc2 25267 (err 0)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1557 y 1615 z 1559 mg (limit 80) after 200 samples
+[HW] S2-H04c both enc1 26164 (err 1)  enc2 25793 (err 0)
+[HW] S2-H04c both enc1 26709 (err 1)  enc2 26329 (err 0)
+[HW] S2-H04c both enc1 27256 (err 1)  enc2 26866 (err 0)
+[HW] S2-H04c both enc1 27800 (err 1)  enc2 27403 (err 0)
+[HW] S2-H04c both enc1 28344 (err 1)  enc2 27943 (err 0)
+[HW] S2-H04c both enc1 28888 (err 1)  enc2 28480 (err 0)
+[HW] S2-H04c both enc1 29433 (err 1)  enc2 29020 (err 0)
+[HW] S2-H04c both enc1 29976 (err 1)  enc2 29558 (err 0)
+[HW] S2-H04c both enc1 30521 (err 1)  enc2 30093 (err 0)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H04c both enc1 31055 (err 1)  enc2 30626 (err 1)
+[HW] S2-H04c both enc1 31593 (err 1)  enc2 31148 (err 1)
+[HW] S2-H04c both enc1 32126 (err 1)  enc2 31680 (err 1)
+[HW] S2-H04c both enc1 32659 (err 1)  enc2 32210 (err 1)
+[HW] S2-H04c both enc1 33197 (err 1)  enc2 32736 (err 1)
+[HW] S2-H04c both enc1 33734 (err 1)  enc2 33266 (err 1)
+[HW] S2-H04c both enc1 34269 (err 1)  enc2 33791 (err 1)
+[HW] S2-H04c both enc1 34805 (err 1)  enc2 34313 (err 1)
+[HW] S2-H04c both enc1 35338 (err 1)  enc2 34837 (err 1)
+[HW] S2-H04c both enc1 35873 (err 1)  enc2 35374 (err 1)
+[HW] S2-H04c both enc1 36407 (err 1)  enc2 35907 (err 1)
+[HW] S2-H04c both enc1 36950 (err 1)  enc2 36433 (err 1)
+[HW] S2-H04c both enc1 37482 (err 1)  enc2 36959 (err 1)
+[HW] S2-H04c both enc1 38020 (err 1)  enc2 37488 (err 1)
+[HW] S2-H04c both enc1 38558 (err 1)  enc2 38018 (err 1)
+[HW] S2-H04c both enc1 39096 (err 1)  enc2 38546 (err 1)
+[HW] S2-H04c both enc1 39634 (err 1)  enc2 39076 (err 1)
+[HW] S2-H04c both enc1 40167 (err 1)  enc2 39602 (err 1)
+[HW] S2-H04c both enc1 40708 (err 1)  enc2 40132 (err 1)
+[HW] S2-H04c both enc1 41240 (err 1)  enc2 40662 (err 1)
+[HW] S2-H04c both enc1 41776 (err 1)  enc2 41200 (err 1)
+[HW] S2-H04c both enc1 42315 (err 1)  enc2 41730 (err 1)
+[HW] S2-H04c both done: counts/s enc1 5313 enc2 5243, new errors 0 1
+[HW] S2-H04 braked enc1 42855 (err 1)  enc2 42261 (err 1)
+s4: terrain fault 1; sensor restart
+s4: calibration span x 1727 y 1603 z 1199 mg (limit 80) after 200 samples
+[HW] S2-H04 braked enc1 43068 (err 1)  enc2 42477 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+s4: LSM303DLHC ready; calibrating
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 braked enc1 43074 (err 1)  enc2 42484 (err 1)
+[HW] S2-H04 finished, all motors braked
+[TEST] subsystem2 SUMMARY 64 passed, 0 failed
+[TEST] INT-03 PASS  line sensor publishes IF-06 every 10 ms
+[TEST] S3-U02 PASS  IF-06 snapshot fields consistent
+[TEST] subsystem3 SUMMARY 2 passed, 0 failed
+[TEST] S4-U03 PASS  stable samples complete calibration
+[TEST] S4-U04 PASS  unstable samples cause calibration fault
+[TEST] S4-U05 PASS  single tilt spike is not a hump
+[TEST] S4-U06 PASS  ascent descent level completes one hump
+[TEST] S4-U07 PASS  ascent returning to level remains incomplete
+[TEST] S4-U08 PASS  consecutive invalid samples cause sensor fault
+[TEST] S4-U09 PASS  valid sample clears invalid streak
+[TEST] S4-U10 PASS  timestamp wrap does not cause stale fault
+[TEST] S4-U11 PASS  excess sample gap causes stale fault
+[TEST] S4-U12 PASS  larger valid hump becomes run maximum
+[TEST] S4-U13 PASS  local recovery preserves run maximum
+[TEST] S4-U14 PASS  new run clears run maximum
+[TEST] S4-U15 PASS  missing distance leaves height invalid
+[TEST] S4-U16 PASS  impact is reported once per threshold crossing
+[TEST] S4-U17 PASS  null API inputs do not crash
+[TEST] S4-U18 PASS  driver decodes axis order and scale
+[TEST] S4-U19 PASS  driver decodes signed 12-bit limits
+[TEST] S4-U20 PASS  driver decode rejects null pointers
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 18 passed, 0 failed
+[TEST] S5-U03 PASS  known integral pulse conversions
+[TEST] S5-U04 PASS  minimum physical range boundary
+[TEST] S5-U05 PASS  maximum physical range boundary
+[TEST] S5-U06 PASS  invalid conversion preserves output
+[TEST] S5-U07 PASS  null conversion output is rejected
+[TEST] S5-U08 PASS  oversized pulses cannot overflow valid
+[TEST] S5-U09 PASS  permission without stop cannot scan
+[TEST] S5-U10 PASS  wrong request stop cannot scan
+[TEST] S5-U11 PASS  stop without permission cannot scan
+[TEST] S5-U12 PASS  matched permission and stop allow scan
+[TEST] S5-U13 PASS  cancel invalidates scan and acknowledges
+[TEST] S5-U14 PASS  new STOP aborts an authorised scan
+[TEST] S5-U15 PASS  coarse scan starts at minus sixty
+[TEST] S5-U16 PASS  no trigger before calibrated settling
+[TEST] S5-U17 PASS  withdrawn permission prevents scanning
+[TEST] S5-U51 PASS  rejected servo command prevents scanning
+[TEST] S5-U52 PASS  rejected trigger command aborts scanning
+[TEST] S5-U19 PASS  trigger spacing at least 65 ms
+[TEST] S5-U20 PASS  completion after 30 ms is no sample
+[TEST] S5-U21 PASS  malformed capture and stuck ECHO
+[TEST] S5-U22 PASS  old completion cannot complete new capture
+[TEST] S5-U23 PASS  angle distance is the median of three
+[TEST] S5-U24 PASS  third consecutive invalid attempt faults
+[TEST] S5-U26 PASS  coarse scan angles and three samples
+[TEST] S5-U28 PASS  scan past 15 s faults
+[TEST] S5-U25 PASS  unsafe, invalid or stale data stops
+[TEST] S5-U36 PASS  shorter route wins, left on a tie
+[TEST] S5-U37 PASS  blocked or unobserved sides give no plan
+[TEST] S5-U53 PASS  plan segments, search bound and align
+[TEST] S5-U54 PASS  nothing ahead in range is no obstacle
+[TEST] subsystem5 SUMMARY 30 passed, 0 failed, 0 blocked
+[TEST] console dropped 0 bytes
+[TEST] === test run end ===
+s4: terrain fault 1; sensor restart
+s4: calibration span x 759 y 251 z 471 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: calibration span x 117 y 128 z 69 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: calibration span x 113 y 90 z 122 mg (limit 80) after 200 samples
+s4: LSM303DLHC ready; calibrating
+s4: stationary calibration complete

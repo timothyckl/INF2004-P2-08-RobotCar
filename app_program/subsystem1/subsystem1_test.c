@@ -8,36 +8,22 @@
  */
 
 #include "subsystem1.h"
+#include "comms_test.h"
 #include "../test_report.h"
 
 #if APP_TEST
 
 EXPORT void subsystem1_test(void)
 {
-	T_RCYC	rcyc;
-	T_RTSK	rtsk;
-	ER	er;
-
 	TEST_INIT();
 
-	/* S1-U01: the cyclic handler exists and is running */
-	er = tk_ref_cyc(cyc_led, &rcyc);
-	TEST_CHECK("S1-U01", er == E_OK && (rcyc.cycstat & TCYC_STA),
-		   "cyclic handler is running");
+	/* S1-U01..S1-U03 tested the starter LED / IF-05 compatibility task,
+	   retired with it (testing/subsystem1/TEST_LOG.md). */
 
-	/* S1-U02: between ticks the LED task is asleep, not busy-looping.
-	   Sample it 10 times over ~1 s; it should almost always be waiting. */
-	{
-		INT	i, waiting = 0;
-		for (i = 0; i < 10; i++) {
-			tk_dly_tsk(97);	/* not a multiple of the tick */
-			if (tk_ref_tsk(tid_led, &rtsk) == E_OK &&
-			    (rtsk.tskstat & TTS_WAI)) {
-				waiting++;
-			}
-		}
-		TEST_CHECK("S1-U02", waiting >= 9, "LED task sleeps between ticks");
-	}
+    TEST_CHECK("S1-U04", comms_test_commands(), "command parser logic");
+    TEST_CHECK("S1-U05", comms_test_telemetry(), "telemetry codec logic");
+    TEST_CHECK("S1-U06", comms_test_timers(), "heartbeat and retry logic");
+    TEST_CHECK("S1-U07", comms_test_bridge(), "MQTT service bridge logic");
 
 	TEST_SUMMARY("subsystem1");
 }
