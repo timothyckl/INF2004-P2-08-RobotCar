@@ -19,6 +19,7 @@
 #include "task_controller.h"
 
 #include "bypass_control.h"
+#include "nav_control.h"
 #include "controller_logic.h"
 #include "line_control.h"
 #include "scan_control.h"
@@ -109,6 +110,15 @@
    about 40 to 70 ms of the ~140 ms each sensor spent on the tape. */
 #define CTRL_BYPASS_SPIN_MM_S        30
 #define CTRL_BYPASS_WAIT_MS        3000u
+/* S2 decision 26: barcode command at the next junction. UNMEASURED: a held
+   command expires after 20 s (about 800 mm at 40 mm/s); each stop, step
+   and spin is bounded by 12 s (a 180 + 45 degree spin at about 29 deg/s
+   takes under 8 s). Black is accepted from 30 degrees short of the turn,
+   and 45 degrees past it fails, as for the bypass align (decision 21). */
+#define CTRL_NAV_PENDING_MS       20000u
+#define CTRL_NAV_PHASE_MS         12000u
+#define CTRL_NAV_ACCEPT_MDEG      30000
+#define CTRL_NAV_OVER_MDEG        45000
 
 /* scan_control and bypass_control mirror subsystem 5's codes (IF-13). */
 typedef char ctrl_scan_codes_match_t[
@@ -190,8 +200,10 @@ typedef struct
     bool                  b_have_report;
     bool                  b_running;
     bool                  b_action_sent;
+    int32_t               junction_travel_mm;   /* both black seen here */
     bool                  b_barcode;            /* latest report flag */
     bool                  b_barcode_expired;    /* soft limit reached */
+    bool                  b_junction;           /* confirmed, for nav */
 } ctrl_line_runtime_t;
 
 static ctrl_line_runtime_t g_line_runtime;
@@ -202,8 +214,15 @@ static bypass_control_cfg_t const g_bypass_cfg =
 };
 static uint16_t            g_bypass_look_id;   /* last LOOK request ID */
 
+static nav_control_cfg_t const g_nav_cfg =
+{
+    CTRL_BYPASS_SENSOR_AHEAD_MM, CTRL_NAV_PENDING_MS, CTRL_NAV_PHASE_MS,
+    CTRL_NAV_ACCEPT_MDEG, CTRL_NAV_OVER_MDEG
+};
+
 static scan_control_t      g_scan;
 static bypass_control_t    g_bypass;
+static nav_control_t       g_nav;
 static scan_task_status_t  g_scan_status;  /* off the stack */
 #endif
 
@@ -250,6 +269,10 @@ static void     bypass_input (ctrl_input_t const * p_input,
                               bypass_control_input_t * p_in);
 static void     bypass_send (bypass_control_output_t const * p_out);
 static void     bypass_report (bypass_control_output_t const * p_out);
+static void     nav_receive (bool b_running, uint32_t now);
+static void     nav_update (ctrl_input_t const * p_input);
+static void     nav_send (nav_control_output_t const * p_out);
+static void     nav_report (nav_control_output_t const * p_out);
 static void     line_log_mode (line_control_mode_t old_mode,
                                line_control_mode_t new_mode,
                                line_control_action_t action);
@@ -257,7 +280,7 @@ static void     line_log_mode (line_control_mode_t old_mode,
 
 /**
  * @brief Create controller_flags, safety_flags (STOP set), remote_q, line_q,
- *        scan_q and state_mutex. Each global ID is set only once its object
+ *        scan_q, nav_q and state_mutex. Each global ID is set only once its object
  *        exists, because the WiFi task may already be calling the adapters.
  */
 ER
@@ -334,6 +357,18 @@ s2_controller_create (void)
 
     scan_q = sq;
 
+    cmbf.bufsz  = S2_NAV_Q_BYTES;
+    cmbf.maxmsz = (INT)sizeof(s2_nav_request_t);
+
+    ID const nq = tk_cre_mbf(&cmbf);
+
+    if (nq < E_OK)
+    {
+        return (nq);
+    }
+
+    nav_q = nq;
+
     return (s2_robot_state_create());
 }
 
@@ -369,6 +404,7 @@ controller_task (INT stacd, void * exinf)
 #if S3_LINE_FOLLOW_TEST
     (void)scan_control_init(&g_scan, CTRL_SCAN_LIMIT_MS);
     (void)bypass_control_init(&g_bypass, &g_bypass_cfg);
+    (void)nav_control_init(&g_nav, &g_nav_cfg);
 #endif
 
 #if CTRL_BUTTON
@@ -854,6 +890,12 @@ scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
         scan_control_begin(&g_scan, p_state->captured_ms, &out);
         tm_printf((UB *)"[S2] S5 HAZARD: stopping to scan, request %u\n",
                   (UINT)g_scan.request_id);
+        if (nav_control_manoeuvring(&g_nav))
+        {
+            tm_printf((UB *)"[S2] nav: junction manoeuvre abandoned for "
+                              "the scan\n");
+            nav_control_abort(&g_nav);
+        }
         scan_send(&out, p_state->captured_ms);
     }
 
@@ -871,11 +913,14 @@ scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
     bool const b_running = (S2_SYS_RUNNING == p_state->state)
                            && (0u == (p_state->flags & S2_RS_STOP_LATCHED));
 
+    nav_receive(b_running, p_input->now_ms);
+
     if (!b_running)
     {
         scan_control_abort(&g_scan, &out);
         scan_send(&out, p_input->now_ms);
         bypass_control_abort(&g_bypass);
+        nav_control_abort(&g_nav);
         p_state->mode = S2_MODE_NONE;
         return;
     }
@@ -902,7 +947,8 @@ scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
     }
     else
     {
-        /* Following. */
+        /* Following, or a barcode manoeuvre at a junction. */
+        nav_update(p_input);
     }
 
     if (scan_control_active(&g_scan))
@@ -912,6 +958,10 @@ scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
     else if (bypass_control_active(&g_bypass))
     {
         p_state->mode = bypass_control_mode(&g_bypass);
+    }
+    else if (nav_control_manoeuvring(&g_nav))
+    {
+        p_state->mode = S2_MODE_NAVIGATE;
     }
     else
     {
@@ -1229,6 +1279,164 @@ bypass_report (bypass_control_output_t const * p_out)
     }
 }
 
+/* S2 decision 26: take S3's barcode commands. While running, each one is
+   held for the next junction (a newer one replaces it); otherwise it is
+   dropped, so a code read while the car is handled is never acted on. */
+static void
+nav_receive (bool b_running, uint32_t now)
+{
+    static char const * const names[] =
+    {
+        "NONE", "LEFT", "RIGHT", "STRAIGHT", "UTURN"
+    };
+    s2_nav_request_t request;
+
+    while (tk_rcv_mbf(nav_q, &request, TMO_POL)
+           == (INT)sizeof(s2_nav_request_t))
+    {
+        bool const b_valid = (request.command >= S2_NAV_LEFT)
+                             && (request.command <= S2_NAV_UTURN)
+                             && (0u == request.reserved[0])
+                             && (0u == request.reserved[1])
+                             && (0u == request.reserved[2]);
+
+        if (!b_valid)
+        {
+            tm_printf((UB *)"[S2] nav: invalid request ignored\n");
+        }
+        else if (b_running && nav_control_stage(&g_nav, request.command, now))
+        {
+            tm_printf((UB *)"[S2] nav: %s held for the next junction "
+                              "(scan %u)\n", names[request.command],
+                      (UINT)request.scan_id);
+        }
+        else
+        {
+            tm_printf((UB *)"[S2] nav: %s dropped (%s)\n",
+                      names[request.command],
+                      b_running ? "manoeuvre in progress" : "not running");
+        }
+    }
+}
+
+/* Advance the junction policy and carry out what it asks for. */
+static void
+nav_update (ctrl_input_t const * p_input)
+{
+    uint8_t const        position = g_line_runtime.position;
+    nav_control_input_t  in;
+    nav_control_output_t out;
+
+    in.now_ms = p_input->now_ms;
+    in.travel_mm = p_input->status.travel_mm;
+    in.heading_mdeg = p_input->status.heading_mdeg;
+    in.junction_travel_mm = g_line_runtime.junction_travel_mm;
+    in.last_id = p_input->status.last_id;
+    in.last_result = p_input->status.last_result;
+    in.b_status_ok = p_input->b_status_ok;
+    in.b_still = motion_stop_confirmed();
+    in.b_on_line = line_is_fresh(p_input->now_ms)
+                   && ((S2_LINE_LEFT == position)
+                       || (S2_LINE_RIGHT == position)
+                       || (S2_LINE_BOTH_BLACK == position));
+    in.b_junction = g_line_runtime.b_junction;
+    g_line_runtime.b_junction = false;
+
+    nav_control_step(&g_nav, &in, &out);
+    nav_send(&out);
+    nav_report(&out);
+}
+
+/* Send the requested motion command; a failure ends the run. */
+static void
+nav_send (nav_control_output_t const * p_out)
+{
+    ER er = E_OK;
+
+    switch (p_out->action)
+    {
+        case NAV_CONTROL_ACT_STOP:
+            /* The motion STOP command, not the safety latch (decision
+               20): it brakes and returns to Idle. */
+            er = motion_stop();
+        break;
+
+        case NAV_CONTROL_ACT_MOVE:
+            er = motion_move_forward((uint16_t)p_out->value);
+            if (E_OK == er)
+            {
+                nav_control_sent(&g_nav, motion_last_command_id());
+            }
+            tm_printf((UB *)"[S2] nav: step %d mm onto the junction\n",
+                      (INT)p_out->value);
+        break;
+
+        case NAV_CONTROL_ACT_SPIN:
+            er = motion_set_speeds(
+                (int16_t)(-p_out->value * CTRL_BYPASS_SPIN_MM_S),
+                (int16_t)(p_out->value * CTRL_BYPASS_SPIN_MM_S));
+            tm_printf((UB *)"[S2] nav: spinning %s until a sensor sees the "
+                              "line\n", (p_out->value > 0) ? "left" : "right");
+        break;
+
+        default:
+            /* Nothing to send. */
+        break;
+    }
+
+    if (NAV_CONTROL_ACT_NONE != p_out->action)
+    {
+        motion_status_t st;
+
+        if (E_OK == motion_get_status(&st))
+        {
+            tm_printf((UB *)"[S2]   at %d mm, %d mdeg\n",
+                      (INT)st.travel_mm, (INT)st.heading_mdeg);
+        }
+    }
+
+    if (E_OK != er)
+    {
+        tm_printf((UB *)"[S2] nav: motion command failed (%d); STOP\n",
+                  (INT)er);
+        nav_control_abort(&g_nav);
+        (void)s2_local_stop();
+    }
+}
+
+static void
+nav_report (nav_control_output_t const * p_out)
+{
+    switch (p_out->outcome)
+    {
+        case NAV_CONTROL_OUT_STARTED:
+            tm_printf((UB *)"[S2] nav: junction; stopping to turn\n");
+        break;
+
+        case NAV_CONTROL_OUT_STRAIGHT:
+            tm_printf((UB *)"[S2] nav: junction; STRAIGHT, crossing\n");
+        break;
+
+        case NAV_CONTROL_OUT_DONE:
+            tm_printf((UB *)"[S2] nav: on the new line; following\n");
+        break;
+
+        case NAV_CONTROL_OUT_EXPIRED:
+            tm_printf((UB *)"[S2] nav: no junction within %u ms; command "
+                              "dropped\n", (UINT)CTRL_NAV_PENDING_MS);
+        break;
+
+        case NAV_CONTROL_OUT_FAILED:
+            tm_printf((UB *)"[S2] nav: junction manoeuvre failed; STOP\n");
+            (void)s2_local_stop();
+        break;
+
+        default:
+            /* Nothing finished. */
+        break;
+    }
+}
+
 /* A line report counts while no older than S2_LINE_MAX_AGE_MS. */
 static bool
 line_is_fresh (uint32_t now)
@@ -1257,7 +1465,9 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
     /* The bypass search reads the latest report too (bypass_input). */
     bool const b_line_wanted = b_system_running
                                || ((S2_SYS_RUNNING == p_state->state)
-                                   && (S2_MODE_REACQUIRE == p_state->mode));
+                                   && ((S2_MODE_REACQUIRE == p_state->mode)
+                                       || (S2_MODE_NAVIGATE
+                                           == p_state->mode)));
     bool b_report_valid = true;
     line_control_action_t action;
     line_control_mode_t old_mode;
@@ -1354,6 +1564,20 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
                                g_line_runtime.position,
                                p_input->now_ms);
     new_mode = line_control_mode(&g_line_runtime.control);
+
+    /* S2 decision 26: nav_update acts on a confirmed junction next period;
+       the step there counts from where both sensors first went black. */
+    if ((LINE_CONTROL_MODE_FOLLOW == old_mode)
+        && (LINE_CONTROL_MODE_JUNCTION_CONFIRM == new_mode))
+    {
+        g_line_runtime.junction_travel_mm = p_input->status.travel_mm;
+    }
+    if ((LINE_CONTROL_MODE_JUNCTION_CONFIRM == old_mode)
+        && (LINE_CONTROL_MODE_CROSSING == new_mode))
+    {
+        g_line_runtime.b_junction = true;
+    }
+
     correction_mm_s = line_correction_speed(g_line_runtime.strength);
     if (line_barcode_soft(p_input->now_ms)
         && (line_control_soften(action) != action))
@@ -1415,6 +1639,7 @@ line_reset (uint32_t now)
     g_line_runtime.barcode_since_ms = now;
     g_line_runtime.b_barcode = false;
     g_line_runtime.b_barcode_expired = false;
+    g_line_runtime.b_junction = false;
 }
 
 /* Track the S3 barcode-capture flag from each valid report. */

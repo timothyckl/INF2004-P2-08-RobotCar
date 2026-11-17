@@ -25,6 +25,7 @@ S2_SRC  := $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/line_control.c \
            $(APP)/subsystem2/scan_control.c \
            $(APP)/subsystem2/bypass_control.c \
+           $(APP)/subsystem2/nav_control.c \
            $(APP)/subsystem2/pid.c \
            $(APP)/subsystem2/odometry.c \
            $(APP)/subsystem2/motion_api.c \
@@ -33,6 +34,7 @@ S2_SRC  := $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/test_line_control.c \
            $(APP)/subsystem2/test_scan_control.c \
            $(APP)/subsystem2/test_bypass_control.c \
+           $(APP)/subsystem2/test_nav_control.c \
            s2_host_main.c
 
 S1_SRC  := $(APP)/subsystem1/command_parser.c \

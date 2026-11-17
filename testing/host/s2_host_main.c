@@ -12,6 +12,7 @@
 #include "../../app_program/subsystem2/test_line_control.h"
 #include "../../app_program/subsystem2/test_scan_control.h"
 #include "../../app_program/subsystem2/test_bypass_control.h"
+#include "../../app_program/subsystem2/test_nav_control.h"
 #include "../../app_program/subsystem2/test_motion.h"
 #include "../../app_program/subsystem2/motion_cmd.h"
 
@@ -72,6 +73,10 @@ static host_case_t const g_cases[] =
     {"S2-U68", test_bypass_control_pass},
     {"S2-U69", test_bypass_control_pass_fail},
     {"S2-U70", test_bypass_control_look_turn},
+    {"S2-U74", test_nav_control_hold},
+    {"S2-U75", test_nav_control_turn},
+    {"S2-U76", test_nav_control_uturn},
+    {"S2-U77", test_nav_control_fail},
 };
 
 int

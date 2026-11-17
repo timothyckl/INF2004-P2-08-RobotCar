@@ -250,12 +250,10 @@ typedef struct
 IMPORT ID scan_q;
 
 /* ------------------------------------------------------------------------
- *  Navigation request from S3 (s3_nav_take on
- *  feature/subsystem3-ir-line-barcode). HEADER ONLY: the barcode
- *  manoeuvre state is not built yet. S3 calls s3_nav_take() each
- *  iteration with stopped = SAFETY_FLG_STOP set, authorised =
- *  S2_RS_NAV_AUTHORISED in robot_state, junction = S3's own detection;
- *  a non-NONE result is sent as this record.
+ *  nav_q (message buffer, owned by S2): S3 sends one record per decoded
+ *  barcode whose letter maps to a command. The Vehicle Controller holds
+ *  it and acts at the next junction it confirms (S2 decision 26,
+ *  nav_control.h). A record that arrives while not running is dropped.
  * ------------------------------------------------------------------------ */
 #define S2_NAV_LEFT             1u  /* = S3_NAV_LEFT: turn left 90 deg */
 #define S2_NAV_RIGHT            2u  /* = S3_NAV_RIGHT: turn right 90 deg */
@@ -269,6 +267,13 @@ typedef struct
     uint8_t  command;       /* S2_NAV_* */
     uint8_t  reserved[3];
 } s2_nav_request_t;
+
+#define S2_NAV_Q_BYTES          32      /* 2 x (4 + 12) */
+
+IMPORT ID nav_q;
+
+/** Queue a decoded command without blocking; false if invalid or full. */
+bool s2_nav_submit (uint8_t command, uint32_t scan_id, uint32_t staged_ms);
 
 /* ---------------------------------------------------------------------
  *  LEGACY STARTER (IF-01, IF-02): kept while subsystems 3 and 4 use it.

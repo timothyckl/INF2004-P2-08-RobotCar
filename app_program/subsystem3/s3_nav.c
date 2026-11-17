@@ -20,6 +20,10 @@ s3_command_t s3_nav_command(char symbol)
         case 'D':
             command = S3_NAV_UTURN;
         break;
+        case 'F':
+            /* Test letter, chosen at build time (S3_NAV_F, 0..4). */
+            command = (s3_command_t)S3_NAV_F;
+        break;
         default:
             command = S3_NAV_NONE;
         break;

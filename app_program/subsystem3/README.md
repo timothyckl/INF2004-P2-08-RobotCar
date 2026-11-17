@@ -221,6 +221,30 @@ To validate on the car:
 2. With the `S3_LINE_TEST=1` image, drive past each course barcode in both
    directions and record each `s3 bar:` line with the expected letter.
 3. Record the results in `testing/subsystem3/TEST_LOG.md`.
+
+## Acting on a barcode (S2 decision 26)
+
+A decoded letter is mapped by `s3_nav_command()`: the brief's example
+A-D, plus the test letter F, set at build time:
+
+```sh
+make TEST=1 S3_LINE_TEST=1 NET=lwip MQTT=1 S3_NAV_F=1 -j8   # F = left
+```
+
+`S3_NAV_F` is 0 (none), 1 (left), 2 (right), 3 (straight) or 4 (U-turn);
+the image name ends `_navF<n>`. Other letters are reported and ignored.
+The mapped command goes to the Vehicle Controller, which carries it out at
+the next junction. Expect these serial lines:
+
+```text
+s3 bar: DECODED F (decoded=1 errors=0)
+[S2] nav: LEFT held for the next junction (scan 1)
+[S2] line: junction confirmed; crossing straight
+[S2] nav: junction; stopping to turn
+[S2] nav: step 118 mm onto the junction
+[S2] nav: spinning left until a sensor sees the line
+[S2] nav: on the new line; following
+```
 - `s3_nav` provides the current synthetic A/B/C/D command mapping, duplicate
   suppression, expiry, STOP cancellation, and controller-authority gating. It
   contains no motor actions or validated turn angles.

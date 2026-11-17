@@ -217,6 +217,9 @@ static void test_navigation(void)
     check(S3_NAV_RIGHT == s3_nav_command('B'), "B maps right");
     check(S3_NAV_STRAIGHT == s3_nav_command('C'), "C maps straight");
     check(S3_NAV_UTURN == s3_nav_command('D'), "D maps U-turn");
+    check(S3_NAV_NONE == s3_nav_command('F'),
+          "F is unmapped unless S3_NAV_F is set");
+    check(S3_NAV_NONE == s3_nav_command('Z'), "other letters are unmapped");
     check(!s3_nav_stage(&navigation, 'Z', 1U, 0U), "invalid command");
     check(s3_nav_stage(&navigation, 'A', 1U, 0U), "stage command");
     check(!s3_nav_stage(&navigation, 'B', 2U, 0U), "no overwrite");

@@ -14,7 +14,15 @@
 
 #if S3_LINE_FOLLOW_TEST
 #include "s3_barcode.h"
+#include "s3_nav.h"
 #include "../subsystem2/subsystem2.h"
+
+/* s3_command_t values are sent as S2_NAV_* (subsystem2.h). */
+typedef char s3_nav_codes_match_t[
+    (((uint8_t)S3_NAV_LEFT == S2_NAV_LEFT)
+     && ((uint8_t)S3_NAV_RIGHT == S2_NAV_RIGHT)
+     && ((uint8_t)S3_NAV_STRAIGHT == S2_NAV_STRAIGHT)
+     && ((uint8_t)S3_NAV_UTURN == S2_NAV_UTURN)) ? 1 : -1];
 #endif
 
 #ifndef S4_RAW_LOG
@@ -294,10 +302,11 @@ s3_test_line_trial (void)
 }
 
 /*
- * Read the side barcode sensor once and report any finished capture. The
- * result is only printed: the barcode never steers, and decoded letters do
- * not yet reach the Vehicle Controller. A failed read abandons the capture
- * but does not stop line following, which uses the other two channels.
+ * Read the side barcode sensor once and report any finished capture. A
+ * decoded letter that maps to a command goes to the Vehicle Controller,
+ * which acts at the next junction (S2 decision 26); the barcode never
+ * steers directly. A failed read abandons the capture but does not stop
+ * line following, which uses the other two channels.
  */
 static void
 s3_test_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
@@ -327,9 +336,27 @@ s3_test_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
 
     if (S3_SCAN_DECODED == result)
     {
+        s3_command_t const command = s3_nav_command(symbol);
+
         decoded_count++;
         tm_printf((UB *)"s3 bar: DECODED %c (decoded=%u errors=%u)\n",
                   (INT)symbol, (UINT)decoded_count, (UINT)error_count);
+
+        if (S3_NAV_NONE == command)
+        {
+            tm_printf((UB *)"s3 bar: no command mapped to %c; ignored\n",
+                      (INT)symbol);
+        }
+        else if (!s2_nav_submit((uint8_t)command, decoded_count,
+                                s3_test_now_ms()))
+        {
+            tm_printf((UB *)"s3 bar: command for %c not delivered\n",
+                      (INT)symbol);
+        }
+        else
+        {
+            /* The controller reports what it does with it. */
+        }
     }
     else if (S3_SCAN_ERROR == result)
     {

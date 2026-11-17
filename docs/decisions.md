@@ -627,6 +627,40 @@ and the car ran off the line on bends (runs of 243..504 mm). Real runs
 measured 99..600 ms. Softening now starts a few runs into a barcode;
 the decoder already tolerates a damaged first sentinel.
 
+### 26. Barcode command at the next junction (2026-11-17)
+
+Approved by Dalton on the integration branch. The brief requires the car
+to carry out the barcode's command (left, right, straight, U-turn) with
+encoder-based motion. The course letters are announced on the day, so
+the mapping is one table in `s3_nav_command()`: the brief's example A-D,
+plus the test letter F, whose command is chosen at build time with
+`S3_NAV_F` (0 none, 1 left, 2 right, 3 straight, 4 U-turn). A letter with
+no command is reported and ignored. A dashboard to set the mapping is
+deferred.
+
+The Line Sensor sends each mapped command once on `nav_q`
+(`s2_nav_request_t`). The controller holds it while following, a newer
+command replacing an older one, and drops it after 20 s without a
+junction, or at once if the car is not running. The junction is the
+existing both-black confirmation (`line_control`, JUNCTION_CONFIRM to
+CROSSING). There, `nav_control`:
+
+- STRAIGHT lets the normal crossing proceed.
+- LEFT, RIGHT and UTURN send the motion STOP command and wait until the
+  wheels are still. Then the car steps forward 133 mm (sensors to axle),
+  less the travel since both sensors went black (decision 20), so that the
+  axle is on the junction. It then spins in place at 30 mm/s per wheel,
+  left for UTURN, until a fresh report has a sensor on black. Black is
+  ignored until 30 degrees short of the turn (90 or 180 degrees), so the
+  line just crossed, and a side branch during a U-turn, are not taken. More
+  than 45 degrees past the turn, or 12 s in any phase, fails and latches
+  STOP (decision 21). After a stop on the line, line following restarts.
+- The robot mode is NAVIGATE while it runs. STOP, not running, and a
+  scan for an S5 hazard all abandon it.
+
+The values are UNMEASURED. S2-U74 to S2-U77 cover the policy on the host.
+It has not yet run on the car.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

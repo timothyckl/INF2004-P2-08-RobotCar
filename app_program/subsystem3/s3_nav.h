@@ -22,7 +22,20 @@ typedef struct
     bool         have_scan;
 } s3_navigation_t;
 
-/** Example A-D mapping from the brief, pending team confirmation. */
+/* The course letters are announced on the day. Until then, F is the test
+ * letter: build with S3_NAV_F = 0 (none), 1 (left), 2 (right),
+ * 3 (straight) or 4 (U-turn). */
+#ifndef S3_NAV_F
+#define S3_NAV_F 0
+#endif
+
+#if (S3_NAV_F < 0) || (S3_NAV_F > 4)
+#error "S3_NAV_F must be 0..4"
+#endif
+
+/** Letter to command: the brief's example A-D plus the F test letter.
+ * Any other letter is NONE, which the car reports and ignores.
+ */
 s3_command_t s3_nav_command(char symbol);
 /** Only call with a validated complete frame; one unique ID per scan.
  * Does not overwrite a pending command. Duplicate IDs are rejected.

@@ -29,6 +29,7 @@
 #include "test_line_control.h"
 #include "test_scan_control.h"
 #include "test_bypass_control.h"
+#include "test_nav_control.h"
 #include "s2_bridge.h"
 #include "../test_report.h"
 
@@ -873,6 +874,14 @@ EXPORT void subsystem2_test(void)
 		   "telemetry hump: run maximum, 255 cap, invalid gives 0");
 	TEST_CHECK("S2-U72", test_telemetry_scan(),
 		   "telemetry obstacle fields follow S5's validity flags");
+	TEST_CHECK("S2-U74", test_nav_control_hold(),
+		   "barcode command held to a junction; STRAIGHT; expiry");
+	TEST_CHECK("S2-U75", test_nav_control_turn(),
+		   "junction turn: stop, step, spin, stop on the line");
+	TEST_CHECK("S2-U76", test_nav_control_uturn(),
+		   "U-turn counts past 180 degrees, ignores a side branch");
+	TEST_CHECK("S2-U77", test_nav_control_fail(),
+		   "junction turn fails on overshoot, rejection, slow stop");
 
 #if S2_HW_TEST
 	hw_test();

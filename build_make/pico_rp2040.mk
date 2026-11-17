@@ -126,6 +126,17 @@ ifneq ($(filter 0 1,$(S3_TEST_MODE_COUNT)),$(S3_TEST_MODE_COUNT))
 $(error Choose either S3_HW_TEST or S3_LINE_TEST, not both)
 endif
 
+# S3_NAV_F selects the command for the test barcode letter F (S2 decision
+# 26): 0 none, 1 left, 2 right, 3 straight, 4 U-turn. The course letters
+# are announced on the day.
+S3_NAV_F ?= 0
+ifneq ($(filter $(S3_NAV_F),0 1 2 3 4),$(S3_NAV_F))
+$(error Unknown S3_NAV_F '$(S3_NAV_F)'; use 0 (none), 1 (left), 2 (right), 3 (straight) or 4 (U-turn))
+endif
+ifneq ($(S3_NAV_F),0)
+S3_NAV_F_SUFFIX := _navF$(S3_NAV_F)
+endif
+
 # S2_CAL_TEST runs a GP20-started subsystem 2 calibration manoeuvre:
 # 1 = forward 1000 mm (distance scale), 2 = left 360 degrees (track width),
 # 3 = forward 450 mm per press (hump passes for subsystem 4, S4-H08).
@@ -245,7 +256,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_HW_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)$(S4_RAW_LOG_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S3_NAV_F_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_HW_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)$(S4_RAW_LOG_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -308,6 +319,7 @@ endif
 CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
 CFLAGS  += -DS3_LINE_FOLLOW_TEST=$(S3_LINE_TEST)
+CFLAGS  += -DS3_NAV_F=$(S3_NAV_F)
 CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
 CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
 CFLAGS  += -DS2_HW_TEST=$(S2_HW_TEST)
@@ -349,7 +361,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s2hw$(S2_HW_TEST)-s5range$(S5_RANGE_DIAG)-s4hw$(S4_HW_TEST)-s4raw$(S4_RAW_LOG)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-navf$(S3_NAV_F)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s2hw$(S2_HW_TEST)-s5range$(S5_RANGE_DIAG)-s4hw$(S4_HW_TEST)-s4raw$(S4_RAW_LOG)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

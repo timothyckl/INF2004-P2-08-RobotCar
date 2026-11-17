@@ -174,6 +174,27 @@ s2_line_submit_scaled (uint8_t position, uint8_t strength, uint8_t flags,
 }
 
 bool
+s2_nav_submit (uint8_t command, uint32_t scan_id, uint32_t staged_ms)
+{
+    s2_nav_request_t request;
+    ID const q = nav_q;
+
+    if ((q <= 0) || (command < S2_NAV_LEFT) || (command > S2_NAV_UTURN))
+    {
+        return (false);
+    }
+
+    request.scan_id     = scan_id;
+    request.staged_ms   = staged_ms;
+    request.command     = command;
+    request.reserved[0] = 0u;
+    request.reserved[1] = 0u;
+    request.reserved[2] = 0u;
+
+    return (tk_snd_mbf(q, &request, (INT)sizeof(request), TMO_POL) >= E_OK);
+}
+
+bool
 s2_line_start (void)
 {
     return (s2_local_command(S2_REMOTE_START));
