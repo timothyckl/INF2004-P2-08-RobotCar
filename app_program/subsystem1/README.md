@@ -11,7 +11,8 @@ The defaults below may be overridden in `config/wifi_secrets.h`:
 |---|---|---:|---:|---|
 | Broker to robot | `p2-08/p2-08-car-01/command` | 1 | no | Exactly `START`, `STOP` or `RESET` |
 | Robot to broker | `p2-08/p2-08-car-01/telemetry` | 0 | no | 27-byte binary frame, version 2 |
-| Robot to broker | `p2-08/p2-08-car-01/heartbeat` | 0 | no | ASCII `hb N` |
+| Robot to broker | `p2-08/p2-08-car-01/heartbeat` | 0 | no | ASCII `hb N`, every 5 s |
+| Robot to broker | `p2-08/p2-08-car-01/stats` | 0 | no | ASCII telemetry counters since boot, every 10 s (S1 decision 4) |
 
 `STOP` raises Buddy 2's urgent, latched STOP flag. `START` and `RESET` are
 offered to Buddy 2's non-blocking remote-command queue. A received command
@@ -39,6 +40,20 @@ version 1 meaning.
 Subsystem 2 fills `telemetry_encoder_snapshot_t`
 (`telemetry_snapshot.h`, kernel-free) through `robot_read_telemetry()`,
 which never waits.
+
+The stats message reads `periods P sent S refused R err E nosnap N nolink L`:
+of `P` one-second periods, `S` frames were handed to MQTT, `R` were refused
+by `mqtt_publish()` (last error `E`), `N` had no snapshot (a provider lock
+was busy) and `L` had no broker connection.
+
+The WiFi task turns radio power save off at every link-up (S1 decision 4);
+with the SDK default, frames and command ACKs were delayed by seconds.
+
+Commands are stamped with the controller's clock, `s2_clock_ms()`, never
+lwIP's `sys_now()` (S1 decision 3).
+
+`testing/subsystem1/decode_telemetry_v2.py` is the reference decoder used for
+S1-H02; its docstring has the `mosquitto_sub` command line.
 
 The one-second telemetry period is an initial integration value and still
 requires validation under combined robot load.

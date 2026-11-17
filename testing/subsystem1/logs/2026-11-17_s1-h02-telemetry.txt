@@ -1468,3 +1468,213 @@
 1794890067.440135000 mtk3smp-pico/heartbeat b'hb 45'
 1794890067.468402000 t=3356006116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
 1794890067.468428000 p2-08/p2-08-car-01/stats b'periods 230 sent 226 refused 1 err -1 nosnap 3 nolink 0'
+1794890068.260355000 t=3356007116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890071.374307000 t=3356008116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890071.408401000 t=3356009096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=721 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890071.408437000 t=3356010116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890072.158242000 mtk3smp-pico/heartbeat b'hb 46'
+1794890072.190086000 t=3356011116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890073.151152000 t=3356012116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890074.183470000 t=3356013116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=710 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890075.148312000 t=3356014096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890076.149011000 t=3356015116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890077.671799000 mtk3smp-pico/heartbeat b'hb 47'
+1794890077.687638000 t=3356016116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=674 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890077.687666000 p2-08/p2-08-car-01/stats b'periods 240 sent 236 refused 1 err -1 nosnap 3 nolink 0'
+1794890078.273321000 t=3356017116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=706 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890079.150294000 t=3356018116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890080.153794000 t=3356019096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890081.179209000 t=3356020116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=741 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890082.149938000 mtk3smp-pico/heartbeat b'hb 48'
+1794890082.201497000 t=3356021116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890083.175743000 t=3356022116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=674 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890084.147201000 t=3356023116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890085.148278000 t=3356024096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890086.195207000 t=3356025116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=678 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890087.266781000 mtk3smp-pico/heartbeat b'hb 49'
+1794890087.286749000 t=3356026116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890087.286821000 p2-08/p2-08-car-01/stats b'periods 250 sent 246 refused 1 err -1 nosnap 3 nolink 0'
+1794890088.152442000 t=3356027116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890089.199757000 t=3356028116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=666 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890090.147216000 t=3356029096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890091.148351000 t=3356030116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890092.198852000 mtk3smp-pico/heartbeat b'hb 50'
+1794890092.248573000 t=3356031116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890093.157747000 t=3356032116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890094.182202000 t=3356033116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890095.240869000 t=3356034096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890097.421317000 t=3356035096 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890097.473559000 mtk3smp-pico/heartbeat b'hb 51'
+1794890097.473583000 t=3356036116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=678 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890097.473595000 p2-08/p2-08-car-01/stats b'periods 260 sent 256 refused 1 err -1 nosnap 3 nolink 0'
+1794890098.148882000 t=3356037116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890099.165751000 t=3356038116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890100.289006000 t=3356039096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=652 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890101.313136000 t=3356040116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890102.147593000 mtk3smp-pico/heartbeat b'hb 52'
+1794890102.169577000 t=3356041116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890103.155916000 t=3356042116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=674 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890104.161572000 t=3356043116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890105.149295000 t=3356044116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=522 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890106.149164000 t=3356045096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=524 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890107.148509000 mtk3smp-pico/heartbeat b'hb 53'
+1794890107.174141000 t=3356046116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890107.174163000 p2-08/p2-08-car-01/stats b'periods 270 sent 266 refused 1 err -1 nosnap 3 nolink 0'
+1794890108.168304000 t=3356047116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890109.197190000 t=3356048116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=665 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890110.299879000 t=3356049096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890111.222726000 t=3356050116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890112.162085000 mtk3smp-pico/heartbeat b'hb 54'
+1794890112.272830000 t=3356051116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890113.150050000 t=3356052116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890114.243379000 t=3356053116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890115.443779000 t=3356054096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=648 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890116.161145000 t=3356055116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890117.164179000 mtk3smp-pico/heartbeat b'hb 55'
+1794890117.222455000 t=3356056116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890117.222491000 p2-08/p2-08-car-01/stats b'periods 280 sent 276 refused 1 err -1 nosnap 3 nolink 0'
+1794890118.148222000 t=3356057116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890119.168036000 t=3356058116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890120.227540000 t=3356059116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890121.280080000 t=3356060116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890122.241060000 mtk3smp-pico/heartbeat b'hb 56'
+1794890122.323259000 t=3356061116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890123.147547000 t=3356062116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890124.565891000 t=3356063116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=653 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890125.148130000 t=3356064096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890126.195531000 t=3356065116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890127.155544000 mtk3smp-pico/heartbeat b'hb 57'
+1794890127.208908000 t=3356066116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890127.208935000 p2-08/p2-08-car-01/stats b'periods 290 sent 286 refused 1 err -1 nosnap 3 nolink 0'
+1794890128.147342000 t=3356067116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890129.274471000 t=3356068116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890131.727553000 t=3356069096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=653 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890131.763289000 t=3356070116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=653 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890132.193401000 mtk3smp-pico/heartbeat b'hb 58'
+1794890132.323952000 t=3356071116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=666 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890133.261508000 t=3356072116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890134.163927000 t=3356073116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=666 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890135.148202000 t=3356074096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890136.148609000 t=3356075116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=653 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890137.148241000 mtk3smp-pico/heartbeat b'hb 59'
+1794890137.172467000 t=3356076116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=653 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890137.172536000 p2-08/p2-08-car-01/stats b'periods 300 sent 296 refused 1 err -1 nosnap 3 nolink 0'
+1794890138.172187000 t=3356077116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=653 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890139.200493000 t=3356078116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890142.925538000 t=3356079096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890145.708762000 t=3356080116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890145.708796000 mtk3smp-pico/heartbeat b'hb 60'
+1794890145.708804000 t=3356081116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890145.822664000 t=3356082116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890145.822716000 t=3356083116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890145.822724000 t=3356084096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890146.163450000 t=3356085096 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890147.187886000 mtk3smp-pico/heartbeat b'hb 61'
+1794890147.228224000 t=3356086116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890147.228298000 p2-08/p2-08-car-01/stats b'periods 310 sent 306 refused 1 err -1 nosnap 3 nolink 0'
+1794890148.149164000 t=3356087116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=656 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890149.150765000 t=3356088096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=668 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890150.358902000 t=3356089116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=702 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890151.201501000 t=3356090116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=618 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890152.314735000 mtk3smp-pico/heartbeat b'hb 62'
+1794890152.351413000 t=3356091116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=446 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890153.173037000 t=3356092116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=430 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890154.221559000 t=3356093116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=439 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890155.182893000 t=3356094096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=454 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890157.684083000 t=3356095116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=520 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890162.361019000 mtk3smp-pico/heartbeat b'hb 63'
+1794890162.361086000 t=3356096116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=425 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890162.361099000 p2-08/p2-08-car-01/stats b'periods 320 sent 316 refused 1 err -1 nosnap 3 nolink 0'
+1794890162.392368000 t=3356097116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=484 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890162.392454000 t=3356098116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=491 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890162.392465000 t=3356099096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=492 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890162.392472000 t=3356100116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=452 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890163.174596000 t=3356102096 dt=1980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=449 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890164.197877000 t=3356103116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=448 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890165.238681000 t=3356104116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=456 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890166.160399000 t=3356105096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=503 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890167.168811000 mtk3smp-pico/heartbeat b'hb 65'
+1794890167.182270000 t=3356106116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890167.182302000 p2-08/p2-08-car-01/stats b'periods 330 sent 325 refused 2 err -1 nosnap 3 nolink 0'
+1794890168.174881000 t=3356107116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890169.162545000 t=3356108096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890170.242648000 t=3356109116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890171.266762000 t=3356110116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890172.164582000 mtk3smp-pico/heartbeat b'hb 66'
+1794890172.198769000 t=3356111116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890173.195378000 t=3356112116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890174.173924000 t=3356113116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890175.260910000 t=3356114116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890177.450619000 t=3356115096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890177.464944000 mtk3smp-pico/heartbeat b'hb 67'
+1794890177.465000000 t=3356116116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890177.465009000 p2-08/p2-08-car-01/stats b'periods 340 sent 335 refused 2 err -1 nosnap 3 nolink 0'
+1794890178.166987000 t=3356117096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890179.164599000 t=3356118116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890180.172697000 t=3356119116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890181.171228000 t=3356120096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=722 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890182.166115000 mtk3smp-pico/heartbeat b'hb 68'
+1794890182.197391000 t=3356121116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890183.185829000 t=3356122116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=717 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890184.171943000 t=3356123096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890185.170851000 t=3356124116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890186.215884000 t=3356125116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890187.165957000 mtk3smp-pico/heartbeat b'hb 69'
+1794890187.262736000 t=3356126116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890187.262804000 p2-08/p2-08-car-01/stats b'periods 350 sent 345 refused 2 err -1 nosnap 3 nolink 0'
+1794890188.167134000 t=3356127116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890189.185535000 t=3356128116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890190.169432000 t=3356129096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890191.173923000 t=3356130116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890192.165632000 mtk3smp-pico/heartbeat b'hb 70'
+1794890192.199680000 t=3356131116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=674 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890193.183670000 t=3356132116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890194.187861000 t=3356133116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890195.169837000 t=3356134096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890196.177454000 t=3356135116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890197.226818000 mtk3smp-pico/heartbeat b'hb 71'
+1794890197.256423000 t=3356136116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890197.256451000 p2-08/p2-08-car-01/stats b'periods 360 sent 355 refused 2 err -1 nosnap 3 nolink 0'
+1794890198.181861000 t=3356137116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890199.166233000 t=3356138116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890200.166330000 t=3356139096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890201.166582000 t=3356140116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=657 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890202.192584000 mtk3smp-pico/heartbeat b'hb 72'
+1794890202.217876000 t=3356141116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890203.179045000 t=3356142116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890204.164090000 t=3356143116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890205.170530000 t=3356144096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890206.193999000 t=3356145116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890207.189047000 mtk3smp-pico/heartbeat b'hb 73'
+1794890207.207251000 t=3356146116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890207.207322000 p2-08/p2-08-car-01/stats b'periods 370 sent 365 refused 2 err -1 nosnap 3 nolink 0'
+1794890208.235530000 t=3356147116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890209.170857000 t=3356148116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890210.177432000 t=3356149096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=670 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890211.178270000 t=3356150116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890212.190034000 mtk3smp-pico/heartbeat b'hb 74'
+1794890212.228964000 t=3356151116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890213.210839000 t=3356152116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=661 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890214.202782000 t=3356153116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890215.183171000 t=3356154096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890216.188607000 t=3356155116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=713 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890217.171642000 mtk3smp-pico/heartbeat b'hb 75'
+1794890217.224292000 t=3356156116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890217.224321000 p2-08/p2-08-car-01/stats b'periods 380 sent 375 refused 2 err -1 nosnap 3 nolink 0'
+1794890218.199328000 t=3356157116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890219.246549000 t=3356158116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890220.166016000 t=3356159096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890221.177905000 t=3356160116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890222.186275000 mtk3smp-pico/heartbeat b'hb 76'
+1794890222.206105000 t=3356161116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890223.167627000 t=3356162116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890224.170396000 t=3356163116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890225.172139000 t=3356164096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890226.167085000 t=3356165116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=714 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890227.178924000 mtk3smp-pico/heartbeat b'hb 77'
+1794890227.219755000 t=3356166116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890227.219815000 p2-08/p2-08-car-01/stats b'periods 390 sent 385 refused 2 err -1 nosnap 3 nolink 0'
+1794890228.197827000 t=3356167116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=718 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890229.208146000 t=3356168116 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890230.166631000 t=3356169096 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=460 scan=no-route/- near=253 w=0 c=0 hump=0
+1794890231.170163000 t=3356170116 dt=1020ms [DSLXM..|FP.] STOPPED/- fault=none line=CENTRE dist=1032 L=0 R=0 hdg=114.92 fwd=460 scan=no-route/- near=253 w=0 c=0 hump=0
