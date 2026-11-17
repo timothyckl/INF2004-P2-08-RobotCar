@@ -1,0 +1,372 @@
+
+s3 line: adc=153/204 filtered=148/204 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/202 filtered=147/202 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/202 filtered=151/202 threshold=247/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/205 filtered=145/201 threshold=245/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/202 filtered=147/202 threshold=245/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/198 filtered=141/199 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/196 filtered=144/199 threshold=244/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=148/205 filtered=143/204 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=157/197 filtered=148/200 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=163/197 filtered=156/200 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/197 filtered=148/198 threshold=243/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/202 filtered=140/199 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/198 filtered=141/198 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=10.126.176.101
+s3 line: adc=141/200 filtered=136/201 threshold=239/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: power save off (0)
+s3 line: adc=159/206 filtered=156/203 threshold=238/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=128/201 filtered=139/201 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/200 filtered=131/200 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/203 filtered=151/202 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=162/196 filtered=150/199 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/206 filtered=144/203 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/196 filtered=130/199 threshold=242/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=154/200 filtered=151/200 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/195 filtered=142/201 threshold=246/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/205 filtered=128/204 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/212 filtered=133/206 threshold=245/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/205 filtered=138/205 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=163/203 filtered=157/203 threshold=247/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=125/210 filtered=132/204 threshold=250/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/201 filtered=146/202 threshold=247/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/206 filtered=132/206 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/202 filtered=126/205 threshold=243/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/202 filtered=156/202 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/210 filtered=136/205 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=161/197 filtered=150/197 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=159/200 filtered=144/201 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/198 filtered=139/202 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=162/202 filtered=157/203 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/202 filtered=133/202 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=151/205 filtered=146/203 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/205 filtered=147/203 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/198 filtered=138/198 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/201 filtered=145/201 threshold=239/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=158/194 filtered=150/198 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=164/203 filtered=148/203 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/203 filtered=126/205 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=141/205 filtered=141/203 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/203 filtered=146/198 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/202 filtered=151/202 threshold=236/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/195 filtered=150/199 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/197 filtered=143/200 threshold=239/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=158/203 filtered=143/203 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=162/205 filtered=150/204 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/199 filtered=145/202 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/206 filtered=129/205 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=2016/3020 filtered=1401/2756 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4044/4067 filtered=4046/4065 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4056/4070 filtered=4061/4070 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=4056/4064 filtered=4057/4066 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4054/4073 filtered=4056/4072 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=2 threshold=581 (decoded=0 errors=1)
+s3 bar:  runs 0..: 19 60
+s3 bar:  open run BLACK for 2500 ms
+s3 line: adc=4074/4068 filtered=4059/4068 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4042/4064 filtered=4047/4066 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4058/4055 filtered=4053/4058 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3981/4008 filtered=3994/4015 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=2384/3416 filtered=2505/3418 threshold=241/701 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=218/193 filtered=191/277 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/176 filtered=137/178 threshold=242/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=3 threshold=581 (decoded=0 errors=2)
+s3 bar:  runs 0..: 79 60 19
+s3 bar:  open run WHITE for 700 ms
+s3 line: adc=133/172 filtered=129/176 threshold=239/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/181 filtered=144/181 threshold=238/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/190 filtered=137/185 threshold=235/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=128/181 filtered=132/180 threshold=236/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=110/184 filtered=123/183 threshold=236/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/182 filtered=123/178 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/171 filtered=134/176 threshold=235/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: START requested
+s4: new run 1; hump maximum cleared
+s3 line: adc=148/182 filtered=139/179 threshold=237/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=454/181 filtered=411/181 threshold=238/678 left=BLACK right=WHITE mask=1 strength=20 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=134/185 filtered=144/181 threshold=238/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=130/188 filtered=135/187 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] motion fault=3 from state=2; valid=1; stalled L/R=1/0; prior PWM duty=1250/626; speed=-4/38 mm/s; counts=3/285 errors=0/0
+[S2] LEFT stall/no feedback: check wheel and encoder 2 GP16/GP17
+s3 line: adc=116/190 filtered=124/186 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=114/176 filtered=122/181 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=88/189 filtered=109/188 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/179 filtered=133/179 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=864/179 filtered=613/179 threshold=231/683 left=BLACK right=WHITE mask=1 strength=35 command=LEFT
+s3 line: adc=153/222 filtered=150/202 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/2854 filtered=135/2495 threshold=231/682 left=WHITE right=BLACK mask=2 strength=74 command=RIGHT
+s3 line: adc=145/194 filtered=144/241 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=112/178 filtered=127/181 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: FAULT RESET requested before restart
+[S2] GP20: START requested
+s4: new run 2; hump maximum cleared
+s3 line: adc=153/182 filtered=144/182 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/186 filtered=134/186 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/181 filtered=132/183 threshold=231/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/184 filtered=130/184 threshold=230/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/186 filtered=137/186 threshold=231/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=122/188 filtered=128/184 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/186 filtered=137/180 threshold=229/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/181 filtered=131/181 threshold=229/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/190 filtered=135/191 threshold=228/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/188 filtered=135/186 threshold=228/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/182 filtered=126/184 threshold=229/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+[S2] line: barcode capture; strong curves softened
+s3 line: adc=113/186 filtered=120/186 threshold=228/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/189 filtered=143/187 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/179 filtered=117/181 threshold=227/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/179 filtered=131/180 threshold=228/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/177 filtered=127/181 threshold=229/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/190 filtered=128/188 threshold=230/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=148/187 filtered=134/186 threshold=228/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/186 filtered=135/182 threshold=227/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/187 filtered=139/186 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/184 filtered=125/182 threshold=227/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=170/199 filtered=160/192 threshold=231/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/185 filtered=154/185 threshold=234/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=145/179 filtered=148/180 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=213/177 filtered=211/178 threshold=240/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=268/176 filtered=264/181 threshold=241/679 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+s3 bar: DECODED F (decoded=1 errors=2)
+[S2] nav: RIGHT held for the next junction (scan 1)
+[S2] line: barcode capture ended
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=149/165 filtered=173/171 threshold=241/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/250 filtered=131/238 threshold=242/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/1397 filtered=123/1180 threshold=241/682 left=WHITE right=BLACK mask=2 strength=32 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=126/196 filtered=130/269 threshold=239/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/182 filtered=131/182 threshold=237/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=115/175 filtered=122/178 threshold=240/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/178 filtered=149/181 threshold=239/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=937/181 filtered=717/181 threshold=242/681 left=BLACK right=WHITE mask=1 strength=42 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=156/179 filtered=163/180 threshold=242/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/192 filtered=149/193 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=171/163 filtered=154/172 threshold=237/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1010/182 filtered=754/180 threshold=238/681 left=BLACK right=WHITE mask=1 strength=45 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1212/178 filtered=1235/180 threshold=238/681 left=BLACK right=WHITE mask=1 strength=81 command=LEFT
+s3 line: adc=150/192 filtered=168/186 threshold=238/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=135/185 filtered=133/186 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1106/180 filtered=889/180 threshold=238/684 left=BLACK right=WHITE mask=1 strength=55 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=222/176 filtered=256/177 threshold=238/681 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+s3 line: adc=142/179 filtered=166/175 threshold=238/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=262/181 filtered=225/182 threshold=237/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=772/184 filtered=582/181 threshold=237/683 left=BLACK right=WHITE mask=1 strength=33 command=LEFT
+mqtt: connection status 256, retrying in 3s
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=860/178 filtered=860/179 threshold=237/680 left=BLACK right=WHITE mask=1 strength=53 command=LEFT
+s3 line: adc=227/179 filtered=231/179 threshold=237/680 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+s3 line: adc=229/182 filtered=220/183 threshold=237/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=226/185 filtered=212/184 threshold=238/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=911/177 filtered=671/178 threshold=238/682 left=BLACK right=WHITE mask=1 strength=39 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1162/180 filtered=1178/180 threshold=238/680 left=BLACK right=WHITE mask=1 strength=76 command=LEFT
+s3 line: adc=136/181 filtered=162/180 threshold=238/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=128/193 filtered=136/187 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=774/183 filtered=551/181 threshold=237/681 left=BLACK right=WHITE mask=1 strength=30 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=196/184 filtered=311/182 threshold=237/683 left=BLACK right=WHITE mask=1 strength=13 command=LEFT
+s3 line: adc=142/181 filtered=151/180 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/184 filtered=141/183 threshold=236/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=210/177 filtered=200/179 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=699/181 filtered=531/181 threshold=234/683 left=BLACK right=WHITE mask=1 strength=29 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=153/177 filtered=156/177 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/216 filtered=131/222 threshold=235/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=126/181 filtered=122/181 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/181 filtered=129/180 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=187/177 filtered=187/179 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=282/178 filtered=268/181 threshold=237/680 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=132/176 filtered=151/181 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/195 filtered=130/193 threshold=238/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/227 filtered=137/224 threshold=235/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=118/212 filtered=132/210 threshold=233/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/182 filtered=140/182 threshold=230/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/179 filtered=116/178 threshold=229/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/184 filtered=116/183 threshold=227/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/179 filtered=145/179 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/191 filtered=128/184 threshold=228/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=151/181 filtered=142/186 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=994/2530 filtered=743/1973 threshold=233/682 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[S2] line: junction confirmed; crossing straight
+[S2]   at 1263 mm, 89073 mdeg
+[S2] nav: junction; stopping to turn
+[S2] nav: step 127 mm onto the junction
+[S2]   at 1264 mm, 89554 mdeg
+s3 line: adc=122/185 filtered=130/258 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/185 filtered=127/182 threshold=234/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/181 filtered=144/182 threshold=234/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] nav: spinning right until a sensor sees the line
+[S2]   at 1389 mm, 90999 mdeg
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=581/182 filtered=501/182 threshold=236/680 left=BLACK right=WHITE mask=1 strength=27 command=LEFT
+s3 line: adc=110/161 filtered=144/174 threshold=236/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=147/178 filtered=134/179 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/181 filtered=139/180 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/183 filtered=136/183 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/182 filtered=123/183 threshold=235/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=117/3206 filtered=120/2635 threshold=234/680 left=WHITE right=BLACK mask=2 strength=79 command=RIGHT
+[S2]   at 1390 mm, 12999 mdeg
+[S2] nav: on the new line; following
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=132/3235 filtered=127/3247 threshold=231/680 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=129/184 filtered=130/235 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/184 filtered=143/182 threshold=230/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=109/168 filtered=118/172 threshold=229/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=220/160 filtered=203/170 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1242/174 filtered=913/176 threshold=230/680 left=BLACK right=WHITE mask=1 strength=57 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=152/184 filtered=161/183 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/193 filtered=144/193 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=195/185 filtered=171/183 threshold=230/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=489/187 filtered=385/186 threshold=231/685 left=BLACK right=WHITE mask=1 strength=19 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=785/177 filtered=815/177 threshold=231/683 left=BLACK right=WHITE mask=1 strength=50 command=LEFT
+s3 line: adc=161/184 filtered=181/183 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=191/182 filtered=179/180 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=701/170 filtered=540/174 threshold=232/680 left=BLACK right=WHITE mask=1 strength=30 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=709/179 filtered=751/178 threshold=232/679 left=BLACK right=WHITE mask=1 strength=45 command=LEFT
+s3 line: adc=228/165 filtered=222/164 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=410/175 filtered=334/176 threshold=233/682 left=BLACK right=WHITE mask=1 strength=15 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=209/178 filtered=217/180 threshold=233/681 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=271/176 filtered=270/178 threshold=233/681 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+s3 line: adc=184/187 filtered=184/184 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/175 filtered=193/179 threshold=236/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=255/182 filtered=254/183 threshold=237/682 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=306/184 filtered=296/182 threshold=237/682 left=BLACK right=WHITE mask=1 strength=12 command=LEFT
+s3 line: adc=243/193 filtered=236/187 threshold=237/682 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=181/175 filtered=188/179 threshold=237/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=296/185 filtered=281/185 threshold=240/684 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=589/180 filtered=590/182 threshold=240/684 left=BLACK right=WHITE mask=1 strength=33 command=LEFT
+s3 line: adc=294/184 filtered=296/184 threshold=240/683 left=BLACK right=WHITE mask=1 strength=11 command=LEFT
+s3 line: adc=751/182 filtered=743/182 threshold=240/684 left=BLACK right=WHITE mask=1 strength=44 command=LEFT
+s3 line: adc=1345/1267 filtered=1505/1150 threshold=240/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[S2] line: junction confirmed; crossing straight
+s4: car lifted; STOP requested
+[S2] S4 PICKUP: car lifted, STOP latched
+[S2] run summary: distance 1722 mm, highest hump 0 mm (none)
+s3 line: adc=149/3613 filtered=157/3530 threshold=240/683 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+s3 line: adc=1293/2832 filtered=859/2748 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=3952/3954 filtered=3956/3950 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4008/4001 filtered=4016/4000 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3976/3970 filtered=3984/3975 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4003/3997 filtered=4010/3996 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=0 threshold=580 (decoded=1 errors=3)
+s3 bar:  open run BLACK for 2500 ms
+s3 line: adc=4019/4008 filtered=4023/4009 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4051/4011 filtered=4047/4012 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=4023/4005 filtered=4019/4005 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4037/4027 filtered=4042/4028 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4042/4032 filtered=4048/4032 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4065/4036 filtered=4066/4035 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4042/4038 filtered=4056/4035 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3917/3928 filtered=3938/3945 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=3300/3485 filtered=3352/3518 threshold=241/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=188/332 filtered=205/606 threshold=241/683 left=WHITE right=BLACK mask=2 strength=14 command=RIGHT
+s3 line: adc=149/212 filtered=172/271 threshold=241/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/2411 filtered=148/2091 threshold=242/683 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+s3 line: adc=154/198 filtered=144/267 threshold=243/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=158/197 filtered=152/200 threshold=244/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/186 filtered=140/196 threshold=245/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/203 filtered=131/203 threshold=246/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/202 filtered=143/202 threshold=245/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=149/197 filtered=148/199 threshold=244/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/199 filtered=150/198 threshold=243/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=164/213 filtered=151/209 threshold=245/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/201 filtered=146/199 threshold=245/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/199 filtered=140/201 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/204 filtered=139/203 threshold=245/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=162/206 filtered=158/206 threshold=247/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=158/196 filtered=152/199 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/200 filtered=141/201 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/205 filtered=136/203 threshold=245/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=158/204 filtered=157/201 threshold=247/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/201 filtered=157/201 threshold=250/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=156/203 filtered=147/204 threshold=247/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/201 filtered=138/201 threshold=248/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/211 filtered=130/207 threshold=244/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/204 filtered=133/204 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=162/204 filtered=160/202 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/206 filtered=150/203 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/203 filtered=148/204 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=164/205 filtered=151/204 threshold=246/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/201 filtered=146/202 threshold=249/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/206 filtered=155/204 threshold=246/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/198 filtered=144/199 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=155/201 filtered=153/202 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=161/201 filtered=151/201 threshold=241/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/206 filtered=139/205 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/198 filtered=130/201 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/204 filtered=134/203 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/203 filtered=149/202 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/202 filtered=135/202 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=154/204 filtered=144/204 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/204 filtered=157/204 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/203 filtered=143/203 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/200 filtered=137/201 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/204 filtered=133/204 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/200 filtered=136/200 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=147/196 filtered=147/199 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/206 filtered=157/203 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=158/189 filtered=155/192 threshold=247/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/194 filtered=138/200 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/203 filtered=141/203 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/198 filtered=151/200 threshold=244/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: connection status 256, retrying in 3s
+s3 line: adc=131/204 filtered=141/203 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/200 filtered=151/201 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/209 filtered=144/204 threshold=240/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=162/203 filtered=151/203 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/203 filtered=136/201 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/214 filtered=148/208 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
