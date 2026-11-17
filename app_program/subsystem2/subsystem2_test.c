@@ -311,7 +311,7 @@ static bool test_remote_make(void)
 static bool test_line_make(void)
 {
 	s2_line_report_t report;
-	s2_line_report_t keep = { 99u, 98u, 97u, { 1u, 2u } };
+	s2_line_report_t keep = { 99u, 98u, 97u, 1u, 2u };
 	UINT position;
 	bool ok = true;
 
@@ -322,21 +322,29 @@ static bool test_line_make(void)
 		     (report.strength == (((S2_LINE_LEFT == position) ||
 		                           (S2_LINE_RIGHT == position))
 		                          ? S2_LINE_STRENGTH_MAX : 0u)) &&
-		     (report.reserved[0] == 0u) &&
-		     (report.reserved[1] == 0u) && ok;
+		     (report.flags == 0u) &&
+		     (report.reserved == 0u) && ok;
 	}
 
-	ok = s2_line_make_scaled(S2_LINE_LEFT, 35u, 4321u, &report) &&
+	ok = s2_line_make_scaled(S2_LINE_LEFT, 35u, 0u, 4321u, &report) &&
 	     (report.captured_ms == 4321u) &&
 	     (report.position == S2_LINE_LEFT) &&
-	     (report.strength == 35u) && ok;
+	     (report.strength == 35u) && (report.flags == 0u) && ok;
 
-	return ok && !s2_line_make_scaled(S2_LINE_CENTER, 1u, 0u, &keep) &&
-	       !s2_line_make_scaled(S2_LINE_LEFT, 101u, 0u, &keep) &&
+	/* S2 decision 25: the barcode flag is carried; others are refused. */
+	ok = s2_line_make_scaled(S2_LINE_CENTER, 0u, S2_LINE_FLAG_BARCODE,
+	                         5u, &report) &&
+	     (report.flags == S2_LINE_FLAG_BARCODE) &&
+	     (report.reserved == 0u) && ok;
+
+	return ok && !s2_line_make_scaled(S2_LINE_CENTER, 1u, 0u, 0u, &keep) &&
+	       !s2_line_make_scaled(S2_LINE_LEFT, 101u, 0u, 0u, &keep) &&
+	       !s2_line_make_scaled(S2_LINE_CENTER, 0u, 0x02u, 0u, &keep) &&
 	       !s2_line_make(5u, 0u, &keep) &&
 	       !s2_line_make(S2_LINE_CENTER, 0u, NULL) &&
 	       (keep.captured_ms == 99u) && (keep.position == 98u) &&
-	       (keep.strength == 97u) && (keep.reserved[1] == 2u);
+	       (keep.strength == 97u) && (keep.flags == 1u) &&
+	       (keep.reserved == 2u);
 }
 
 /* S2-U37: telemetry fields from robot_state */
@@ -837,6 +845,8 @@ EXPORT void subsystem2_test(void)
 		   "black-black junction and exit are bounded");
 	TEST_CHECK("S2-U59", test_line_control_curve(),
 		   "persistent correction becomes a curve without pivoting");
+	TEST_CHECK("S2-U73", test_line_control_soften(),
+		   "barcode softening maps only curves to corrections");
 	TEST_CHECK("S2-U60", test_scan_control_begin(),
 		   "hazard scan: motion STOP and one REQUEST");
 	TEST_CHECK("S2-U61", test_scan_control_grant(),

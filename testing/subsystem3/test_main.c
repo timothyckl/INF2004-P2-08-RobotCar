@@ -662,6 +662,17 @@ static void test_sampled_barcode(void)
     check((0U == run.decoded) && (0U == run.errors) && (1U == run.singles),
           "abort drops the capture; next bar starts a new one");
 
+    sampled_init(&run, 1000000U);
+    check(!s3_barcode_active(&run.barcode), "idle on white is not active");
+    sample_level(&run, true, 150000U);
+    check(s3_barcode_active(&run.barcode), "first bar makes it active");
+    sample_level(&run, false, 1000000U);
+    check(!s3_barcode_active(&run.barcode), "quiet white ends it");
+    sample_level(&run, true, 150000U);
+    s3_barcode_abort(&run.barcode);
+    check(!s3_barcode_active(&run.barcode), "abort ends it");
+    check(!s3_barcode_active(NULL), "null barcode is not active");
+
     check(!s3_barcode_init(NULL), "null barcode init");
     check(S3_SCAN_NONE == s3_barcode_update(NULL, 0U, 0U, &run.last),
           "null barcode update");

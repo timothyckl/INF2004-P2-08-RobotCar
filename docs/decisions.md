@@ -597,6 +597,28 @@ reports terrain events to the controller and telemetry.
 For the bench, `S2_CAL_TEST=3` drives 450 mm forward per GP20 press and
 also starts subsystem 4, as does `S2_CAL_TEST=1` and 2.
 
+### 25. Soften strong curves while a barcode is read (2026-11-17)
+
+On 2026-11-17, passes over barcode F decoded once in 5, then 0 of 11
+captures after the stack fix. In the rejected captures, the 5/35 mm/s
+curve corrections fired while the side sensor was over the barcode.
+The inside wheel nearly stopped, so a run took longer than the 800 ms
+or 700 ms scan limits, and the sensor swept across the bars at an angle,
+which corrupted the run widths. One full 29-run capture still had the
+correct payload (`testing/subsystem3/TEST_LOG.md`).
+
+The Line Sensor now sets `S2_LINE_FLAG_BARCODE` in each line report while
+a capture is in progress (the first reserved byte of `s2_line_report_t`
+becomes `flags`). While the flag is set, the controller replaces a strong
+curve with the gentle correction in the same direction at its strongest
+setting, 32/40 mm/s (`line_control_soften`). Straight, gentle corrections,
+junction handling and STOP are unchanged. Each capture gets at most
+`CTRL_LINE_BARCODE_SOFT_MS`, 10 s; a 29-run frame is about 290 mm, about
+7.3 s at 40 mm/s. The flag cannot outlive the reports: a report older
+than 100 ms already stops the car. This assumes barcodes are beside
+straight track, where gentle corrections hold the line; a lap must
+confirm that the car still follows the line through softened periods.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

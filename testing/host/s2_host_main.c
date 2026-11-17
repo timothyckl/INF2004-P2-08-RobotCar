@@ -60,6 +60,7 @@ static host_case_t const g_cases[] =
     {"S2-U53", test_ctrl_robot_state},
     {"S2-U58", test_line_control_junction},
     {"S2-U59", test_line_control_curve},
+    {"S2-U73", test_line_control_soften},
     {"S2-U60", test_scan_control_begin},
     {"S2-U61", test_scan_control_grant},
     {"S2-U62", test_scan_control_outcomes},

@@ -97,4 +97,10 @@ s3_barcode_abort (s3_barcode_t * p_barcode)
     }
 }
 
+bool
+s3_barcode_active (s3_barcode_t const * p_barcode)
+{
+    return ((NULL != p_barcode) && p_barcode->scan.capture.active);
+}
+
 /* End of file. */

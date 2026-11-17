@@ -116,6 +116,27 @@ line_control_mode (line_control_t const * p_control)
     return (mode);
 }
 
+line_control_action_t
+line_control_soften (line_control_action_t action)
+{
+    line_control_action_t softened = action;
+
+    if (LINE_CONTROL_ACTION_CURVE_LEFT == action)
+    {
+        softened = LINE_CONTROL_ACTION_CORRECT_LEFT;
+    }
+    else if (LINE_CONTROL_ACTION_CURVE_RIGHT == action)
+    {
+        softened = LINE_CONTROL_ACTION_CORRECT_RIGHT;
+    }
+    else
+    {
+        /* Straight, gentle corrections and STOP are already safe. */
+    }
+
+    return (softened);
+}
+
 static line_control_action_t
 line_control_follow_step (line_control_t * p_control, uint8_t position,
                           uint32_t now_ms)

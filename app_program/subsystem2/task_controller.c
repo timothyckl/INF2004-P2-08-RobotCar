@@ -77,6 +77,10 @@
 #define CTRL_LINE_EXIT_CENTER_MS  100u
 #define CTRL_LINE_EXIT_SIDE_MS    150u
 #define CTRL_LINE_EXIT_LIMIT_MS  2500u
+/* S2 decision 25: while S3 reports a barcode capture, strong curves become
+   gentle corrections, for at most this long per capture. A 29-run Code 39
+   frame is about 290 mm, about 7.3 s at 40 mm/s. UNMEASURED margin. */
+#define CTRL_LINE_BARCODE_SOFT_MS 10000u
 /* Scan & Plan: S5's 15 s scan limit plus the stop and confirmation
    before it (2 s) and a margin, as on full-system. */
 #define CTRL_SCAN_LIMIT_MS      20000u
@@ -178,6 +182,7 @@ typedef struct
     line_control_t        control;
     uint32_t              last_report_ms;
     uint32_t              running_since_ms;
+    uint32_t              barcode_since_ms;
     uint8_t               position;
     uint8_t               strength;
     int16_t               last_correction_mm_s;
@@ -185,6 +190,8 @@ typedef struct
     bool                  b_have_report;
     bool                  b_running;
     bool                  b_action_sent;
+    bool                  b_barcode;            /* latest report flag */
+    bool                  b_barcode_expired;    /* soft limit reached */
 } ctrl_line_runtime_t;
 
 static ctrl_line_runtime_t g_line_runtime;
@@ -224,6 +231,8 @@ static void     cal_report (s2_robot_state_t const * p_state,
 static void     line_step (s2_robot_state_t const * p_state,
                            ctrl_input_t const * p_input);
 static void     line_reset (uint32_t now);
+static void     line_barcode_flag (bool b_barcode, uint32_t now);
+static bool     line_barcode_soft (uint32_t now);
 static bool     line_is_fresh (uint32_t now);
 static void     line_telemetry (s2_robot_state_t * p_state, uint32_t now);
 static int16_t  line_correction_speed (uint8_t strength);
@@ -1272,8 +1281,8 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
             && (((S2_LINE_LEFT == report.position)
                  || (S2_LINE_RIGHT == report.position))
                 || (0u == report.strength))
-            && (0u == report.reserved[0])
-            && (0u == report.reserved[1])
+            && (0u == (report.flags & (uint8_t)~S2_LINE_FLAGS_VALID))
+            && (0u == report.reserved)
             && ((p_input->now_ms - report.captured_ms)
                 <= S2_LINE_MAX_AGE_MS);
 
@@ -1298,6 +1307,9 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
                 g_line_runtime.position = report.position;
                 g_line_runtime.strength = report.strength;
                 g_line_runtime.b_have_report = true;
+                line_barcode_flag(
+                    0u != (report.flags & S2_LINE_FLAG_BARCODE),
+                    p_input->now_ms);
             }
         }
     }
@@ -1342,8 +1354,15 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
                                g_line_runtime.position,
                                p_input->now_ms);
     new_mode = line_control_mode(&g_line_runtime.control);
-    line_log_mode(old_mode, new_mode, action);
     correction_mm_s = line_correction_speed(g_line_runtime.strength);
+    if (line_barcode_soft(p_input->now_ms)
+        && (line_control_soften(action) != action))
+    {
+        /* A softened curve takes the strongest gentle correction. */
+        action = line_control_soften(action);
+        correction_mm_s = CTRL_LINE_CORRECT_MIN_MM_S;
+    }
+    line_log_mode(old_mode, new_mode, action);
     b_correction_action = (LINE_CONTROL_ACTION_CORRECT_LEFT == action)
                        || (LINE_CONTROL_ACTION_CORRECT_RIGHT == action);
 
@@ -1393,6 +1412,49 @@ line_reset (uint32_t now)
     g_line_runtime.b_have_report = false;
     g_line_runtime.b_running = false;
     g_line_runtime.b_action_sent = false;
+    g_line_runtime.barcode_since_ms = now;
+    g_line_runtime.b_barcode = false;
+    g_line_runtime.b_barcode_expired = false;
+}
+
+/* Track the S3 barcode-capture flag from each valid report. */
+static void
+line_barcode_flag (bool b_barcode, uint32_t now)
+{
+    if (b_barcode && (!g_line_runtime.b_barcode))
+    {
+        g_line_runtime.barcode_since_ms = now;
+        g_line_runtime.b_barcode_expired = false;
+        tm_printf((UB *)"[S2] line: barcode capture; strong curves "
+                          "softened\n");
+    }
+    else if ((!b_barcode) && g_line_runtime.b_barcode)
+    {
+        tm_printf((UB *)"[S2] line: barcode capture ended\n");
+    }
+    else
+    {
+        /* No change in the flag. */
+    }
+
+    g_line_runtime.b_barcode = b_barcode;
+}
+
+/* True while strong curves are to be softened: the latest report carries
+   the barcode flag and this capture is within CTRL_LINE_BARCODE_SOFT_MS. */
+static bool
+line_barcode_soft (uint32_t now)
+{
+    if (g_line_runtime.b_barcode && (!g_line_runtime.b_barcode_expired)
+        && ((now - g_line_runtime.barcode_since_ms)
+            > CTRL_LINE_BARCODE_SOFT_MS))
+    {
+        g_line_runtime.b_barcode_expired = true;
+        tm_printf((UB *)"[S2] line: barcode soft limit reached; strong "
+                          "curves restored\n");
+    }
+
+    return (g_line_runtime.b_barcode && (!g_line_runtime.b_barcode_expired));
 }
 
 static int16_t

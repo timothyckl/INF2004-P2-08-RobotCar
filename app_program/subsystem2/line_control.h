@@ -69,6 +69,12 @@ line_control_action_t line_control_step(line_control_t * p_control,
                                         uint8_t position,
                                         uint32_t now_ms);
 
+/** Map a strong curve to the gentle correction in the same direction, for
+ * use while the side sensor reads a barcode (S2 decision 25). Every other
+ * action, including STOP, is returned unchanged.
+ */
+line_control_action_t line_control_soften(line_control_action_t action);
+
 /** Return INVALID for a null or uninitialised policy. */
 line_control_mode_t line_control_mode(line_control_t const * p_control);
 

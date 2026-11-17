@@ -11,6 +11,7 @@
 
 bool test_line_control_junction(void);
 bool test_line_control_curve(void);
+bool test_line_control_soften(void);    /* S2-U73 */
 
 #endif
 

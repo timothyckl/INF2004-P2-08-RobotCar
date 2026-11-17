@@ -142,6 +142,7 @@ s3_test_line_trial (void)
     uint32_t last_report_ms = 0u;
     uint32_t last_log_ms = 0u;
     uint8_t last_position = UINT8_MAX;
+    uint8_t last_flags = 0u;
     bool b_delivery_failed = false;
     bool b_read_failed = false;
     bool b_barcode_read_failed = false;
@@ -241,10 +242,14 @@ s3_test_line_trial (void)
             /* Straight and crossing reports do not carry steering strength. */
         }
 
-        if ((position != last_position)
+        /* S2 decision 25: tell the controller while a barcode is read. */
+        uint8_t const flags = s3_barcode_active(&barcode)
+                              ? S2_LINE_FLAG_BARCODE : 0u;
+
+        if ((position != last_position) || (flags != last_flags)
             || ((now_ms - last_report_ms) >= S3_LINE_REPORT_MS))
         {
-            if (!s2_line_submit_scaled(position, strength, now_ms))
+            if (!s2_line_submit_scaled(position, strength, flags, now_ms))
             {
                 if (!b_delivery_failed)
                 {
@@ -279,6 +284,7 @@ s3_test_line_trial (void)
                     last_log_ms = now_ms;
                 }
                 last_position = position;
+                last_flags = flags;
                 last_report_ms = now_ms;
             }
         }

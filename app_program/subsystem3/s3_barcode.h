@@ -38,6 +38,11 @@ s3_scan_result_t s3_barcode_update(s3_barcode_t * p_barcode, uint16_t adc,
 /** Abandon any capture in progress, e.g. after an ADC read failure. */
 void s3_barcode_abort(s3_barcode_t * p_barcode);
 
+/** True while a capture is in progress: from the first black edge until
+ * it decodes, is rejected or is abandoned. The scan timeouts bound it.
+ */
+bool s3_barcode_active(s3_barcode_t const * p_barcode);
+
 #endif /* S3_BARCODE_H */
 
 /* End of file. */

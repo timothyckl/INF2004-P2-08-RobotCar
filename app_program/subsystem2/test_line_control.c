@@ -222,6 +222,24 @@ test_line_control_curve (void)
     return (b_passed);
 }
 
+/* S2-U73: barcode softening (S2 decision 25) changes only strong curves. */
+bool
+test_line_control_soften (void)
+{
+    return ((LINE_CONTROL_ACTION_CORRECT_LEFT
+             == line_control_soften(LINE_CONTROL_ACTION_CURVE_LEFT))
+        && (LINE_CONTROL_ACTION_CORRECT_RIGHT
+            == line_control_soften(LINE_CONTROL_ACTION_CURVE_RIGHT))
+        && (LINE_CONTROL_ACTION_CORRECT_LEFT
+            == line_control_soften(LINE_CONTROL_ACTION_CORRECT_LEFT))
+        && (LINE_CONTROL_ACTION_CORRECT_RIGHT
+            == line_control_soften(LINE_CONTROL_ACTION_CORRECT_RIGHT))
+        && (LINE_CONTROL_ACTION_STRAIGHT
+            == line_control_soften(LINE_CONTROL_ACTION_STRAIGHT))
+        && (LINE_CONTROL_ACTION_STOP
+            == line_control_soften(LINE_CONTROL_ACTION_STOP)));
+}
+
 #endif /* APP_TEST */
 
 /* End of file. */

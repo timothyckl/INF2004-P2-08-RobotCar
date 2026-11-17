@@ -100,12 +100,18 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 #define S2_LINE_MAX_AGE_MS      100u
 #define S2_LINE_Q_BYTES         48
 
+/* Report flags. BARCODE: the side sensor has a barcode capture in
+   progress, so the controller softens strong curves (S2 decision 25). */
+#define S2_LINE_FLAG_BARCODE    0x01u
+#define S2_LINE_FLAGS_VALID     S2_LINE_FLAG_BARCODE
+
 typedef struct
 {
     uint32_t captured_ms;
     uint8_t  position;       /* one of S2_LINE_* */
     uint8_t  strength;       /* 0..100; meaningful for LEFT/RIGHT only */
-    uint8_t  reserved[2];
+    uint8_t  flags;          /* S2_LINE_FLAG_* */
+    uint8_t  reserved;       /* zero */
 } s2_line_report_t;
 
 IMPORT ID line_q;
@@ -114,10 +120,10 @@ bool s2_line_make (uint8_t position, uint32_t captured_ms,
                    s2_line_report_t * p_report);
 bool s2_line_submit (uint8_t position, uint32_t captured_ms);
 bool s2_line_make_scaled (uint8_t position, uint8_t strength,
-                          uint32_t captured_ms,
+                          uint8_t flags, uint32_t captured_ms,
                           s2_line_report_t * p_report);
 bool s2_line_submit_scaled (uint8_t position, uint8_t strength,
-                            uint32_t captured_ms);
+                            uint8_t flags, uint32_t captured_ms);
 bool s2_line_start (void);   /* queued request; controller authorises it */
 bool s2_line_stop (void);    /* urgent local STOP flag */
 
