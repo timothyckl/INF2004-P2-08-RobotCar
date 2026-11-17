@@ -1309,7 +1309,7 @@ faulted on the third (200 ms after boot, three consecutive invalid
 attempts, decision 3), and from the seventh (about 480 ms) every echo was
 valid. On a USB boot after flashing, the sensor was already powered and
 the first attempt (30 ms) was valid. The HC-SR04 datasheet gives no
-power-up time; the module runs at 3V3, outside its 5 V specification.
+power-up time; the module runs at 3V3 (decision 13).
 
 **Decision.** `scan_task.c` sends no forward trigger until 1 s after
 `scan_task_start()` (about twice the measured 480 ms). The allowance is
@@ -1322,6 +1322,18 @@ depends on it.
 **Evidence.** `testing/subsystem5/logs/2026-11-17_s5-bootfault-*.txt`
 (diagnostic image, not committed). To be confirmed by a cold power-bank
 boot that comes up Ready.
+
+### 13. The HC-SR04 stays on 3V3 (2026-11-17)
+
+Approved by Dalton on the integration branch.
+
+The module is powered from the 3V3 rail, as wired in the team pin mapping of
+2026-11-03, and that is the agreed supply; the datasheet's 5 V figure is not
+a requirement for this car. On 3V3, ECHO is already at a level the Pico's
+GPIO accepts, so no level shifter is fitted. On the car on 2026-11-17 it read
+203 mm at 200 mm and 482 mm at 500 mm with every reading valid, and it
+detected an obstacle at 373 mm during a lap. Its only 3V3-specific
+behaviour seen so far is the slow power-up handled by decision 12.
 
 ### 11. C module templates
 

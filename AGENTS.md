@@ -78,7 +78,7 @@ forward (away from the viewer).
 |---|---|---|---|---|
 | GY-511 / LSM303DLHC IMU | SDA / SCL | GP2 / GP3 | I2C1 | IMU/Terrain; power from 3V3 |
 | HC-SR04 | TRIG | GP4 | GPIO output | Obstacle Scan generates the trigger pulse |
-| HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; currently powered from 3V3, see below |
+| HC-SR04 | ECHO | GP5 | GPIO input | Obstacle Scan times the pulse; powered from 3V3, see below |
 | Front-left line sensor | AO | GP26 | ADC0 | Line Sensor: left line guide; DOUT disconnected |
 | Front-right line sensor | AO | GP27 | ADC1 | Line Sensor: right line guide; DOUT disconnected |
 | Side barcode sensor | AO | GP28 | ADC2 (Grove 7) | Line Sensor: barcode only, never steering; DOUT removed; keep the GP28 battery-sense jumper open |
@@ -112,9 +112,8 @@ Configuration constraints:
   would be added to that signal. Keep ADC3/GP29 disabled because it is
   reserved for the Pico W radio.
 - GP6, GP7, GP13 to GP15, GP18, GP19, GP21 and GP22 are unused.
-- The HC-SR04 datasheet specifies a DC 5 V supply, but the module is currently
-  powered from 3V3 (team pin mapping, 2026-11-03). That wiring is outside the
-  datasheet and is not validated. Obstacle Scan must confirm ranging at 3V3 or
-  move to 5 V; at 5 V, ECHO must be level-shifted to 3.3 V because Pico GPIO is
-  not 5 V tolerant.
+- The HC-SR04 is powered from 3V3 by team decision (pin mapping 2026-11-03,
+  kept 2026-11-17, S5 decision 13), so ECHO needs no level shifting. Ranging
+  at 3V3 was confirmed on the car on 2026-11-17 (200 and 500 mm within
+  20 mm); the module needs about 0.5 s after power-on (S5 decision 12).
 - Keep all signal grounds common.
