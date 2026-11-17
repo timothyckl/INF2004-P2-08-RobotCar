@@ -88,7 +88,8 @@ static void heartbeat_timeout (void * p_arg)
     sys_timeout(MQTT_UTK_HEARTBEAT_MS, heartbeat_timeout, NULL);
 }
 
-/* Telemetry drop counters, printed every MQTT_UTK_STATS_PERIODS periods
+/* Telemetry drop counters since boot, printed and published on
+ * S1_MQTT_STATS_TOPIC every MQTT_UTK_STATS_PERIODS periods
  * (S1 decision 4). Service task only. */
 #define MQTT_UTK_STATS_PERIODS 10u
 
@@ -139,19 +140,26 @@ static void telemetry_timeout (void * p_arg)
 
     g_tel_periods++;
 
-    if (g_tel_periods >= MQTT_UTK_STATS_PERIODS)
+    if (0u == (g_tel_periods % MQTT_UTK_STATS_PERIODS))
     {
-        tm_printf((UB *) "mqtt: telemetry %u periods: sent %u, refused %u"
-                  " (last err %d), no snapshot %u, not connected %u\n",
-                  (unsigned) g_tel_periods, (unsigned) g_tel_sent,
-                  (unsigned) g_tel_refused, (int) g_tel_last_err,
-                  (unsigned) g_tel_no_snapshot, (unsigned) g_tel_no_link);
-        g_tel_periods     = 0u;
-        g_tel_sent        = 0u;
-        g_tel_refused     = 0u;
-        g_tel_no_snapshot = 0u;
-        g_tel_no_link     = 0u;
-        g_tel_last_err    = ERR_OK;
+        UB  stats[96];
+        int length;
+
+        /* Cumulative since boot, so a lost stats message loses nothing. */
+        length = tm_sprintf(stats, (const UB *) "periods %u sent %u refused %u"
+                            " err %d nosnap %u nolink %u",
+                            (unsigned) g_tel_periods, (unsigned) g_tel_sent,
+                            (unsigned) g_tel_refused, (int) g_tel_last_err,
+                            (unsigned) g_tel_no_snapshot,
+                            (unsigned) g_tel_no_link);
+        tm_printf((UB *) "mqtt: telemetry %s\n", stats);
+
+        if ((NULL != g_p_client) && mqtt_client_is_connected(g_p_client))
+        {
+            (void) mqtt_publish(g_p_client, S1_MQTT_STATS_TOPIC, stats,
+                                (u16_t) length, 0u, 0u, publish_done_cb,
+                                NULL);
+        }
     }
 
     sys_timeout(S1_MQTT_TELEMETRY_MS, telemetry_timeout, NULL);

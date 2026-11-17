@@ -134,7 +134,8 @@ return value was ignored, so the drops were silent.
   acceptable on the car's battery for a run; not measured.
 - `telemetry_timeout()` counts each 1 s period as sent, refused by
   `mqtt_publish()` (with the last error), no snapshot, or not connected, and
-  prints the counts every 10 periods. This separates link congestion from
+  prints and publishes (topic `p2-08/p2-08-car-01/stats`, cumulative since
+  boot) the counts every 10 periods. This separates link congestion from
   a provider lock that is busy.
 
 **Tests.** Repeat S1-H02 driving and S1-H01 STOP while running: pass if

@@ -26,6 +26,11 @@
 #define S1_MQTT_TELEMETRY_TOPIC "p2-08/p2-08-car-01/telemetry"
 #endif
 
+/* Cumulative telemetry drop counters, ASCII, every 10 s (S1 decision 4). */
+#ifndef S1_MQTT_STATS_TOPIC
+#define S1_MQTT_STATS_TOPIC     "p2-08/p2-08-car-01/stats"
+#endif
+
 #define S1_MQTT_TELEMETRY_MS    1000u   /* proposed period, unvalidated */
 #define S1_MQTT_TELEMETRY_MAX   TELEMETRY_ENCODER_SIZE
 
