@@ -36,8 +36,16 @@ python -m pip install -r requirements.txt
 
 ## Run
 
-Start the broker that the car publishes to (the address set in
-`config/wifi_secrets.h`), then:
+Start a broker on this laptop that listens on the network, at the address
+the car is built with (`MQTT_BROKER_IP` in `config/wifi_secrets.h`; this must
+be the laptop's address on the car's WiFi). For example, with mosquitto:
+
+```sh
+printf 'listener 1883 0.0.0.0\nallow_anonymous true\n' > /tmp/p2-08-broker.conf
+mosquitto -c /tmp/p2-08-broker.conf -v
+```
+
+Then, in another terminal:
 
 ```sh
 . .venv/bin/activate
@@ -50,7 +58,7 @@ Open <http://127.0.0.1:8765>. Stop with Ctrl+C. Options:
 |---|---|---|
 | `--port` | 1883 | broker port |
 | `--prefix` | `p2-08/p2-08-car-01` | topic prefix of `telemetry`, `stats` and `command` |
-| `--heartbeat` | `mtk3smp-pico/heartbeat` | heartbeat topic (`MQTT_TOPIC` in `wifi_secrets.h`) |
+| `--heartbeat` | `<prefix>/heartbeat` | heartbeat topic (`MQTT_TOPIC` in `wifi_secrets.h`) |
 | `--http-port` | 8765 | page port; the server binds to 127.0.0.1 only |
 
 Each session is logged to `logs/dashboard-YYYYMMDD-HHMMSS.jsonl` (ignored by

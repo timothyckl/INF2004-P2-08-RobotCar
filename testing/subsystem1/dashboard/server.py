@@ -280,12 +280,15 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=1883)
     parser.add_argument("--prefix", default="p2-08/p2-08-car-01",
                         help="topic prefix of telemetry/stats/command")
-    parser.add_argument("--heartbeat", default="mtk3smp-pico/heartbeat",
-                        help="heartbeat topic (MQTT_TOPIC in wifi_secrets.h)")
+    parser.add_argument("--heartbeat", default=None,
+                        help="heartbeat topic (MQTT_TOPIC in wifi_secrets.h); "
+                             "default <prefix>/heartbeat")
     parser.add_argument("--host", default="127.0.0.1",
                         help="HTTP bind address; keep it local")
     parser.add_argument("--http-port", type=int, default=8765)
     args = parser.parse_args()
+    if args.heartbeat is None:
+        args.heartbeat = f"{args.prefix}/heartbeat"
 
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     store = Store(HERE / "logs" / f"dashboard-{stamp}.jsonl")
