@@ -1,0 +1,571 @@
+s3 line: adc=140/182 filtered=126/180 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/181 filtered=126/181 threshold=233/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/187 filtered=127/184 threshold=233/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/179 filtered=126/177 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/179 filtered=133/179 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/186 filtered=123/182 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/178 filtered=138/176 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/181 filtered=119/180 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/168 filtered=137/177 threshold=228/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=123/186 filtered=123/185 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=111/187 filtered=114/186 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/181 filtered=128/179 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/184 filtered=134/181 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=135/185 filtered=134/182 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/173 filtered=138/176 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, no IP yet (2)
+s3 line: adc=144/173 filtered=142/176 threshold=229/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link up, ip=10.126.176.101
+mqtt: connected to 10.126.176.224
+mqtt: subscribed to p2-08/p2-08-car-01/command
+s3 line: adc=144/180 filtered=145/179 threshold=232/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/186 filtered=121/183 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/186 filtered=118/184 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/171 filtered=136/176 threshold=230/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/179 filtered=127/179 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/177 filtered=121/178 threshold=230/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/182 filtered=120/182 threshold=226/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/176 filtered=131/178 threshold=226/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/181 filtered=124/181 threshold=227/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/181 filtered=132/179 threshold=228/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 0"
+s3 line: adc=107/195 filtered=121/185 threshold=228/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/179 filtered=129/180 threshold=229/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/184 filtered=124/184 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/166 filtered=128/173 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/179 filtered=125/179 threshold=224/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=111/181 filtered=118/179 threshold=223/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/179 filtered=133/180 threshold=224/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/177 filtered=128/178 threshold=223/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s4: new run 1; hump maximum cleared
+s3 line: adc=152/181 filtered=145/186 threshold=227/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 1"
+s3 line: adc=146/176 filtered=136/179 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/180 filtered=137/179 threshold=227/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/168 filtered=142/173 threshold=226/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/181 filtered=127/179 threshold=230/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/180 filtered=126/184 threshold=231/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/181 filtered=126/179 threshold=232/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/184 filtered=140/182 threshold=231/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=253/179 filtered=251/178 threshold=233/676 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=162/180 filtered=162/180 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/184 filtered=127/181 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 2"
+s3 line: adc=173/182 filtered=157/179 threshold=235/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=713/194 filtered=549/184 threshold=236/679 left=BLACK right=WHITE mask=1 strength=30 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=730/176 filtered=809/174 threshold=236/680 left=BLACK right=WHITE mask=1 strength=49 command=LEFT
+s3 line: adc=135/181 filtered=152/180 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/178 filtered=139/177 threshold=237/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=576/178 filtered=458/179 threshold=238/680 left=BLACK right=WHITE mask=1 strength=23 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=622/181 filtered=612/182 threshold=238/680 left=BLACK right=WHITE mask=1 strength=35 command=LEFT
+s3 line: adc=195/178 filtered=197/181 threshold=238/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=480/182 filtered=386/179 threshold=241/681 left=BLACK right=WHITE mask=1 strength=18 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=848/176 filtered=828/178 threshold=241/680 left=BLACK right=WHITE mask=1 strength=51 command=LEFT
+s3 line: adc=920/174 filtered=974/177 threshold=241/679 left=BLACK right=WHITE mask=1 strength=61 command=LEFT
+s3 line: adc=206/179 filtered=201/179 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 3"
+s3 line: adc=185/169 filtered=176/176 threshold=243/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=845/180 filtered=641/180 threshold=243/679 left=BLACK right=WHITE mask=1 strength=37 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=928/186 filtered=935/167 threshold=243/681 left=BLACK right=WHITE mask=1 strength=58 command=LEFT
+s3 line: adc=160/174 filtered=169/176 threshold=243/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/185 filtered=140/183 threshold=240/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=174/179 filtered=173/179 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=314/177 filtered=294/179 threshold=240/680 left=BLACK right=WHITE mask=1 strength=11 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=170/178 filtered=229/177 threshold=240/678 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+s3 line: adc=180/179 filtered=181/179 threshold=240/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/182 filtered=120/182 threshold=237/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/181 filtered=139/179 threshold=238/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=258/174 filtered=259/178 threshold=241/678 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=196/182 filtered=208/180 threshold=241/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 4"
+s3 line: adc=125/184 filtered=126/183 threshold=240/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/182 filtered=125/180 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/180 filtered=146/183 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=177/176 filtered=186/179 threshold=239/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=221/185 filtered=213/182 threshold=242/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=270/190 filtered=263/183 threshold=244/680 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=160/176 filtered=173/179 threshold=244/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/192 filtered=130/191 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/185 filtered=135/187 threshold=244/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/200 filtered=150/201 threshold=242/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 5"
+s3 line: adc=109/213 filtered=121/209 threshold=242/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/232 filtered=129/234 threshold=241/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=110/255 filtered=114/248 threshold=238/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/1124 filtered=134/989 threshold=236/697 left=WHITE right=BLACK mask=2 strength=26 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=143/217 filtered=135/290 threshold=238/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/184 filtered=133/179 threshold=237/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/173 filtered=130/174 threshold=236/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/178 filtered=137/178 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/173 filtered=137/177 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/176 filtered=128/179 threshold=234/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/177 filtered=150/178 threshold=235/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 6"
+s3 line: adc=174/185 filtered=180/183 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=307/181 filtered=288/182 threshold=240/680 left=BLACK right=WHITE mask=1 strength=11 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=169/181 filtered=184/179 threshold=240/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/187 filtered=132/185 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/177 filtered=121/178 threshold=236/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=258/179 filtered=228/177 threshold=236/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1032/164 filtered=795/173 threshold=236/677 left=BLACK right=WHITE mask=1 strength=48 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=234/178 filtered=439/178 threshold=236/678 left=BLACK right=WHITE mask=1 strength=22 command=LEFT
+s3 line: adc=163/178 filtered=161/176 threshold=236/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/189 filtered=141/182 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=965/178 filtered=739/179 threshold=234/679 left=BLACK right=WHITE mask=1 strength=44 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1084/181 filtered=1076/180 threshold=234/676 left=BLACK right=WHITE mask=1 strength=69 command=LEFT
+s3 line: adc=150/165 filtered=167/173 threshold=234/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 7"
+s3 line: adc=136/185 filtered=133/183 threshold=235/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=805/177 filtered=589/175 threshold=236/677 left=BLACK right=WHITE mask=1 strength=33 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=882/186 filtered=867/183 threshold=236/678 left=BLACK right=WHITE mask=1 strength=54 command=LEFT
+s3 line: adc=849/182 filtered=842/180 threshold=236/678 left=BLACK right=WHITE mask=1 strength=52 command=LEFT
+s3 line: adc=165/177 filtered=178/179 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1230/178 filtered=971/179 threshold=239/681 left=BLACK right=WHITE mask=1 strength=61 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1453/185 filtered=1451/181 threshold=239/677 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=184/163 filtered=198/172 threshold=239/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=206/182 filtered=199/180 threshold=240/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1092/170 filtered=811/175 threshold=240/677 left=BLACK right=WHITE mask=1 strength=49 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=155/179 filtered=174/180 threshold=240/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/181 filtered=126/179 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 8"
+s3 line: adc=214/178 filtered=203/172 threshold=236/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=789/178 filtered=545/178 threshold=236/678 left=BLACK right=WHITE mask=1 strength=30 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=159/179 filtered=171/177 threshold=236/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/196 filtered=123/192 threshold=235/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/176 filtered=139/179 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/179 filtered=128/179 threshold=232/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/181 filtered=197/179 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=301/170 filtered=275/174 threshold=233/679 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=132/160 filtered=151/169 threshold=233/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/195 filtered=128/187 threshold=230/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=112/179 filtered=121/179 threshold=231/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 9"
+s3 line: adc=166/171 filtered=162/174 threshold=233/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=201/181 filtered=192/180 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=205/177 filtered=201/179 threshold=239/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=193/187 filtered=193/184 threshold=242/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/178 filtered=138/178 threshold=246/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/177 filtered=125/177 threshold=243/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/174 filtered=129/176 threshold=241/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s4: hump 10 mm under the right wheel (run maximum 10 mm)
+s3 line: adc=155/177 filtered=147/179 threshold=242/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=697/192 filtered=540/187 threshold=244/679 left=BLACK right=WHITE mask=1 strength=29 command=LEFT
+s3 line: adc=937/2782 filtered=934/2265 threshold=244/679 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[S2] line: junction confirmed; crossing straight
+s3 line: adc=868/191 filtered=829/273 threshold=244/679 left=BLACK right=WHITE mask=1 strength=51 command=LEFT
+[S2] line: junction cleared; holding straight exit
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 10"
+s3 line: adc=847/173 filtered=871/172 threshold=244/679 left=BLACK right=WHITE mask=1 strength=54 command=LEFT
+[S2] line: normal following resumed
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=773/177 filtered=799/177 threshold=244/679 left=BLACK right=WHITE mask=1 strength=48 command=LEFT
+s3 line: adc=152/181 filtered=156/181 threshold=244/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/1987 filtered=134/1666 threshold=241/679 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=128/187 filtered=131/242 threshold=238/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/173 filtered=125/176 threshold=239/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=169/158 filtered=155/164 threshold=238/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/184 filtered=143/182 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/171 filtered=128/171 threshold=239/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/178 filtered=127/177 threshold=236/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/224 filtered=141/216 threshold=236/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 11"
+s3 line: adc=126/2060 filtered=130/1714 threshold=235/680 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=111/196 filtered=119/277 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=114/206 filtered=123/198 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=110/2338 filtered=116/1919 threshold=231/682 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=124/2828 filtered=128/2920 threshold=230/682 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+s3 line: adc=139/192 filtered=135/264 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/2540 filtered=122/2073 threshold=230/681 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=110/3001 filtered=117/3068 threshold=229/681 left=WHITE right=BLACK mask=2 strength=93 command=RIGHT
+s3 line: adc=146/213 filtered=134/290 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/2560 filtered=120/2081 threshold=228/682 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=116/3262 filtered=121/3265 threshold=229/682 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+s3 line: adc=142/1456 filtered=134/1604 threshold=233/682 left=WHITE right=BLACK mask=2 strength=46 command=RIGHT
+s3 line: adc=139/226 filtered=135/297 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 12"
+s3 line: adc=146/1629 filtered=138/1394 threshold=230/684 left=WHITE right=BLACK mask=2 strength=39 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=142/3097 filtered=137/3089 threshold=231/684 left=WHITE right=BLACK mask=2 strength=93 command=RIGHT
+s3 line: adc=129/399 filtered=126/426 threshold=229/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/2188 filtered=123/1778 threshold=228/686 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=106/3093 filtered=125/3106 threshold=225/686 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+s3 line: adc=117/2074 filtered=117/2236 threshold=225/686 left=WHITE right=BLACK mask=2 strength=66 command=RIGHT
+s3 line: adc=147/215 filtered=143/263 threshold=225/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/2181 filtered=128/1782 threshold=227/688 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=129/3132 filtered=128/3144 threshold=227/688 left=WHITE right=BLACK mask=2 strength=95 command=RIGHT
+s3 line: adc=142/2904 filtered=138/2915 threshold=229/688 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+s3 line: adc=139/2001 filtered=143/2086 threshold=228/688 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 13"
+s3 line: adc=125/275 filtered=133/318 threshold=230/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/2088 filtered=146/1726 threshold=232/690 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=113/2941 filtered=122/2948 threshold=233/690 left=WHITE right=BLACK mask=2 strength=89 command=RIGHT
+s3 line: adc=112/3015 filtered=127/3023 threshold=232/690 left=WHITE right=BLACK mask=2 strength=91 command=RIGHT
+s3 line: adc=148/3134 filtered=140/3140 threshold=230/690 left=WHITE right=BLACK mask=2 strength=95 command=RIGHT
+s3 line: adc=148/1324 filtered=145/1704 threshold=231/690 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+s3 line: adc=141/322 filtered=135/398 threshold=231/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/2904 filtered=134/2382 threshold=234/692 left=WHITE right=BLACK mask=2 strength=70 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=126/3517 filtered=129/3515 threshold=231/692 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+s3 line: adc=115/3102 filtered=118/3118 threshold=232/692 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+s3 line: adc=156/228 filtered=150/280 threshold=232/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/2483 filtered=146/2081 threshold=234/693 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 14"
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=141/3188 filtered=132/3179 threshold=231/693 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+s3 line: adc=134/3248 filtered=131/3250 threshold=229/693 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+s3 line: adc=141/3169 filtered=137/3179 threshold=231/693 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+s3 line: adc=130/2882 filtered=130/2938 threshold=230/693 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+s3 line: adc=142/2464 filtered=143/2521 threshold=232/693 left=WHITE right=BLACK mask=2 strength=75 command=RIGHT
+s3 line: adc=190/302 filtered=183/356 threshold=234/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=172/1456 filtered=166/1253 threshold=235/693 left=WHITE right=BLACK mask=2 strength=34 command=RIGHT
+s3 line: adc=210/247 filtered=209/298 threshold=237/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=249/218 filtered=242/224 threshold=237/694 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+s3 line: adc=131/2754 filtered=156/2252 threshold=237/694 left=WHITE right=BLACK mask=2 strength=66 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=113/3337 filtered=127/3339 threshold=237/694 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+s3 line: adc=118/3222 filtered=127/3216 threshold=235/694 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+s3 line: adc=113/2586 filtered=124/2738 threshold=234/694 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 15"
+s3 line: adc=131/205 filtered=136/287 threshold=233/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/2614 filtered=125/2168 threshold=232/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=142/3212 filtered=132/3240 threshold=231/692 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+s3 line: adc=123/201 filtered=122/264 threshold=229/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/201 filtered=133/198 threshold=226/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/2105 filtered=140/1686 threshold=227/690 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=107/187 filtered=121/256 threshold=228/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/892 filtered=125/565 threshold=228/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=143/2778 filtered=134/2288 threshold=228/688 left=WHITE right=BLACK mask=2 strength=67 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=813/3186 filtered=618/3201 threshold=230/688 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[S2] line: junction confirmed; crossing straight
+s3 line: adc=955/192 filtered=980/242 threshold=230/688 left=BLACK right=WHITE mask=1 strength=62 command=LEFT
+[S2] line: junction cleared; holding straight exit
+s3 line: adc=144/185 filtered=156/183 threshold=230/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] line: normal following resumed
+s3 line: adc=128/1891 filtered=125/1520 threshold=231/688 left=WHITE right=BLACK mask=2 strength=43 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=140/183 filtered=139/232 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 16"
+s3 line: adc=130/174 filtered=131/174 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/176 filtered=129/178 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=109/173 filtered=112/182 threshold=229/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/1662 filtered=130/1411 threshold=230/683 left=WHITE right=BLACK mask=2 strength=39 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=114/203 filtered=123/278 threshold=229/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/181 filtered=145/181 threshold=230/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/183 filtered=139/181 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/181 filtered=137/180 threshold=232/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/181 filtered=120/181 threshold=232/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/185 filtered=130/181 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 17"
+s3 line: adc=145/192 filtered=132/188 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=107/192 filtered=118/186 threshold=229/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/197 filtered=142/195 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/307 filtered=129/289 threshold=231/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/1403 filtered=132/1195 threshold=230/684 left=WHITE right=BLACK mask=2 strength=32 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=141/208 filtered=131/289 threshold=230/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/185 filtered=130/181 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/179 filtered=136/182 threshold=232/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/177 filtered=138/180 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/179 filtered=119/178 threshold=231/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 18"
+s3 line: adc=129/179 filtered=134/179 threshold=232/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/181 filtered=153/180 threshold=235/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=200/184 filtered=197/176 threshold=239/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=205/185 filtered=223/182 threshold=240/677 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=193/170 filtered=197/176 threshold=240/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=184/182 filtered=179/181 threshold=243/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=220/179 filtered=219/179 threshold=246/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=227/180 filtered=236/179 threshold=247/676 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=158/178 filtered=177/178 threshold=247/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/259 filtered=132/242 threshold=244/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=112/1155 filtered=118/977 threshold=243/680 left=WHITE right=BLACK mask=2 strength=26 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=132/174 filtered=130/235 threshold=240/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/179 filtered=142/178 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 19"
+s3 line: adc=150/185 filtered=138/181 threshold=237/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=190/180 filtered=184/181 threshold=240/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=262/182 filtered=256/178 threshold=241/678 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=161/181 filtered=173/178 threshold=241/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=119/222 filtered=124/216 threshold=238/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/1087 filtered=123/930 threshold=235/681 left=WHITE right=BLACK mask=2 strength=24 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=146/187 filtered=141/241 threshold=233/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/180 filtered=128/180 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/199 filtered=143/191 threshold=235/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/163 filtered=139/170 threshold=237/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/188 filtered=151/183 threshold=238/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 20"
+s3 line: adc=148/176 filtered=149/175 threshold=241/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=155/181 filtered=159/180 threshold=244/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=239/182 filtered=238/180 threshold=248/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=288/171 filtered=274/174 threshold=248/677 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=184/211 filtered=194/207 threshold=248/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=204/2103 filtered=193/1683 threshold=249/680 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+s3 line: adc=879/3210 filtered=684/3095 threshold=249/680 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[S2] line: junction confirmed; crossing straight
+s3 line: adc=117/185 filtered=143/242 threshold=249/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] line: junction cleared; holding straight exit
+s3 line: adc=145/182 filtered=137/182 threshold=246/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] line: normal following resumed
+s3 line: adc=117/185 filtered=124/184 threshold=243/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/193 filtered=140/192 threshold=239/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/226 filtered=130/228 threshold=236/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/1154 filtered=131/1060 threshold=236/690 left=WHITE right=BLACK mask=2 strength=28 command=RIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 21"
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=117/208 filtered=125/260 threshold=238/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/180 filtered=127/177 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/176 filtered=129/184 threshold=237/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/184 filtered=126/181 threshold=235/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/177 filtered=122/176 threshold=233/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=111/2172 filtered=114/1797 threshold=234/681 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=113/1229 filtered=114/1664 threshold=235/681 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+s3 line: adc=133/187 filtered=135/246 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/195 filtered=133/192 threshold=235/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/2222 filtered=127/1781 threshold=234/682 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=109/2025 filtered=121/2272 threshold=233/682 left=WHITE right=BLACK mask=2 strength=67 command=RIGHT
+s3 line: adc=135/234 filtered=132/291 threshold=232/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 22"
+s3 line: adc=123/2356 filtered=128/1884 threshold=230/684 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=113/3234 filtered=117/3236 threshold=228/684 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+s3 line: adc=118/199 filtered=124/275 threshold=230/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/2614 filtered=136/2164 threshold=232/685 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=142/3296 filtered=134/3308 threshold=231/685 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+s3 line: adc=137/205 filtered=135/267 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/2235 filtered=138/1850 threshold=232/687 left=WHITE right=BLACK mask=2 strength=53 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=136/3189 filtered=133/3207 threshold=229/687 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+s3 line: adc=129/213 filtered=131/261 threshold=228/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=109/2475 filtered=123/1971 threshold=228/689 left=WHITE right=BLACK mask=2 strength=57 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=107/3272 filtered=121/3256 threshold=229/689 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 23"
+s3 line: adc=119/732 filtered=120/943 threshold=225/689 left=WHITE right=BLACK mask=2 strength=24 command=RIGHT
+s3 line: adc=119/221 filtered=120/269 threshold=225/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/2317 filtered=128/1902 threshold=226/691 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=134/3192 filtered=128/3203 threshold=227/691 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+s3 line: adc=144/2860 filtered=133/2903 threshold=228/691 left=WHITE right=BLACK mask=2 strength=87 command=RIGHT
+s3 line: adc=132/233 filtered=142/293 threshold=229/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/2150 filtered=132/1688 threshold=231/692 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=115/3052 filtered=123/3045 threshold=232/692 left=WHITE right=BLACK mask=2 strength=92 command=RIGHT
+s3 line: adc=145/3049 filtered=138/3050 threshold=230/692 left=WHITE right=BLACK mask=2 strength=92 command=RIGHT
+s3 line: adc=117/2669 filtered=128/2696 threshold=231/692 left=WHITE right=BLACK mask=2 strength=81 command=RIGHT
+s3 line: adc=147/813 filtered=141/860 threshold=232/692 left=WHITE right=BLACK mask=2 strength=21 command=RIGHT
+s3 line: adc=150/289 filtered=144/352 threshold=233/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 24"
+s3 line: adc=136/2242 filtered=133/1816 threshold=235/694 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=138/2985 filtered=135/2983 threshold=234/694 left=WHITE right=BLACK mask=2 strength=90 command=RIGHT
+s3 line: adc=126/2738 filtered=124/2742 threshold=231/694 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 line: adc=147/1449 filtered=135/1574 threshold=231/694 left=WHITE right=BLACK mask=2 strength=44 command=RIGHT
+s3 line: adc=148/236 filtered=144/299 threshold=231/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/2467 filtered=133/2035 threshold=233/696 left=WHITE right=BLACK mask=2 strength=59 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=140/3058 filtered=137/3048 threshold=231/696 left=WHITE right=BLACK mask=2 strength=92 command=RIGHT
+s3 line: adc=129/3108 filtered=130/3114 threshold=230/696 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+s3 line: adc=140/3212 filtered=138/3219 threshold=229/696 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+s3 line: adc=136/3343 filtered=129/3330 threshold=226/696 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+s3 line: adc=130/3149 filtered=130/3182 threshold=228/696 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 25"
+s3 line: adc=129/2735 filtered=138/2689 threshold=231/696 left=WHITE right=BLACK mask=2 strength=80 command=RIGHT
+s3 line: adc=193/1586 filtered=190/1644 threshold=234/696 left=WHITE right=BLACK mask=2 strength=47 command=RIGHT
+s3 line: adc=213/628 filtered=207/512 threshold=235/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=220/2120 filtered=215/1931 threshold=236/696 left=WHITE right=mqtt: publish failed, err=-3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 28"
+s3 line: adc=131/188 filtered=131/188 threshold=229/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/188 filtered=138/196 threshold=230/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/226 filtered=130/222 threshold=232/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/509 filtered=137/430 threshold=233/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=112/1478 filtered=119/1279 threshold=232/693 left=WHITE right=BLACK mask=2 strength=35 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=120/227 filtered=123/269 threshold=230/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/179 filtered=132/179 threshold=231/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/187 filtered=163/183 threshold=232/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=679/180 filtered=517/179 threshold=233/685 left=BLACK right=WHITE mask=1 strength=28 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=140/173 filtered=158/176 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/174 filtered=129/177 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=172/175 filtered=163/176 threshold=232/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: publish failed, err=-3
+mqtt: publish failed, err=-3
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 29"
+s3 line: adc=705/182 filtered=513/179 threshold=233/676 left=BLACK right=WHITE mask=1 strength=28 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=249/173 filtered=396/178 threshold=233/677 left=BLACK right=WHITE mask=1 strength=19 command=LEFT
+s3 line: adc=153/180 filtered=170/176 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/174 filtered=147/176 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=591/179 filtered=463/180 threshold=233/679 left=BLACK right=WHITE mask=1 strength=24 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=511/177 filtered=558/181 threshold=233/678 left=BLACK right=WHITE mask=1 strength=31 command=LEFT
+s3 line: adc=233/180 filtered=221/177 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=511/180 filtered=397/180 threshold=236/679 left=BLACK right=WHITE mask=1 strength=19 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=728/178 filtered=712/178 threshold=236/677 left=BLACK right=WHITE mask=1 strength=42 command=LEFT
+s3 line: adc=341/176 filtered=413/180 threshold=236/680 left=BLACK right=WHITE mask=1 strength=20 command=LEFT
+s3 line: adc=189/179 filtered=192/180 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=694/178 filtered=526/179 threshold=239/681 left=BLACK right=WHITE mask=1 strength=28 command=LEFT
+mqtt: publish failed, err=-3
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 30"
+s3 line: adc=901/184 filtered=903/183 threshold=239/681 left=BLACK right=WHITE mask=1 strength=56 command=LEFT
+s3 line: adc=156/180 filtered=175/180 threshold=239/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=188/186 filtered=181/180 threshold=242/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=181/180 filtered=178/180 threshold=245/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=164/182 filtered=168/181 threshold=249/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=164/181 filtered=168/180 threshold=252/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=190/186 filtered=180/181 threshold=255/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=164/184 filtered=164/184 threshold=258/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=166/166 filtered=166/175 threshold=262/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1865/202 filtered=1365/202 threshold=264/680 left=BLACK right=WHITE mask=1 strength=90 command=LEFT
+s3 line: adc=127/182 filtered=152/183 threshold=264/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 31"
+s3 line: adc=186/185 filtered=194/185 threshold=265/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=3888/184 filtered=3278/186 threshold=266/685 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=3954/568 filtered=3955/534 threshold=266/689 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1402/177 filtered=1394/178 threshold=266/686 left=BLACK right=WHITE mask=1 strength=92 command=LEFT
+s3 line: adc=1396/182 filtered=1394/181 threshold=266/683 left=BLACK right=WHITE mask=1 strength=92 command=LEFT
+s3 line: adc=2384/193 filtered=2271/193 threshold=266/682 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=3696/302 filtered=3697/309 threshold=266/686 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1540/179 filtered=1536/179 threshold=266/687 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1464/179 filtered=1473/180 threshold=266/684 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1470/189 filtered=1470/186 threshold=266/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 32"
+s3 line: adc=1504/184 filtered=1529/184 threshold=266/683 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1443/185 filtered=1444/184 threshold=266/680 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1438/187 filtered=1440/185 threshold=266/681 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=2134/198 filtered=2029/194 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1526/185 filtered=1532/185 threshold=266/686 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1469/176 filtered=1469/176 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=3222/254 filtered=3082/243 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1596/181 filtered=1601/182 threshold=266/687 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1528/185 filtered=1516/183 threshold=266/685 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1489/184 filtered=1491/184 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 33"
+s3 line: adc=1579/179 filtered=1561/182 threshold=266/681 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=2281/208 filtered=2244/205 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1535/190 filtered=1541/188 threshold=266/686 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1535/184 filtered=1519/183 threshold=266/685 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=3728/432 filtered=3696/396 threshold=266/688 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=3782/685 filtered=3787/701 threshold=266/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2966/224 filtered=3268/301 threshold=266/690 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1577/197 filtered=1574/192 threshold=266/690 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1552/173 filtered=1543/177 threshold=266/687 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1523/184 filtered=1528/181 threshold=266/683 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1509/181 filtered=1516/181 threshold=266/682 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 34"
+s3 line: adc=1498/188 filtered=1508/186 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1502/181 filtered=1503/181 threshold=266/682 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1496/172 filtered=1505/179 threshold=266/682 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1518/197 filtered=1506/190 threshold=266/685 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1504/185 filtered=1502/184 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1507/179 filtered=1507/181 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1504/182 filtered=1495/185 threshold=266/685 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1483/186 filtered=1490/185 threshold=266/683 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1497/184 filtered=1498/185 threshold=266/686 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 35"
+s3 line: adc=1484/180 filtered=1489/181 threshold=266/685 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1503/179 filtered=1502/179 threshold=266/684 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1493/187 filtered=1489/185 threshold=266/685 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1494/189 filtered=1490/187 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1501/184 filtered=1497/184 threshold=266/683 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1500/189 filtered=1493/187 threshold=266/683 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1475/186 filtered=1476/184 threshold=266/684 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1473/172 filtered=1482/177 threshold=266/683 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1473/178 filtered=1480/183 threshold=266/682 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1489/186 filtered=1489/186 threshold=266/683 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 36"
+s3 line: adc=1473/189 filtered=1481/187 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1496/178 filtered=1486/179 threshold=266/683 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1471/188 filtered=1483/188 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1473/178 filtered=1481/178 threshold=266/682 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1485/179 filtered=1482/181 threshold=266/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1470/180 filtered=1474/180 threshold=266/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1478/184 filtered=1477/182 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1492/184 filtered=1482/183 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1480/170 filtered=1485/175 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 37"
+s3 line: adc=1501/178 filtered=1492/180 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1470/186 filtered=1470/183 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1468/184 filtered=1476/182 threshold=266/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1500/179 filtered=1490/181 threshold=266/682 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1470/185 filtered=1482/183 threshold=266/683 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1470/186 filtered=1471/186 threshold=266/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1492/182 filtered=1482/184 threshold=266/686 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1494/179 filtered=1490/180 threshold=266/685 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1476/183 filtered=1473/181 threshold=266/685 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1485/186 filtered=1482/182 threshold=266/684 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 38"
+s3 line: adc=1485/180 filtered=1477/182 threshold=266/684 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1466/176 filtered=1476/178 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1475/188 filtered=1474/186 threshold=266/684 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1480/181 filtered=1472/182 threshold=266/684 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1492/180 filtered=1480/178 threshold=266/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1481/186 filtered=1482/184 threshold=266/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+s3 line: adc=1483/179 filtered=1476/181 threshold=266/684 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1480/187 filtered=1479/184 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1470/176 filtered=1474/180 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1477/188 filtered=1474/184 threshold=266/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 39"
+s3 line: adc=1489/176 filtered=1475/178 threshold=266/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1440/186 filtered=1444/186 threshold=266/683 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1480/187 filtered=1477/186 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1462/170 filtered=1461/174 threshold=266/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1477/184 filtered=1471/184 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1455/186 filtered=1465/185 threshold=266/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1452/186 filtered=1457/186 threshold=266/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1451/188 filtered=1453/185 threshold=266/681 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1466/185 filtered=1466/184 threshold=266/684 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+mqtt: TX [mtk3smp-pico/heartbeat] "hb 40"
+s3 line: adc=1451/176 filtered=1457/177 threshold=266/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1468/174 filtered=1472/175 threshold=266/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1452/186 filtered=1460/183 threshold=266/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1447/182 filtered=1448/181 threshold=266/681 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1443/186 filtered=1453/183 threshold=266/682 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=1445/188 filtered=1460/183 threshold=266/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1463/193 filtered=1469/190 threshold=266/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+s3 line: adc=1448/182 filtered=1460/183 threshold=266/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+s3 line: adc=1461/185 filtered=1467/183 threshold=266/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
