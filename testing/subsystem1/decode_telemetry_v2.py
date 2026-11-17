@@ -34,13 +34,40 @@ LINE_FRESH = 0x20
 HUMP_VALID = 0x40
 
 
-def decode(data, previous_ms):
-    """Return (text, robot_ms) for one frame, or (error text, None)."""
+def parse(data):
+    """Return the fields of one frame as a dict, or None if it is not v2.
+
+    Field names follow telemetry_encoder.h. Raw codes are kept; the name
+    tables above turn them into text.
+    """
     if len(data) != FRAME_SIZE or data[0] != VERSION:
-        return (f"BAD len={len(data)} ver={data[:1].hex()} {data.hex()}",
-                None)
+        return None
     (_, f0, t, dist, f1, sm, fl, ss, left, right, heading, fwd, near,
      width, centre, hump) = struct.unpack("<BBIHBBBBhhhHHHhB", data)
+    return {
+        "flags0": f0, "flags1": f1, "captured_ms": t, "distance_mm": dist,
+        "state": sm & 15, "mode": sm >> 4, "fault": fl & 15, "line": fl >> 4,
+        "scan_result": ss & 15, "bypass_side": ss >> 4,
+        "left_mm_s": left, "right_mm_s": right, "heading_cdeg": heading,
+        "forward_mm": fwd, "nearest_mm": near, "width_mm": width,
+        "centre_offset_mm": centre, "hump_max_mm": hump,
+    }
+
+
+def decode(data, previous_ms):
+    """Return (text, robot_ms) for one frame, or (error text, None)."""
+    fields = parse(data)
+    if fields is None:
+        return (f"BAD len={len(data)} ver={data[:1].hex()} {data.hex()}",
+                None)
+    f0, f1, t = fields["flags0"], fields["flags1"], fields["captured_ms"]
+    dist, sm = fields["distance_mm"], fields["state"] | (fields["mode"] << 4)
+    fl = fields["fault"] | (fields["line"] << 4)
+    ss = fields["scan_result"] | (fields["bypass_side"] << 4)
+    left, right = fields["left_mm_s"], fields["right_mm_s"]
+    heading, fwd = fields["heading_cdeg"], fields["forward_mm"]
+    near, width = fields["nearest_mm"], fields["width_mm"]
+    centre, hump = fields["centre_offset_mm"], fields["hump_max_mm"]
     gap = "" if previous_ms is None else f" dt={(t - previous_ms) & 0xFFFFFFFF}ms"
     flags0 = "".join(c if f0 & (1 << i) else "." for i, c in enumerate("DSLXMNH"))
     flags1 = "".join(c if f1 & (1 << i) else "." for i, c in enumerate("FPW"))
