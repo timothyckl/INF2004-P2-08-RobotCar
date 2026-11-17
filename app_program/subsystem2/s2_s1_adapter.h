@@ -2,14 +2,15 @@
  * @file s2_s1_adapter.h
  * @brief Subsystem 2 functions for subsystem 1's service_bridge.
  *
- * PROVISIONAL. Kernel-free on purpose: only <stdbool.h> and <stdint.h>.
- * S1's headers include <stddef.h>, whose size_t (unsigned int) conflicts
- * with the kernel's (long int, include/tk/syslib.h), so S1 code that
- * includes service_bridge.h cannot also include subsystem2.h.
+ * Kernel-free on purpose: only <stdbool.h>, <stdint.h> and S1's
+ * kernel-free telemetry_snapshot.h. S1's other headers include <stddef.h>,
+ * whose size_t (unsigned int) conflicts with the kernel's (long int,
+ * include/tk/syslib.h), so S1 code that includes service_bridge.h cannot
+ * also include subsystem2.h.
  *
  * All functions run in the WiFi service task, never wait, and return
  * false until subsystem2_init() has created the objects (the WiFi task
- * starts before usermain()). Matching S1 typedefs on hy_wifi_telemetry:
+ * starts before usermain()). Matching S1 typedefs (service_bridge.h):
  *   controller_raise_remote_stop   -> service_bridge_stop_fn_t
  *   controller_send_remote_command -> service_bridge_command_fn_t
  *                                     (uint8_t = command_parser_command_t)
@@ -20,6 +21,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+
+#include "../subsystem1/telemetry_snapshot.h"
 
 /* Command codes, equal to COMMAND_PARSER_START/STOP/RESET. */
 #define S2_REMOTE_START         1u
@@ -42,27 +45,14 @@ bool controller_send_remote_command (void * p_context, uint8_t command,
    receipt-to-flag latency test. The pair is not read atomically. */
 bool s2_remote_stop_info (uint32_t * p_received_ms, uint32_t * p_count);
 
-/* The telemetry_encoder_snapshot_t fields S2 provides (link_up is S1's). */
-typedef struct
-{
-    uint32_t captured_ms;
-    uint16_t distance_mm;       /* run distance, clamped to 0..65535 */
-    bool     b_distance_valid;  /* false if negative, over-range or unknown */
-    bool     b_stopped;         /* both wheels confirmed still */
-    uint8_t  hump_max_mm;       /* highest hump this run (S4, IF-18),
-                                   saturated at 255; 0 if none */
-    bool     b_hump_valid;      /* a hump has been measured this run */
-} s2_telemetry_t;
-
-/* One consistent copy from robot_state; false (skip this publication)
-   if not created yet or state_mutex is busy. Never waits. */
-bool s2_read_telemetry (s2_telemetry_t * p_out);
-
-#ifdef TELEMETRY_ENCODER_H
-/* Available when S1's telemetry_encoder.h is included first. */
+/* Fill S1's telemetry snapshot (S1 decision 1, telemetry v2) from
+   robot_state, S4's run maximum (IF-18) and S5's decoded status. Every
+   lock is polled (TMO_POL), so this never waits. false (skip this
+   publication) if robot_state is not created yet or state_mutex is busy;
+   a busy S4 or S5 lock clears only that provider's validity flags.
+   link_up is left false: S1 owns its link state. */
 bool robot_read_telemetry (void * p_context,
                            telemetry_encoder_snapshot_t * p_snapshot);
-#endif
 
 #endif /* S2_S1_ADAPTER_H */
 

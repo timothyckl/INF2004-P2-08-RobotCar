@@ -224,6 +224,8 @@ static void     cal_report (s2_robot_state_t const * p_state,
 static void     line_step (s2_robot_state_t const * p_state,
                            ctrl_input_t const * p_input);
 static void     line_reset (uint32_t now);
+static bool     line_is_fresh (uint32_t now);
+static void     line_telemetry (s2_robot_state_t * p_state, uint32_t now);
 static int16_t  line_correction_speed (uint8_t strength);
 static bool     line_apply_action (line_control_action_t action,
                                    int16_t correction_mm_s);
@@ -427,6 +429,7 @@ controller_task (INT stacd, void * exinf)
 #endif
 #if S3_LINE_FOLLOW_TEST
         line_step(&st, &in);
+        line_telemetry(&st, in.now_ms);
 #endif
         s2_robot_state_publish(&st);
         demo(&st, &in);
@@ -589,16 +592,16 @@ now_ms (void)
 static void
 run_summary (void)
 {
-    s2_telemetry_t summary;
+    telemetry_encoder_snapshot_t summary = {0};
 
-    if (s2_read_telemetry(&summary))
+    if (robot_read_telemetry(NULL, &summary))
     {
         tm_printf((UB *)"[S2] run summary: distance %u mm%s, "
                   "highest hump %u mm%s\n",
                   (UINT)summary.distance_mm,
-                  summary.b_distance_valid ? "" : " (invalid)",
+                  summary.distance_valid ? "" : " (invalid)",
                   (UINT)summary.hump_max_mm,
-                  summary.b_hump_valid ? "" : " (none)");
+                  summary.hump_valid ? "" : " (none)");
     }
 }
 
@@ -1063,8 +1066,7 @@ bypass_input (ctrl_input_t const * p_input, bypass_control_input_t * p_in)
     uint8_t const  position = g_line_runtime.position;
     uint32_t const now = p_input->now_ms;
     uint32_t const captured = g_scan_status.captured_ms;
-    bool const     b_line_fresh = g_line_runtime.b_have_report
-        && ((now - g_line_runtime.last_report_ms) <= S2_LINE_MAX_AGE_MS);
+    bool const     b_line_fresh = line_is_fresh(now);
     bool const     b_forward_fresh =
         ((now - captured) <= CTRL_BYPASS_FORWARD_AGE_MS)
         || ((captured - now) <= CTRL_BYPASS_FORWARD_AGE_MS);
@@ -1215,6 +1217,25 @@ bypass_report (bypass_control_output_t const * p_out)
     else
     {
         /* Still bypassing. */
+    }
+}
+
+/* A line report counts while no older than S2_LINE_MAX_AGE_MS. */
+static bool
+line_is_fresh (uint32_t now)
+{
+    return (g_line_runtime.b_have_report
+            && ((now - g_line_runtime.last_report_ms) <= S2_LINE_MAX_AGE_MS));
+}
+
+/* Latest line position for telemetry (S1 decision 1). */
+static void
+line_telemetry (s2_robot_state_t * p_state, uint32_t now)
+{
+    if (line_is_fresh(now))
+    {
+        p_state->flags |= S2_RS_LINE_FRESH;
+        p_state->line   = g_line_runtime.position;
     }
 }
 

@@ -22,7 +22,8 @@ s2_robot_state_create (void)
     T_CMTX         cmtx = {0};
     s2_robot_state_t const boot = {0u, 0, 0u, S2_SYS_INITIALISING,
                                    S2_FAULT_NONE, S2_RS_STOP_LATCHED,
-                                   0u, S2_RESULT_NONE, 0u, S2_MODE_NONE, 0u};
+                                   0u, S2_RESULT_NONE, 0u, S2_MODE_NONE,
+                                   S2_LINE_STOP, 0, 0, 0};
 
     g_state      = boot;
     cmtx.mtxatr  = TA_INHERIT;
@@ -78,54 +79,106 @@ s2_get_robot_state (s2_robot_state_t * p_state)
     return (E_OK);
 }
 
-/* WiFi task: never waits; a busy lock skips one telemetry publication. */
+/* WiFi task: never waits; a busy state_mutex skips one publication. */
 bool
-s2_read_telemetry (s2_telemetry_t * p_out)
+robot_read_telemetry (void * p_context,
+                      telemetry_encoder_snapshot_t * p_snapshot)
 {
-    ID const         mtx = g_state_mtx;
-    s2_robot_state_t st;
+    ID const               mtx = g_state_mtx;
+    s2_robot_state_t       st;
+    s4_terrain_result_t    hump;
+    scan_telemetry_t       scan;
 
-    if ((NULL == p_out) || (mtx <= 0) || (tk_loc_mtx(mtx, TMO_POL) < E_OK))
+    (void)p_context;
+
+    if ((NULL == p_snapshot) || (mtx <= 0)
+        || (tk_loc_mtx(mtx, TMO_POL) < E_OK))
     {
         return (false);
     }
 
     st = g_state;
     (void)tk_unl_mtx(mtx);
-    s2_telemetry_from_state(&st, p_out);
 
-    /* After releasing state_mutex, so the two locks never nest. A busy
-     * S4 snapshot reports no hump this publication rather than waiting. */
-    {
-        s4_terrain_result_t hump;
-        bool const b_read = (E_OK == subsystem4_get_status(&hump));
+    /* The S4 and S5 locks are taken after state_mutex is released, so no
+     * two locks ever nest. A busy provider reports nothing this time. */
+    bool const b_hump = (E_OK == subsystem4_get_status(&hump));
+    bool const b_scan = scan_telemetry_get(&scan);
 
-        s2_telemetry_add_hump(p_out, b_read ? hump.maximum_height_mm : 0u,
-                              b_read && hump.b_maximum_height_valid);
-    }
+    s2_telemetry_from_state(&st, p_snapshot);
+    s2_telemetry_add_hump(p_snapshot, b_hump ? hump.maximum_height_mm : 0u,
+                          b_hump && hump.b_maximum_height_valid);
+    s2_telemetry_add_scan(p_snapshot, b_scan ? &scan : NULL);
 
     return (true);
 }
 
 void
-s2_telemetry_add_hump (s2_telemetry_t * p_out, uint16_t max_mm,
-                       bool b_valid)
+s2_telemetry_add_hump (telemetry_encoder_snapshot_t * p_out,
+                       uint16_t max_mm, bool b_valid)
 {
     if (NULL == p_out)
     {
         return;
     }
 
-    p_out->b_hump_valid = b_valid;
-    p_out->hump_max_mm  = (!b_valid) ? 0u
-                          : ((max_mm > S2_HUMP_MAX_MM)
-                             ? (uint8_t)S2_HUMP_MAX_MM
-                             : (uint8_t)max_mm);
+    p_out->hump_valid  = b_valid;
+    p_out->hump_max_mm = (!b_valid) ? 0u
+                         : ((max_mm > S2_HUMP_MAX_MM)
+                            ? (uint8_t)S2_HUMP_MAX_MM
+                            : (uint8_t)max_mm);
+}
+
+void
+s2_telemetry_add_scan (telemetry_encoder_snapshot_t * p_out,
+                       scan_telemetry_t const * p_scan)
+{
+    if (NULL == p_out)
+    {
+        return;
+    }
+
+    p_out->forward_valid    = false;
+    p_out->profile_valid    = false;
+    p_out->shape_valid      = false;
+    p_out->forward_mm       = 0u;
+    p_out->nearest_mm       = 0u;
+    p_out->width_mm         = 0u;
+    p_out->centre_offset_mm = 0;
+    p_out->scan_result      = SCAN_TELEMETRY_NONE;
+    p_out->bypass_side      = SCAN_TELEMETRY_SIDE_NONE;
+
+    if (NULL == p_scan)
+    {
+        return;
+    }
+
+    p_out->scan_result = p_scan->scan_result;
+    p_out->bypass_side = p_scan->bypass_side;
+
+    if (0u != (p_scan->flags & SCAN_TELEMETRY_FORWARD_VALID))
+    {
+        p_out->forward_valid = true;
+        p_out->forward_mm    = p_scan->forward_mm;
+    }
+
+    if (0u != (p_scan->flags & SCAN_TELEMETRY_PROFILE_SEEN))
+    {
+        p_out->profile_valid = true;
+        p_out->nearest_mm    = p_scan->nearest_observed_mm;
+    }
+
+    if (0u != (p_scan->flags & SCAN_TELEMETRY_SHAPE_ESTIMATE))
+    {
+        p_out->shape_valid      = true;
+        p_out->width_mm         = p_scan->observed_width_mm;
+        p_out->centre_offset_mm = p_scan->centre_offset_mm;
+    }
 }
 
 void
 s2_telemetry_from_state (s2_robot_state_t const * p_state,
-                         s2_telemetry_t * p_out)
+                         telemetry_encoder_snapshot_t * p_out)
 {
     if ((NULL == p_state) || (NULL == p_out))
     {
@@ -133,16 +186,29 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
     }
 
     int32_t const d = p_state->run_distance_mm;
-    bool const    b_known = (0u != (p_state->flags & S2_RS_DISTANCE_VALID));
+    uint8_t const f = p_state->flags;
+    bool const    b_known = (0u != (f & S2_RS_DISTANCE_VALID));
+    bool const    b_motion = (0u != (f & S2_RS_MOTION_VALID));
+    bool const    b_line = (0u != (f & S2_RS_LINE_FRESH));
 
-    p_out->captured_ms      = p_state->captured_ms;
-    p_out->b_distance_valid = b_known && (d >= 0)
-                              && (d <= S2_DISTANCE_MAX_MM);
-    p_out->distance_mm      = (!b_known || (d < 0)) ? 0u
-                              : ((d > S2_DISTANCE_MAX_MM)
-                                 ? (uint16_t)S2_DISTANCE_MAX_MM
-                                 : (uint16_t)d);
-    p_out->b_stopped        = (0u != (p_state->flags & S2_RS_STOPPED));
+    p_out->captured_ms    = p_state->captured_ms;
+    p_out->distance_valid = b_known && (d >= 0)
+                            && (d <= S2_DISTANCE_MAX_MM);
+    p_out->distance_mm    = (!b_known || (d < 0)) ? 0u
+                            : ((d > S2_DISTANCE_MAX_MM)
+                               ? (uint16_t)S2_DISTANCE_MAX_MM
+                               : (uint16_t)d);
+    p_out->stopped        = (0u != (f & S2_RS_STOPPED));
+    p_out->stop_latched   = (0u != (f & S2_RS_STOP_LATCHED));
+    p_out->state          = p_state->state;
+    p_out->mode           = p_state->mode;
+    p_out->fault          = p_state->fault;
+    p_out->motion_valid   = b_motion;
+    p_out->left_mm_s      = b_motion ? p_state->left_mm_s : 0;
+    p_out->right_mm_s     = b_motion ? p_state->right_mm_s : 0;
+    p_out->heading_cdeg   = b_motion ? p_state->heading_cdeg : 0;
+    p_out->line_fresh     = b_line;
+    p_out->line           = b_line ? p_state->line : 0u;
 }
 
 /* End of file. */

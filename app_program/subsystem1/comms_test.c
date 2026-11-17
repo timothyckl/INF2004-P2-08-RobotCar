@@ -71,22 +71,35 @@ bool comms_test_commands (void)
 
 bool comms_test_telemetry (void)
 {
-    telemetry_encoder_snapshot_t snapshot =
+    /* Every field set; the golden frame is the version 2 layout. */
+    static const telemetry_encoder_snapshot_t full =
     {
-        UINT32_C(0x12345678), UINT16_C(0xabcd), true, true, true
+        UINT32_C(0x12345678), UINT16_C(0xabcd),
+        INT16_C(-150), INT16_C(320), INT16_C(-18000),
+        UINT16_C(4000), UINT16_C(0x0102), UINT16_C(0x0304), INT16_C(-2),
+        3u, 4u, 2u, 1u, 1u, 2u, 255u,
+        true, true, true, true, true, true, true, true, true, true
     };
-    const uint8_t golden[] = {1u, 7u, 0x78u, 0x56u, 0x34u, 0x12u,
-                              0xcdu, 0xabu};
+    static const uint8_t golden[TELEMETRY_ENCODER_SIZE] =
+    {
+        2u, 0x7fu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
+        0x07u, 0x43u, 0x12u, 0x21u,
+        0x6au, 0xffu, 0x40u, 0x01u, 0xb0u, 0xb9u,
+        0xa0u, 0x0fu, 0x02u, 0x01u, 0x04u, 0x03u, 0xfeu, 0xffu,
+        0xffu
+    };
+    telemetry_encoder_snapshot_t snapshot = full;
     uint8_t output[TELEMETRY_ENCODER_SIZE + 1u] = {0u};
     bool    passed = true;
 
     output[TELEMETRY_ENCODER_SIZE] = 0xa5u;
     check((TELEMETRY_ENCODER_SIZE ==
                telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-              &passed);
+          &passed);
     check((0 == memcmp(output, golden, sizeof(golden))), &passed);
     check((0xa5u == output[TELEMETRY_ENCODER_SIZE]), &passed);
 
+    /* Too little space, or a NULL argument, leaves the output alone. */
     for (size_t capacity = 0u; capacity < TELEMETRY_ENCODER_SIZE; ++capacity)
     {
         memset(output, 0xa5, sizeof(output));
@@ -101,55 +114,77 @@ bool comms_test_telemetry (void)
     }
 
     check((0u == telemetry_encoder_encode(NULL, output, sizeof(output))),
-              &passed);
+          &passed);
     check((0xa5u == output[0]), &passed);
     check((0u == telemetry_encoder_encode(&snapshot, NULL,
-                                               TELEMETRY_ENCODER_SIZE)),
-              &passed);
-    snapshot.captured_ms = UINT32_MAX;
-    snapshot.distance_mm = UINT16_MAX;
-    check((TELEMETRY_ENCODER_SIZE ==
-               telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-              &passed);
+                                          TELEMETRY_ENCODER_SIZE)),
+          &passed);
 
-    for (size_t idx = 2u; idx < TELEMETRY_ENCODER_SIZE; ++idx)
-    {
-        check((0xffu == output[idx]), &passed);
-    }
-
+    /* Every validity flag clear: each guarded field is sent as zero. */
     snapshot.distance_valid = false;
     snapshot.stopped        = false;
     snapshot.link_up        = false;
+    snapshot.stop_latched   = false;
+    snapshot.motion_valid   = false;
+    snapshot.line_fresh     = false;
+    snapshot.hump_valid     = false;
+    snapshot.forward_valid  = false;
+    snapshot.profile_valid  = false;
+    snapshot.shape_valid    = false;
     snapshot.captured_ms    = 0u;
+    snapshot.state          = 0u;
+    snapshot.mode           = 0u;
+    snapshot.fault          = 0u;
+    snapshot.scan_result    = 0u;
+    snapshot.bypass_side    = 0u;
     check((TELEMETRY_ENCODER_SIZE ==
                telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-              &passed);
+          &passed);
+    check((TELEMETRY_ENCODER_VERSION == output[0]), &passed);
 
     for (size_t idx = 1u; idx < TELEMETRY_ENCODER_SIZE; ++idx)
     {
         check((0u == output[idx]), &passed);
     }
 
-    snapshot.distance_valid = true;
-    snapshot.distance_mm    = 0u;
-    check((TELEMETRY_ENCODER_SIZE ==
-               telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-              &passed);
-    check((TELEMETRY_ENCODER_DISTANCE_VALID == output[1]), &passed);
-    check((0u == output[6]), &passed);
-    check((0u == output[7]), &passed);
-    snapshot.distance_valid = false;
-    snapshot.stopped        = true;
-    check((TELEMETRY_ENCODER_SIZE ==
-               telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-              &passed);
+    /* Single flags land on their own bits. */
+    snapshot.stopped = true;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
     check((TELEMETRY_ENCODER_STOPPED == output[1]), &passed);
     snapshot.stopped = false;
     snapshot.link_up = true;
-    check((TELEMETRY_ENCODER_SIZE ==
-               telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-              &passed);
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
     check((TELEMETRY_ENCODER_LINK_UP == output[1]), &passed);
+    snapshot.link_up     = false;
+    snapshot.shape_valid = true;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0u == output[1]), &passed);
+    check((TELEMETRY_ENCODER_SHAPE_VALID == output[8]), &passed);
+
+    /* A code above 14 is sent as 15 (invalid), never masked. */
+    snapshot.state       = 16u;
+    snapshot.mode        = 14u;
+    snapshot.line_fresh  = true;
+    snapshot.line        = 200u;
+    snapshot.scan_result = 15u;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0xefu == output[9]), &passed);
+    check((0xf0u == output[10]), &passed);
+    check((0x0fu == output[11]), &passed);
+
+    /* Extremes of the signed and unsigned ranges. */
+    snapshot = full;
+    snapshot.left_mm_s        = INT16_MIN;
+    snapshot.right_mm_s       = INT16_MAX;
+    snapshot.distance_mm      = UINT16_MAX;
+    snapshot.centre_offset_mm = INT16_MIN;
+    snapshot.captured_ms      = UINT32_MAX;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x00u == output[12]) && (0x80u == output[13]), &passed);
+    check((0xffu == output[14]) && (0x7fu == output[15]), &passed);
+    check((0xffu == output[6]) && (0xffu == output[7]), &passed);
+    check((0x00u == output[24]) && (0x80u == output[25]), &passed);
+    check((0xffu == output[2]) && (0xffu == output[5]), &passed);
 
     return passed;
 }
@@ -288,10 +323,11 @@ bool comms_test_bridge (void)
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
         &bridge, "ST", 2u, true, 44u)), &passed);
 
-    context.snapshot = (telemetry_encoder_snapshot_t)
-    {
-        100u, 250u, true, true, true
-    };
+    context.snapshot = (telemetry_encoder_snapshot_t) {0};
+    context.snapshot.captured_ms    = 100u;
+    context.snapshot.distance_mm    = 250u;
+    context.snapshot.distance_valid = true;
+    context.snapshot.stopped        = true;
     context.snapshot_ready = false;
     check((0u == service_bridge_telemetry(&bridge, output,
                                           sizeof(output))), &passed);
@@ -299,6 +335,7 @@ bool comms_test_bridge (void)
     check((TELEMETRY_ENCODER_SIZE == service_bridge_telemetry(
         &bridge, output, sizeof(output))), &passed);
     check((TELEMETRY_ENCODER_VERSION == output[0]), &passed);
+    /* The bridge sets link up: distance valid, stopped and link up. */
     check((7u == output[1]), &passed);
     check((100u == output[2]), &passed);
     check((250u == output[6]), &passed);

@@ -1,36 +1,66 @@
-/** @file telemetry_encoder.h
- * @brief Provisional binary telemetry format for isolated codec development.
+/**
+ * @file telemetry_encoder.h
+ * @brief Telemetry wire format, version 2 (S1 decision 1).
+ *
+ * 27 bytes, multi-byte fields little-endian:
+ *
+ *   Byte   Field
+ *   0      version (2)
+ *   1      flags0: bit 0 distance valid, 1 stopped, 2 MQTT link up,
+ *                  3 STOP latched, 4 motion valid, 5 line fresh,
+ *                  6 hump valid, 7 zero
+ *   2-5    captured_ms         uint32_t
+ *   6-7    distance_mm         uint16_t
+ *   8      flags1: bit 0 forward valid, 1 profile valid, 2 shape valid,
+ *                  3-7 zero
+ *   9      state (bits 0-3) | mode (bits 4-7)
+ *   10     fault (bits 0-3) | line (bits 4-7)
+ *   11     scan_result (bits 0-3) | bypass_side (bits 4-7)
+ *   12-13  left_mm_s           int16_t
+ *   14-15  right_mm_s          int16_t
+ *   16-17  heading_cdeg        int16_t
+ *   18-19  forward_mm          uint16_t
+ *   20-21  nearest_mm          uint16_t
+ *   22-23  width_mm            uint16_t
+ *   24-25  centre_offset_mm    int16_t
+ *   26     hump_max_mm         uint8_t
+ *
+ * Bytes 0-7 keep their version 1 positions and meanings.
  */
 #ifndef TELEMETRY_ENCODER_H
 #define TELEMETRY_ENCODER_H
 
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#define TELEMETRY_ENCODER_SIZE 8u
-#define TELEMETRY_ENCODER_VERSION 1u
+#include "telemetry_snapshot.h"
+
+#define TELEMETRY_ENCODER_SIZE           27u
+#define TELEMETRY_ENCODER_VERSION        2u
+
+/* flags0 (byte 1) */
 #define TELEMETRY_ENCODER_DISTANCE_VALID 0x01u
 #define TELEMETRY_ENCODER_STOPPED        0x02u
 #define TELEMETRY_ENCODER_LINK_UP        0x04u
+#define TELEMETRY_ENCODER_STOP_LATCHED   0x08u
+#define TELEMETRY_ENCODER_MOTION_VALID   0x10u
+#define TELEMETRY_ENCODER_LINE_FRESH     0x20u
+#define TELEMETRY_ENCODER_HUMP_VALID     0x40u
 
-typedef struct
-{
-    uint32_t captured_ms;
-    uint16_t distance_mm;
-    bool     distance_valid;
-    bool     stopped;
-    bool     link_up;
-} telemetry_encoder_snapshot_t;
+/* flags1 (byte 8) */
+#define TELEMETRY_ENCODER_FORWARD_VALID  0x01u
+#define TELEMETRY_ENCODER_PROFILE_VALID  0x02u
+#define TELEMETRY_ENCODER_SHAPE_VALID    0x04u
 
 /**
- * @brief Encode version, flags, uint32 time and uint16 distance, little-endian.
+ * @brief Encode one snapshot in the version 2 layout above.
  * @param p_snapshot Immutable, consistent caller-owned snapshot.
  * @param p_output Separate writable buffer; must not overlap the snapshot.
  * @param capacity Writable bytes available at p_output.
- * @return Eight on success; zero on invalid arguments or insufficient space.
- * @note Failure leaves output unchanged; invalid distance encodes as zero.
- * No allocation, locks, network calls or structure overlays are used.
+ * @return TELEMETRY_ENCODER_SIZE on success; zero on invalid arguments or
+ *         insufficient space, leaving the output unchanged.
+ * @note A field whose validity flag is clear is sent as zero. No
+ *       allocation, locks, network calls or structure overlays are used.
  */
 size_t telemetry_encoder_encode (
     const telemetry_encoder_snapshot_t * p_snapshot,
@@ -38,6 +68,4 @@ size_t telemetry_encoder_encode (
 
 #endif /* TELEMETRY_ENCODER_H */
 
-/*** End of file. ***/
-
-
+/* End of file. */

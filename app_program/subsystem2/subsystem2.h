@@ -24,6 +24,7 @@
 #include "../app.h"
 #include "motion_api.h"     /* motion API and motion_get_status() */
 #include "s2_s1_adapter.h"  /* S1-facing, kernel-free */
+#include "../subsystem5/include/scan_telemetry.h"   /* kernel-free */
 
 #define S2_PRI_CONTROLLER   14      /* highest application priority */
 #define S2_PRI_MOTION       15
@@ -160,6 +161,8 @@ bool s2_line_stop (void);    /* urgent local STOP flag */
 #define S2_RS_STOPPED           0x02u   /* wheels still >= 100 ms */
 #define S2_RS_DISTANCE_VALID    0x04u
 #define S2_RS_NAV_AUTHORISED    0x08u   /* S3 may deliver a junction turn */
+#define S2_RS_MOTION_VALID      0x10u   /* speeds and heading are current */
+#define S2_RS_LINE_FRESH        0x20u   /* line: report <= S2_LINE_MAX_AGE_MS */
 
 typedef struct
 {
@@ -173,19 +176,29 @@ typedef struct
     uint8_t  last_result;       /* S2_RESULT_* */
     uint8_t  motion_state;      /* motion_state_t */
     uint8_t  mode;              /* S2_MODE_*: Running substate */
-    uint8_t  reserved;
+    uint8_t  line;              /* S2_LINE_*, while S2_RS_LINE_FRESH */
+    int16_t  left_mm_s;         /* wheel speeds, while S2_RS_MOTION_VALID */
+    int16_t  right_mm_s;
+    int16_t  heading_cdeg;      /* centidegrees, left positive,
+                                   -18000..18000; S2_RS_MOTION_VALID */
 } s2_robot_state_t;
 
 ER s2_get_robot_state (s2_robot_state_t * p_state);
 
-/* Telemetry fields from a robot_state copy (pure; s2_s1_adapter.h). */
+/* Telemetry snapshot fields from a robot_state copy (pure; replaces every
+   S2 field, leaves link_up and the S4/S5 fields alone). */
 void s2_telemetry_from_state (s2_robot_state_t const * p_state,
-                              s2_telemetry_t * p_out);
+                              telemetry_encoder_snapshot_t * p_out);
 
 /* Hump fields from subsystem 4's run maximum (pure; IF-18). Saturates at
-   255 mm; an invalid maximum gives 0 and b_hump_valid false. */
-void s2_telemetry_add_hump (s2_telemetry_t * p_out, uint16_t max_mm,
-                            bool b_valid);
+   255 mm; an invalid maximum gives 0 and hump_valid false. */
+void s2_telemetry_add_hump (telemetry_encoder_snapshot_t * p_out,
+                            uint16_t max_mm, bool b_valid);
+
+/* Obstacle fields from subsystem 5's decoded status (pure). A NULL status
+   (S5 unavailable or busy) clears the obstacle fields and their flags. */
+void s2_telemetry_add_scan (telemetry_encoder_snapshot_t * p_out,
+                            scan_telemetry_t const * p_scan);
 
 /* ------------------------------------------------------------------------
  *  Distance for S4 (s4_terrain_process wants a uint16_t delta every

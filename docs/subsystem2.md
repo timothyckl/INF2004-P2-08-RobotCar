@@ -72,7 +72,7 @@ build.
 | `controller_logic.c` | Pure minimal Vehicle Controller statechart |
 | `task_controller.c` | Controller task; creates the controller objects |
 | `robot_state.c` | robot_state under state_mutex |
-| `s2_bridge.c`, `s2_s1_telemetry.c` | Adapters for subsystem 1's service bridge |
+| `s2_bridge.c`, `robot_state.c` | Adapters for subsystem 1's service bridge (`robot_read_telemetry()` is in `robot_state.c`) |
 | `motion_config.h` | Every tuning value, marked UNMEASURED or AGREED |
 | `subsystem2_test.c`, `test_motion.c`, `test_controller.c` | On-target tests |
 

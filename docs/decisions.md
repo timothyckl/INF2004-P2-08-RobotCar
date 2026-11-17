@@ -2,7 +2,96 @@
 
 ## Subsystem 1 — WiFi/MQTT (Hong Yih)
 
-_No decisions recorded yet._
+### 1. Telemetry frame version 2 (2026-11-17)
+
+Approved by Dalton on the integration branch.
+
+**Problem.** The version 1 frame carried only time, run distance and three
+flags, so the dashboard could not show most of the telemetry the project
+brief lists for subsystem 1: robot state, motor speed, line sensor status,
+hump measurement and obstacle scan results.
+
+**Decision.** A 27-byte version 2 frame, little-endian, published on the
+same topic every 1 s (period unchanged and still unvalidated). Bytes 0–7
+keep their version 1 positions, so a decoder can read the version and the
+old fields before it knows the rest.
+
+| Byte | Field | Range | Source |
+|---:|---|---|---|
+| 0 | version | 2 | S1 |
+| 1 | flags0: bit 0 distance valid, 1 stopped, 2 MQTT link up, 3 STOP latched, 4 motion valid, 5 line fresh, 6 hump valid, 7 zero | — | S2, S4, S1 |
+| 2–5 | `captured_ms`, `uint32_t` | wraps | S2 controller clock |
+| 6–7 | run distance mm, `uint16_t` | 0..65535, saturated | S2 |
+| 8 | flags1: bit 0 forward valid, 1 profile valid, 2 shape valid, 3–7 zero | — | S5 |
+| 9 | state (bits 0–3), mode (bits 4–7) | `S2_SYS_*` 1..5, `S2_MODE_*` 0..5 | S2 |
+| 10 | fault (bits 0–3), line (bits 4–7) | `S2_FAULT_*` 0..4, `S2_LINE_*` 0..4 | S2 |
+| 11 | scan result (bits 0–3), bypass side (bits 4–7) | `SCAN_TELEMETRY_*` 0..5, side 0..2 | S5 |
+| 12–13 | left wheel mm/s, `int16_t` | motion range | S2 |
+| 14–15 | right wheel mm/s, `int16_t` | motion range | S2 |
+| 16–17 | heading, centidegrees, `int16_t`, left positive | −17999..18000 | S2 odometry |
+| 18–19 | ultrasonic forward range mm, `uint16_t` | 20..4000 | S5 |
+| 20–21 | nearest obstacle ray mm, `uint16_t` | as above | S5 profile |
+| 22–23 | observed obstacle span mm, `uint16_t` | as above | S5 shape estimate |
+| 24–25 | obstacle centre offset mm, `int16_t`, left positive | sensor-relative | S5 shape estimate |
+| 26 | highest hump this run mm, `uint8_t` | 0..255, saturated | S4 (IF-18) |
+
+Codes (wire value = provider's constant):
+
+- state: 1 Initialising, 2 Ready, 3 Running, 4 Stopped, 5 Fault
+- mode: 0 none, 1 Follow, 2 Navigate, 3 Scan, 4 Bypass, 5 Reacquire
+- fault: 0 none, 1 init, 2 motion, 3 scan, 4 delivery
+- line: 0 centre, 1 left, 2 right, 3 both black, 4 stop
+- scan result: 0 none, 1 plan, 2 clear, 3 no route, 4 fault, 5 cancelled
+- bypass side: 0 none, 1 left, 2 right
+
+**Rules.**
+
+- A field whose validity flag is clear is sent as zero; a decoder must test
+  the flag, never the value.
+- An enumerated code above 14 is sent as 15 (invalid) rather than masked,
+  so a provider bug cannot pass as a valid code.
+- Enumerated fields share a byte in nibbles. 16-bit fields stay
+  byte-aligned: packing the 12-bit ranges more tightly would save 2 bytes
+  of a 27-byte frame sent once a second, at the cost of a harder decoder.
+- Barcode is not in the frame. It is added (as version 3) when S3's
+  barcode decoder is connected to the controller; until then there is no
+  source for it.
+
+**Concurrency.** The frame is built in the WiFi service task, which must
+never wait. Motion Control's `motion_get_status()` waits up to 10 ms, so
+the Vehicle Controller copies wheel speeds and heading into `robot_state`
+each cycle (`S2_RS_MOTION_VALID`), together with the latest line position
+while it is fresh (`S2_RS_LINE_FRESH`, line-follow image only).
+`robot_read_telemetry()` then polls `state_mutex`, S4's mutex and S5's mutex
+with `TMO_POL`, one after another and never nested. A busy `state_mutex`
+skips that publication; a busy S4 or S5 lock clears only that provider's
+flags. `s2_robot_state_t` grows from 20 to 28 bytes (S2-U39).
+
+**One type, not two.** The decoded snapshot is defined once, by S1, in the
+kernel-free `subsystem1/telemetry_snapshot.h`, and S2 fills it directly.
+This removes S2's duplicate `s2_telemetry_t` and the mapping file
+`s2_s1_telemetry.c`. The kernel/`<stddef.h>` `size_t` conflict only
+applies to `telemetry_encoder.h`, which kernel-side code does not include.
+
+**Tests.** S1-U05 (golden 27-byte frame), S2-U37 (state, codes, motion,
+line), S2-U72 (obstacle fields), the S2-U39 size and
+`test_ctrl_robot_state` (speeds, heading truncation, unreadable status) on
+host. S1-H02 must be repeated on the car with the version 2 decoder.
+
+### 2. Merge into the integration branch (2026-11-17)
+
+Approved by Dalton on the integration branch.
+
+Subsystem 1 comes from `feature/subsystem1-integration` (`b21d964`), the
+newest S1 code and one built on this branch, rather than
+`feature/full-system-integration`, whose S1 code is older and whose other
+subsystems predate this branch. On merge:
+
+- The `s1_compat_task` that kept `tid_led` for IF-05 is removed: nothing on
+  this branch uses IF-05, so S1 creates no task or kernel object, and GP19
+  is free.
+- Committed `__pycache__` files and dashboard session logs are removed and
+  ignored. The dashboard is to be redesigned against telemetry version 2.
 
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 

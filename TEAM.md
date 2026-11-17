@@ -92,7 +92,7 @@ fixed.
 | GP16 | S2 | left encoder A (GPIO interrupt, Grove 4); demo liveness LED must not use this pin |
 | GP17 | S2 | left encoder B (Grove 4) |
 | GP18 | | |
-| GP19 | *example:* S1 | external LED (LED + 330 Ω to GND) |
+| GP19 | | |
 | GP20 | S2 | Robo Pico programmable button; active-low START/STOP in line test |
 | GP21 | | |
 | GP22 | | |
@@ -176,7 +176,7 @@ and affinities remain to be reconciled with this port's kernel service tasks.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 12–13 | *example:* led_task – 12 – any |
+| 1 | 12–13 | none: the MQTT bridge runs in the kernel's WiFi task (S1 decision 2) |
 | 2 | 14–15 | *example:* producer_task – 14 – core 1 |
 | 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
 | 4 | 18–19 | s4_imu_task – 18 – any |
@@ -196,16 +196,20 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-02 | S3 → S2 | semaphore + fixed memory pool (owned by S2) | `sem_slots`, `mpf_samples` | receiver returns the block, then 1 slot | *example* |
 | IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
 | IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
-| IF-05 | S4 → S1 | task control | `tid_led` | `tk_sus_tsk` / `tk_rsm_tsk` / `tk_chg_pri` | *example* |
+| IF-05 | S4 → S1 | task control | `tid_led` | *retired 2026-11-17 with the LED task (S1 decision 2)* | *example* |
 | IF-06 | S3 → S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
+| IF-08 | S1 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_REMOTE_STOP` via `controller_raise_remote_stop()` | integration branch, S1 decision 2 |
+| IF-09 | S1 → S2 | message buffer (owned by S2) | `remote_q` | `s2_remote_cmd_t` START/RESET via `controller_send_remote_command()` | integration branch, S1 decision 2 |
+| IF-10 | S2 → S1 | snapshot under state_mutex (`TMO_POL`) | `robot_read_telemetry()` | fills `telemetry_encoder_snapshot_t` (`subsystem1/telemetry_snapshot.h`); S1 encodes the 27-byte version 2 frame | integration branch, S1 decision 1 |
 | IF-11 | S2 → S5 | message buffer (owned by S2) | `scan_q` | `s2_scan_cmd_t`: REQUEST, AUTHORISE, STOP_CONFIRM, CANCEL, STOP | S2 proposal; S5 review pending |
 | IF-12 | S5 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_HAZARD`, `CTRL_FLG_SCAN_FAULT` | S2 proposal; S5 review pending |
 | IF-13 | S5 → S2 | snapshot under S5's mutex (`TMO_POL`) | `scan_task_get()` | `scan_task_status_t`: forward verdict, result, `bypass_plan_t` | integration owner; review pending |
 | IF-14 | S2 → S5, S4 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE; S4 detects humps only in FOLLOW, NAVIGATE, BYPASS, REACQUIRE (S4 decision 12) | integration owner; review pending |
 | IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
 | IF-17 | S2 → S4 | snapshot under S2's mutex | `motion_get_status()` | `motion_status_t`: a new `run_id` (START) clears the hump maximum; wheel speed changes mark pitch unreadable while accelerating | integration branch, S2 decision 24 |
-| IF-18 | S4 → S2 | snapshot under S4's mutex (`TMO_POL`) | `subsystem4_get_status()` | `s4_terrain_result_t`: the run's highest hump (`maximum_height_mm`, valid flag), copied into `s2_telemetry_t` as `hump_max_mm` (8 bits, saturates at 255) | integration branch, S4 decision 13 |
+| IF-18 | S4 → S2 | snapshot under S4's mutex (`TMO_POL`) | `subsystem4_get_status()` | `s4_terrain_result_t`: the run's highest hump (`maximum_height_mm`, valid flag), copied into the telemetry snapshot as `hump_max_mm` (8 bits, saturates at 255; IF-10) | integration branch, S4 decision 13 |
 | IF-19 | S4 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_PICKUP`: the car was lifted while driving; the controller latches STOP | integration branch, S4 decision 15 |
+| IF-20 | S5 → S2 (for S1) | decoded snapshot under S5's mutex (`TMO_POL`) | `scan_telemetry_get()` | `scan_telemetry_t`: forward range, scan result, bypass side, observed nearest/width/centre, mapped into IF-10 | integration branch, S1 decision 1 |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -217,7 +221,7 @@ limit there. The numbers below are the example's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | 1 | 1 | 1 | 1 | |
+| Task | 32 | | 1 | 1 | 1 | |
 | Semaphore | 16 | | 1 | | | |
 | Event flag | 16 | | | | 1 (IF-03, starter) | |
 | Mailbox | 12 | | | 1 | | |
@@ -225,7 +229,7 @@ limit there. The numbers below are the example's usage.
 | Message buffer | 12 | | 3 | | 1 (IF-03, starter) | |
 | Fixed memory pool | 12 | | 1 | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | 1 | | | | |
+| Cyclic handler | 12 | | | | | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

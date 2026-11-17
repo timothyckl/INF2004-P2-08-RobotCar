@@ -242,6 +242,15 @@ ctrl_get_state (ctrl_t const * p_c, ctrl_input_t const * p_in,
                                              - p_c->run_start_mm);
     }
 
+    if (b_valid)
+    {
+        /* Heading is -180000 < h <= 180000 mdeg, so h / 10 fits int16. */
+        flags |= S2_RS_MOTION_VALID;
+        p_state->left_mm_s    = p_in->status.left_mm_s;
+        p_state->right_mm_s   = p_in->status.right_mm_s;
+        p_state->heading_cdeg = (int16_t)(p_in->status.heading_mdeg / 10);
+    }
+
     p_state->captured_ms     = p_in->now_ms;
     p_state->last_request_id = p_c->last_request_id;
     p_state->state           = p_c->state;

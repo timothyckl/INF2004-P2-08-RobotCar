@@ -343,44 +343,109 @@ static bool test_line_make(void)
 static bool test_telemetry_fill(void)
 {
 	s2_robot_state_t st = { 0u };
-	s2_telemetry_t a, b, c, d;
+	telemetry_encoder_snapshot_t a = { 0u }, b = { 0u }, c = { 0u };
+	telemetry_encoder_snapshot_t d = { 0u }, e = { 0u };
 
 	st.captured_ms = 4321u;
-	st.flags = S2_RS_DISTANCE_VALID | S2_RS_STOPPED;
+	st.flags = S2_RS_DISTANCE_VALID | S2_RS_STOPPED | S2_RS_STOP_LATCHED;
 	st.run_distance_mm = 500;
+	st.state = S2_SYS_RUNNING;
+	st.mode = S2_MODE_BYPASS;
+	st.fault = S2_FAULT_SCAN;
+	st.line = S2_LINE_LEFT;
+	st.left_mm_s = -40;
+	st.right_mm_s = 45;
+	st.heading_cdeg = -9000;
 	s2_telemetry_from_state(&st, &a);
 	st.run_distance_mm = 70000;
-	st.flags = S2_RS_DISTANCE_VALID;
+	st.flags = S2_RS_DISTANCE_VALID | S2_RS_MOTION_VALID
+		   | S2_RS_LINE_FRESH;
 	s2_telemetry_from_state(&st, &b);
 	st.run_distance_mm = -5;
 	s2_telemetry_from_state(&st, &c);
 	st.run_distance_mm = 300;
 	st.flags = 0u;
 	s2_telemetry_from_state(&st, &d);
+	e.link_up = true;
+	e.hump_valid = true;
+	s2_telemetry_from_state(&st, &e);
+	s2_telemetry_from_state(NULL, &e);
 
+	/* a: no motion or line flag, so those fields are cleared */
 	return (a.captured_ms == 4321u) && (a.distance_mm == 500u) &&
-	       a.b_distance_valid && a.b_stopped &&
-	       (b.distance_mm == 65535u) && !b.b_distance_valid &&
-	       !b.b_stopped &&
-	       (c.distance_mm == 0u) && !c.b_distance_valid &&
-	       (d.distance_mm == 0u) && !d.b_distance_valid;
+	       a.distance_valid && a.stopped && a.stop_latched &&
+	       (a.state == S2_SYS_RUNNING) && (a.mode == S2_MODE_BYPASS) &&
+	       (a.fault == S2_FAULT_SCAN) &&
+	       !a.motion_valid && (a.left_mm_s == 0) &&
+	       (a.heading_cdeg == 0) && !a.line_fresh && (a.line == 0u) &&
+	       (b.distance_mm == 65535u) && !b.distance_valid &&
+	       !b.stopped && !b.stop_latched &&
+	       b.motion_valid && (b.left_mm_s == -40) &&
+	       (b.right_mm_s == 45) && (b.heading_cdeg == -9000) &&
+	       b.line_fresh && (b.line == S2_LINE_LEFT) &&
+	       (c.distance_mm == 0u) && !c.distance_valid &&
+	       (d.distance_mm == 0u) && !d.distance_valid &&
+	       /* S1's link state and the S4 fields are left alone */
+	       e.link_up && e.hump_valid;
 }
 
 /* S2-U71: hump fields from subsystem 4's run maximum (IF-18) */
 static bool test_telemetry_hump(void)
 {
-	s2_telemetry_t a = { 0u }, b = { 0u }, c = { 0u };
+	telemetry_encoder_snapshot_t a = { 0u }, b = { 0u }, c = { 0u };
 
 	s2_telemetry_add_hump(&a, 10u, true);
 	s2_telemetry_add_hump(&b, 300u, true);
 	c.hump_max_mm = 7u;
-	c.b_hump_valid = true;
+	c.hump_valid = true;
 	s2_telemetry_add_hump(&c, 12u, false);
 	s2_telemetry_add_hump(NULL, 10u, true);
 
-	return (a.hump_max_mm == 10u) && a.b_hump_valid &&
-	       (b.hump_max_mm == 255u) && b.b_hump_valid &&
-	       (c.hump_max_mm == 0u) && !c.b_hump_valid;
+	return (a.hump_max_mm == 10u) && a.hump_valid &&
+	       (b.hump_max_mm == 255u) && b.hump_valid &&
+	       (c.hump_max_mm == 0u) && !c.hump_valid;
+}
+
+/* S2-U72: obstacle fields from subsystem 5's decoded status */
+static bool test_telemetry_scan(void)
+{
+	scan_telemetry_t scan = { 0u };
+	telemetry_encoder_snapshot_t a = { 0u }, b = { 0u }, c = { 0u };
+
+	scan.forward_mm = 350u;
+	scan.nearest_observed_mm = 180u;
+	scan.observed_width_mm = 210u;
+	scan.centre_offset_mm = -30;
+	scan.scan_result = SCAN_TELEMETRY_PLAN;
+	scan.bypass_side = SCAN_TELEMETRY_SIDE_LEFT;
+	scan.flags = SCAN_TELEMETRY_FORWARD_VALID | SCAN_TELEMETRY_PROFILE_SEEN
+		     | SCAN_TELEMETRY_SHAPE_ESTIMATE;
+	s2_telemetry_add_scan(&a, &scan);
+
+	/* Flags clear: values present in the status are not copied */
+	scan.flags = 0u;
+	s2_telemetry_add_scan(&b, &scan);
+
+	/* S5 busy: an earlier obstacle report is cleared, not repeated */
+	c = a;
+	s2_telemetry_add_scan(&c, NULL);
+	s2_telemetry_add_scan(NULL, &scan);
+
+	return a.forward_valid && (a.forward_mm == 350u) &&
+	       a.profile_valid && (a.nearest_mm == 180u) &&
+	       a.shape_valid && (a.width_mm == 210u) &&
+	       (a.centre_offset_mm == -30) &&
+	       (a.scan_result == SCAN_TELEMETRY_PLAN) &&
+	       (a.bypass_side == SCAN_TELEMETRY_SIDE_LEFT) &&
+	       !b.forward_valid && (b.forward_mm == 0u) &&
+	       !b.profile_valid && (b.nearest_mm == 0u) &&
+	       !b.shape_valid && (b.width_mm == 0u) &&
+	       (b.centre_offset_mm == 0) &&
+	       (b.scan_result == SCAN_TELEMETRY_PLAN) &&
+	       !c.forward_valid && !c.profile_valid && !c.shape_valid &&
+	       (c.forward_mm == 0u) &&
+	       (c.scan_result == SCAN_TELEMETRY_NONE) &&
+	       (c.bypass_side == SCAN_TELEMETRY_SIDE_NONE);
 }
 
 /* S2-U38: subsystem 4 distance delta */
@@ -417,7 +482,7 @@ static bool test_interface_sizes(void)
 	       (sizeof(s2_line_report_t) == 8u) &&
 	       (sizeof(s2_scan_cmd_t) == 12u) &&
 	       (sizeof(s2_nav_request_t) == 12u) &&
-	       (sizeof(s2_robot_state_t) == 20u);
+	       (sizeof(s2_robot_state_t) == 28u);
 }
 
 /* True if v has exactly one bit set */
@@ -727,7 +792,7 @@ EXPORT void subsystem2_test(void)
 	TEST_CHECK("S2-U36", test_remote_make(),
 		   "remote_q record for START/RESET only");
 	TEST_CHECK("S2-U37", test_telemetry_fill(),
-		   "telemetry snapshot clamps and flags");
+		   "telemetry snapshot: clamps, flags, codes, motion, line");
 	TEST_CHECK("S2-U38", test_distance_delta(),
 		   "S4 distance delta rules");
 	TEST_CHECK("S2-U39", test_interface_sizes(),
@@ -796,6 +861,8 @@ EXPORT void subsystem2_test(void)
 		   "pass: turn to look, back, pass only after pass_min");
 	TEST_CHECK("S2-U71", test_telemetry_hump(),
 		   "telemetry hump: run maximum, 255 cap, invalid gives 0");
+	TEST_CHECK("S2-U72", test_telemetry_scan(),
+		   "telemetry obstacle fields follow S5's validity flags");
 
 #if S2_HW_TEST
 	hw_test();

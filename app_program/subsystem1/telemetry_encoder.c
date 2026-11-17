@@ -1,7 +1,16 @@
-/** @file telemetry_encoder.c
+/**
+ * @file telemetry_encoder.c
  * @brief Byte encoding independent of structure padding and byte order.
  */
 #include "telemetry_encoder.h"
+
+#include <stdbool.h>
+
+static uint8_t pack_codes (uint8_t low, uint8_t high);
+static void    put_u16 (uint8_t * p_out, uint16_t value);
+static void    put_s16 (uint8_t * p_out, int16_t value);
+static void    put_u32 (uint8_t * p_out, uint32_t value);
+static uint8_t flag_if (bool b_set, uint8_t flag);
 
 size_t telemetry_encoder_encode (
     const telemetry_encoder_snapshot_t * p_snapshot,
@@ -12,44 +21,86 @@ size_t telemetry_encoder_encode (
     if ((NULL != p_snapshot) && (NULL != p_output) &&
         (capacity >= TELEMETRY_ENCODER_SIZE))
     {
-        uint8_t  flags = 0u;
-        uint32_t distance = 0u;
-
-        if (p_snapshot->distance_valid)
-        {
-            flags |= TELEMETRY_ENCODER_DISTANCE_VALID;
-            distance = p_snapshot->distance_mm;
-        }
-
-        if (p_snapshot->stopped)
-        {
-            flags |= TELEMETRY_ENCODER_STOPPED;
-        }
-
-        if (p_snapshot->link_up)
-        {
-            flags |= TELEMETRY_ENCODER_LINK_UP;
-        }
+        const telemetry_encoder_snapshot_t * const p_s = p_snapshot;
+        uint8_t const flags0 = (uint8_t)(
+            flag_if(p_s->distance_valid, TELEMETRY_ENCODER_DISTANCE_VALID)
+            | flag_if(p_s->stopped, TELEMETRY_ENCODER_STOPPED)
+            | flag_if(p_s->link_up, TELEMETRY_ENCODER_LINK_UP)
+            | flag_if(p_s->stop_latched, TELEMETRY_ENCODER_STOP_LATCHED)
+            | flag_if(p_s->motion_valid, TELEMETRY_ENCODER_MOTION_VALID)
+            | flag_if(p_s->line_fresh, TELEMETRY_ENCODER_LINE_FRESH)
+            | flag_if(p_s->hump_valid, TELEMETRY_ENCODER_HUMP_VALID));
+        uint8_t const flags1 = (uint8_t)(
+            flag_if(p_s->forward_valid, TELEMETRY_ENCODER_FORWARD_VALID)
+            | flag_if(p_s->profile_valid, TELEMETRY_ENCODER_PROFILE_VALID)
+            | flag_if(p_s->shape_valid, TELEMETRY_ENCODER_SHAPE_VALID));
 
         p_output[0] = TELEMETRY_ENCODER_VERSION;
-        p_output[1] = flags;
-
-        /* Masks limit every narrowed value to the uint8_t range. */
-        p_output[2] = (uint8_t)(p_snapshot->captured_ms & UINT32_C(0xff));
-        p_output[3] = (uint8_t)((p_snapshot->captured_ms >> 8u) &
-                               UINT32_C(0xff));
-        p_output[4] = (uint8_t)((p_snapshot->captured_ms >> 16u) &
-                               UINT32_C(0xff));
-        p_output[5] = (uint8_t)((p_snapshot->captured_ms >> 24u) &
-                               UINT32_C(0xff));
-        p_output[6] = (uint8_t)(distance & UINT32_C(0xff));
-        p_output[7] = (uint8_t)((distance >> 8u) & UINT32_C(0xff));
+        p_output[1] = flags0;
+        put_u32(&p_output[2], p_s->captured_ms);
+        put_u16(&p_output[6],
+                (uint16_t)(p_s->distance_valid ? p_s->distance_mm : 0u));
+        p_output[8]  = flags1;
+        p_output[9]  = pack_codes(p_s->state, p_s->mode);
+        p_output[10] = pack_codes(p_s->fault,
+                                  (uint8_t)(p_s->line_fresh ? p_s->line : 0u));
+        p_output[11] = pack_codes(p_s->scan_result, p_s->bypass_side);
+        put_s16(&p_output[12],
+                (int16_t)(p_s->motion_valid ? p_s->left_mm_s : 0));
+        put_s16(&p_output[14],
+                (int16_t)(p_s->motion_valid ? p_s->right_mm_s : 0));
+        put_s16(&p_output[16],
+                (int16_t)(p_s->motion_valid ? p_s->heading_cdeg : 0));
+        put_u16(&p_output[18],
+                (uint16_t)(p_s->forward_valid ? p_s->forward_mm : 0u));
+        put_u16(&p_output[20],
+                (uint16_t)(p_s->profile_valid ? p_s->nearest_mm : 0u));
+        put_u16(&p_output[22],
+                (uint16_t)(p_s->shape_valid ? p_s->width_mm : 0u));
+        put_s16(&p_output[24],
+                (int16_t)(p_s->shape_valid ? p_s->centre_offset_mm : 0));
+        p_output[26] = (uint8_t)(p_s->hump_valid ? p_s->hump_max_mm : 0u);
         written = TELEMETRY_ENCODER_SIZE;
     }
 
     return written;
 }
 
-/*** End of file. ***/
+/** @brief Two codes in one byte; an out-of-range code becomes INVALID. */
+static uint8_t pack_codes (uint8_t low, uint8_t high)
+{
+    uint8_t const lo = (low > TELEMETRY_SNAPSHOT_CODE_MAX)
+                       ? TELEMETRY_SNAPSHOT_CODE_INVALID : low;
+    uint8_t const hi = (high > TELEMETRY_SNAPSHOT_CODE_MAX)
+                       ? TELEMETRY_SNAPSHOT_CODE_INVALID : high;
 
+    return (uint8_t)(lo | (uint8_t)(hi << 4u));
+}
 
+static void put_u16 (uint8_t * p_out, uint16_t value)
+{
+    /* Masks limit every narrowed value to the uint8_t range. */
+    p_out[0] = (uint8_t)(value & 0xffu);
+    p_out[1] = (uint8_t)((value >> 8u) & 0xffu);
+}
+
+static void put_s16 (uint8_t * p_out, int16_t value)
+{
+    /* Two's complement bit pattern, defined by the uint16_t conversion. */
+    put_u16(p_out, (uint16_t)value);
+}
+
+static void put_u32 (uint8_t * p_out, uint32_t value)
+{
+    p_out[0] = (uint8_t)(value & UINT32_C(0xff));
+    p_out[1] = (uint8_t)((value >> 8u) & UINT32_C(0xff));
+    p_out[2] = (uint8_t)((value >> 16u) & UINT32_C(0xff));
+    p_out[3] = (uint8_t)((value >> 24u) & UINT32_C(0xff));
+}
+
+static uint8_t flag_if (bool b_set, uint8_t flag)
+{
+    return (b_set ? flag : 0u);
+}
+
+/* End of file. */

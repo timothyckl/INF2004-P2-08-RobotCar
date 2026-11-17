@@ -520,11 +520,35 @@ test_ctrl_robot_state (void)
                          && (0u == (st.flags & S2_RS_DISTANCE_VALID));
 
     (void)h_remote(p_h, S2_REMOTE_START, 0u);
-    p_h->in.status.travel_mm = 1250;
-    p_h->in.status.flags     = MOTION_ST_VALID;     /* moving */
+    p_h->in.status.travel_mm    = 1250;
+    p_h->in.status.flags        = MOTION_ST_VALID;  /* moving */
+    p_h->in.status.left_mm_s    = 38;
+    p_h->in.status.right_mm_s   = -12;
+    p_h->in.status.heading_mdeg = 180000;           /* fits as 18000 */
     ctrl_get_state(&p_h->c, &p_h->in, &st);
 
-    return (b_ready && (S2_SYS_RUNNING == st.state)
+    bool const b_motion = (0u != (st.flags & S2_RS_MOTION_VALID))
+                          && (38 == st.left_mm_s) && (-12 == st.right_mm_s)
+                          && (18000 == st.heading_cdeg);
+
+    p_h->in.status.heading_mdeg = -179999;          /* truncates to 0.01 */
+    ctrl_get_state(&p_h->c, &p_h->in, &st);
+
+    bool const b_heading = (-17999 == st.heading_cdeg);
+
+    /* Unreadable motion status: no speeds, flag clear */
+    p_h->in.b_status_ok = false;
+    ctrl_get_state(&p_h->c, &p_h->in, &st);
+
+    bool const b_no_motion = (0u == (st.flags & S2_RS_MOTION_VALID))
+                             && (0 == st.left_mm_s)
+                             && (0 == st.heading_cdeg);
+
+    p_h->in.b_status_ok = true;
+    ctrl_get_state(&p_h->c, &p_h->in, &st);
+
+    return (b_ready && b_motion && b_heading && b_no_motion
+            && (S2_SYS_RUNNING == st.state)
             && (0u == (st.flags & S2_RS_STOP_LATCHED))
             && (0u == (st.flags & S2_RS_STOPPED))
             && (0u != (st.flags & S2_RS_DISTANCE_VALID))

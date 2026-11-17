@@ -2,7 +2,14 @@
 
 **Owner:** Hong Yih (2501110)  ·  **Planned subsystem:** WiFi/MQTT communication  ·  **Code:** `app_program/subsystem1/`
 
-The cases below test the current LED starter example, not the planned subsystem.
+S1-U01–S1-U03 tested the LED starter example, which was retired when
+subsystem 1 was merged into this branch (S1 decision 2); they are kept so
+the IDs are never reused. S1-U04–S1-U07 test the hardware-independent
+communication logic. S1-H01–S1-H03 need the robot, WiFi and a broker.
+
+Earlier runs of S1-U04–U07 and S1-H01/H02 (telemetry version 1, 2026-10-27
+to 2026-11-10) are recorded with their logs on
+`feature/full-system-integration`. They are not results for this branch.
 
 See `testing/README.md` for how to run tests and record results.
 
@@ -12,9 +19,16 @@ Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
-| S1-U01 | cyclic handler is running | | auto | `subsystem1_test.c` | `[TEST] S1-U01 PASS` |
-| S1-U02 | LED task sleeps between ticks (not busy) | | auto | `subsystem1_test.c` | `[TEST] S1-U02 PASS` |
-| S1-U03 | LED on GP19 toggles every 250 ms | | manual | 1. Flash normal image. 2. Watch LED / measure with scope. | 2 Hz blink, 50 % duty |
+| S1-U01 | *retired:* cyclic handler is running | LED starter | — | — | — |
+| S1-U02 | *retired:* LED task sleeps between ticks | LED starter | — | — | — |
+| S1-U03 | *retired:* LED on GP19 toggles every 250 ms | LED starter | — | — | — |
+| S1-U04 | Bounded command parsing | Command syntax | auto / host | `comms_test_commands()`; valid tokens, malformed input, nulls, explicit lengths and oversized input | All cases pass; unsupported bytes rejected |
+| S1-U05 | Binary telemetry encoding, version 2 (revised 2026-11-17, S1 decision 1) | Telemetry v2 | auto / host | `comms_test_telemetry()`; 27-byte golden frame with every field set, every undersized buffer, NULL arguments, every validity flag clear, single flags on their bits, codes above 14 sent as 15, signed and unsigned extremes | Exact bytes; guarded fields zero when their flag is clear; no overwrite on failure |
+| S1-U06 | Heartbeat and retries | Isolated scheduling logic | auto / host | `comms_test_timers()`; initialisation bounds, pending attempts, retry deadlines, reconnect, clock wrap and delayed polling | Correct actions without busy retries or catch-up bursts |
+| S1-U07 | MQTT service bridge | Service-task integration boundary | auto / host | Fragmentation, exact topic, malformed lengths, STOP routing, regular routing, failed delivery, telemetry provider and counters | STOP never uses regular path; invalid input rejected; failures reported |
+| S1-H01 | MQTT START/STOP/RESET reach the controller | IF-08, IF-09 | manual | `NET=lwip MQTT=1`; publish to the command topic | STOP latches; START only from Ready |
+| S1-H02 | telemetry published every second (revised 2026-11-17 for version 2) | IF-10 | manual | subscribe to the telemetry topic; decode with the v2 layout in `telemetry_encoder.h` | 27-byte version 2 frames, 1 s apart; fields match the serial log |
+| S1-H03 | WiFi/broker loss does not move the robot | safety | manual | drop WiFi while stopped and while running | no START; STOP still works |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
@@ -25,4 +39,4 @@ Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| YYYY-MM-DD | S1-U01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
+| 2026-11-17 | S1-U04..U07 | working tree after `2c40262` (telemetry v2) | host (cc) | PASS (4/4) | `make -C testing/host all` | host only; `-Wconversion -Wsign-conversion -Werror`. Not yet run on the Pico W |
