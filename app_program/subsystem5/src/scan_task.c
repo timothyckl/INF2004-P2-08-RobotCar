@@ -42,6 +42,11 @@ static uint32_t const g_task_stuck_us     = 130000u;
 static uint32_t const g_task_fresh_us     = 150000u;
 static uint32_t const g_task_result_limit_us = 2000000u;
 
+/* Decision 12: no forward trigger until the HC-SR04 has powered up. At 3V3
+   from a cold power-bank start it gave no echo for about 480 ms (6 attempts),
+   so three of them faulted the monitor; 1 s is about twice that. */
+static uint32_t const g_task_warmup_us    = 1000000u;
+
 /* Forward reading reported for a late echo: the 4000 mm upper bound of
    the accepted range (decision 3), so it is always beyond the hazard. */
 static uint16_t const g_task_beyond_mm    = 4000u;
@@ -84,6 +89,8 @@ static uint16_t           g_profile[BYPASS_PLAN_FINE_ANGLES];
 static forward_monitor_t  g_monitor;
 static scan_look_t        g_look;
 static uint32_t           g_monitor_since_us;
+static uint32_t           g_start_us;
+static bool               gb_warm;
 static uint32_t           g_capture_us;
 static uint32_t           g_capture_rise_us;
 static bool               gb_capture_armed;
@@ -91,6 +98,9 @@ static bool               gb_capture_rise;
 static bool               gb_capture_used;
 static bool               gb_was_scanning;
 static bool               gb_was_hazard;
+
+/** True once the sensor power-up allowance has passed (latched). */
+static bool scan_task_warm (uint32_t now_us);
 
 /** Wake the task once per period (interrupt context). */
 static void scan_task_cyclic (void * p_exinf);
@@ -200,6 +210,8 @@ scan_task_start (void)
     (void) scan_look_init(&g_look, &look_config);
     forward_monitor_reset(&g_monitor);
     g_monitor_since_us = scan_task_now_us();
+    g_start_us         = g_monitor_since_us;
+    gb_warm            = false;
 
     ID const tid = app_start_task((FP) scan_task_main, OBSTACLE_SCAN_PRIORITY,
                                   0u, "obstacle_scan");
@@ -408,6 +420,19 @@ scan_task_main (INT stacd, void * p_exinf)
 
     }
 
+}
+
+static bool
+scan_task_warm (uint32_t now_us)
+{
+    /* Latched, so the 32-bit microsecond wrap (about 71 min) cannot
+       reopen the allowance. Scan task only. */
+    if ((!gb_warm) && ((now_us - g_start_us) >= g_task_warmup_us))
+    {
+        gb_warm = true;
+    }
+
+    return (gb_warm);
 }
 
 static uint32_t
@@ -635,7 +660,8 @@ scan_task_forward_step (uint32_t now_us)
         }
 
     }
-    else if ((!gb_capture_used) || (since_us >= g_task_retrigger_us))
+    else if (((!gb_capture_used) || (since_us >= g_task_retrigger_us))
+             && scan_task_warm(now_us))
     {
         g_capture_us     = drv_ultrasonic_trigger();
         gb_capture_armed = true;
@@ -644,7 +670,7 @@ scan_task_forward_step (uint32_t now_us)
     }
     else
     {
-        /* Waiting out the 65 ms spacing. */
+        /* Waiting out the 65 ms spacing or the power-up allowance. */
     }
 
 }

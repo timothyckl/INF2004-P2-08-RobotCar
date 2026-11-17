@@ -1296,6 +1296,33 @@ Test under concurrent encoder, IR, ECHO, servo and WiFi load. Require control cy
 
 Compare actual RAM, queue/payload sizes and timing against an unpacked reference using identical data and workload. Record calibration, tested commit, inputs, results and saved evidence. Numerical targets remain unvalidated until tested.
 
+### 12. Ultrasonic power-up allowance (2026-11-17)
+
+Approved by Dalton on the integration branch.
+
+**Problem.** Every cold start from the power bank (Robo Pico VIN) came up
+in Fault with a scan fault; boots after flashing or a reset button press
+did not. A temporary diagnostic that published S5's first 16 forward
+attempts over MQTT showed the cause: the first attempt is 60 ms after
+boot, the first six attempts got no echo at all, the forward monitor
+faulted on the third (200 ms after boot, three consecutive invalid
+attempts, decision 3), and from the seventh (about 480 ms) every echo was
+valid. On a USB boot after flashing, the sensor was already powered and
+the first attempt (30 ms) was valid. The HC-SR04 datasheet gives no
+power-up time; the module runs at 3V3, outside its 5 V specification.
+
+**Decision.** `scan_task.c` sends no forward trigger until 1 s after
+`scan_task_start()` (about twice the measured 480 ms). The allowance is
+latched once passed, so the 32-bit microsecond timer wrap cannot reopen it.
+Decision 3 is unchanged after that: three consecutive invalid attempts or
+stuck ECHO still faults. During the allowance there is no forward reading;
+the controller is in Ready with STOP latched at that time, so no movement
+depends on it.
+
+**Evidence.** `testing/subsystem5/logs/2026-11-17_s5-bootfault-*.txt`
+(diagnostic image, not committed). To be confirmed by a cold power-bank
+boot that comes up Ready.
+
 ### 11. C module templates
 
 Use these maintained templates for new subsystem 5 modules. Replace `module`
