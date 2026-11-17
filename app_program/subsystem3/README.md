@@ -180,8 +180,9 @@ performance, line following, motor behaviour, or the printed course barcode.
   uniquely closest.
 - `s3_scan` frames captures from timestamped side-sensor edges, derives the
   narrow/wide boundary from each capture, and decodes forwards then reversed.
-  A 24--28 run capture is accepted only when one intact end supplies a
-  sentinel, both gaps and the full payload.
+  A 24--29 run capture is accepted when one intact end supplies a
+  sentinel, both gaps and the full payload, and a 31-run capture with one
+  stray mark beside the code is read from its first and last 29 runs.
 - `s3_code39` holds the standard Code 39 A--Z patterns and the `*` sentinel.
 - `s3_barcode` classifies each ADC2 sample with an unfiltered adaptive
   threshold (white baseline 154..184, black at baseline + 400, release at
