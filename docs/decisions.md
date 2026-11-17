@@ -619,6 +619,14 @@ than 100 ms already stops the car. This assumes barcodes are beside
 straight track, where gentle corrections hold the line; a lap must
 confirm that the car still follows the line through softened periods.
 
+Revised 2026-11-17: the flag is set only once a capture looks like a
+barcode, with at least three runs, each at least 60 ms. Later the same
+day, 19..40 ms blips and single crossing bars under the side sensor
+started a capture on most of the track. Each one softened the curves,
+and the car ran off the line on bends (runs of 243..504 mm). Real runs
+measured 99..600 ms. Softening now starts a few runs into a barcode;
+the decoder already tolerates a damaged first sentinel.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

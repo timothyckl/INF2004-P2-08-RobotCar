@@ -752,13 +752,35 @@ static void test_sampled_barcode(void)
     sampled_init(&run, 1000000U);
     check(!s3_barcode_active(&run.barcode), "idle on white is not active");
     sample_level(&run, true, 150000U);
-    check(s3_barcode_active(&run.barcode), "first bar makes it active");
+    sample_level(&run, false, 150000U);
+    check(!s3_barcode_active(&run.barcode), "one bar is not yet a barcode");
+    sample_level(&run, true, 150000U);
+    sample_level(&run, false, 10000U);
+    check(s3_barcode_active(&run.barcode), "three plausible runs: active");
     sample_level(&run, false, 1000000U);
     check(!s3_barcode_active(&run.barcode), "quiet white ends it");
     sample_level(&run, true, 150000U);
+    sample_level(&run, false, 150000U);
+    sample_level(&run, true, 150000U);
+    sample_level(&run, false, 10000U);
     s3_barcode_abort(&run.barcode);
     check(!s3_barcode_active(&run.barcode), "abort ends it");
     check(!s3_barcode_active(NULL), "null barcode is not active");
+
+    /* Blips like those logged on 2026-11-17 (19..40 ms) never qualify. */
+    sampled_init(&run, 1000000U);
+    for (uint8_t idx = 0U; idx < 6U; ++idx)
+    {
+        sample_level(&run, true, 20000U);
+        sample_level(&run, false, 40000U);
+    }
+    check(!s3_barcode_active(&run.barcode), "edge blips are not a barcode");
+    sample_level(&run, false, 1000000U);
+
+    /* A crossing line is one bar, so it never softens the steering. */
+    sample_level(&run, true, 300000U);
+    check(!s3_barcode_active(&run.barcode), "crossing line is not a barcode");
+    sample_level(&run, false, 1000000U);
 
     check(!s3_barcode_init(NULL), "null barcode init");
     check(S3_SCAN_NONE == s3_barcode_update(NULL, 0U, 0U, &run.last),

@@ -31,6 +31,15 @@
 #define S3_BARCODE_RUN_MAX_US       800000U
 #define S3_BARCODE_QUIET_US         700000U
 
+/*
+ * S2 decision 25 (revised 2026-11-17): a capture counts as a barcode for
+ * softening only after three runs of at least 60 ms. Real runs measured
+ * 99..600 ms; on 2026-11-17 noise at a sensor edge gave 19..40 ms blips,
+ * and a crossing line gives a single bar.
+ */
+#define S3_BARCODE_ACTIVE_RUNS      3U
+#define S3_BARCODE_ACTIVE_MIN_US    60000U
+
 static s3_scan_cfg_t const g_s3_barcode_scan_cfg =
 {
     S3_BARCODE_RUN_MAX_US,
@@ -100,7 +109,18 @@ s3_barcode_abort (s3_barcode_t * p_barcode)
 bool
 s3_barcode_active (s3_barcode_t const * p_barcode)
 {
-    return ((NULL != p_barcode) && p_barcode->scan.capture.active);
+    bool b_active = (NULL != p_barcode) && p_barcode->scan.capture.active
+                    && (p_barcode->scan.capture.count
+                        >= S3_BARCODE_ACTIVE_RUNS);
+
+    for (uint8_t idx = 0U; b_active
+         && (idx < p_barcode->scan.capture.count); ++idx)
+    {
+        b_active = (p_barcode->scan.capture.runs[idx]
+                    >= S3_BARCODE_ACTIVE_MIN_US);
+    }
+
+    return (b_active);
 }
 
 /* End of file. */

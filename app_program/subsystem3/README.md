@@ -200,9 +200,10 @@ performance, line following, motor behaviour, or the printed course barcode.
 The `S3_LINE_TEST=1` image reads ADC2/GP28 in the same 10 ms loop as the
 front sensors, so one task owns the ADC and the barcode state. It only
 prints results; the barcode never steers, and decoded letters do not yet
-reach the Vehicle Controller. While a capture is in progress, each line
-report carries `S2_LINE_FLAG_BARCODE`, and the controller replaces strong
-curves with gentle corrections (S2 decision 25). A failed ADC2 read abandons the capture
+reach the Vehicle Controller. Once a capture looks like a barcode (three
+runs of at least 60 ms), each line report carries `S2_LINE_FLAG_BARCODE`
+until it ends, and the controller replaces strong curves with gentle
+corrections (S2 decision 25). A failed ADC2 read abandons the capture
 without stopping line following. Serial lines:
 
 ```text
