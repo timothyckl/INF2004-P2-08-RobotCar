@@ -18,7 +18,7 @@
  *
  *	The example system: one subsystem per folder, one task each
  *	------------------------------------------------------------
- *	  subsystem1/  LED       blinks GP19, paced by a cyclic handler
+ *	  subsystem1/  no task: MQTT bridge runs in the WiFi service task
  *	  subsystem2/  Producer  makes a "sample" every 300 ms     (core 1)
  *	  subsystem3/  Consumer  collects samples into statistics  (core 0)
  *	  subsystem4/  IMU       LSM303DLHC on I2C1, terrain and hump events
@@ -31,7 +31,6 @@
  *	  IF-03  S3 -> S4  message buffer mbf_summary + event flag flg_events
  *	                   (owned by S4)
  *	  IF-04  S4 -> S3  reads app_stats under mutex mtx_stats (owned by S3)
- *	  IF-05  S4 -> S1  suspends/resumes the LED task tid_led (owned by S1)
  *	  IF-06  S3 -> S2  line reports via line_q (owned by S2)
  *	The subsystem that RECEIVES or OWNS the data creates the object and
  *	publishes its ID in its header; the other side just uses it.

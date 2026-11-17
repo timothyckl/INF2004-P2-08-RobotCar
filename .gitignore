@@ -27,3 +27,8 @@ config/wifi_secrets.h
 
 # macOS
 .DS_Store
+
+# Python bytecode and local dashboard session logs
+__pycache__/
+*.pyc
+testing/subsystem1/dashboard/logs/
