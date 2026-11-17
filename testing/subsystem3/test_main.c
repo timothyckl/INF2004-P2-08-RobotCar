@@ -2,6 +2,7 @@
 #include "test_main.h"
 #include "s3_ir.h"
 #include "s3_bar.h"
+#include "s3_barcode.h"
 #include "s3_code39.h"
 #include "s3_nav.h"
 #include "s3_scan.h"
@@ -510,14 +511,198 @@ static void test_scan_failures(void)
           "null scan config");
 }
 
+/* Sampled-sensor cases for s3_barcode. ADC levels follow the 2026-11-11
+ * bench readings (white about 170, solid black about 1690, faded black
+ * about 1650) and the run widths follow the 40 mm/s observation (narrow
+ * 120..220 ms, wide 420..540 ms). They are synthetic, not robot data. */
+#define TEST_SAMPLE_US      10000U
+#define TEST_ADC_WHITE      170U
+#define TEST_ADC_BLACK      1690U
+#define TEST_ADC_FADED      1650U
+
+typedef struct
+{
+    s3_barcode_t barcode;
+    uint32_t     now_us;
+    uint16_t     black_adc;
+    uint8_t      decoded;
+    uint8_t      errors;
+    uint8_t      singles;
+    char         last;
+} sampled_t;
+
+/* Hold one level for duration_us, sampling every 10 ms. */
+static void sample_level(sampled_t * p_run, bool b_black,
+                         uint32_t duration_us)
+{
+    uint16_t const adc = b_black ? p_run->black_adc : TEST_ADC_WHITE;
+
+    for (uint32_t elapsed = 0U; elapsed < duration_us;
+         elapsed += TEST_SAMPLE_US)
+    {
+        char symbol = '\0';
+        s3_scan_result_t const result = s3_barcode_update(
+            &p_run->barcode, adc, p_run->now_us, &symbol);
+
+        if (S3_SCAN_DECODED == result)
+        {
+            ++p_run->decoded;
+            p_run->last = symbol;
+        }
+        else if (S3_SCAN_ERROR == result)
+        {
+            ++p_run->errors;
+        }
+        else if (S3_SCAN_SINGLE_BAR == result)
+        {
+            ++p_run->singles;
+        }
+        else
+        {
+            /* Nothing finished in this period. */
+        }
+        p_run->now_us += TEST_SAMPLE_US;
+    }
+}
+
+/* Pass one printed code under the sensor, then a quiet white zone. */
+static void sample_code(sampled_t * p_run, uint16_t symbol,
+                        uint32_t narrow_us, uint32_t wide_us, bool b_reverse)
+{
+    uint16_t const order[3] =
+    {
+        S3_CODE39_SENTINEL, symbol, S3_CODE39_SENTINEL
+    };
+
+    for (uint8_t ch = 0U; ch < 3U; ++ch)
+    {
+        uint16_t const pattern = order[b_reverse ? (2U - ch) : ch];
+
+        for (uint8_t idx = 0U; idx < S3_BAR_ELEMENTS; ++idx)
+        {
+            uint8_t const bit = b_reverse ? idx : (uint8_t)(8U - idx);
+            bool const b_wide = (0U != (pattern & (1U << bit)));
+
+            sample_level(p_run, (0U == (idx % 2U)),
+                         b_wide ? wide_us : narrow_us);
+        }
+        if (ch < 2U)
+        {
+            sample_level(p_run, false, narrow_us);  /* inter-char gap */
+        }
+    }
+    sample_level(p_run, false, 1000000U);           /* quiet zone */
+}
+
+static void sampled_init(sampled_t * p_run, uint32_t now_us)
+{
+    sampled_t const zero = {0};
+
+    *p_run = zero;
+    p_run->now_us = now_us;
+    p_run->black_adc = TEST_ADC_BLACK;
+    check(s3_barcode_init(&p_run->barcode), "barcode init");
+    sample_level(p_run, false, 200000U);            /* settle on white */
+}
+
+static void test_sampled_barcode(void)
+{
+    sampled_t run;
+    bool b_all_forward = true;
+    bool b_all_reverse = true;
+
+    sampled_init(&run, 1000000U);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        uint8_t const before = run.decoded;
+
+        sample_code(&run, g_s3_code39_alphabet[idx].pattern,
+                    150000U, 450000U, false);
+        b_all_forward = b_all_forward && (before + 1U == run.decoded)
+                        && (g_s3_code39_alphabet[idx].symbol == run.last);
+
+        sample_code(&run, g_s3_code39_alphabet[idx].pattern,
+                    150000U, 450000U, true);
+        b_all_reverse = b_all_reverse && ((before + 2U) == run.decoded)
+                        && (g_s3_code39_alphabet[idx].symbol == run.last);
+    }
+    check(b_all_forward, "sampled A-Z decodes forwards at 10 ms");
+    check(b_all_reverse, "sampled A-Z decodes in reverse at 10 ms");
+    check((0U == run.errors) && (0U == run.singles),
+          "sampled alphabet has no errors");
+
+    sampled_init(&run, UINT32_MAX - 3000000U);
+    sample_code(&run, S3_CODE39_PATTERN_B, 120000U, 540000U, false);
+    check((1U == run.decoded) && ('B' == run.last),
+          "extreme observed widths decode across the timer wrap");
+
+    sampled_init(&run, 1000000U);
+    run.black_adc = TEST_ADC_FADED;
+    sample_code(&run, S3_CODE39_PATTERN_C, 150000U, 450000U, false);
+    check((1U == run.decoded) && ('C' == run.last), "faded black decodes");
+
+    sampled_init(&run, 1000000U);
+    run.black_adc = 500U;       /* below baseline + 400: never black */
+    sample_code(&run, S3_CODE39_PATTERN_D, 150000U, 450000U, false);
+    check((0U == run.decoded) && (0U == run.errors),
+          "weak contrast is ignored, not decoded");
+
+    sampled_init(&run, 1000000U);
+    sample_level(&run, true, 100000U);
+    sample_level(&run, false, 1000000U);
+    check((1U == run.singles) && (0U == run.decoded),
+          "one tape crossing is a single bar");
+
+    sampled_init(&run, 1000000U);
+    sample_level(&run, true, 150000U);
+    sample_level(&run, false, 150000U);
+    s3_barcode_abort(&run.barcode);
+    sample_level(&run, true, 150000U);  /* mid-code: not a clean start */
+    sample_level(&run, false, 1000000U);
+    check((0U == run.decoded) && (0U == run.errors) && (1U == run.singles),
+          "abort drops the capture; next bar starts a new one");
+
+    check(!s3_barcode_init(NULL), "null barcode init");
+    check(S3_SCAN_NONE == s3_barcode_update(NULL, 0U, 0U, &run.last),
+          "null barcode update");
+    check(S3_SCAN_NONE == s3_barcode_update(&run.barcode, 0U, 0U, NULL),
+          "null barcode symbol");
+}
+
+static void test_unfiltered(void)
+{
+    s3_ir_adaptive_t filtered = {0};
+    s3_ir_adaptive_t raw = {0};
+    s3_ir_adaptive_config_t const config =
+    {
+        169U, 154U, 184U, 400U, 300U
+    };
+
+    check(s3_ir_adaptive_init(&filtered, &config)
+          && s3_ir_adaptive_init(&raw, &config), "unfiltered init");
+    check(!s3_ir_adaptive_update(&filtered, 700U),
+          "filtered first step stays white");
+    check(s3_ir_adaptive_update_unfiltered(&raw, 700U),
+          "unfiltered crosses the threshold at once");
+    check(700U == raw.filtered, "unfiltered keeps the sample exactly");
+    check(s3_ir_adaptive_update_unfiltered(&raw, 500U),
+          "unfiltered hysteresis holds black above release");
+    check(!s3_ir_adaptive_update_unfiltered(&raw, 400U),
+          "unfiltered releases at the white margin");
+    check(!s3_ir_adaptive_update_unfiltered(&raw, 4096U),
+          "unfiltered rejects out-of-range ADC");
+}
+
 int main(void)
 {
     test_ir();
+    test_unfiltered();
     test_barcode();
     test_navigation();
     test_pipeline();
     test_scan_decode();
     test_scan_failures();
+    test_sampled_barcode();
     printf("%u checks, %u failures\n", g_checks, g_failures);
     return (0U == g_failures) ? 0 : 1;
 }

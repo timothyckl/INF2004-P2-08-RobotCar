@@ -6,6 +6,8 @@
 #define S3_IR_ADAPTATION_SAMPLES     8u
 
 static uint16_t s3_ir_threshold(uint16_t baseline, uint16_t margin);
+static bool s3_ir_adaptive_classify(s3_ir_adaptive_t * p_state,
+                                    uint16_t sample, bool b_filter);
 
 bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required)
 {
@@ -80,6 +82,20 @@ s3_ir_adaptive_init (s3_ir_adaptive_t * p_state,
 bool
 s3_ir_adaptive_update (s3_ir_adaptive_t * p_state, uint16_t sample)
 {
+    return (s3_ir_adaptive_classify(p_state, sample, true));
+}
+
+bool
+s3_ir_adaptive_update_unfiltered (s3_ir_adaptive_t * p_state,
+                                  uint16_t sample)
+{
+    return (s3_ir_adaptive_classify(p_state, sample, false));
+}
+
+static bool
+s3_ir_adaptive_classify (s3_ir_adaptive_t * p_state, uint16_t sample,
+                         bool b_filter)
+{
     uint16_t release_threshold;
 
     if ((NULL == p_state) || (!p_state->b_valid)
@@ -88,7 +104,11 @@ s3_ir_adaptive_update (s3_ir_adaptive_t * p_state, uint16_t sample)
         return (false);
     }
 
-    if (sample > p_state->filtered)
+    if (!b_filter)
+    {
+        p_state->filtered = sample;
+    }
+    else if (sample > p_state->filtered)
     {
         uint16_t const difference = sample - p_state->filtered;
 

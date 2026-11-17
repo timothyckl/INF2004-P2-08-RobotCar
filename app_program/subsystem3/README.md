@@ -183,10 +183,40 @@ performance, line following, motor behaviour, or the printed course barcode.
   A 24--28 run capture is accepted only when one intact end supplies a
   sentinel, both gaps and the full payload.
 - `s3_code39` holds the standard Code 39 A--Z patterns and the `*` sentinel.
-- `s3_scan`, `s3_code39` and the `s3_bar` near-match rule were ported from
-  `feature/subsystem3-ir-line-barcode` (commit `e6a7027`) and are host-tested
-  only. No task on this branch samples ADC2 for them yet, and reads of the
-  printed course barcodes at speed are not validated.
+- `s3_barcode` classifies each ADC2 sample with an unfiltered adaptive
+  threshold (white baseline 154..184, black at baseline + 400, release at
+  baseline + 300) and feeds level changes, timestamped from the 1 MHz
+  `TIMERAWL`, to `s3_scan`. A run over 800 ms aborts a capture and 700 ms of
+  white ends one. All of these values are provisional.
+- `s3_scan`, `s3_code39`, the `s3_bar` near-match rule and the barcode
+  thresholds were ported from `feature/subsystem3-ir-line-barcode` (commit
+  `e6a7027`), where they were measured on 2026-11-11 at about 40 mm/s.
+  They are host-tested on this branch; reads of the printed course barcodes
+  on this car are not yet validated.
+
+## Barcode reporting in the line-follow image
+
+The `S3_LINE_TEST=1` image reads ADC2/GP28 in the same 10 ms loop as the
+front sensors, so one task owns the ADC and the barcode state. It only
+prints results; the barcode never steers, and decoded letters do not yet
+reach the Vehicle Controller. A failed ADC2 read abandons the capture
+without stopping line following. Serial lines:
+
+```text
+s3 bar: DECODED A (decoded=1 errors=0)
+s3 bar: capture rejected, runs=25 threshold=569 (decoded=1 errors=1)
+s3 bar: single bar (crossing line), ignored
+```
+
+To validate on the car:
+
+1. With the `S3_HW_TEST=1` raw monitor, hold the car still and record
+   `barcode_adc` on white, solid black and faded black at the mounted height.
+   White must stay within 154..184 and black above about 600, or the
+   thresholds in `s3_barcode.c` need re-measuring.
+2. With the `S3_LINE_TEST=1` image, drive past each course barcode in both
+   directions and record each `s3 bar:` line with the expected letter.
+3. Record the results in `testing/subsystem3/TEST_LOG.md`.
 - `s3_nav` provides the current synthetic A/B/C/D command mapping, duplicate
   suppression, expiry, STOP cancellation, and controller-authority gating. It
   contains no motor actions or validated turn angles.

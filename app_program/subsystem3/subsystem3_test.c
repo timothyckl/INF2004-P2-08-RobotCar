@@ -13,6 +13,7 @@
 #endif
 
 #if S3_LINE_FOLLOW_TEST
+#include "s3_barcode.h"
 #include "../subsystem2/subsystem2.h"
 #endif
 
@@ -61,6 +62,8 @@ static UB const g_s3_white[] = "WHITE";
 static UB const g_s3_black[] = "BLACK";
 
 static void s3_test_line_trial(void);
+static void s3_test_barcode_sample(s3_barcode_t * p_barcode,
+                                   bool * p_read_failed);
 static bool s3_test_wait_ready(void);
 static uint32_t s3_test_now_ms(void);
 static bool s3_test_line_position(s3_line_t line, uint8_t * p_position);
@@ -134,15 +137,18 @@ s3_test_line_trial (void)
     };
     s3_ir_adaptive_t left_state = {0};
     s3_ir_adaptive_t right_state = {0};
+    s3_barcode_t barcode = {0};
     s3_filter_t filter = {0};
     uint32_t last_report_ms = 0u;
     uint32_t last_log_ms = 0u;
     uint8_t last_position = UINT8_MAX;
     bool b_delivery_failed = false;
     bool b_read_failed = false;
+    bool b_barcode_read_failed = false;
 
     if ((!s3_ir_adaptive_init(&left_state, &left_config))
-        || (!s3_ir_adaptive_init(&right_state, &right_config)))
+        || (!s3_ir_adaptive_init(&right_state, &right_config))
+        || (!s3_barcode_init(&barcode)))
     {
         tm_printf((UB *)"s3 line: invalid adaptive configuration; STOP\n");
         (void)s2_line_stop();
@@ -160,6 +166,8 @@ s3_test_line_trial (void)
     tm_printf((UB *)"s3 line: place the car on the track, then press GP20 "
                     "to START or STOP\n");
     tm_printf((UB *)"s3 line: adaptive AO left=GP26 right=GP27\n");
+    tm_printf((UB *)"s3 bar: side AO=GP28, Code 39 A-Z; reports only, "
+                    "no motion\n");
     tm_printf((UB *)"s3 line: continuous supervised trial; no time limit\n");
 
 #if S4_RAW_LOG
@@ -190,6 +198,9 @@ s3_test_line_trial (void)
             continue;
         }
         b_read_failed = false;
+
+        /* Every period, before the steering filter can skip the rest. */
+        s3_test_barcode_sample(&barcode, &b_barcode_read_failed);
 
         if (s3_ir_adaptive_update(&left_state, sample.left))
         {
@@ -273,6 +284,63 @@ s3_test_line_trial (void)
         }
 
         (void)tk_dly_tsk(S3_LINE_SAMPLE_MS);
+    }
+}
+
+/*
+ * Read the side barcode sensor once and report any finished capture. The
+ * result is only printed: the barcode never steers, and decoded letters do
+ * not yet reach the Vehicle Controller. A failed read abandons the capture
+ * but does not stop line following, which uses the other two channels.
+ */
+static void
+s3_test_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
+{
+    static uint16_t decoded_count = 0u;
+    static uint16_t error_count = 0u;
+    uint16_t adc = 0u;
+    char symbol = '\0';
+    s3_scan_result_t result;
+    ER const read_error = s3_ir_gpio_read_barcode(&adc);
+    uint32_t const now_us = (uint32_t)in_w(TIMER_TIMERAWL);
+
+    if (E_OK != read_error)
+    {
+        if (!*p_read_failed)
+        {
+            tm_printf((UB *)"s3 bar: ADC2 read failed, error=%d; capture "
+                            "abandoned\n", read_error);
+        }
+        s3_barcode_abort(p_barcode);
+        *p_read_failed = true;
+        return;
+    }
+    *p_read_failed = false;
+
+    result = s3_barcode_update(p_barcode, adc, now_us, &symbol);
+
+    if (S3_SCAN_DECODED == result)
+    {
+        decoded_count++;
+        tm_printf((UB *)"s3 bar: DECODED %c (decoded=%u errors=%u)\n",
+                  (INT)symbol, (UINT)decoded_count, (UINT)error_count);
+    }
+    else if (S3_SCAN_ERROR == result)
+    {
+        error_count++;
+        tm_printf((UB *)"s3 bar: capture rejected, runs=%u threshold=%u "
+                        "(decoded=%u errors=%u)\n",
+                  (UINT)p_barcode->scan.capture.count,
+                  (UINT)p_barcode->level.threshold,
+                  (UINT)decoded_count, (UINT)error_count);
+    }
+    else if (S3_SCAN_SINGLE_BAR == result)
+    {
+        tm_printf((UB *)"s3 bar: single bar (crossing line), ignored\n");
+    }
+    else
+    {
+        /* No capture finished in this period. */
     }
 }
 

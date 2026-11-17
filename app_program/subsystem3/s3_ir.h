@@ -49,7 +49,8 @@ typedef struct
 } s3_ir_adaptive_t;
 
 /* Black masks: bit 0 is the front-left sensor and bit 1 the front-right
- * sensor. The side barcode sensor is deliberately excluded.
+ * sensor. The side barcode sensor is deliberately excluded; s3_barcode
+ * classifies it with its own adaptive state.
  */
 
 /** Call at a fixed rate. Required is 1..255 consecutive equal samples.
@@ -62,6 +63,12 @@ bool s3_ir_adaptive_init(s3_ir_adaptive_t * p_state,
                          s3_ir_adaptive_config_t const * p_config);
 /** Update the filtered ADC value and adaptive threshold; true means black. */
 bool s3_ir_adaptive_update(s3_ir_adaptive_t * p_state, uint16_t sample);
+/** As s3_ir_adaptive_update, but without the low-pass delay, so short
+ * barcode runs are not smeared. Hysteresis and white-baseline adaptation
+ * remain active.
+ */
+bool s3_ir_adaptive_update_unfiltered(s3_ir_adaptive_t * p_state,
+                                      uint16_t sample);
 /** Return the filtered contrast as 0..100 relative to a measured black level. */
 uint8_t s3_ir_adaptive_strength(s3_ir_adaptive_t const * p_state,
                                 uint16_t black_reference);
