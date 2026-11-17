@@ -115,6 +115,31 @@ uses the same function, so GP20 and MQTT commands share one clock.
 
 **Tests.** S1-H01 (START, RESET) must be repeated on the car.
 
+### 4. Radio power save off, and telemetry drop counters (2026-11-17)
+
+Approved by Dalton on the integration branch. Not yet validated on the car.
+
+**Problem.** On a 140 s lap only 76 of about 141 telemetry frames arrived,
+remote STOP was acknowledged 11 s late, and even with the car stationary
+frames reached the broker in bursts (several frames 1 s apart in robot time
+arriving within 60 ms). The radio runs the SDK default `CYW43_PERFORMANCE_PM`
+(PM2 power save), which sleeps between AP beacons; that delays incoming ACKs,
+stalls the TCP send window, and `mqtt_publish()` then refuses frames. Its
+return value was ignored, so the drops were silent.
+
+**Decision.**
+
+- `cyw43_utk_task` sets `CYW43_NONE_PM` on every link-up (a new association
+  restores the default). The cost is higher radio current while connected,
+  acceptable on the car's battery for a run; not measured.
+- `telemetry_timeout()` counts each 1 s period as sent, refused by
+  `mqtt_publish()` (with the last error), no snapshot, or not connected, and
+  prints the counts every 10 periods. This separates link congestion from
+  a provider lock that is busy.
+
+**Tests.** Repeat S1-H02 driving and S1-H01 STOP while running: pass if
+frames stay about 1 s apart and the counters show no refused frames.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins

@@ -682,3 +682,310 @@
 1794889254.867915000 t=3355987776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=800 scan=none/- near=0 w=0 c=0 hump=10
 1794889255.944675000 t=3355988776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=813 scan=none/- near=0 w=0 c=0 hump=10
 1794889256.907060000 t=3355989756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889257.919355000 mtk3smp-pico/heartbeat b'hb 41'
+1794889257.944336000 t=3355990776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=813 scan=none/- near=0 w=0 c=0 hump=10
+1794889258.862861000 t=3355991776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=817 scan=none/- near=0 w=0 c=0 hump=10
+1794889259.867632000 t=3355992776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=813 scan=none/- near=0 w=0 c=0 hump=10
+1794889260.864194000 t=3355993756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889261.949476000 t=3355994776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889262.897031000 mtk3smp-pico/heartbeat b'hb 42'
+1794889263.113304000 t=3355995776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889263.919854000 t=3355996756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889264.864950000 t=3355997776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889265.872087000 t=3355998776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889266.888502000 t=3355999756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=851 scan=none/- near=0 w=0 c=0 hump=10
+1794889267.990845000 mtk3smp-pico/heartbeat b'hb 43'
+1794889268.117990000 t=3356000776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889269.014906000 t=3356001776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889269.980219000 t=3356002776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889270.874505000 t=3356003756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889271.908945000 t=3356004776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889272.943573000 mtk3smp-pico/heartbeat b'hb 44'
+1794889272.994871000 t=3356005776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889273.929916000 t=3356006756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=851 scan=none/- near=0 w=0 c=0 hump=10
+1794889274.953792000 t=3356007776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889275.980558000 t=3356008776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=851 scan=none/- near=0 w=0 c=0 hump=10
+1794889276.924091000 t=3356009756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889277.864249000 mtk3smp-pico/heartbeat b'hb 45'
+1794889278.203799000 t=3356010776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889278.901774000 t=3356011776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889279.904535000 t=3356012776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889280.893342000 t=3356013756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889282.019520000 t=3356014776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889282.941473000 mtk3smp-pico/heartbeat b'hb 46'
+1794889282.982767000 t=3356015776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889283.877954000 t=3356016756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=851 scan=none/- near=0 w=0 c=0 hump=10
+1794889284.925891000 t=3356017776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889285.955222000 t=3356018776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889286.866545000 t=3356019756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889288.035784000 mtk3smp-pico/heartbeat b'hb 47'
+1794889288.064078000 t=3356020776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=861 scan=none/- near=0 w=0 c=0 hump=10
+1794889289.085962000 t=3356021776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=851 scan=none/- near=0 w=0 c=0 hump=10
+1794889289.932761000 t=3356022756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889291.030262000 t=3356023776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889291.889759000 t=3356024776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=860 scan=none/- near=0 w=0 c=0 hump=10
+1794889292.976571000 mtk3smp-pico/heartbeat b'hb 48'
+1794889293.003343000 t=3356025776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=851 scan=none/- near=0 w=0 c=0 hump=10
+1794889293.887244000 t=3356026776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889294.863454000 t=3356027776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889295.945828000 t=3356028756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889296.969788000 t=3356029776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889297.993592000 mtk3smp-pico/heartbeat b'hb 49'
+1794889298.022605000 t=3356030776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889298.863612000 t=3356031756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=861 scan=none/- near=0 w=0 c=0 hump=10
+1794889299.864669000 t=3356032776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=860 scan=none/- near=0 w=0 c=0 hump=10
+1794889300.916066000 t=3356033776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=855 scan=none/- near=0 w=0 c=0 hump=10
+1794889301.987663000 t=3356034776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=860 scan=none/- near=0 w=0 c=0 hump=10
+1794889303.011471000 mtk3smp-pico/heartbeat b'hb 50'
+1794889303.043561000 t=3356035776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=877 scan=none/- near=0 w=0 c=0 hump=10
+1794889303.933310000 t=3356036756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=855 scan=none/- near=0 w=0 c=0 hump=10
+1794889304.891778000 t=3356037776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=855 scan=none/- near=0 w=0 c=0 hump=10
+1794889305.878884000 t=3356038776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=855 scan=none/- near=0 w=0 c=0 hump=10
+1794889306.908971000 t=3356039756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889308.029251000 mtk3smp-pico/heartbeat b'hb 51'
+1794889308.063574000 t=3356040776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=855 scan=none/- near=0 w=0 c=0 hump=10
+1794889309.053279000 t=3356041776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889309.878856000 t=3356042756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=847 scan=none/- near=0 w=0 c=0 hump=10
+1794889310.925449000 t=3356043776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=641 scan=none/- near=0 w=0 c=0 hump=10
+1794889311.905402000 t=3356044756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889312.944123000 mtk3smp-pico/heartbeat b'hb 52'
+1794889312.983536000 t=3356045776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=758 scan=none/- near=0 w=0 c=0 hump=10
+1794889313.877671000 t=3356046776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=823 scan=none/- near=0 w=0 c=0 hump=10
+1794889314.892622000 t=3356047776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=748 scan=none/- near=0 w=0 c=0 hump=10
+1794889315.913923000 t=3356048756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=783 scan=none/- near=0 w=0 c=0 hump=10
+1794889316.938263000 t=3356049776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=786 scan=none/- near=0 w=0 c=0 hump=10
+1794889318.064348000 mtk3smp-pico/heartbeat b'hb 53'
+1794889318.103481000 t=3356050776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889318.869959000 t=3356051756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=810 scan=none/- near=0 w=0 c=0 hump=10
+1794889319.902113000 t=3356052776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=766 scan=none/- near=0 w=0 c=0 hump=10
+1794889320.862710000 t=3356053776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=878 scan=none/- near=0 w=0 c=0 hump=10
+1794889321.951710000 t=3356054756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=886 scan=none/- near=0 w=0 c=0 hump=10
+1794889322.978746000 mtk3smp-pico/heartbeat b'hb 54'
+1794889323.003239000 t=3356055776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=882 scan=none/- near=0 w=0 c=0 hump=10
+1794889324.003004000 t=3356056776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=886 scan=none/- near=0 w=0 c=0 hump=10
+1794889324.863202000 t=3356057776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=886 scan=none/- near=0 w=0 c=0 hump=10
+1794889325.871309000 t=3356058756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=846 scan=none/- near=0 w=0 c=0 hump=10
+1794889327.011075000 t=3356059776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889327.880190000 mtk3smp-pico/heartbeat b'hb 55'
+1794889327.919357000 t=3356060776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=839 scan=none/- near=0 w=0 c=0 hump=10
+1794889330.786571000 t=3356061756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=839 scan=none/- near=0 w=0 c=0 hump=10
+1794889330.803552000 t=3356062776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889330.902372000 t=3356063776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889331.924054000 t=3356064756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=886 scan=none/- near=0 w=0 c=0 hump=10
+1794889333.014219000 mtk3smp-pico/heartbeat b'hb 56'
+1794889333.123697000 t=3356065776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=838 scan=none/- near=0 w=0 c=0 hump=10
+1794889333.935716000 t=3356066776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=831 scan=none/- near=0 w=0 c=0 hump=10
+1794889335.924003000 t=3356067776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889336.014501000 t=3356068756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889336.951787000 t=3356069776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889337.930551000 mtk3smp-pico/heartbeat b'hb 57'
+1794889337.963344000 t=3356070776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=741 scan=none/- near=0 w=0 c=0 hump=10
+1794889338.953758000 t=3356071756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=770 scan=none/- near=0 w=0 c=0 hump=10
+1794889339.935749000 t=3356072776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=765 scan=none/- near=0 w=0 c=0 hump=10
+1794889340.983142000 t=3356073776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=759 scan=none/- near=0 w=0 c=0 hump=10
+1794889341.912964000 t=3356074756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=741 scan=none/- near=0 w=0 c=0 hump=10
+1794889342.947626000 mtk3smp-pico/heartbeat b'hb 58'
+1794889342.984244000 t=3356075776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=741 scan=none/- near=0 w=0 c=0 hump=10
+1794889343.970502000 t=3356076776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=741 scan=none/- near=0 w=0 c=0 hump=10
+1794889344.994477000 t=3356077776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=762 scan=none/- near=0 w=0 c=0 hump=10
+1794889345.916936000 t=3356078756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=771 scan=none/- near=0 w=0 c=0 hump=10
+1794889346.940903000 t=3356079776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=826 scan=none/- near=0 w=0 c=0 hump=10
+1794889347.964810000 mtk3smp-pico/heartbeat b'hb 59'
+1794889347.999151000 t=3356080776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889348.988830000 t=3356081756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889350.012743000 t=3356082776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889350.949095000 t=3356083776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889352.060854000 t=3356084756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889353.289621000 mtk3smp-pico/heartbeat b'hb 60'
+1794889353.380707000 t=3356085776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889353.938164000 t=3356086776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=817 scan=none/- near=0 w=0 c=0 hump=10
+1794889354.927568000 t=3356087756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889355.874564000 t=3356088776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889356.975536000 t=3356089776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889357.999539000 mtk3smp-pico/heartbeat b'hb 61'
+1794889358.024730000 t=3356090776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889358.921493000 t=3356091756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889359.945529000 t=3356092776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889360.969347000 t=3356093776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=822 scan=none/- near=0 w=0 c=0 hump=10
+1794889361.918307000 t=3356094756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=883 scan=none/- near=0 w=0 c=0 hump=10
+1794889363.058486000 mtk3smp-pico/heartbeat b'hb 62'
+1794889363.058547000 t=3356095776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889363.865693000 t=3356096776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889364.988164000 t=3356097756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889365.884937000 t=3356098776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=820 scan=none/- near=0 w=0 c=0 hump=10
+1794889367.793918000 t=3356099776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889368.128282000 mtk3smp-pico/heartbeat b'hb 63'
+1794889368.128343000 t=3356100776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889368.891266000 t=3356101776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889369.928118000 t=3356102776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889370.932534000 t=3356103756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889374.408969000 t=3356104776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=817 scan=none/- near=0 w=0 c=0 hump=10
+1794889374.409027000 mtk3smp-pico/heartbeat b'hb 64'
+1794889374.409080000 t=3356105776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=817 scan=none/- near=0 w=0 c=0 hump=10
+1794889374.429321000 t=3356106756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889374.883326000 t=3356107776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=820 scan=none/- near=0 w=0 c=0 hump=10
+1794889375.863584000 t=3356108776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=825 scan=none/- near=0 w=0 c=0 hump=10
+1794889376.872176000 t=3356109756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=870 scan=none/- near=0 w=0 c=0 hump=10
+1794889377.896638000 mtk3smp-pico/heartbeat b'hb 65'
+1794889378.364583000 t=3356110776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=866 scan=none/- near=0 w=0 c=0 hump=10
+1794889378.914655000 t=3356111776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889379.945706000 t=3356112776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889380.899612000 t=3356113756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=866 scan=none/- near=0 w=0 c=0 hump=10
+1794889386.661136000 t=3356114776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889386.752832000 mtk3smp-pico/heartbeat b'hb 66'
+1794889386.752875000 t=3356115776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=866 scan=none/- near=0 w=0 c=0 hump=10
+1794889386.752939000 t=3356116756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889386.917552000 t=3356119776 dt=3020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=866 scan=none/- near=0 w=0 c=0 hump=10
+1794889387.926186000 mtk3smp-pico/heartbeat b'hb 67'
+1794889387.944355000 t=3356120776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889388.904392000 t=3356121776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889389.871550000 t=3356122776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889390.908916000 t=3356123756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889391.996726000 t=3356124776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=866 scan=none/- near=0 w=0 c=0 hump=10
+1794889392.865937000 mtk3smp-pico/heartbeat b'hb 68'
+1794889392.957755000 t=3356125776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=866 scan=none/- near=0 w=0 c=0 hump=10
+1794889393.864511000 t=3356126756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889394.873688000 t=3356127776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=830 scan=none/- near=0 w=0 c=0 hump=10
+1794889396.015628000 t=3356128776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889396.911135000 t=3356129756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889397.895809000 mtk3smp-pico/heartbeat b'hb 69'
+1794889397.966210000 t=3356130776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=861 scan=none/- near=0 w=0 c=0 hump=10
+1794889398.882798000 t=3356131776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=861 scan=none/- near=0 w=0 c=0 hump=10
+1794889407.356291000 t=3356132776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889407.483740000 t=3356133756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889407.483786000 t=3356134776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=862 scan=none/- near=0 w=0 c=0 hump=10
+1794889407.483819000 mtk3smp-pico/heartbeat b'hb 70'
+1794889407.970354000 mtk3smp-pico/heartbeat b'hb 71'
+1794889409.245354000 t=3356140776 dt=6000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889409.290184000 t=3356141776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=808 scan=none/- near=0 w=0 c=0 hump=10
+1794889409.908435000 t=3356142776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=816 scan=none/- near=0 w=0 c=0 hump=10
+1794889410.923427000 t=3356143756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889411.963935000 t=3356144776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889412.880712000 mtk3smp-pico/heartbeat b'hb 72'
+1794889412.916071000 t=3356145776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=808 scan=none/- near=0 w=0 c=0 hump=10
+1794889413.922312000 t=3356146756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889415.139878000 t=3356147776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889415.902356000 t=3356148756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=807 scan=none/- near=0 w=0 c=0 hump=10
+1794889416.908692000 t=3356149776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889417.902736000 mtk3smp-pico/heartbeat b'hb 73'
+1794889417.942984000 t=3356150776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889418.903294000 t=3356151776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=808 scan=none/- near=0 w=0 c=0 hump=10
+1794889419.880036000 t=3356152776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=807 scan=none/- near=0 w=0 c=0 hump=10
+1794889420.920160000 t=3356153756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=811 scan=none/- near=0 w=0 c=0 hump=10
+1794889421.883903000 t=3356154776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=816 scan=none/- near=0 w=0 c=0 hump=10
+1794889422.947428000 mtk3smp-pico/heartbeat b'hb 74'
+1794889423.217565000 t=3356155776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889423.890157000 t=3356156756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=807 scan=none/- near=0 w=0 c=0 hump=10
+1794889424.939294000 t=3356157776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=820 scan=none/- near=0 w=0 c=0 hump=10
+1794889425.890099000 t=3356158776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=816 scan=none/- near=0 w=0 c=0 hump=10
+1794889427.119155000 t=3356159756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889427.864953000 mtk3smp-pico/heartbeat b'hb 75'
+1794889427.964455000 t=3356160776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889428.945974000 t=3356161776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=807 scan=none/- near=0 w=0 c=0 hump=10
+1794889429.985989000 t=3356162756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889431.009723000 t=3356163776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=811 scan=none/- near=0 w=0 c=0 hump=10
+1794889431.931805000 t=3356164776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=812 scan=none/- near=0 w=0 c=0 hump=10
+1794889432.879905000 mtk3smp-pico/heartbeat b'hb 76'
+1794889432.942637000 t=3356165776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=811 scan=none/- near=0 w=0 c=0 hump=10
+1794889433.916916000 t=3356166776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=807 scan=none/- near=0 w=0 c=0 hump=10
+1794889434.895095000 t=3356167776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=803 scan=none/- near=0 w=0 c=0 hump=10
+1794889436.027875000 t=3356168756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=770 scan=none/- near=0 w=0 c=0 hump=10
+1794889436.992725000 t=3356169776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=829 scan=none/- near=0 w=0 c=0 hump=10
+1794889437.898312000 mtk3smp-pico/heartbeat b'hb 77'
+1794889437.922473000 t=3356170776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889438.887640000 t=3356171756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889439.863144000 t=3356172776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889440.866690000 t=3356173776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889441.889567000 t=3356174756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889442.865485000 mtk3smp-pico/heartbeat b'hb 78'
+1794889443.116857000 p2-08/p2-08-car-01/command b'START'
+1794889443.285742000 t=3356175776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889444.094937000 t=3356176776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889444.936605000 t=3356177776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889445.911036000 t=3356178756 dt=980ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889448.281729000 p2-08/p2-08-car-01/command b'RESET'
+1794889448.341539000 t=3356179776 dt=1020ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889448.725475000 mtk3smp-pico/heartbeat b'hb 79'
+1794889448.725534000 t=3356180776 dt=1000ms [DSLXM.H|F..] STOPPED/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889456.585583000 t=3356181756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889456.644034000 t=3356182776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889456.644088000 t=3356183776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889456.644152000 t=3356184756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889456.915366000 t=3356189776 dt=5020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889457.865545000 mtk3smp-pico/heartbeat b'hb 81'
+1794889458.083369000 t=3356190776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889458.889619000 t=3356191776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889459.861942000 t=3356192756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889460.904032000 t=3356193776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889461.934406000 t=3356194776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889462.959091000 mtk3smp-pico/heartbeat b'hb 82'
+1794889462.985502000 t=3356195776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=849 scan=none/- near=0 w=0 c=0 hump=10
+1794889463.984791000 t=3356196776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=834 scan=none/- near=0 w=0 c=0 hump=10
+1794889465.007188000 t=3356197756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889465.866162000 t=3356198776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889466.882420000 t=3356199776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889467.929827000 mtk3smp-pico/heartbeat b'hb 83'
+1794889467.966115000 t=3356200776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889468.878091000 t=3356201776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889471.141418000 t=3356202776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889471.230040000 t=3356203776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889471.969319000 t=3356204776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889472.926522000 mtk3smp-pico/heartbeat b'hb 84'
+1794889472.983545000 t=3356205776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889473.865277000 t=3356206776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889474.877217000 t=3356207776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889475.953508000 t=3356208756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889476.875091000 t=3356209776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889477.899089000 mtk3smp-pico/heartbeat b'hb 85'
+1794889477.935930000 t=3356210776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889478.934916000 t=3356211756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889482.083382000 t=3356212776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889482.288198000 t=3356213776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889482.288255000 t=3356214756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889482.865325000 mtk3smp-pico/heartbeat b'hb 86'
+1794889483.454838000 t=3356215776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889483.868994000 t=3356216776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889485.384320000 t=3356217756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889485.887416000 t=3356218776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889486.863413000 t=3356219776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889487.868885000 mtk3smp-pico/heartbeat b'hb 87'
+1794889488.457955000 t=3356220776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889488.995436000 t=3356221756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889489.949986000 t=3356222776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889490.862239000 t=3356223776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889491.866843000 t=3356224756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889492.961141000 mtk3smp-pico/heartbeat b'hb 88'
+1794889493.004632000 t=3356225776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889494.190679000 t=3356226776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889494.898347000 t=3356227756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889495.863848000 t=3356228776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=858 scan=none/- near=0 w=0 c=0 hump=10
+1794889496.880254000 t=3356229776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889497.865769000 mtk3smp-pico/heartbeat b'hb 89'
+1794889497.903991000 t=3356230776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889498.898760000 t=3356231776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889499.906181000 t=3356232776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889500.955212000 t=3356233756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889501.897664000 t=3356234776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889502.870962000 mtk3smp-pico/heartbeat b'hb 90'
+1794889502.941851000 t=3356235776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889504.977821000 t=3356236756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=848 scan=none/- near=0 w=0 c=0 hump=10
+1794889509.651934000 t=3356237776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889509.709001000 t=3356238776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889509.709032000 t=3356239756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889509.709072000 mtk3smp-pico/heartbeat b'hb 91'
+1794889509.709083000 t=3356240776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889509.885053000 t=3356242776 dt=2000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889510.983943000 t=3356243756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=854 scan=none/- near=0 w=0 c=0 hump=10
+1794889511.969659000 t=3356244776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889512.864132000 mtk3smp-pico/heartbeat b'hb 92'
+1794889512.921064000 t=3356245776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=856 scan=none/- near=0 w=0 c=0 hump=10
+1794889513.904002000 t=3356246756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889514.863369000 t=3356247776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889515.889907000 t=3356248776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889516.868693000 t=3356249756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10
+1794889517.879674000 mtk3smp-pico/heartbeat b'hb 93'
+1794889518.549538000 t=3356250776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889518.898648000 t=3356251776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889519.884353000 t=3356252776 dt=1000ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=852 scan=none/- near=0 w=0 c=0 hump=10
+1794889520.907997000 t=3356253756 dt=980ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=853 scan=none/- near=0 w=0 c=0 hump=10
+1794889521.926144000 t=3356254776 dt=1020ms [DSLXM.H|F..] READY/- fault=none line=CENTRE dist=4777 L=0 R=0 hdg=67.26 fwd=857 scan=none/- near=0 w=0 c=0 hump=10

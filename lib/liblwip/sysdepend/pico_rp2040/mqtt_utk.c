@@ -88,6 +88,17 @@ static void heartbeat_timeout (void * p_arg)
     sys_timeout(MQTT_UTK_HEARTBEAT_MS, heartbeat_timeout, NULL);
 }
 
+/* Telemetry drop counters, printed every MQTT_UTK_STATS_PERIODS periods
+ * (S1 decision 4). Service task only. */
+#define MQTT_UTK_STATS_PERIODS 10u
+
+static u32_t g_tel_periods;
+static u32_t g_tel_sent;
+static u32_t g_tel_no_link;
+static u32_t g_tel_no_snapshot;
+static u32_t g_tel_refused;
+static err_t g_tel_last_err;
+
 static void telemetry_timeout (void * p_arg)
 {
     u8_t   payload[S1_MQTT_TELEMETRY_MAX];
@@ -101,10 +112,46 @@ static void telemetry_timeout (void * p_arg)
 
         if (length > 0u)
         {
-            (void) mqtt_publish(g_p_client, S1_MQTT_TELEMETRY_TOPIC,
-                                payload, (u16_t) length, 0u, 0u,
-                                publish_done_cb, NULL);
+            err_t const err = mqtt_publish(g_p_client,
+                                           S1_MQTT_TELEMETRY_TOPIC,
+                                           payload, (u16_t) length, 0u, 0u,
+                                           publish_done_cb, NULL);
+
+            if (ERR_OK == err)
+            {
+                g_tel_sent++;
+            }
+            else
+            {
+                g_tel_refused++;    /* e.g. ERR_MEM: output buffer full */
+                g_tel_last_err = err;
+            }
         }
+        else
+        {
+            g_tel_no_snapshot++;    /* provider lock busy or not ready */
+        }
+    }
+    else
+    {
+        g_tel_no_link++;
+    }
+
+    g_tel_periods++;
+
+    if (g_tel_periods >= MQTT_UTK_STATS_PERIODS)
+    {
+        tm_printf((UB *) "mqtt: telemetry %u periods: sent %u, refused %u"
+                  " (last err %d), no snapshot %u, not connected %u\n",
+                  (unsigned) g_tel_periods, (unsigned) g_tel_sent,
+                  (unsigned) g_tel_refused, (int) g_tel_last_err,
+                  (unsigned) g_tel_no_snapshot, (unsigned) g_tel_no_link);
+        g_tel_periods     = 0u;
+        g_tel_sent        = 0u;
+        g_tel_refused     = 0u;
+        g_tel_no_snapshot = 0u;
+        g_tel_no_link     = 0u;
+        g_tel_last_err    = ERR_OK;
     }
 
     sys_timeout(S1_MQTT_TELEMETRY_MS, telemetry_timeout, NULL);
