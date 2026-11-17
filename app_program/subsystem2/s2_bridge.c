@@ -18,6 +18,14 @@ static volatile uint32_t g_stop_count = 0u;
 static uint32_t          g_next_request = 1u; /* WiFi task only */
 static uint32_t          g_next_local   = S2_LOCAL_ID_BASE; /* one task */
 
+uint32_t
+s2_clock_ms (void)
+{
+    SYSTIM tim;
+
+    return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
+}
+
 bool
 controller_raise_remote_stop (void * p_context, uint32_t received_ms)
 {
@@ -85,10 +93,8 @@ s2_local_stop (void)
 bool
 s2_local_command (uint8_t command)
 {
-    SYSTIM tim;
-    uint32_t const t = (tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u;
-
-    if (!s2_bridge_send_command(remote_q, command, g_next_local, t))
+    if (!s2_bridge_send_command(remote_q, command, g_next_local,
+                                s2_clock_ms()))
     {
         return (false);
     }

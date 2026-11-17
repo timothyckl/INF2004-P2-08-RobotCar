@@ -45,6 +45,12 @@ bool controller_send_remote_command (void * p_context, uint8_t command,
    receipt-to-flag latency test. The pair is not read atomically. */
 bool s2_remote_stop_info (uint32_t * p_received_ms, uint32_t * p_count);
 
+/* The controller's clock (tk_get_tim, low 32 bits, ms). S1 stamps each
+   command's received_ms with it, so command age is judged on the clock
+   the controller uses. lwIP's sys_now() is operating time (tk_get_otm),
+   a different base: commands stamped with it all expire (S1 decision 3). */
+uint32_t s2_clock_ms (void);
+
 /* Fill S1's telemetry snapshot (S1 decision 1, telemetry v2) from
    robot_state, S4's run maximum (IF-18) and S5's decoded status. Every
    lock is polled (TMO_POL), so this never waits. false (skip this

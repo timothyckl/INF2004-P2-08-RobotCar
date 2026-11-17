@@ -40,7 +40,7 @@ static void incoming_data_cb (void * p_arg, const u8_t * p_data,
     bool const b_last = (flags & MQTT_DATA_FLAG_LAST) != 0u;
 
     (void) p_arg;
-    mqtt_service_data(p_data, (size_t) length, b_last, sys_now());
+    mqtt_service_data(p_data, (size_t) length, b_last);
 }
 
 static void subscribe_done_cb (void * p_arg, err_t result)

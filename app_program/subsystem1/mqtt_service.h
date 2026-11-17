@@ -46,10 +46,10 @@ bool mqtt_service_topic (const char * p_topic, size_t total_length);
 /**
  * @brief Data callback: pass one fragment; a complete command is routed
  *        to the Vehicle Controller (STOP by flag, START/RESET by queue).
- * @param received_ms Local lwIP service-task receipt time in milliseconds.
+ *        The receipt time is taken from the controller's clock,
+ *        s2_clock_ms(), never lwIP's sys_now() (S1 decision 3).
  */
-void mqtt_service_data (const void * p_data, size_t length, bool is_last,
-                        uint32_t received_ms);
+void mqtt_service_data (const void * p_data, size_t length, bool is_last);
 
 /**
  * @brief Encode one telemetry snapshot.

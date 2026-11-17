@@ -46,13 +46,13 @@ bool mqtt_service_topic (const char * p_topic, size_t total_length)
     return accepted;
 }
 
-void mqtt_service_data (const void * p_data, size_t length, bool is_last,
-                        uint32_t received_ms)
+void mqtt_service_data (const void * p_data, size_t length, bool is_last)
 {
     if (g_bridge.initialised)
     {
+        /* Controller clock: the age check compares against tk_get_tim. */
         (void) service_bridge_data(&g_bridge, p_data, length, is_last,
-                                   received_ms);
+                                   s2_clock_ms());
     }
 }
 

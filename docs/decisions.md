@@ -93,6 +93,28 @@ subsystems predate this branch. On merge:
 - Committed `__pycache__` files and dashboard session logs are removed and
   ignored. The dashboard is to be redesigned against telemetry version 2.
 
+### 3. Commands are stamped with the controller's clock (2026-11-17)
+
+Approved by Dalton on the integration branch.
+
+**Problem.** After the merge (decision 2), remote `RESET` sent while the
+car was in Fault was acknowledged by the car (PUBACK) but had no effect.
+`b21d964` stamps each command's `received_ms` with lwIP's `sys_now()`,
+which is the kernel's operating time (`tk_get_otm`, ms since boot). The
+Vehicle Controller judges command age against `tk_get_tim`, a different
+base (telemetry time read about 3.36e9 ms), so every START and RESET
+appeared about 38 days old and was dropped as expired. STOP was unaffected:
+it uses the urgent flag, which has no age check.
+
+**Decision.** Restore the design of `feature/full-system-integration`,
+which passed S1-H01 on the car on 2026-11-04: S2 exports `s2_clock_ms()`
+(`tk_get_tim`, kernel-free declaration in `s2_s1_adapter.h`), and
+`mqtt_service_data()` stamps every command with it. `mqtt_utk.c` no longer
+passes a time; lwIP's own timers keep using `sys_now()`. `s2_local_command()`
+uses the same function, so GP20 and MQTT commands share one clock.
+
+**Tests.** S1-H01 (START, RESET) must be repeated on the car.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins
