@@ -327,12 +327,31 @@ s3_test_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
     }
     else if (S3_SCAN_ERROR == result)
     {
+        s3_capture_t const * const p_capture = &p_barcode->scan.capture;
+
         error_count++;
         tm_printf((UB *)"s3 bar: capture rejected, runs=%u threshold=%u "
                         "(decoded=%u errors=%u)\n",
-                  (UINT)p_barcode->scan.capture.count,
+                  (UINT)p_capture->count,
                   (UINT)p_barcode->level.threshold,
                   (UINT)decoded_count, (UINT)error_count);
+
+        /* Diagnostic: stored runs in ms, first run black, then the level
+         * and age of the run that was still open when the capture ended. */
+        for (uint8_t idx = 0u; idx < p_capture->count; idx += 8u)
+        {
+            tm_printf((UB *)"s3 bar:  runs %u..:", (UINT)idx);
+            for (uint8_t run = idx;
+                 (run < p_capture->count) && (run < (idx + 8u)); run++)
+            {
+                tm_printf((UB *)" %u",
+                          (UINT)(p_capture->runs[run] / 1000u));
+            }
+            tm_printf((UB *)"\n");
+        }
+        tm_printf((UB *)"s3 bar:  open run %s for %u ms\n",
+                  p_capture->black ? "BLACK" : "WHITE",
+                  (UINT)((now_us - p_capture->last_us) / 1000u));
     }
     else if (S3_SCAN_SINGLE_BAR == result)
     {

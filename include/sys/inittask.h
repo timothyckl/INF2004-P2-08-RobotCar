@@ -24,7 +24,10 @@
  */
 #define INITTASK_EXINF		(0x0)
 #define INITTASK_ITSKPRI	(1)
-#define INITTASK_STKSZ		(1*1024)
+/* 4 KB, raised from 1 KB (2026-11-17): the S3_LINE_TEST image runs its
+   line loop in usermain. Measured worst case there is about 1.6 KB
+   (barcode partial decode, or tm_printf), which overflowed 1 KB. */
+#define INITTASK_STKSZ		(4*1024)
 #define INITTASK_DSNAME		"inittsk"
 
 #if USE_IMALLOC

@@ -12,6 +12,10 @@
  * sentinel is reconstructed. Reads are tried forwards, then reversed. The
  * sentinel and alphabet are supplied by the caller and must match the
  * printed course barcodes.
+ *
+ * Stack: a finished capture copies the capture buffer while decoding. The
+ * 24--28 run path needs about 1 KB below s3_scan_poll (arm-none-eabi-gcc
+ * -O2, 2026-11-17); size the owning task's stack for it.
  */
 #ifndef S3_SCAN_H
 #define S3_SCAN_H
