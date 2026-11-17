@@ -27,8 +27,14 @@
  * and wide runs of 420..540 ms. A run longer than RUN_MAX aborts a capture;
  * white for QUIET ends one. Both need S3 hardware validation at the
  * line-follow speed, which is also about 40 mm/s.
+ *
+ * RUN_MAX raised from 800 ms on 2026-11-17: in three passes the car paused
+ * on a wide bar of the closing sentinel for over 800 ms, which discarded
+ * captures whose start sentinel, gaps and payload F were intact. With a
+ * longer limit the stretched bar only damages the closing sentinel, which
+ * the one-intact-sentinel rebuild already handles.
  */
-#define S3_BARCODE_RUN_MAX_US       800000U
+#define S3_BARCODE_RUN_MAX_US       2500000U
 #define S3_BARCODE_QUIET_US         700000U
 
 /*

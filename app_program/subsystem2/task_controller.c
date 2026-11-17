@@ -111,11 +111,12 @@
 #define CTRL_BYPASS_SPIN_MM_S        30
 #define CTRL_BYPASS_WAIT_MS        3000u
 /* S2 decision 26: barcode command at the next junction. UNMEASURED: a held
-   command expires after 20 s (about 800 mm at 40 mm/s); each stop, step
+   command expires after 60 s (on 2026-11-17 the + after barcode F came
+   21.4 s after the decode, so 20 s was too short); each stop, step
    and spin is bounded by 12 s (a 180 + 45 degree spin at about 29 deg/s
    takes under 8 s). Black is accepted from 30 degrees short of the turn,
    and 45 degrees past it fails, as for the bypass align (decision 21). */
-#define CTRL_NAV_PENDING_MS       20000u
+#define CTRL_NAV_PENDING_MS       60000u
 #define CTRL_NAV_PHASE_MS         12000u
 #define CTRL_NAV_ACCEPT_MDEG      30000
 #define CTRL_NAV_OVER_MDEG        45000

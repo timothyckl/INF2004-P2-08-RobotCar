@@ -726,6 +726,39 @@ static void test_sampled_barcode(void)
     check((1U == run.decoded) && ('B' == run.last),
           "extreme observed widths decode across the timer wrap");
 
+    /* Pass of 2026-11-17 (capture 7443): start sentinel, gaps and F were
+     * read, then the car paused on a wide bar of the closing sentinel. A
+     * 1.5 s bar no longer aborts the capture; the rebuild decodes F. */
+    {
+        static uint16_t const pass_7443[29] =
+        {
+            160U, 459U, 180U, 100U, 560U, 80U, 479U, 160U, 139U,
+            139U,
+            159U, 160U, 459U, 119U, 480U, 419U, 219U, 79U, 200U,
+            119U,
+            179U, 480U, 199U, 80U, 1500U, 160U, 450U, 160U, 160U
+        };
+
+        sampled_init(&run, 1000000U);
+        for (uint8_t idx = 0U; idx < 29U; ++idx)
+        {
+            sample_level(&run, (0U == (idx % 2U)),
+                         (uint32_t)pass_7443[idx] * 1000U);
+        }
+        sample_level(&run, false, 1000000U);
+        check((1U == run.decoded) && ('F' == run.last) && (0U == run.errors),
+              "recorded pass with a 1.5 s pause on the closing bar is F");
+
+        /* A bar held past the 2.5 s limit still aborts. */
+        sampled_init(&run, 1000000U);
+        sample_level(&run, true, 150000U);
+        sample_level(&run, false, 150000U);
+        sample_level(&run, true, 2600000U);
+        check((1U == run.errors) && (0U == run.decoded),
+              "a bar held over 2.5 s aborts the capture");
+        sample_level(&run, false, 1000000U);
+    }
+
     sampled_init(&run, 1000000U);
     run.black_adc = TEST_ADC_FADED;
     sample_code(&run, S3_CODE39_PATTERN_C, 150000U, 450000U, false);

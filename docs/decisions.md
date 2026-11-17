@@ -640,7 +640,7 @@ deferred.
 
 The Line Sensor sends each mapped command once on `nav_q`
 (`s2_nav_request_t`). The controller holds it while following, a newer
-command replacing an older one, and drops it after 20 s without a
+command replacing an older one, and drops it after 60 s without a
 junction, or at once if the car is not running. The junction is the
 existing both-black confirmation (`line_control`, JUNCTION_CONFIRM to
 CROSSING). There, `nav_control`:
@@ -660,6 +660,13 @@ CROSSING). There, `nav_control`:
 
 The values are UNMEASURED. S2-U74 to S2-U77 cover the policy on the host.
 It has not yet run on the car.
+
+Revised 2026-11-17 after the first runs: the hold is 60 s, not 20 s. On
+the course, the + after barcode F came 21.4 s after the decode, and one
+held LEFT expired 1.3 s before it. The barcode run limit is 2.5 s, not
+800 ms (`s3_barcode.c`). In three passes the car paused on a wide bar of
+the closing sentinel for over 800 ms, which discarded captures whose F
+was intact.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
