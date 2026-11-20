@@ -19,3 +19,5 @@ void s4_watch_task(INT start_code, void * p_exinf);
 #endif
 
 #endif /* SUBSYSTEM4_INTERNAL_H */
+
+/* End of file. */

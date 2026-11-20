@@ -27,7 +27,8 @@
 #define DRV_GPIO_IRQ_PER_REG    8u      /* pins per register */
 #define DRV_GPIO_IRQ_BITS       4u      /* event bits per pin */
 #define DRV_GPIO_IRQ_PIN_MASK   0xFu
-#define DRV_GPIO_IRQ_EDGES      (DRV_GPIO_IRQ_EDGE_FALL | DRV_GPIO_IRQ_EDGE_RISE)
+#define DRV_GPIO_IRQ_EDGES      (DRV_GPIO_IRQ_EDGE_FALL \
+                                 | DRV_GPIO_IRQ_EDGE_RISE)
 #define DRV_GPIO_IRQ_ALL_EDGES  0xCCCCCCCCu /* edge bits of all 8 pins */
 #define DRV_GPIO_IRQ_REG_STRIDE 4u
 #define DRV_GPIO_IRQ_ALIAS_SET  0x2000u /* RP2040 atomic alias, = SDK */
@@ -42,7 +43,7 @@ static UW g_inte_base;      /* PROCn_INTE0 of the init core */
 static UW g_ints_base;      /* PROCn_INTS0 of the init core */
 static bool g_b_ready = false;
 
-static void drv_gpio_irq_handler (UINT intno);
+static void drv_gpio_irq_isr (UINT intno);
 static UW   drv_gpio_irq_reg (UW base, uint32_t gpio);
 static UW   drv_gpio_irq_bits (uint32_t gpio, uint32_t events);
 
@@ -55,7 +56,7 @@ static UW   drv_gpio_irq_bits (uint32_t gpio, uint32_t events);
 ER
 drv_gpio_irq_init (void)
 {
-    T_DINT const dint = {TA_HLNG, (FP)drv_gpio_irq_handler};
+    T_DINT const dint = {TA_HLNG, (FP)drv_gpio_irq_isr};
 
     if (g_b_ready)
     {
@@ -155,7 +156,7 @@ drv_gpio_irq_unregister (uint32_t gpio)
  * an edge that arrives during the callback latches again and is not lost.
  */
 static void
-drv_gpio_irq_handler (UINT intno)
+drv_gpio_irq_isr (UINT intno)
 {
     UW const now_us = in_w(TIMER_TIMERAWL);
 

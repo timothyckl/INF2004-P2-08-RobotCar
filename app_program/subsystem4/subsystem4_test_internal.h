@@ -13,3 +13,5 @@
 #endif
 
 #endif /* SUBSYSTEM4_TEST_INTERNAL_H */
+
+/* End of file. */

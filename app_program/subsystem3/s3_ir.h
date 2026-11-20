@@ -67,9 +67,10 @@ bool s3_ir_adaptive_update(s3_ir_adaptive_t * p_state, uint16_t sample);
  * barcode runs are not smeared. Hysteresis and white-baseline adaptation
  * remain active.
  */
-bool s3_ir_adaptive_update_unfiltered(s3_ir_adaptive_t * p_state,
+bool s3_ir_adaptive_update_raw(s3_ir_adaptive_t * p_state,
                                       uint16_t sample);
-/** Return the filtered contrast as 0..100 relative to a measured black level. */
+/** Return the filtered contrast as 0..100 relative to a measured black
+ * level. */
 uint8_t s3_ir_adaptive_strength(s3_ir_adaptive_t const * p_state,
                                 uint16_t black_reference);
 /** Caller supplies all four decisions after checking sensor geometry. */
@@ -83,3 +84,4 @@ s3_line_t s3_ir_follow_decision(uint8_t black_mask);
 
 #endif /* S3_IR_H */
 
+/* End of file. */

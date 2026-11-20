@@ -86,7 +86,7 @@ s3_ir_adaptive_update (s3_ir_adaptive_t * p_state, uint16_t sample)
 }
 
 bool
-s3_ir_adaptive_update_unfiltered (s3_ir_adaptive_t * p_state,
+s3_ir_adaptive_update_raw (s3_ir_adaptive_t * p_state,
                                   uint16_t sample)
 {
     return (s3_ir_adaptive_classify(p_state, sample, false));

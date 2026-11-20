@@ -89,7 +89,7 @@ s3_barcode_update (s3_barcode_t * p_barcode, uint16_t adc,
     }
 
     /* An out-of-range or unconfigured sample classifies as white. */
-    bool const b_black = s3_ir_adaptive_update_unfiltered(&p_barcode->level,
+    bool const b_black = s3_ir_adaptive_update_raw(&p_barcode->level,
                                                           adc);
 
     result = s3_scan_edge(&p_barcode->scan, &g_s3_barcode_scan_cfg,

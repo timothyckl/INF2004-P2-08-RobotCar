@@ -843,14 +843,14 @@ static void test_unfiltered(void)
           && s3_ir_adaptive_init(&raw, &config), "unfiltered init");
     check(!s3_ir_adaptive_update(&filtered, 700U),
           "filtered first step stays white");
-    check(s3_ir_adaptive_update_unfiltered(&raw, 700U),
+    check(s3_ir_adaptive_update_raw(&raw, 700U),
           "unfiltered crosses the threshold at once");
     check(700U == raw.filtered, "unfiltered keeps the sample exactly");
-    check(s3_ir_adaptive_update_unfiltered(&raw, 500U),
+    check(s3_ir_adaptive_update_raw(&raw, 500U),
           "unfiltered hysteresis holds black above release");
-    check(!s3_ir_adaptive_update_unfiltered(&raw, 400U),
+    check(!s3_ir_adaptive_update_raw(&raw, 400U),
           "unfiltered releases at the white margin");
-    check(!s3_ir_adaptive_update_unfiltered(&raw, 4096U),
+    check(!s3_ir_adaptive_update_raw(&raw, 4096U),
           "unfiltered rejects out-of-range ADC");
 }
 

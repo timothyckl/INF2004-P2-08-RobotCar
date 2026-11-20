@@ -40,3 +40,5 @@ extern s3_symbol_t const
 g_s3_code39_alphabet[S3_CODE39_SYMBOL_COUNT];
 
 #endif /* S3_CODE39_H */
+
+/* End of file. */

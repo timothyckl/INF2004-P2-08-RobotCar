@@ -53,3 +53,4 @@ s3_command_t s3_nav_take(s3_navigation_t * p_nav, bool stopped,
 
 #endif /* S3_NAV_H */
 
+/* End of file. */

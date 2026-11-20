@@ -42,3 +42,5 @@ bool s4_lsm303_decode_acceleration(uint8_t const raw_data[6],
                                    s4_terrain_sample_t * p_sample);
 
 #endif /* S4_DRV_LSM303DLHC_H */
+
+/* End of file. */

@@ -14,7 +14,8 @@
 #include "drv_gpio_irq.h"
 
 #define DRV_ENCODER_SNAP_TRIES  8u  /* an update takes ~1 us; 8 is ample */
-#define DRV_ENCODER_EDGES       (DRV_GPIO_IRQ_EDGE_FALL | DRV_GPIO_IRQ_EDGE_RISE)
+#define DRV_ENCODER_EDGES       (DRV_GPIO_IRQ_EDGE_FALL \
+                                 | DRV_GPIO_IRQ_EDGE_RISE)
 
 typedef struct
 {

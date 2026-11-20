@@ -616,7 +616,7 @@ test_motion_odometry (void)
     (void)sim_until(p_s, MOTION_EVT_DONE, mv, 600u);
     motion_get_status_logic(&p_s->m, &o);
 
-    bool const b_line = (o.run_id == 1u)
+    bool const b_line = (1u == o.run_id)
                         && (sim_find(p_s, MOTION_EVT_DONE, n1) >= 0)
                         && (abs_i(o.travel_mm - 500) <= 25)
                         && (abs_i(o.x_mm - 500) <= 25)
@@ -628,7 +628,7 @@ test_motion_odometry (void)
     (void)sim_cmd(p_s, S2_CMD_NEW_RUN, 0, 0);
     motion_get_status_logic(&p_s->m, &o);
 
-    return (b_line && (o.run_id == 2u) && (0 == o.x_mm)
+    return (b_line && (2u == o.run_id) && (0 == o.x_mm)
             && (0 == o.y_mm) && (0 == o.heading_mdeg)
             && (abs_i(o.travel_mm - 500) <= 25));
 }

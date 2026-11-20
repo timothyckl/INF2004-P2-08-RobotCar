@@ -614,10 +614,12 @@ measure (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
     if ((p_m->win_fill < 2u)
         || (!odom_speed_mm_s(&p_m->cfg.odom,
-                             odom_count_delta(p_in->count_l, p_m->win_l[oldest]),
+                             odom_count_delta(p_in->count_l,
+                                              p_m->win_l[oldest]),
                              dt_us, &sl))
         || (!odom_speed_mm_s(&p_m->cfg.odom,
-                             odom_count_delta(p_in->count_r, p_m->win_r[oldest]),
+                             odom_count_delta(p_in->count_r,
+                                              p_m->win_r[oldest]),
                              dt_us, &sr)))
     {
         sl = 0;

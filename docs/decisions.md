@@ -802,6 +802,58 @@ and the host suites pass; the mission image did not use any of it.
   S3-U01 (consumer statistics) and INT-01 (samples S2 to S3). INT-02 was
   already blocked (no receiver since 2026-11-03). Their IDs stay unused.
 
+### 30. BARR-C review of `app_program/`: fixes and deviations (2026-11-20)
+
+Approved by Dalton on the integration branch. All 128 files under
+`app_program/` were checked against BARR-C:2018: the rules a script can
+check (line width, tabs, braces, keywords, header guards, own header,
+module names, constant on the left of `==`, `switch` defaults, `for (;;)`,
+end-of-file comment, name lengths) and, by compiling the production code
+with `-Wall -Wextra -Wsign-compare -Wconversion -Wshadow
+-Wmissing-prototypes -Wswitch-default -Wcast-qual -Wdouble-promotion`, the
+signed/unsigned and conversion rules (5.3). That compile gave one warning,
+fixed below.
+
+**Fixed.** Tabs, same-line braces, operand order (8.6a) and missing
+function-name spaces (3.1j) in the starter-style files (`app.h`,
+`app_main.c`, `subsystem2.c`, `subsystem2_test.c`, `subsystem3.h`,
+`test_report.h`); lines over 80 characters; the end-of-file comment in 16
+files; unbraced `if` bodies; a comma declaration in `TEST_INIT`; `unsigned
+long` replaced by `UW`; `s3_ir_adaptive_update_unfiltered` (32 characters)
+renamed `s3_ir_adaptive_update_raw`; file-scope variables in subsystem 4
+and `subsystem2_test.c` given the `g_` prefix; `scan_task_main` renamed
+`obstacle_scan_task` (6.4a) and `drv_gpio_irq_handler` renamed
+`drv_gpio_irq_isr` (6.5b); `usermain` declared in `app.h`; `subsystem4.c`
+includes `subsystem4.h`. The mission image's `.text`, `.rodata` and
+`.data` are byte-identical before and after, so no car result is affected.
+
+**Deviations kept.**
+
+- 4.1b, 4.2a: `subsystemN.c/.h`, `subsystemN_test.c` and `app_main.c` keep
+  the course template's names and its `app.h` prototypes, which the brief
+  requires us to follow. `telemetry_snapshot.h` / `telemetry_encoder` and
+  `motion_config.h` / `motion_cmd.h` share their first 8 characters; both
+  are header-only pairs, and C99 compilers compare more characters.
+  `task_imu.c` is declared in `subsystem4_internal.h`.
+- 7.1j: the interface objects `controller_flags`, `safety_flags`,
+  `remote_q`, `line_q`, `scan_q`, `nav_q` and `motion_q` keep the names
+  agreed in the Week 6 design and `TEAM.md` section 5, without `g_`.
+- 5.2a: T-Kernel types (`INT`, `UINT`, `UB`, `ER`, `ID`, `W`, `UW`) are used
+  where a kernel or `tm_printf` call requires them.
+- 1.7d (a preferred practice): seven `continue` statements skip to the next
+  poll period in the encoder, GPIO and S3 and S4 loops; restructuring them
+  would change tested loops.
+- 6.2a: twelve functions exceed 100 lines, among them `s3_follow_run`,
+  `line_step`, `obstacle_scan_task`, `controller_task` and the motion
+  statechart's step functions. Splitting them changes tested code, so it
+  waits until after the final car tests, if at all.
+
+**Still open.** Rule 1.6a asks for a comment on every cast. About 180
+casts are `tm_printf` format strings (`UB *`) and its integer arguments;
+the other ~300, mostly narrowing casts in arithmetic, have no comment.
+The strict compile shows no implicit conversion, so each cast is
+deliberate, but its range argument is not written down yet.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

@@ -56,3 +56,4 @@ bool s3_bar_decode(s3_capture_t const * p_capture,
 
 #endif /* S3_BAR_H */
 
+/* End of file. */

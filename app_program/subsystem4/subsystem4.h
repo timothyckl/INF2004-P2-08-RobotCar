@@ -31,3 +31,5 @@ void s4_watch_add(ID task_id, volatile uint32_t const * p_loops,
 #endif
 
 #endif /* SUBSYSTEM4_H */
+
+/* End of file. */

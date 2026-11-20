@@ -73,7 +73,8 @@ pid_update (pid_ctrl_t * p_pid, int32_t setpoint, int32_t measurement,
     int32_t const error = setpoint - measurement;
     int64_t const p_term = (int64_t)p_cfg->kp * error;
     int64_t       d_term = 0;
-    int64_t       i_next = pid_clamp(p_pid->i_sum + ((int64_t)p_cfg->ki * error),
+    int64_t       i_next = pid_clamp(p_pid->i_sum
+                                     + ((int64_t)p_cfg->ki * error),
                                      i_min, i_max);
 
     if (p_pid->b_has_prev)

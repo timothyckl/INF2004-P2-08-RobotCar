@@ -62,3 +62,5 @@ s3_scan_result_t s3_scan_poll(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
 void s3_scan_abort(s3_scan_t * p_scan);
 
 #endif /* S3_SCAN_H */
+
+/* End of file. */

@@ -106,7 +106,7 @@ static bool scan_task_warm (uint32_t now_us);
 static void scan_task_cyclic (void * p_exinf);
 
 /** The task body. */
-static void scan_task_main (INT stacd, void * p_exinf);
+static void obstacle_scan_task (INT stacd, void * p_exinf);
 
 /** Engine clock port. */
 static uint32_t scan_task_now_us (void);
@@ -213,8 +213,9 @@ scan_task_start (void)
     g_start_us         = g_monitor_since_us;
     gb_warm            = false;
 
-    ID const tid = app_start_task((FP) scan_task_main, OBSTACLE_SCAN_PRIORITY,
-                                  0u, "obstacle_scan");
+    ID const tid = app_start_task((FP) obstacle_scan_task,
+                                  OBSTACLE_SCAN_PRIORITY, 0u,
+                                  "obstacle_scan");
 
     if (tid < E_OK)
     {
@@ -268,7 +269,7 @@ scan_task_cyclic (void * p_exinf)
 }
 
 static void
-scan_task_main (INT stacd, void * p_exinf)
+obstacle_scan_task (INT stacd, void * p_exinf)
 {
     forward_monitor_config_t const monitor_config =
     {

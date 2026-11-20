@@ -477,8 +477,8 @@ test_ctrl_remote_rules (void)
     ctrl_get_state(&p_h->c, &p_h->in, &st);
 
     return (ok && (st.last_request_id == id)
-            && (st.last_command == S2_REMOTE_START)
-            && (st.last_result == S2_RESULT_COMPLETED));
+            && (S2_REMOTE_START == st.last_command)
+            && (S2_RESULT_COMPLETED == st.last_result));
 }
 
 bool

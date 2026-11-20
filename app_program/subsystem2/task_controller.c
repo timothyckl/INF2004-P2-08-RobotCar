@@ -291,8 +291,9 @@ static void     line_log_mode (line_control_mode_t old_mode,
 
 /**
  * @brief Create controller_flags, safety_flags (STOP set), remote_q, line_q,
- *        scan_q, nav_q and state_mutex. Each global ID is set only once its object
- *        exists, because the WiFi task may already be calling the adapters.
+ *        scan_q, nav_q and state_mutex. Each global ID is set only once its
+ *        object exists, because the WiFi task may already be calling the
+ *        adapters.
  */
 ER
 s2_controller_create (void)
@@ -759,7 +760,8 @@ button_request_reset (s2_robot_state_t const * p_state)
 
         if (S2_SYS_FAULT == p_state->state)
         {
-            tm_printf((UB *)"[S2] GP20: FAULT RESET requested before restart\n");
+            tm_printf((UB *)"[S2] GP20: FAULT RESET requested before "
+                            "restart\n");
         }
         else
         {

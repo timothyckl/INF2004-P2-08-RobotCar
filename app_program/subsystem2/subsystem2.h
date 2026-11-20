@@ -306,3 +306,5 @@ bool s2_nav_submit (uint8_t command, char symbol, uint32_t scan_id,
                     uint32_t staged_ms);
 
 #endif /* SUBSYSTEM2_H */
+
+/* End of file. */
