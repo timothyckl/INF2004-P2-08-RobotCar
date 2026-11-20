@@ -1,0 +1,46 @@
+# serial log started 2026-11-20 19:56:47
+# connected /dev/cu.usbmodemMTK3PICO1 19:56:47
+19:56:47 [S2] GP20: RESET requested before restart
+19:56:47 [S2] GP20: START requested
+19:56:47 s4: new run 2; hump maximum cleared
+19:56:47 [S2] CAL right 90 degrees finished
+19:56:47 [S2] CAL odometry: x=0 mm y=-1 mm heading=-93482 mdeg; result=2 reason=0 state=4 fault=0
+19:56:47 [S2] CAL timer: 39283046 us in 39160 ms of kernel time (expect 1000 us per ms)
+19:56:47 [S2] CAL STOP latency: latch to motor off 1138 us
+19:56:47 [S2] GP20: RESET requested before restart
+19:56:47 [S2] GP20: START requested
+19:56:47 s4: new run 3; hump maximum cleared
+19:56:47 [S2] CAL right 90 degrees finished
+19:56:47 [S2] CAL odometry: x=1 mm y=0 mm heading=-92979 mdeg; result=2 reason=0 state=4 fault=0
+19:56:47 [S2] CAL timer: 42183182 us in 42060 ms of kernel time (expect 1000 us per ms)
+19:56:47 [S2] CAL STOP latency: latch to motor off 1268 us
+19:56:47 [S2] GP20: RESET requested before restart
+19:56:47 [S2] GP20: START requested
+19:56:47 s4: new run 4; hump maximum cleared
+19:56:47 [S2] CAL right 90 degrees finished
+19:56:47 [S2] CAL odometry: x=1 mm y=0 mm heading=-92979 mdeg; result=2 reason=0 state=4 fault=0
+19:56:47 [S2] CAL timer: 44043164 us in 43920 ms of kernel time (expect 1000 us per ms)
+19:56:47 [S2] CAL STOP latency: latch to motor off 1254 us
+# disconnected 19:57:37
+# connected /dev/cu.usbmodemMTK3PICO1 19:58:12
+19:58:12 
+19:58:12 
+19:58:12 microT-Kernel Version 3.00
+19:58:12 
+19:58:12 
+19:58:12 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+19:58:12 dual-core (SMP) build, usermain on core 0
+19:58:12 S2 calibration test mode 7
+19:58:12 [S2] GP20 button ready: press to START or STOP
+19:58:12 wifi: cyw43_utk_task starting (proc 1)
+19:58:12 wifi: cyw43_init() ...
+19:58:12 wifi: cyw43_init() returned, bringing interface up ...
+19:58:12 s4: LSM303DLHC ready; calibrating
+19:58:13 s4: calibration failed, car moved (span fwd 10 left 18 up 121 mg); keep still
+19:58:15 s4: stationary calibration complete (50 samples in 1920 ms)
+19:58:24 [S2] GP20: START requested
+19:58:24 s4: new run 1; hump maximum cleared
+19:58:26 [S2] CAL U-turn, left 180 degrees finished
+19:58:26 [S2] CAL odometry: x=0 mm y=0 mm heading=-177559 mdeg; result=2 reason=0 state=4 fault=0
+19:58:26 [S2] CAL timer: 14302937 us in 14180 ms of kernel time (expect 1000 us per ms)
+19:58:26 [S2] CAL STOP latency: latch to motor off 1082 us
