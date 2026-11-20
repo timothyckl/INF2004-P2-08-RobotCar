@@ -71,22 +71,25 @@ bool comms_test_commands (void)
 
 bool comms_test_telemetry (void)
 {
-    /* Every field set; the golden frame is the version 2 layout. */
+    /* Every field set; the golden frame is the version 3 layout. Letter
+       'Z' (25) with command 4 is 0x99; stop cause 4 with count 0x1f
+       (low bits 0xf) is 0xf4. */
     static const telemetry_encoder_snapshot_t full =
     {
         UINT32_C(0x12345678), UINT16_C(0xabcd),
         INT16_C(-150), INT16_C(320), INT16_C(-18000),
         UINT16_C(4000), UINT16_C(0x0102), UINT16_C(0x0304), INT16_C(-2),
         3u, 4u, 2u, 1u, 1u, 2u, 255u,
-        true, true, true, true, true, true, true, true, true, true
+        'Z', 4u, 0x1fu, 4u,
+        true, true, true, true, true, true, true, true, true, true, true
     };
     static const uint8_t golden[TELEMETRY_ENCODER_SIZE] =
     {
-        2u, 0x7fu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
-        0x07u, 0x43u, 0x12u, 0x21u,
+        3u, 0x7fu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
+        0x0fu, 0x43u, 0x12u, 0x21u,
         0x6au, 0xffu, 0x40u, 0x01u, 0xb0u, 0xb9u,
         0xa0u, 0x0fu, 0x02u, 0x01u, 0x04u, 0x03u, 0xfeu, 0xffu,
-        0xffu
+        0xffu, 0x99u, 0xf4u
     };
     telemetry_encoder_snapshot_t snapshot = full;
     uint8_t output[TELEMETRY_ENCODER_SIZE + 1u] = {0u};
@@ -131,6 +134,7 @@ bool comms_test_telemetry (void)
     snapshot.forward_valid  = false;
     snapshot.profile_valid  = false;
     snapshot.shape_valid    = false;
+    snapshot.barcode_valid  = false;
     snapshot.captured_ms    = 0u;
     snapshot.state          = 0u;
     snapshot.mode           = 0u;
@@ -185,6 +189,30 @@ bool comms_test_telemetry (void)
     check((0xffu == output[6]) && (0xffu == output[7]), &passed);
     check((0x00u == output[24]) && (0x80u == output[25]), &passed);
     check((0xffu == output[2]) && (0xffu == output[5]), &passed);
+
+    /* Version 3: an invalid letter is 31 and a command above 6 is 7; the
+       count keeps its low bits; the cause is sent only while latched. */
+    snapshot = full;
+    snapshot.barcode         = 'a';
+    snapshot.barcode_command = 9u;
+    snapshot.barcode_count   = 0x10u;
+    snapshot.stop_cause      = 20u;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0xffu == output[27]), &passed);
+    check((0x0fu == output[28]), &passed);
+    snapshot.barcode         = 'A';
+    snapshot.barcode_command = 6u;
+    snapshot.stop_latched    = false;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0xc0u == output[27]), &passed);
+    check((0x00u == output[28]), &passed);
+    snapshot.barcode_valid   = false;
+    snapshot.stop_latched    = true;
+    snapshot.stop_cause      = 4u;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x07u == output[8]), &passed);
+    check((0x00u == output[27]), &passed);
+    check((0x04u == output[28]), &passed);
 
     return passed;
 }

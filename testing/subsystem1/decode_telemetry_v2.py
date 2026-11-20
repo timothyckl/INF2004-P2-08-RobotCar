@@ -1,8 +1,10 @@
-"""Decode telemetry version 2 frames (S1 decision 1) for S1-H02.
+"""Decode telemetry frames, versions 2 and 3 (S1 decisions 1 and 5).
 
-Reference decoder used to record the 2026-11-17 S1-H01/H02 results. The
-authoritative layout is the comment in
-app_program/subsystem1/telemetry_encoder.h.
+Reference decoder used to record the 2026-11-17 S1-H01/H02 results; it
+still reads those version 2 logs. Version 3 adds the last barcode letter,
+its command and count, and the cause of a STOP latch. The authoritative
+layout is the comment in app_program/subsystem1/telemetry_encoder.h. The
+file keeps its name because earlier test records cite it.
 
 Usage (mosquitto clients installed, broker on this machine):
 
@@ -12,14 +14,15 @@ Usage (mosquitto clients installed, broker on this machine):
 Each telemetry line shows the robot time, the gap since the previous frame
 (robot clock, wrap-safe), flags0 as DSLXMNH (distance valid, stopped, link
 up, STOP latched, motion valid, line fresh, hump valid; '.' when clear),
-flags1 as FPW (forward, profile, shape valid) and the decoded fields.
+flags1 as FPWB (forward, profile, shape, barcode valid) and the decoded
+fields.
 Other topics (heartbeat, stats, command) are printed as raw bytes.
 """
 import struct
 import sys
 
-FRAME_SIZE = 27
-VERSION = 2
+# Version -> frame length. Version 3 appends bytes 27-28 to version 2.
+SIZES = {2: 27, 3: 29}
 
 STATE = {1: "INIT", 2: "READY", 3: "RUNNING", 4: "STOPPED", 5: "FAULT"}
 MODE = {0: "-", 1: "FOLLOW", 2: "NAVIGATE", 3: "SCAN", 4: "BYPASS",
@@ -29,28 +32,45 @@ LINE = {0: "CENTRE", 1: "LEFT", 2: "RIGHT", 3: "BOTH", 4: "STOP"}
 SCAN = {0: "none", 1: "plan", 2: "clear", 3: "no-route", 4: "fault",
         5: "cancelled"}
 SIDE = {0: "-", 1: "L", 2: "R"}
+COMMAND = {0: "none", 1: "LEFT", 2: "RIGHT", 3: "STRAIGHT", 4: "UTURN"}
+STOP = {0: "-", 1: "start-up", 2: "remote", 3: "button", 4: "pick-up",
+        5: "hazard", 6: "line", 7: "scan", 8: "bypass", 9: "junction",
+        10: "fault", 11: "script done"}
 
+STOP_LATCHED = 0x08
 LINE_FRESH = 0x20
 HUMP_VALID = 0x40
+BARCODE_VALID = 0x08     # flags1, version 3
+LETTER_INVALID = 31
+
+
+def letter(code):
+    """Barcode letter text for a 5-bit code."""
+    return chr(ord("A") + code) if code < 26 else "?"
 
 
 def parse(data):
-    """Return the fields of one frame as a dict, or None if it is not v2.
+    """Return the fields of one frame as a dict, or None if malformed.
 
     Field names follow telemetry_encoder.h. Raw codes are kept; the name
-    tables above turn them into text.
+    tables above turn them into text. A version 2 frame has the version 3
+    fields as zero (barcode not valid, no stop cause).
     """
-    if len(data) != FRAME_SIZE or data[0] != VERSION:
+    if not data or SIZES.get(data[0]) != len(data):
         return None
     (_, f0, t, dist, f1, sm, fl, ss, left, right, heading, fwd, near,
-     width, centre, hump) = struct.unpack("<BBIHBBBBhhhHHHhB", data)
+     width, centre, hump) = struct.unpack("<BBIHBBBBhhhHHHhB", data[:27])
+    bc, sc = (data[27], data[28]) if data[0] >= 3 else (0, 0)
     return {
+        "version": data[0],
         "flags0": f0, "flags1": f1, "captured_ms": t, "distance_mm": dist,
         "state": sm & 15, "mode": sm >> 4, "fault": fl & 15, "line": fl >> 4,
         "scan_result": ss & 15, "bypass_side": ss >> 4,
         "left_mm_s": left, "right_mm_s": right, "heading_cdeg": heading,
         "forward_mm": fwd, "nearest_mm": near, "width_mm": width,
         "centre_offset_mm": centre, "hump_max_mm": hump,
+        "barcode_letter": bc & 31, "barcode_command": bc >> 5,
+        "stop_cause": sc & 15, "barcode_count": sc >> 4,
     }
 
 
@@ -70,7 +90,7 @@ def decode(data, previous_ms):
     centre, hump = fields["centre_offset_mm"], fields["hump_max_mm"]
     gap = "" if previous_ms is None else f" dt={(t - previous_ms) & 0xFFFFFFFF}ms"
     flags0 = "".join(c if f0 & (1 << i) else "." for i, c in enumerate("DSLXMNH"))
-    flags1 = "".join(c if f1 & (1 << i) else "." for i, c in enumerate("FPW"))
+    flags1 = "".join(c if f1 & (1 << i) else "." for i, c in enumerate("FPWB"))
     line = LINE.get(fl >> 4, fl >> 4) if f0 & LINE_FRESH else "-"
     hump_text = str(hump) if f0 & HUMP_VALID else "-"
     text = (f"t={t}{gap} [{flags0}|{flags1}] "
@@ -79,6 +99,15 @@ def decode(data, previous_ms):
             f"L={left} R={right} hdg={heading / 100:.2f} fwd={fwd} "
             f"scan={SCAN.get(ss & 15, ss & 15)}/{SIDE.get(ss >> 4, ss >> 4)} "
             f"near={near} w={width} c={centre} hump={hump_text}")
+    if fields["version"] >= 3:
+        cause = (STOP.get(fields["stop_cause"], fields["stop_cause"])
+                 if f0 & STOP_LATCHED else "-")
+        bar = "-"
+        if f1 & BARCODE_VALID:
+            cmd = fields["barcode_command"]
+            bar = (f"{letter(fields['barcode_letter'])}/"
+                   f"{COMMAND.get(cmd, cmd)}#{fields['barcode_count']}")
+        text += f" bar={bar} stop={cause}"
     return (text, t)
 
 

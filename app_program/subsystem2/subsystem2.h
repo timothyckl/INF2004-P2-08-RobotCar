@@ -40,9 +40,11 @@
 #define CTRL_FLG_SCAN_FAULT     (1u << 1)   /* S5: scanner fault */
 #define CTRL_FLG_MOTION_FAULT   (1u << 2)   /* S2 Motion Control fault */
 #define CTRL_FLG_REMOTE_STOP    (1u << 3)   /* S1: via the STOP adapter */
-#define CTRL_FLG_LOCAL_STOP     (1u << 4)   /* on-board STOP (test, demo) */
+#define CTRL_FLG_LOCAL_STOP     (1u << 4)   /* on-board STOP: GP20, or a
+                                               controller-task failure */
 #define CTRL_FLG_PICKUP         (1u << 5)   /* S4: car lifted (IF-19) */
-#define CTRL_FLG_ALL            (0x3Fu)
+#define CTRL_FLG_LINE_STOP      (1u << 6)   /* S2/S3: line sensing failed */
+#define CTRL_FLG_ALL            (0x7Fu)
 
 /* ------------------------------------------------------------------------
  *  safety_flags (event flag, owned by S2): latched STOP. Set at boot,
@@ -125,7 +127,7 @@ bool s2_line_make_scaled (uint8_t position, uint8_t strength,
 bool s2_line_submit_scaled (uint8_t position, uint8_t strength,
                             uint8_t flags, uint32_t captured_ms);
 bool s2_line_start (void);   /* queued request; controller authorises it */
-bool s2_line_stop (void);    /* urgent local STOP flag */
+bool s2_line_stop (void);    /* urgent STOP flag, CTRL_FLG_LINE_STOP */
 
 /* ------------------------------------------------------------------------
  *  robot_state (owned by S2, written only by the Vehicle Controller under
@@ -169,6 +171,23 @@ bool s2_line_stop (void);    /* urgent local STOP flag */
 #define S2_RS_NAV_AUTHORISED    0x08u   /* S3 may deliver a junction turn */
 #define S2_RS_MOTION_VALID      0x10u   /* speeds and heading are current */
 #define S2_RS_LINE_FRESH        0x20u   /* line: report <= S2_LINE_MAX_AGE_MS */
+#define S2_RS_BARCODE_VALID     0x40u   /* barcode fields: one was decoded */
+
+/* s2_robot_state_t.stop_cause: what latched STOP, while S2_RS_STOP_LATCHED
+   (S2 decision 27). The first cause after STOP was clear is kept; a fault
+   replaces it. START clears it. */
+#define S2_STOP_NONE            0u      /* STOP not latched */
+#define S2_STOP_BOOT            1u      /* since power-up or a fault RESET */
+#define S2_STOP_REMOTE          2u      /* MQTT STOP (IF-08) */
+#define S2_STOP_BUTTON          3u      /* GP20 button */
+#define S2_STOP_PICKUP          4u      /* car lifted (IF-19) */
+#define S2_STOP_HAZARD          5u      /* S5 hazard not handled by a scan */
+#define S2_STOP_LINE            6u      /* line sensing or report failed */
+#define S2_STOP_SCAN            7u      /* scan failed, timed out, no route */
+#define S2_STOP_BYPASS          8u      /* bypass failed */
+#define S2_STOP_NAV             9u      /* junction manoeuvre failed */
+#define S2_STOP_FAULT           10u     /* see s2_robot_state_t.fault */
+#define S2_STOP_DONE            11u     /* starter demo script finished */
 
 typedef struct
 {
@@ -187,6 +206,11 @@ typedef struct
     int16_t  right_mm_s;
     int16_t  heading_cdeg;      /* centidegrees, left positive,
                                    -18000..18000; S2_RS_MOTION_VALID */
+    char     barcode;           /* last letter decoded since power-up,
+                                   'A'..'Z'; S2_RS_BARCODE_VALID */
+    uint8_t  barcode_command;   /* its S2_NAV_*, 0 if none is mapped */
+    uint8_t  barcode_count;     /* letters decoded, wraps at 256 */
+    uint8_t  stop_cause;        /* S2_STOP_* */
 } s2_robot_state_t;
 
 ER s2_get_robot_state (s2_robot_state_t * p_state);
@@ -250,11 +274,14 @@ typedef struct
 IMPORT ID scan_q;
 
 /* ------------------------------------------------------------------------
- *  nav_q (message buffer, owned by S2): S3 sends one record per decoded
- *  barcode whose letter maps to a command. The Vehicle Controller holds
- *  it and acts at the next junction it confirms (S2 decision 26,
- *  nav_control.h). A record that arrives while not running is dropped.
+ *  nav_q (message buffer, owned by S2; IF-21): S3 sends one record per
+ *  decoded barcode, with its letter and mapped command (S2_NAV_NONE if
+ *  the letter has none). The Vehicle Controller reports every letter in
+ *  telemetry (S2 decision 27). It holds a command and acts at the next
+ *  junction it confirms (S2 decision 26, nav_control.h); a command that
+ *  arrives while not running is dropped.
  * ------------------------------------------------------------------------ */
+#define S2_NAV_NONE             0u  /* = S3_NAV_NONE: letter not mapped */
 #define S2_NAV_LEFT             1u  /* = S3_NAV_LEFT: turn left 90 deg */
 #define S2_NAV_RIGHT            2u  /* = S3_NAV_RIGHT: turn right 90 deg */
 #define S2_NAV_STRAIGHT         3u  /* = S3_NAV_STRAIGHT: continue */
@@ -265,15 +292,18 @@ typedef struct
     uint32_t scan_id;       /* S3's unique barcode scan ID */
     uint32_t staged_ms;     /* when S3 staged it, for expiry */
     uint8_t  command;       /* S2_NAV_* */
-    uint8_t  reserved[3];
+    char     symbol;        /* decoded letter, 'A'..'Z' */
+    uint8_t  reserved[2];
 } s2_nav_request_t;
 
 #define S2_NAV_Q_BYTES          32      /* 2 x (4 + 12) */
 
 IMPORT ID nav_q;
 
-/** Queue a decoded command without blocking; false if invalid or full. */
-bool s2_nav_submit (uint8_t command, uint32_t scan_id, uint32_t staged_ms);
+/** Queue a decoded letter and its command (S2_NAV_NONE..S2_NAV_UTURN)
+ *  without blocking; false if either is invalid or the queue is full. */
+bool s2_nav_submit (uint8_t command, char symbol, uint32_t scan_id,
+                    uint32_t staged_ms);
 
 /* ---------------------------------------------------------------------
  *  LEGACY STARTER (IF-01, IF-02): kept while subsystems 3 and 4 use it.

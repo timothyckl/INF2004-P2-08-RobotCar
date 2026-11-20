@@ -23,7 +23,8 @@ s2_robot_state_create (void)
     s2_robot_state_t const boot = {0u, 0, 0u, S2_SYS_INITIALISING,
                                    S2_FAULT_NONE, S2_RS_STOP_LATCHED,
                                    0u, S2_RESULT_NONE, 0u, S2_MODE_NONE,
-                                   S2_LINE_STOP, 0, 0, 0};
+                                   S2_LINE_STOP, 0, 0, 0, '\0', S2_NAV_NONE,
+                                   0u, S2_STOP_BOOT};
 
     g_state      = boot;
     cmtx.mtxatr  = TA_INHERIT;
@@ -190,6 +191,7 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
     bool const    b_known = (0u != (f & S2_RS_DISTANCE_VALID));
     bool const    b_motion = (0u != (f & S2_RS_MOTION_VALID));
     bool const    b_line = (0u != (f & S2_RS_LINE_FRESH));
+    bool const    b_barcode = (0u != (f & S2_RS_BARCODE_VALID));
 
     p_out->captured_ms    = p_state->captured_ms;
     p_out->distance_valid = b_known && (d >= 0)
@@ -209,6 +211,13 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
     p_out->heading_cdeg   = b_motion ? p_state->heading_cdeg : 0;
     p_out->line_fresh     = b_line;
     p_out->line           = b_line ? p_state->line : 0u;
+    p_out->barcode_valid  = b_barcode;
+    p_out->barcode        = b_barcode ? p_state->barcode : '\0';
+    p_out->barcode_command = b_barcode ? p_state->barcode_command
+                                       : S2_NAV_NONE;
+    p_out->barcode_count  = b_barcode ? p_state->barcode_count : 0u;
+    p_out->stop_cause     = (0u != (f & S2_RS_STOP_LATCHED))
+                            ? p_state->stop_cause : S2_STOP_NONE;
 }
 
 /* End of file. */

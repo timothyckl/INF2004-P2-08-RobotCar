@@ -11,8 +11,11 @@
  *   state  S2_SYS_*            mode   S2_MODE_*         fault S2_FAULT_*
  *   line   S2_LINE_*           scan_result SCAN_TELEMETRY_* result
  *   bypass_side SCAN_TELEMETRY_SIDE_*
- * Each enumerated field is sent in a nibble; a value above
- * TELEMETRY_SNAPSHOT_CODE_MAX is sent as TELEMETRY_SNAPSHOT_CODE_INVALID.
+ *   barcode_command S2_NAV_*   stop_cause S2_STOP_*
+ * Each nibble field is sent so that a value above
+ * TELEMETRY_SNAPSHOT_CODE_MAX becomes TELEMETRY_SNAPSHOT_CODE_INVALID.
+ * The 3-bit barcode command and 5-bit letter use the same rule with their
+ * own limits (telemetry_encoder.h).
  */
 #ifndef TELEMETRY_SNAPSHOT_H
 #define TELEMETRY_SNAPSHOT_H
@@ -46,6 +49,10 @@ typedef struct
     uint8_t  scan_result;       /* SCAN_TELEMETRY_* result */
     uint8_t  bypass_side;       /* SCAN_TELEMETRY_SIDE_* */
     uint8_t  hump_max_mm;       /* run maximum, saturated; hump_valid */
+    char     barcode;           /* last letter, 'A'..'Z'; barcode_valid */
+    uint8_t  barcode_command;   /* S2_NAV_*; barcode_valid */
+    uint8_t  barcode_count;     /* letters decoded, wraps; barcode_valid */
+    uint8_t  stop_cause;        /* S2_STOP_*; stop_latched */
     bool     distance_valid;
     bool     stopped;           /* both wheels confirmed still */
     bool     link_up;           /* set by subsystem 1 */
@@ -56,6 +63,7 @@ typedef struct
     bool     forward_valid;
     bool     profile_valid;
     bool     shape_valid;
+    bool     barcode_valid;     /* a letter was decoded since power-up */
 } telemetry_encoder_snapshot_t;
 
 #endif /* TELEMETRY_SNAPSHOT_H */

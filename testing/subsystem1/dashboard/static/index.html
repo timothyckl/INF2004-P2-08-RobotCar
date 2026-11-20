@@ -17,7 +17,7 @@
     <div><span class="label">State</span><span id="state" class="big">—</span></div>
     <div><span class="label">Mode</span><span id="mode" class="big">—</span></div>
     <div><span class="label">Fault</span><span id="fault" class="big">—</span></div>
-    <div><span class="label">STOP</span><span id="latched" class="big">—</span></div>
+    <div><span class="label">STOP</span><span id="latched" class="big">—</span><span id="cause" class="muted"></span></div>
   </div>
   <div class="buttons">
     <button data-cmd="START" class="go">START</button>
@@ -46,8 +46,11 @@
       <span class="sensor" id="sl"></span><span class="sensor" id="sr"></span>
     </div>
     <p class="center" id="linetext">—</p>
-    <p class="notice">Barcode letter, command and junction action are not in
-      telemetry v2 yet; they appear on the car's serial log.</p>
+    <dl>
+      <dt>Last barcode</dt><dd id="barcode" class="big">—</dd>
+      <dt>Command</dt><dd id="command">—</dd>
+      <dt>Letters read</dt><dd id="barcount">—</dd>
+    </dl>
   </section>
 
   <section>

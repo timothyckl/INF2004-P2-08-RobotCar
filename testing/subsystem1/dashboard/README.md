@@ -1,7 +1,7 @@
 # P2-08 robot car dashboard
 
-A local web dashboard for the car's MQTT telemetry, version 2 (S1 decision
-1). It runs on the laptop that runs the broker, decodes each frame with the
+A local web dashboard for the car's MQTT telemetry, versions 2 and 3 (S1
+decisions 1 and 5). It runs on the laptop that runs the broker, decodes each frame with the
 shared reference decoder (`../decode_telemetry_v2.py`), and writes every
 message to a JSON-lines session log. It shows only what the car publishes.
 Fields whose validity flag is clear are shown as "—", not as zero.
@@ -10,16 +10,17 @@ Fields whose validity flag is clear are shown as "—", not as zero.
 
 | Panel | Contents | Source |
 |---|---|---|
-| Header | broker link, frame age, state, mode, fault, STOP latched; START / STOP / RESET buttons | telemetry, command topic |
+| Header | broker link, frame age, state, mode, fault, STOP latched and its cause; START / STOP / RESET buttons | telemetry, command topic |
 | Motion (S2) | left/right wheel speed, distance, heading, last 60 s of wheel speeds | telemetry |
-| Line & barcode (S3) | which front sensor is on black | telemetry |
+| Line & barcode (S3) | which front sensor is on black; last barcode letter, its command, letters read | telemetry (barcode: version 3) |
 | Terrain (S4) | highest hump of the run | telemetry |
 | Obstacle (S5) | forward range, last scan result and bypass side, nearest point, width, centre offset | telemetry |
-| Events | state, mode, fault, STOP, scan and hump changes, commands sent, broker link | derived |
+| Events | state, mode (with the barcode command on NAVIGATE), fault, STOP and its cause, each barcode read, scan and hump changes, commands sent, broker link | derived |
 | Link | good/bad frames, heartbeat, the car's telemetry counters, session log file | heartbeat, stats |
 
-The barcode letter, its command and the junction action are not in telemetry
-v2. They are on the car's serial log only, and the page says so.
+A version 2 car shows no barcode and no stop cause. The junction outcome
+(turn finished, expired or failed) is not in telemetry; a failed turn
+shows as the stop cause "junction".
 
 The buttons only publish `START`, `STOP` or `RESET` to the command topic.
 The Vehicle Controller still decides whether to act, exactly as for the GP20

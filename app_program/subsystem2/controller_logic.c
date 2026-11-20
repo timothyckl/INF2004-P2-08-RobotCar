@@ -7,10 +7,12 @@
 #include "motion_logic.h"   /* motion_state_t values */
 
 #define CTRL_STOP_BITS  (CTRL_FLG_REMOTE_STOP | CTRL_FLG_LOCAL_STOP \
-                         | CTRL_FLG_HAZARD | CTRL_FLG_PICKUP)
+                         | CTRL_FLG_LINE_STOP | CTRL_FLG_HAZARD \
+                         | CTRL_FLG_PICKUP)
 
 static void enter (ctrl_t * p_c, uint8_t state, uint32_t now_ms);
-static void latch (ctrl_t * p_c, ctrl_output_t * p_out);
+static void latch (ctrl_t * p_c, uint8_t cause, ctrl_output_t * p_out);
+static uint8_t stop_cause (uint32_t bits, uint8_t local_cause);
 static void fault (ctrl_t * p_c, uint8_t code, uint32_t now_ms,
                    ctrl_output_t * p_out);
 static void stop_running (ctrl_t * p_c, uint32_t now_ms,
@@ -35,9 +37,10 @@ ctrl_init (ctrl_t * p_c, ctrl_cfg_t const * p_cfg, uint32_t now_ms)
         return;
     }
 
-    *p_c        = zero;
-    p_c->cfg    = *p_cfg;
-    p_c->b_stop = true;
+    *p_c            = zero;
+    p_c->cfg        = *p_cfg;
+    p_c->b_stop     = true;
+    p_c->stop_cause = S2_STOP_BOOT;
     enter(p_c, S2_SYS_INITIALISING, now_ms);
 }
 
@@ -69,8 +72,8 @@ ctrl_flags (ctrl_t * p_c, uint32_t flags, ctrl_input_t const * p_in,
 
     if (0u != (bits & CTRL_STOP_BITS))
     {
-        /* HAZARD stops for now; Scan & Plan will handle it later. */
-        latch(p_c, p_out);
+        /* A HAZARD that reaches here was not taken by a scan. */
+        latch(p_c, stop_cause(bits, p_in->local_cause), p_out);
 
         if (S2_SYS_RUNNING == p_c->state)
         {
@@ -130,7 +133,7 @@ ctrl_remote (ctrl_t * p_c, s2_remote_cmd_t const * p_cmd,
     else if (S2_REMOTE_STOP == p_cmd->command)
     {
         /* Not expected here (STOP uses the flag), but obey it. */
-        latch(p_c, p_out);
+        latch(p_c, S2_STOP_REMOTE, p_out);
 
         if (S2_SYS_RUNNING == p_c->state)
         {
@@ -259,6 +262,7 @@ ctrl_get_state (ctrl_t const * p_c, ctrl_input_t const * p_in,
     p_state->last_command    = p_c->last_command;
     p_state->last_result     = p_c->last_result;
     p_state->motion_state    = p_in->b_status_ok ? p_in->status.state : 0u;
+    p_state->stop_cause      = p_c->b_stop ? p_c->stop_cause : S2_STOP_NONE;
 }
 
 /* ------------------------------------------------------------------------
@@ -272,9 +276,15 @@ enter (ctrl_t * p_c, uint8_t state, uint32_t now_ms)
     p_c->since_ms = now_ms;
 }
 
+/* The first cause after STOP was clear is the one that stopped the car. */
 static void
-latch (ctrl_t * p_c, ctrl_output_t * p_out)
+latch (ctrl_t * p_c, uint8_t cause, ctrl_output_t * p_out)
 {
+    if (!p_c->b_stop)
+    {
+        p_c->stop_cause = cause;
+    }
+
     p_c->b_stop         = true;
     p_out->b_latch_stop = true;
     p_out->b_clear_stop = false;    /* a latch always beats a clear */
@@ -283,15 +293,49 @@ latch (ctrl_t * p_c, ctrl_output_t * p_out)
 static void
 fault (ctrl_t * p_c, uint8_t code, uint32_t now_ms, ctrl_output_t * p_out)
 {
-    latch(p_c, p_out);
+    latch(p_c, S2_STOP_FAULT, p_out);
     p_c->b_waiting = false;
     p_out->action  = CTRL_ACT_NONE;
 
     if (S2_SYS_FAULT != p_c->state)
     {
-        p_c->fault = code;
+        p_c->fault      = code;
+        p_c->stop_cause = S2_STOP_FAULT;    /* a fault outranks a stop */
         enter(p_c, S2_SYS_FAULT, now_ms);
     }
+}
+
+/*
+ * One cause for the STOP bits of one cycle, most specific first: picking
+ * the car up ends the demo, so it is never reported as anything else.
+ */
+static uint8_t
+stop_cause (uint32_t bits, uint8_t local_cause)
+{
+    uint8_t cause = S2_STOP_HAZARD;
+
+    if (0u != (bits & CTRL_FLG_PICKUP))
+    {
+        cause = S2_STOP_PICKUP;
+    }
+    else if (0u != (bits & CTRL_FLG_REMOTE_STOP))
+    {
+        cause = S2_STOP_REMOTE;
+    }
+    else if (0u != (bits & CTRL_FLG_LOCAL_STOP))
+    {
+        cause = (S2_STOP_NONE == local_cause) ? S2_STOP_BUTTON : local_cause;
+    }
+    else if (0u != (bits & CTRL_FLG_LINE_STOP))
+    {
+        cause = S2_STOP_LINE;
+    }
+    else
+    {
+        /* Only CTRL_FLG_HAZARD is left of CTRL_STOP_BITS. */
+    }
+
+    return (cause);
 }
 
 static void
@@ -368,7 +412,7 @@ run_step (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
     else if (p_c->cfg.script_len > 0u)
     {
         /* Script finished: hold still. (Complete comes later.) */
-        latch(p_c, p_out);
+        latch(p_c, S2_STOP_DONE, p_out);
         enter(p_c, S2_SYS_STOPPED, p_in->now_ms);
     }
     else
@@ -384,6 +428,7 @@ do_start (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
     p_out->b_clear_stop   = true;
     p_out->action         = CTRL_ACT_NEW_RUN;
     p_c->b_stop           = false;
+    p_c->stop_cause       = S2_STOP_NONE;
     p_c->step             = 0u;
     p_c->b_waiting        = false;
     p_c->run_start_mm     = p_in->status.travel_mm;
@@ -414,6 +459,7 @@ do_reset (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
     {
         p_out->b_drain_motion = true;
         p_c->fault            = S2_FAULT_NONE;
+        p_c->stop_cause       = S2_STOP_BOOT;   /* STOP stays latched */
         p_c->b_waiting        = false;
         enter(p_c, S2_SYS_INITIALISING, p_in->now_ms);
 

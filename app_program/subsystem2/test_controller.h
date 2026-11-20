@@ -1,6 +1,7 @@
 /**
  * @file test_controller.h
- * @brief Subsystem 2 Vehicle Controller unit cases S2-U41..S2-U53 (TEST=1).
+ * @brief Subsystem 2 Vehicle Controller unit cases S2-U41..S2-U53 and S2-U78
+ *        (TEST=1).
  *        S2-U51's kernel half is in subsystem2_test.c.
  */
 #ifndef TEST_CONTROLLER_H
@@ -21,6 +22,7 @@ bool test_ctrl_remote_rules (void);     /* S2-U50 */
 bool test_ctrl_stop_queue_full (void);  /* S2-U51 (logic half) */
 bool test_ctrl_only_start_clears (void);/* S2-U52 */
 bool test_ctrl_robot_state (void);      /* S2-U53 */
+bool test_ctrl_stop_cause (void);       /* S2-U78 */
 
 #endif /* TEST_CONTROLLER_H */
 

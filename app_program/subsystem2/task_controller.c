@@ -225,7 +225,22 @@ static scan_control_t      g_scan;
 static bypass_control_t    g_bypass;
 static nav_control_t       g_nav;
 static scan_task_status_t  g_scan_status;  /* off the stack */
+
+/* Last letter from nav_q, for telemetry (S2 decision 27). */
+typedef struct
+{
+    char    symbol;         /* 'A'..'Z' */
+    uint8_t command;        /* S2_NAV_* */
+    uint8_t count;          /* letters received, wraps */
+    bool    b_valid;
+} ctrl_barcode_t;
+
+static ctrl_barcode_t      g_barcode;
 #endif
+
+/* Cause of the next CTRL_FLG_LOCAL_STOP this task raises (S2_STOP_*).
+   Written and read only by the controller task. */
+static uint8_t g_local_cause = S2_STOP_NONE;
 
 static void     controller_task (INT stacd, void * exinf);
 static void     demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in);
@@ -234,6 +249,9 @@ static void     apply (ctrl_output_t * p_out, ctrl_input_t const * p_in);
 static ER       send_action (ctrl_action_t action, uint32_t value);
 static uint32_t now_ms (void);
 static void     run_summary (void);
+#if CTRL_BUTTON || S3_LINE_FOLLOW_TEST
+static bool     local_stop (uint8_t cause);
+#endif
 #if CTRL_BUTTON
 static ER       button_init (void);
 static bool     button_press_event (uint32_t now);
@@ -255,6 +273,7 @@ static void     line_barcode_flag (bool b_barcode, uint32_t now);
 static bool     line_barcode_soft (uint32_t now);
 static bool     line_is_fresh (uint32_t now);
 static void     line_telemetry (s2_robot_state_t * p_state, uint32_t now);
+static void     barcode_telemetry (s2_robot_state_t * p_state);
 static int16_t  line_correction_speed (uint8_t strength);
 static bool     line_apply_action (line_control_action_t action,
                                    int16_t correction_mm_s);
@@ -447,8 +466,14 @@ controller_task (INT stacd, void * exinf)
         }
 
         ctrl_output_clear(&out);
+        in.local_cause = g_local_cause;
         ctrl_flags(&g_ctrl, (uint32_t)ptn, &in, &out);
         apply(&out, &in);
+
+        if (0u != (ptn & CTRL_FLG_LOCAL_STOP))
+        {
+            g_local_cause = S2_STOP_NONE;   /* that STOP is handled */
+        }
 
         while (tk_rcv_mbf(remote_q, &cmd, TMO_POL)
                == (INT)sizeof(s2_remote_cmd_t))
@@ -476,6 +501,7 @@ controller_task (INT stacd, void * exinf)
 #if S3_LINE_FOLLOW_TEST
         line_step(&st, &in);
         line_telemetry(&st, in.now_ms);
+        barcode_telemetry(&st);
 #endif
         s2_robot_state_publish(&st);
         demo(&st, &in);
@@ -633,6 +659,21 @@ now_ms (void)
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 
+#if CTRL_BUTTON || S3_LINE_FOLLOW_TEST
+/* Raise CTRL_FLG_LOCAL_STOP and name its cause (S2 decision 27). If two
+   are raised before the controller handles them, the first is kept. */
+static bool
+local_stop (uint8_t cause)
+{
+    if (S2_STOP_NONE == g_local_cause)
+    {
+        g_local_cause = cause;
+    }
+
+    return (s2_local_stop());
+}
+#endif
+
 /* Print the telemetry the MQTT bridge will publish (IF-18) when a run
    ends. */
 static void
@@ -781,7 +822,7 @@ button_step (s2_robot_state_t const * p_state,
         }
         else if (S2_SYS_RUNNING == p_state->state)
         {
-            if (s2_local_stop())
+            if (local_stop(S2_STOP_BUTTON))
             {
                 tm_printf((UB *)"[S2] GP20: STOP requested\n");
                 run_summary();
@@ -1108,7 +1149,7 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
                   (UINT)g_scan.request_id,
                   (SCAN_CONTROL_TIMEOUT == outcome) ? "TIMEOUT" : "FAILED",
                   (UINT)g_scan_status.result);
-        (void)s2_local_stop();
+        (void)local_stop(S2_STOP_SCAN);
     }
     else
     {
@@ -1272,7 +1313,7 @@ bypass_report (bypass_control_output_t const * p_out)
                   ((uint32_t)p_out->fail
                    < (sizeof(reasons) / sizeof(reasons[0])))
                       ? reasons[p_out->fail] : "unknown");
-        (void)s2_local_stop();
+        (void)local_stop(S2_STOP_BYPASS);
     }
     else
     {
@@ -1280,9 +1321,10 @@ bypass_report (bypass_control_output_t const * p_out)
     }
 }
 
-/* S2 decision 26: take S3's barcode commands. While running, each one is
-   held for the next junction (a newer one replaces it); otherwise it is
-   dropped, so a code read while the car is handled is never acted on. */
+/* S2 decisions 26 and 27: take S3's barcode records. Every letter is
+   kept for telemetry. While running, a mapped command is held for the
+   next junction (a newer one replaces it); otherwise it is dropped, so a
+   code read while the car is handled is never acted on. */
 static void
 nav_receive (bool b_running, uint32_t now)
 {
@@ -1295,15 +1337,27 @@ nav_receive (bool b_running, uint32_t now)
     while (tk_rcv_mbf(nav_q, &request, TMO_POL)
            == (INT)sizeof(s2_nav_request_t))
     {
-        bool const b_valid = (request.command >= S2_NAV_LEFT)
-                             && (request.command <= S2_NAV_UTURN)
+        bool const b_valid = (request.command <= S2_NAV_UTURN)
+                             && (request.symbol >= 'A')
+                             && (request.symbol <= 'Z')
                              && (0u == request.reserved[0])
-                             && (0u == request.reserved[1])
-                             && (0u == request.reserved[2]);
+                             && (0u == request.reserved[1]);
+
+        if (b_valid)
+        {
+            g_barcode.symbol  = request.symbol;
+            g_barcode.command = request.command;
+            g_barcode.count++;      /* uint8_t: wraps by design */
+            g_barcode.b_valid = true;
+        }
 
         if (!b_valid)
         {
             tm_printf((UB *)"[S2] nav: invalid request ignored\n");
+        }
+        else if (S2_NAV_NONE == request.command)
+        {
+            /* S3 has already reported that this letter has no command. */
         }
         else if (b_running && nav_control_stage(&g_nav, request.command, now))
         {
@@ -1401,7 +1455,7 @@ nav_send (nav_control_output_t const * p_out)
         tm_printf((UB *)"[S2] nav: motion command failed (%d); STOP\n",
                   (INT)er);
         nav_control_abort(&g_nav);
-        (void)s2_local_stop();
+        (void)local_stop(S2_STOP_NAV);
     }
 }
 
@@ -1429,7 +1483,7 @@ nav_report (nav_control_output_t const * p_out)
 
         case NAV_CONTROL_OUT_FAILED:
             tm_printf((UB *)"[S2] nav: junction manoeuvre failed; STOP\n");
-            (void)s2_local_stop();
+            (void)local_stop(S2_STOP_NAV);
         break;
 
         default:
@@ -1447,6 +1501,19 @@ line_is_fresh (uint32_t now)
 }
 
 /* Latest line position for telemetry (S1 decision 1). */
+/* The last letter from nav_q, kept until the next one. */
+static void
+barcode_telemetry (s2_robot_state_t * p_state)
+{
+    if (g_barcode.b_valid)
+    {
+        p_state->flags          |= S2_RS_BARCODE_VALID;
+        p_state->barcode         = g_barcode.symbol;
+        p_state->barcode_command = g_barcode.command;
+        p_state->barcode_count   = g_barcode.count;
+    }
+}
+
 static void
 line_telemetry (s2_robot_state_t * p_state, uint32_t now)
 {

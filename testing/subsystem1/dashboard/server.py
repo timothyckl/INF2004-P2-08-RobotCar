@@ -1,4 +1,4 @@
-"""Local MQTT dashboard for the P2-08 robot car (telemetry version 2).
+"""Local MQTT dashboard for the P2-08 robot car (telemetry versions 2, 3).
 
 Subscribes to the car's topics, decodes telemetry with the shared reference
 decoder (../decode_telemetry_v2.py), records every message to a JSON-lines
@@ -32,7 +32,7 @@ except ImportError:  # pragma: no cover - setup error only
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
-import decode_telemetry_v2 as v2  # noqa: E402  (shared reference decoder)
+import decode_telemetry_v2 as decoder  # noqa: E402  (shared reference decoder)
 
 COMMANDS = ("START", "STOP", "RESET")
 STATIC = {"/": "index.html", "/app.js": "app.js", "/styles.css": "styles.css"}
@@ -44,7 +44,8 @@ TYPES = {".html": "text/html; charset=utf-8",
 F0 = {"distance_valid": 0x01, "stopped": 0x02, "link_up": 0x04,
       "stop_latched": 0x08, "motion_valid": 0x10, "line_fresh": 0x20,
       "hump_valid": 0x40}
-F1 = {"forward_valid": 0x01, "profile_valid": 0x02, "shape_valid": 0x04}
+F1 = {"forward_valid": 0x01, "profile_valid": 0x02, "shape_valid": 0x04,
+      "barcode_valid": 0x08}
 
 
 def describe(fields: dict[str, Any]) -> dict[str, Any]:
@@ -52,14 +53,20 @@ def describe(fields: dict[str, Any]) -> dict[str, Any]:
     out = dict(fields)
     out.update({k: bool(fields["flags0"] & m) for k, m in F0.items()})
     out.update({k: bool(fields["flags1"] & m) for k, m in F1.items()})
-    out["state_name"] = v2.STATE.get(fields["state"], str(fields["state"]))
-    out["mode_name"] = v2.MODE.get(fields["mode"], str(fields["mode"]))
-    out["fault_name"] = v2.FAULT.get(fields["fault"], str(fields["fault"]))
-    out["line_name"] = v2.LINE.get(fields["line"], str(fields["line"]))
-    out["scan_name"] = v2.SCAN.get(fields["scan_result"],
-                                   str(fields["scan_result"]))
-    out["side_name"] = v2.SIDE.get(fields["bypass_side"],
-                                   str(fields["bypass_side"]))
+    out["state_name"] = decoder.STATE.get(fields["state"], str(fields["state"]))
+    out["mode_name"] = decoder.MODE.get(fields["mode"], str(fields["mode"]))
+    out["fault_name"] = decoder.FAULT.get(fields["fault"], str(fields["fault"]))
+    out["line_name"] = decoder.LINE.get(fields["line"], str(fields["line"]))
+    out["scan_name"] = decoder.SCAN.get(fields["scan_result"],
+                                        str(fields["scan_result"]))
+    out["side_name"] = decoder.SIDE.get(fields["bypass_side"],
+                                        str(fields["bypass_side"]))
+    out["barcode_text"] = decoder.letter(fields["barcode_letter"])
+    out["command_name"] = decoder.COMMAND.get(fields["barcode_command"],
+                                              str(fields["barcode_command"]))
+    out["stop_cause_name"] = (
+        decoder.STOP.get(fields["stop_cause"], str(fields["stop_cause"]))
+        if out["stop_latched"] and fields["stop_cause"] != 0 else None)
     return out
 
 
@@ -71,11 +78,20 @@ def changes(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if new["state"] != old["state"]:
         events.append(f"state {old['state_name']} -> {new['state_name']}")
     if new["mode"] != old["mode"]:
-        events.append(f"mode {old['mode_name']} -> {new['mode_name']}")
+        turn = (f" ({new['command_name']})"
+                if new["mode_name"] == "NAVIGATE" and new["barcode_valid"]
+                else "")
+        events.append(f"mode {old['mode_name']} -> {new['mode_name']}{turn}")
     if new["fault"] != old["fault"] and new["fault"] != 0:
         events.append(f"FAULT: {new['fault_name']}")
+    if new["barcode_valid"] and (
+            not old["barcode_valid"]
+            or new["barcode_count"] != old["barcode_count"]):
+        events.append(f"barcode {new['barcode_text']} decoded: "
+                      f"{new['command_name']}")
     if new["stop_latched"] and not old["stop_latched"]:
-        events.append("STOP latched")
+        cause = new["stop_cause_name"]
+        events.append(f"STOP latched: {cause}" if cause else "STOP latched")
     if new["scan_result"] != old["scan_result"] and new["scan_result"] != 0:
         side = f" side {new['side_name']}" if new["bypass_side"] else ""
         events.append(f"scan result: {new['scan_name']}{side}")
@@ -194,7 +210,7 @@ class Bridge:
         now = time.time()
         s = self.store
         if msg.topic == self.topic_telemetry:
-            fields = v2.parse(msg.payload)
+            fields = decoder.parse(msg.payload)
             with s.lock:
                 if fields is None:
                     s.bad_frames += 1

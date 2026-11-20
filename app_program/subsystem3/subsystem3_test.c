@@ -344,18 +344,16 @@ s3_test_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
 
         if (S3_NAV_NONE == command)
         {
-            tm_printf((UB *)"s3 bar: no command mapped to %c; ignored\n",
-                      (INT)symbol);
+            tm_printf((UB *)"s3 bar: no command mapped to %c; reported "
+                            "only\n", (INT)symbol);
         }
-        else if (!s2_nav_submit((uint8_t)command, decoded_count,
-                                s3_test_now_ms()))
+
+        /* Every letter goes to the controller for telemetry; it acts
+           only on a mapped command (S2 decision 27). */
+        if (!s2_nav_submit((uint8_t)command, symbol, decoded_count,
+                           s3_test_now_ms()))
         {
-            tm_printf((UB *)"s3 bar: command for %c not delivered\n",
-                      (INT)symbol);
-        }
-        else
-        {
-            /* The controller reports what it does with it. */
+            tm_printf((UB *)"s3 bar: %c not delivered\n", (INT)symbol);
         }
     }
     else if (S3_SCAN_ERROR == result)

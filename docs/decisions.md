@@ -141,6 +141,49 @@ return value was ignored, so the drops were silent.
 **Tests.** Repeat S1-H02 driving and S1-H01 STOP while running: pass if
 frames stay about 1 s apart and the counters show no refused frames.
 
+### 5. Telemetry frame version 3: barcode and stop cause (2026-11-20)
+
+Approved by Dalton on the integration branch. Host-tested only; not yet
+run on the car.
+
+**Problem.** In the 2026-11-20 demo the dashboard could not show three
+items of the brief: the barcode was detected, which letter it was, and
+which command the car took from it. Nor could it tell a pick-up (the end
+of the demo) from a dashboard STOP or the GP20 button: each showed only
+STOPPED with STOP latched. These were on the serial console only.
+
+**Decision.** Version 3 is version 2 with two bytes appended (29 bytes).
+Bytes 1–26 keep their meanings, so the version 2 decoder logic is reused
+for them.
+
+| Byte | Field | Range | Source |
+|---:|---|---|---|
+| 0 | version | 3 | S1 |
+| 8 | flags1 bit 3: barcode valid (bits 0–2 as version 2) | — | S2 |
+| 27 | barcode letter (bits 0–4), its command (bits 5–7) | letter 0..25 = `A`..`Z`; command `S2_NAV_*` 0..4 | S3 via S2 |
+| 28 | stop cause (bits 0–3), barcode count (bits 4–7) | `S2_STOP_*` 0..11; count 0..15, wraps | S2 |
+
+- **Widths.** The decoder reads A–Z only (`s3_code39.c`), 26 values, so
+  the letter takes 5 bits; 31 means a letter outside A–Z, sent rather than
+  masked (the decision 1 rule). Commands are 0..4 in 3 bits, 7 invalid.
+  The stop cause fits the existing nibble rule (above 14 sent as 15).
+- **Barcode.** The last letter decoded since power-up, sent while flags1
+  bit 3 is set. The letter is sent even when it maps to no command (0).
+  The count is the low 4 bits of the number of letters decoded, so a
+  dashboard can see the same letter read twice. A frame every 1 s cannot
+  miss a change unless 16 letters are read in that second; a barcode
+  takes well over a second to cross.
+- **Stop cause.** Sent only while STOP is latched (flags0 bit 3); zero
+  otherwise. Codes and rules are S2 decision 27.
+- The decoder `testing/subsystem1/decode_telemetry_v2.py` reads versions
+  2 and 3, so the 2026-11-17 logs still decode; it keeps its name because
+  earlier test records cite it.
+
+**Tests.** S1-U05 (revised golden 29-byte frame; invalid letter and
+command, count wrap, cause only while latched), S2-U37, S2-U39 and S2-U40
+(revised), S2-U78 (new), and the dashboard unit tests. INT-07 must run on
+the car.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins
@@ -667,6 +710,45 @@ held LEFT expired 1.3 s before it. The barcode run limit is 2.5 s, not
 800 ms (`s3_barcode.c`). In three passes the car paused on a wide bar of
 the closing sentinel for over 800 ms, which discarded captures whose F
 was intact.
+
+### 27. Every barcode letter and the cause of each STOP (2026-11-20)
+
+Approved by Dalton on the integration branch, for telemetry version 3
+(S1 decision 5). Host-tested only; not yet run on the car.
+
+**Barcode letters (IF-21).** `s2_nav_request_t` carries the decoded
+letter in the byte that was `reserved[0]` (size still 12 bytes), and
+`s2_nav_submit()` takes it. S3 now sends a record for every decoded
+letter, with `S2_NAV_NONE` when the letter has no command; before, an
+unmapped letter never left S3. The controller keeps the last letter, its
+command and a count for telemetry, and stages only a mapped command, as
+in decision 26. An unmapped letter therefore costs one queue slot, which
+the controller drains each cycle.
+
+**Stop cause.** `s2_robot_state_t.stop_cause` (`S2_STOP_*`) says what
+latched STOP: 1 start-up, 2 remote, 3 button, 4 pick-up, 5 hazard (one a
+scan did not take), 6 line, 7 scan (failed, timed out or no route), 8
+bypass, 9 junction manoeuvre, 10 fault, 11 starter demo script finished.
+
+- The first cause after STOP was clear is kept, so a dashboard STOP after
+  a pick-up still reports the pick-up. A fault replaces any cause. START
+  clears it; RESET from Stopped keeps it; RESET from Fault gives
+  start-up, as STOP stays latched.
+- If several STOP bits arrive in one cycle, the pick-up wins, then
+  remote, on-board, line and hazard.
+- Line failures (S3's sensing errors and the controller's line checks)
+  had shared `CTRL_FLG_LOCAL_STOP` with the GP20 button. `s2_line_stop()`
+  now sets a new `CTRL_FLG_LINE_STOP` (bit 6, `CTRL_FLG_ALL` 0x7F).
+- Scan, bypass and junction failures also raise `CTRL_FLG_LOCAL_STOP`,
+  and all run in the controller task. That task notes the cause in a
+  task-private variable before it raises the flag, and passes it to
+  `ctrl_flags()` in `ctrl_input_t.local_cause`. No other task writes it,
+  so it needs no lock. A LOCAL_STOP with no noted cause is the button.
+- `s2_robot_state_t` grows from 28 to 32 bytes (S2-U39).
+
+**Tests.** S2-U78 (host and target) covers each cause, first-cause
+retention, the shared-cycle order, RESET and a fault. S2-U37 covers the
+copy into the telemetry snapshot, and S2-U40 the new flag bit.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 

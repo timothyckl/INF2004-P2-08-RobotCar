@@ -365,10 +365,14 @@ static bool test_telemetry_fill(void)
 	st.left_mm_s = -40;
 	st.right_mm_s = 45;
 	st.heading_cdeg = -9000;
+	st.barcode = 'F';
+	st.barcode_command = S2_NAV_LEFT;
+	st.barcode_count = 3u;
+	st.stop_cause = S2_STOP_PICKUP;
 	s2_telemetry_from_state(&st, &a);
 	st.run_distance_mm = 70000;
 	st.flags = S2_RS_DISTANCE_VALID | S2_RS_MOTION_VALID
-		   | S2_RS_LINE_FRESH;
+		   | S2_RS_LINE_FRESH | S2_RS_BARCODE_VALID;
 	s2_telemetry_from_state(&st, &b);
 	st.run_distance_mm = -5;
 	s2_telemetry_from_state(&st, &c);
@@ -387,6 +391,13 @@ static bool test_telemetry_fill(void)
 	       (a.fault == S2_FAULT_SCAN) &&
 	       !a.motion_valid && (a.left_mm_s == 0) &&
 	       (a.heading_cdeg == 0) && !a.line_fresh && (a.line == 0u) &&
+	       /* a: STOP latched gives the cause; no barcode flag */
+	       (a.stop_cause == S2_STOP_PICKUP) && !a.barcode_valid &&
+	       (a.barcode == '\0') && (a.barcode_count == 0u) &&
+	       /* b: barcode flag set, STOP clear so no cause */
+	       b.barcode_valid && (b.barcode == 'F') &&
+	       (b.barcode_command == S2_NAV_LEFT) &&
+	       (b.barcode_count == 3u) && (b.stop_cause == S2_STOP_NONE) &&
 	       (b.distance_mm == 65535u) && !b.distance_valid &&
 	       !b.stopped && !b.stop_latched &&
 	       b.motion_valid && (b.left_mm_s == -40) &&
@@ -491,7 +502,7 @@ static bool test_interface_sizes(void)
 	       (sizeof(s2_line_report_t) == 8u) &&
 	       (sizeof(s2_scan_cmd_t) == 12u) &&
 	       (sizeof(s2_nav_request_t) == 12u) &&
-	       (sizeof(s2_robot_state_t) == 28u);
+	       (sizeof(s2_robot_state_t) == 32u);
 }
 
 /* True if v has exactly one bit set */
@@ -505,7 +516,8 @@ static bool test_interface_codes(void)
 {
 	UW const bits[] = { CTRL_FLG_HAZARD, CTRL_FLG_SCAN_FAULT,
 			    CTRL_FLG_MOTION_FAULT, CTRL_FLG_REMOTE_STOP,
-			    CTRL_FLG_LOCAL_STOP, CTRL_FLG_PICKUP };
+			    CTRL_FLG_LOCAL_STOP, CTRL_FLG_PICKUP,
+			    CTRL_FLG_LINE_STOP };
 	UW seen = 0u;
 	UINT i;
 	bool ok = true;
@@ -834,6 +846,8 @@ EXPORT void subsystem2_test(void)
 		   "only START in Ready clears STOP");
 	TEST_CHECK("S2-U53", test_ctrl_robot_state(),
 		   "robot_state snapshot fields");
+	TEST_CHECK("S2-U78", test_ctrl_stop_cause(),
+		   "stop cause of each STOP latch");
 	TEST_CHECK("S2-U54", test_watchdog_load(),
 		   "watchdog load value (E1 x2, range)");
 	TEST_CHECK("S2-U55", test_motion_ramp(),

@@ -12,9 +12,12 @@
  *   Running. Only START in Ready clears it, after motion_q is drained.
  * - START is accepted only in Ready with Motion Control healthy (Idle,
  *   valid, no fault) and the wheels confirmed stopped.
- * - REMOTE_STOP, LOCAL_STOP, HAZARD and PICKUP latch STOP and wake
- *   Motion Control; from Running they go to Stopped. MOTION_FAULT and
+ * - REMOTE_STOP, LOCAL_STOP, LINE_STOP, HAZARD and PICKUP latch STOP and
+ *   wake Motion Control; from Running they go to Stopped. MOTION_FAULT and
  *   SCAN_FAULT latch STOP and go to Fault.
+ * - The cause of a latch (S2_STOP_*, S2 decision 27) is the first one
+ *   after STOP was clear; a fault replaces it, START clears it. It is
+ *   BOOT from power-up and after a RESET from Fault.
  * - RESET from Stopped (to Ready) or Fault (to Initialising) only with
  *   the wheels confirmed stopped; motion_q is drained.
  * - Nothing else clears STOP: WiFi reconnection produces no input here.
@@ -64,6 +67,8 @@ typedef struct
     uint32_t        now_ms;
     bool            b_status_ok;        /* motion_get_status() succeeded */
     motion_status_t status;
+    uint8_t         local_cause;        /* S2_STOP_* for a LOCAL_STOP bit;
+                                           S2_STOP_NONE means the button */
 } ctrl_input_t;
 
 /** Applied by the wrapper in this order. */
@@ -84,6 +89,7 @@ typedef struct
     uint8_t    state;           /* S2_SYS_* */
     uint8_t    fault;           /* S2_FAULT_* */
     bool       b_stop;          /* mirror of the latch */
+    uint8_t    stop_cause;      /* S2_STOP_*, while b_stop */
     uint32_t   since_ms;        /* entry time of the current state */
     bool       b_have_request;
     uint32_t   last_request_id;

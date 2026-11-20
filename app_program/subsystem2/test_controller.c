@@ -190,6 +190,29 @@ h_state (h_t const * p_h, uint8_t state)
     return (p_h->c.state == state);
 }
 
+/* The stop cause robot_state reports now. */
+static uint8_t
+h_cause (h_t const * p_h)
+{
+    s2_robot_state_t st;
+
+    ctrl_get_state(&p_h->c, &p_h->in, &st);
+
+    return (st.stop_cause);
+}
+
+/* From Running, one cycle with these bits and on-board cause. */
+static uint8_t
+h_stop_cause (uint32_t bits, uint8_t local_cause)
+{
+    h_t * p_h = h_running(false);
+
+    p_h->in.local_cause = local_cause;
+    h_flags(p_h, bits);
+
+    return (h_cause(p_h));
+}
+
 /* ------------------------------------------------------------------------ */
 
 bool
@@ -555,6 +578,59 @@ test_ctrl_robot_state (void)
             && (250 == st.run_distance_mm)
             && (S2_FAULT_NONE == st.fault)
             && (st.captured_ms == p_h->in.now_ms));
+}
+
+/*
+ * S2-U78: the cause of each STOP latch (S2 decision 27). BOOT from
+ * power-up; NONE while running; the first cause is kept until START; a
+ * fault replaces it and a RESET from Fault gives BOOT again.
+ */
+bool
+test_ctrl_stop_cause (void)
+{
+    h_t * p_h = h_ready(false);
+    bool  ok  = (S2_STOP_BOOT == h_cause(p_h));
+
+    (void)h_remote(p_h, S2_REMOTE_START, 0u);
+    ok = ok && (S2_STOP_NONE == h_cause(p_h));
+
+    /* Picked up, then a dashboard STOP: still the pick-up. */
+    h_flags(p_h, CTRL_FLG_PICKUP);
+    h_flags(p_h, CTRL_FLG_REMOTE_STOP);
+    ok = ok && (S2_STOP_PICKUP == h_cause(p_h));
+
+    /* RESET keeps the latch and its cause; START clears both. */
+    ok = ok && (S2_RESULT_COMPLETED == h_remote(p_h, S2_REMOTE_RESET, 0u))
+         && h_state(p_h, S2_SYS_READY)
+         && (S2_STOP_PICKUP == h_cause(p_h));
+    (void)h_remote(p_h, S2_REMOTE_START, 0u);
+    ok = ok && (S2_STOP_NONE == h_cause(p_h));
+
+    /* One cause per bit; the pick-up wins a shared cycle. */
+    ok = ok
+         && (S2_STOP_REMOTE == h_stop_cause(CTRL_FLG_REMOTE_STOP, 0u))
+         && (S2_STOP_BUTTON == h_stop_cause(CTRL_FLG_LOCAL_STOP,
+                                            S2_STOP_NONE))
+         && (S2_STOP_NAV == h_stop_cause(CTRL_FLG_LOCAL_STOP, S2_STOP_NAV))
+         && (S2_STOP_LINE == h_stop_cause(CTRL_FLG_LINE_STOP, 0u))
+         && (S2_STOP_HAZARD == h_stop_cause(CTRL_FLG_HAZARD, 0u))
+         && (S2_STOP_PICKUP == h_stop_cause(CTRL_FLG_PICKUP
+                                            | CTRL_FLG_REMOTE_STOP, 0u));
+
+    /* A remote STOP record (not the flag) is also REMOTE. */
+    p_h = h_running(false);
+    (void)h_remote(p_h, S2_REMOTE_STOP, 0u);
+    ok = ok && (S2_STOP_REMOTE == h_cause(p_h));
+
+    /* A fault after a stop replaces the cause; RESET gives BOOT. */
+    h_flags(p_h, CTRL_FLG_MOTION_FAULT);
+    ok = ok && h_state(p_h, S2_SYS_FAULT)
+         && (S2_STOP_FAULT == h_cause(p_h));
+    (void)h_remote(p_h, S2_REMOTE_RESET, 0u);
+    ok = ok && h_state(p_h, S2_SYS_INITIALISING)
+         && (S2_STOP_BOOT == h_cause(p_h));
+
+    return (ok && p_h->b_stop);
 }
 
 #endif /* APP_TEST */

@@ -6,7 +6,12 @@
 
 #include <stdbool.h>
 
+#define LETTER_INVALID   31u     /* 5-bit letter field */
+#define COMMAND_MAX      6u      /* 3-bit command field */
+#define COMMAND_INVALID  7u
+
 static uint8_t pack_codes (uint8_t low, uint8_t high);
+static uint8_t pack_barcode (char letter, uint8_t command);
 static void    put_u16 (uint8_t * p_out, uint16_t value);
 static void    put_s16 (uint8_t * p_out, int16_t value);
 static void    put_u32 (uint8_t * p_out, uint32_t value);
@@ -33,7 +38,8 @@ size_t telemetry_encoder_encode (
         uint8_t const flags1 = (uint8_t)(
             flag_if(p_s->forward_valid, TELEMETRY_ENCODER_FORWARD_VALID)
             | flag_if(p_s->profile_valid, TELEMETRY_ENCODER_PROFILE_VALID)
-            | flag_if(p_s->shape_valid, TELEMETRY_ENCODER_SHAPE_VALID));
+            | flag_if(p_s->shape_valid, TELEMETRY_ENCODER_SHAPE_VALID)
+            | flag_if(p_s->barcode_valid, TELEMETRY_ENCODER_BARCODE_VALID));
 
         p_output[0] = TELEMETRY_ENCODER_VERSION;
         p_output[1] = flags0;
@@ -60,6 +66,15 @@ size_t telemetry_encoder_encode (
         put_s16(&p_output[24],
                 (int16_t)(p_s->shape_valid ? p_s->centre_offset_mm : 0));
         p_output[26] = (uint8_t)(p_s->hump_valid ? p_s->hump_max_mm : 0u);
+        p_output[27] = p_s->barcode_valid
+                       ? pack_barcode(p_s->barcode, p_s->barcode_command)
+                       : 0u;
+        /* The count is a wrapping counter, so its low bits are kept. */
+        p_output[28] = (uint8_t)(
+            pack_codes((uint8_t)(p_s->stop_latched ? p_s->stop_cause : 0u),
+                       0u)
+            | (uint8_t)((p_s->barcode_valid
+                         ? (p_s->barcode_count & 0x0fu) : 0u) << 4u));
         written = TELEMETRY_ENCODER_SIZE;
     }
 
@@ -75,6 +90,16 @@ static uint8_t pack_codes (uint8_t low, uint8_t high)
                        ? TELEMETRY_SNAPSHOT_CODE_INVALID : high;
 
     return (uint8_t)(lo | (uint8_t)(hi << 4u));
+}
+
+/** @brief Letter in bits 0-4, command in bits 5-7; out of range is INVALID. */
+static uint8_t pack_barcode (char letter, uint8_t command)
+{
+    uint8_t const code = ((letter >= 'A') && (letter <= 'Z'))
+                         ? (uint8_t)(letter - 'A') : LETTER_INVALID;
+    uint8_t const cmd  = (command > COMMAND_MAX) ? COMMAND_INVALID : command;
+
+    return (uint8_t)(code | (uint8_t)(cmd << 5u));
 }
 
 static void put_u16 (uint8_t * p_out, uint16_t value)

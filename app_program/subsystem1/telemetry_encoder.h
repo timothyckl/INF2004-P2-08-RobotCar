@@ -1,8 +1,8 @@
 /**
  * @file telemetry_encoder.h
- * @brief Telemetry wire format, version 2 (S1 decision 1).
+ * @brief Telemetry wire format, version 3 (S1 decisions 1 and 5).
  *
- * 27 bytes, multi-byte fields little-endian:
+ * 29 bytes, multi-byte fields little-endian:
  *
  *   Byte   Field
  *   0      version (2)
@@ -12,7 +12,7 @@
  *   2-5    captured_ms         uint32_t
  *   6-7    distance_mm         uint16_t
  *   8      flags1: bit 0 forward valid, 1 profile valid, 2 shape valid,
- *                  3-7 zero
+ *                  3 barcode valid, 4-7 zero
  *   9      state (bits 0-3) | mode (bits 4-7)
  *   10     fault (bits 0-3) | line (bits 4-7)
  *   11     scan_result (bits 0-3) | bypass_side (bits 4-7)
@@ -24,8 +24,14 @@
  *   22-23  width_mm            uint16_t
  *   24-25  centre_offset_mm    int16_t
  *   26     hump_max_mm         uint8_t
+ *   27     barcode letter (bits 0-4: 0..25 = 'A'..'Z')
+ *          | barcode command (bits 5-7: S2_NAV_*)
+ *   28     stop cause (bits 0-3: S2_STOP_*, while STOP latched)
+ *          | barcode count (bits 4-7: low 4 bits, wraps)
  *
- * Bytes 0-7 keep their version 1 positions and meanings.
+ * Bytes 0-7 keep their version 1 positions and meanings; bytes 1-26 keep
+ * their version 2 ones. A letter outside 'A'..'Z' is sent as 31 and a
+ * command above 6 as 7 (invalid), never masked.
  */
 #ifndef TELEMETRY_ENCODER_H
 #define TELEMETRY_ENCODER_H
@@ -35,8 +41,8 @@
 
 #include "telemetry_snapshot.h"
 
-#define TELEMETRY_ENCODER_SIZE           27u
-#define TELEMETRY_ENCODER_VERSION        2u
+#define TELEMETRY_ENCODER_SIZE           29u
+#define TELEMETRY_ENCODER_VERSION        3u
 
 /* flags0 (byte 1) */
 #define TELEMETRY_ENCODER_DISTANCE_VALID 0x01u
@@ -51,9 +57,10 @@
 #define TELEMETRY_ENCODER_FORWARD_VALID  0x01u
 #define TELEMETRY_ENCODER_PROFILE_VALID  0x02u
 #define TELEMETRY_ENCODER_SHAPE_VALID    0x04u
+#define TELEMETRY_ENCODER_BARCODE_VALID  0x08u
 
 /**
- * @brief Encode one snapshot in the version 2 layout above.
+ * @brief Encode one snapshot in the version 3 layout above.
  * @param p_snapshot Immutable, consistent caller-owned snapshot.
  * @param p_output Separate writable buffer; must not overlap the snapshot.
  * @param capacity Writable bytes available at p_output.
