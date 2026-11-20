@@ -255,7 +255,7 @@ the `_s3hw` suffix; see `app_program/subsystem3/README.md`.
 `_s3line`, so the commands in earlier test-log rows still build. Do not
 combine it with `S3_HW_TEST=1`.
 `S4_HW_TEST=1` similarly adds subsystem 4's live IMU start-up check and the
-`_s4hw` image suffix; see `docs/subsystem4.md`.
+`_s4hw` image suffix; see [subsystem 4 documentation](app_program/subsystem4/README.md).
 
 **The mission image.** A `TEST=0` image (and `TEST=1 S3_LINE_TEST=1`)
 runs the robot's mission: the Vehicle Controller and Motion Control

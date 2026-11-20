@@ -1,10 +1,13 @@
 # Subsystem 4: IMU terrain sensing
 
-Subsystem 4 is a standalone LSM303DLHC accelerometer service for the Pico W.
-It performs startup identity/configuration checks, stationary calibration,
-terrain state processing, candidate impact detection, bounded fault recovery,
-and mutex-protected status publication. It does not command the motors or
-authorise movement.
+Subsystem 4 reads the LSM303DLHC accelerometer on the Pico W. It checks the
+sensor at start-up, calibrates while stationary, estimates hump height,
+detects candidate impacts and lifts, and publishes a mutex-protected status
+snapshot. The task reads subsystem 2's vehicle state and motion snapshot to
+gate detection and reset the run maximum. A detected lift raises
+`CTRL_FLG_PICKUP`; the Vehicle Controller then latches STOP. Hump maximums
+feed telemetry, while candidate impacts are reported on the console. This
+subsystem does not command the motors or authorise movement.
 
 ## Hardware and configuration
 
@@ -29,9 +32,9 @@ read-back. Six acceleration bytes are read in one auto-increment transaction.
 In high-resolution +/-2 g mode, the signed left-justified 12-bit values convert
 at 1 mg/LSB.
 
-These choices follow `docs/datasheets/LSM303DLHC-datasheet.pdf`, the RP2040
-GPIO function assignments in `docs/datasheets/pico_w_datasheet.pdf`, and the
-Robo Pico Grove 2 mapping in `docs/datasheets/Robo-Pico-datasheet.pdf`.
+These choices follow the [LSM303DLHC datasheet](../../docs/datasheets/LSM303DLHC-datasheet.pdf),
+the [Pico W datasheet](../../docs/datasheets/pico_w_datasheet.pdf), and the
+[Robo Pico datasheet](../../docs/datasheets/Robo-Pico-datasheet.pdf).
 
 ## Software structure
 
@@ -67,21 +70,23 @@ Runtime estimates currently compiled into `task_imu.c` are:
 | Maximum valid sample gap | 50 ms |
 | Consecutive invalid limit | 3 samples |
 
-None of these values is physically validated. Replace them only after recording
-the stationary distribution, representative flat driving, turns, vibration,
-humps, safe impulses, temperature, mounting, and supply conditions.
+These thresholds remain provisional. The recorded flat-driving, 10 mm hump
+and lift trials cover only the tested set-up; temperature, other hump heights
+and safe impacts have not been characterised.
 
 ## Height and maximum retention
 
 Height comes from tilt and the vehicle's contact geometry (decision 8). The car
 stands on its left wheel, right wheel (track 119 mm) and front ball caster
 (88 mm ahead of the axle). Roll and pitch, each a moving average of the last
-16 samples (about 470 ms, decision 10), fix the plane through the
+16 samples (about 340–470 ms in recorded mission runs, depending on the
+actual sample interval; decision 10), fix the plane through the
 three contacts; with the lowest on the floor, the hump height is the highest
 contact's rise, scaled by 0.851 to the measured 10 mm hump (decision 12). A
 hump starts at 6 mm (decision 11) and ends below 2 mm, each held for three
 samples, and reports its peak and the contact that crossed it. A hump not ended
-within 12 s is dropped (decision 10). These are provisional values, not validated results.
+within 12 s is dropped (decision 10). The 10 mm right-wheel hump was measured
+on the car; these settings are not validated across other heights or surfaces.
 Humps, impacts and lifts are detected only while the robot is Running in
 FOLLOW or NAVIGATE (read with `s2_get_robot_state()`), and not for 32
 samples after it starts to; a hump in progress when that stops is dropped
@@ -114,15 +119,16 @@ The first image includes deterministic terrain and raw-register decoding tests.
 The second also waits for live identity/configuration and stable calibration.
 Flash the corresponding UF2 and capture the USB serial output. Compilation on
 a computer does not execute these tests. Full procedures and the append-only
-evidence table are in `testing/subsystem4/TEST_LOG.md`.
+evidence table are in the [subsystem 4 test log](../../testing/subsystem4/TEST_LOG.md).
 
 ## Faults and recovery
 
 - Wrong identity or control-register read-back rejects startup.
-- I2C transfer errors, repeated invalid samples, stale
-  valid samples, or unstable stationary calibration produce a fault.
-- The task closes the device, waits one second, reopens, revalidates, and
-  recalibrates. It never requests vehicle movement during recovery.
+- I2C transfer errors, repeated invalid samples or stale valid samples
+  cause the task to close the device, wait one second, reopen, revalidate
+  and recalibrate.
+- Unstable stationary calibration restarts calibration in place; the sensor
+  is not reopened. Neither recovery path requests vehicle movement.
 - An accelerometer overrun is not a fault: the kernel tick is 10 ms, so
   reads are 10 to 20 ms apart and the newest of the 100 Hz samples is read
   (decision 6).
@@ -131,7 +137,7 @@ evidence table are in `testing/subsystem4/TEST_LOG.md`.
 
 ## Known limitations and integration work
 
-- Verified on the robot (`testing/subsystem4/TEST_LOG.md`): wiring, axis
+- Verified on the robot ([test log](../../testing/subsystem4/TEST_LOG.md#results)): wiring, axis
   orientation, still and driving noise, and the 10 mm right-wheel hump
   (S4-H08, 9 to 11 mm). Impact behaviour, temperature and other hump heights
   are not verified.
@@ -144,10 +150,48 @@ evidence table are in `testing/subsystem4/TEST_LOG.md`.
   still reads as humps.
 - The 32-bit microsecond timestamp wraps by design; elapsed calculations are
   wrap-safe only for intervals shorter than one full wrap period.
-- Runtime thresholds are fixed provisional constants. Calibration evidence and
-  agreed acceptance criteria are required before final tuning.
+- Runtime thresholds are fixed provisional constants. SYS-04 has an agreed
+  2 mm height criterion for course humps; wider terrain and impact criteria
+  still require agreement and measurement.
 - Run reset (START, IF-17), driving state (IF-14) and the telemetry read of
   the run maximum (IF-18, `subsystem4_get_status()`, never waits) are in
   place. Impacts use the same driving gate as humps (decision 14).
 - The starter message buffer and event flag (IF-03) were removed on
   2026-11-20 (S2 decision 29).
+
+## Terrain analysis report
+
+The [S4 test log](../../testing/subsystem4/TEST_LOG.md#results) is the record
+of methods, firmware revisions and results. The trials below compare the
+height estimate while still, driving on flat ground and crossing a
+ruler-measured hump. They use different firmware revisions; only the later
+S4-H08 runs include the current 0.851 height scale and driving gate. The
+[system test log](../../testing/system/TEST_LOG.md#test-cases) defines SYS-04:
+the highest hump in telemetry must be within 2 mm of the tallest course hump,
+with none reported on a flat lap. That complete system case has not yet run.
+
+| Condition | Recorded result | Interpretation |
+|---|---|---|
+| Stationary after calibration, 60 s | Mean estimated height 0.18 mm, 99th percentile 0.48 mm, maximum 0.85 mm; no event ([S4-H03](../../testing/subsystem4/logs/2026-11-13_s4-h03-2.txt)) | Still noise alone was below the 2 mm level threshold in this set-up. |
+| Five 450 mm flat passes at about 180 mm/s, before the longer tilt average | One false hump per pass, 18–24 mm; moving height 99th percentile 20.9 mm ([S4-H07](../../testing/subsystem4/logs/2026-11-13_s4-h03-2.txt)) | Motion and vibration dominated the still noise; the original filter was unsuitable at that speed. |
+| Line following at about 40 mm/s with the 16-sample tilt average | About 82 s of driving: one 4 mm event on a smooth floor undulation; no vibration hump reported ([S4-H07](../../testing/subsystem4/logs/2026-11-13_s4-h07-line-avg.txt)) | The longer average reduced vibration effects in this trial, but did not prove zero false positives. |
+| Ruler-measured 10 mm hump under the right wheel, after scaling and driving gate | Four crossings reported 11, 10, 10 and 9 mm, once per crossing; mean 10 mm ([S4-H08](../../testing/subsystem4/logs/2026-11-13_s4-h08-gated.txt)). A later three-pass repeat reported 10, 10 and 9 mm, with one additional false 6 mm hump and candidate impact ([repeat](../../testing/subsystem4/logs/2026-11-16_s4-raw-d14.txt)). | The known course-height case met the later SYS-04 ±2 mm height figure in these passes. It does not establish accuracy for other heights, contact points or surfaces. |
+| Lift while following | Ten runs ended with a pick-up STOP in the S4-H11 session, although some post-hump stops were not confirmed as deliberate lifts ([S4-H11](../../testing/subsystem4/logs/2026-11-16_s4-h11-pickup-raw.txt)). SYS-10 then failed 0/5 on one boot and passed 5/5 on the next ([system results](../../testing/system/TEST_LOG.md#results)). | Lift detection is boot-dependent in the system record; the failed boot's cause was not captured. |
+
+The measured hump was 195 mm across the path and 50 mm along it, with only
+the right wheel crossing it ([initial S4-H08 trial](../../testing/subsystem4/logs/2026-11-13_s4-h08-10mm.txt)). The 0.851 scale was set from that one
+height, so the result is calibration to the course case rather than an
+independent accuracy study. The run maximum reached subsystem 2's summary
+as 9 mm in the [IF-18 drive](../../testing/subsystem4/logs/2026-11-13_s4-if18.txt);
+that capture does not establish delivery of every MQTT frame.
+
+Candidate impact detection has no controlled physical validation. A false
+candidate impact accompanied the extra 6 mm hump in the later repeat.
+During three 2026-11-20 bypasses, rapid turns produced false 7 and 16 mm
+humps and three false pick-up stops ([SYS-07](../../testing/system/TEST_LOG.md#results),
+[dashboard capture](../../testing/system/logs/2026-11-20_system-dashboard.jsonl)).
+[S4 decision 16](../../docs/decisions.md#16-no-detection-during-the-obstacle-bypass-2026-11-20)
+now disables detection in BYPASS and REACQUIRE; that revision has not yet
+been re-tested on the car. The evidence supports the measured 10 mm hump
+case, while general terrain classification, impact behaviour and reliable
+pick-up detection remain unverified.

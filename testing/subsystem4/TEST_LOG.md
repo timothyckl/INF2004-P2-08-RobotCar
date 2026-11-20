@@ -4,9 +4,10 @@
 terrain classification, hump detection, candidate height estimation, highest
 valid peak retention, impact detection, and sensor fault handling.
 
-The implementation remains independent of the other application subsystems.
-Synthetic odometry is injected into logic tests; real encoder integration is
-outside the scope of these standalone cases.
+The pure terrain logic runs with injected odometry in the standalone cases.
+The integrated IMU task reads subsystem 2's motion and vehicle state and
+raises its pick-up event through subsystem 2. Real encoder integration is
+outside the scope of the standalone cases.
 
 ## Status and execution
 

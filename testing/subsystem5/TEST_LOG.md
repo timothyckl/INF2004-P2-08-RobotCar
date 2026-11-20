@@ -6,16 +6,18 @@ Requirements come from the Design Review (FR6, FR7, FR10, NFR2–NFR8), PostTri1
 
 ## Status and execution
 
-All test cases execute on the **Raspberry Pi Pico W**, not on the build computer. The computer only cross-compiles firmware, copies the UF2 and saves serial output.
+On-target cases execute on the **Raspberry Pi Pico W** after the firmware is
+flashed; the separate host suite runs synthetic logic cases on a computer.
+The results table below records which cases actually ran and on which target.
 
-- **Ready:** S5-U03–S5-U17 and S5-U51–S5-U52 have executable on-device test code bound to the production distance and scan-gating logic. Each reports `PASS` or `FAIL`; no on-device execution has been recorded yet.
+- **Ready in the original test plan:** S5-U03–S5-U17 and S5-U51–S5-U52 have executable on-device test code bound to the production distance and scan-gating logic. Each reports `PASS` or `FAIL`; later on-target executions are recorded in Results.
 - **Planned:** the case is specified but its code, interface or hardware prerequisites are not ready. Planned cases are not counted as executed.
 - Automated logic cases run through `scan_lifecycle_test()` in `usermain()` when built with `TEST=1`. They use controlled timestamps and injected inputs on the Pico W; these inputs do not validate real GPIO timing, servo movement or ISR concurrency.
 - Real sensor, servo, RTOS/ISR and integration cases require separate on-board measurements. No motor or servo movement is enabled by this test scaffold.
 
 ### Host simulation evidence (2026-11-08)
 
-`make -C testing/host s5` passed 39/39 synthetic cases, including the cases below. The same source cross-built for the Pico W with `TEST=1 CRASH_REPORT=0`; no on-device execution or physical clearance was verified for these changes.
+`make -C testing/host s5` passed 39/39 synthetic cases, including the cases below. The same source cross-built for the Pico W with `TEST=1 CRASH_REPORT=0`; at that date, no on-device execution or physical clearance had been verified for those changes.
 
 | ID | Host check | Result |
 |---|---|---|

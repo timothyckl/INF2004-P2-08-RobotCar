@@ -3,10 +3,11 @@
 Subsystem 2 drives the two DC motors from encoder feedback and owns the
 vehicle's mission state and its latched STOP. Motion Control is the only code
 that writes motor PWM. The Vehicle Controller is the only code that sends
-motion commands or clears STOP. The interfaces with the other subsystems are
-listed in `TEAM.md` section 5, and the reasons for each rule below are in
-`docs/decisions.md` (subsystem 2). Test cases and results are in
-`testing/subsystem2/TEST_LOG.md`.
+motion commands or clears STOP. Cross-subsystem interfaces are in
+[TEAM.md, section 5](../../TEAM.md#5-interfaces-between-subsystems); agreed
+changes are in [the subsystem 2 decisions](../../docs/decisions.md#subsystem-2--vehicle-and-motion-control-dalton).
+Test procedures and the full result history are in the
+[subsystem 2 test log](../../testing/subsystem2/TEST_LOG.md).
 
 ## Hardware and configuration
 
@@ -79,8 +80,8 @@ The pure modules make no kernel calls, so they also run on the host
 | controller | 14 | 1 | waits on `controller_flags`, at most 10 ms |
 | motion | 15 | 1 | 10 ms cyclic handler, plus an immediate wake-up on STOP |
 
-The kernel tick is 10 ms (`CNF_TIMER_PERIOD`), so 10 ms and 20 ms are the
-only exact periods. 10 ms halves the worst-case STOP latency and gives
+The kernel tick is 10 ms (`CNF_TIMER_PERIOD`). Of the 10 ms and 20 ms
+task periods considered here, 10 ms halves the worst-case STOP latency and gives
 subsystem 4 one distance update per IMU sample. Both tasks share core 1, so a
 STOP latched by the controller reaches Motion Control as soon as the
 controller blocks.
@@ -115,8 +116,9 @@ section 6.2).
   task is starved for `MC_WATCHDOG_MS` (200 ms), the chip resets; the reset
   puts the PWM block back in reset and the pads back to their pull-downs, so
   the motors stop. The load value is doubled for erratum RP2040-E1, and PSM
-  `WDSEL` is set (its reset value 0 would reset nothing). Never armed in
-  `TEST=1` or bench builds. After such a reset the boot prints
+  `WDSEL` is set (its reset value 0 would reset nothing). Motion Control
+  does not arm it in `TEST=1` images; `S2_HW_TEST=4` starts it explicitly
+  for S2-H05. After such a reset the boot prints
   `[S2] previous reset: WATCHDOG`.
 
 ### Vehicle Controller
@@ -129,7 +131,8 @@ Top-level states: Initialising, Ready, Running, Stopped, Fault.
 - START needs Ready, Motion Control healthy, and the wheels confirmed still.
 - REMOTE_STOP, LOCAL_STOP (GP20 and on-board failures), LINE_STOP, HAZARD and
   PICKUP latch STOP and go to Stopped. MOTION_FAULT and SCAN_FAULT latch STOP
-  and go to Fault. The first cause is kept for telemetry (decision 27).
+  and go to Fault. The first STOP cause is kept for telemetry unless a
+  fault replaces it (decision 27).
 - RESET: Stopped to Ready, or Fault to Initialising, only with the wheels
   confirmed still.
 - Remote START/RESET older than 2 s are EXPIRED; a repeated request ID is a
@@ -215,3 +218,22 @@ USB serial output, then record results in `testing/subsystem2/TEST_LOG.md`.
   so interrupt load still requires physical validation.
 - S2-U37, S2-U39 and S2-U40 (revised for telemetry version 3) have passed on
   the host only, not yet on the Pico W.
+
+## Test evidence
+
+The [test log](../../testing/subsystem2/TEST_LOG.md#results) records the
+procedure, build, result and limitations for each run. Selected serial
+captures make the main claims above traceable:
+
+| Claim | Evidence | Limit |
+|---|---|---|
+| Left encoder on GP16/GP17 counts up; right on GP0/GP1 counts down | [S2-H03 Grove 4 check](../../testing/subsystem2/logs/2026-11-11_s2-h03-grove4.txt), [cable-fix repeat](../../testing/subsystem2/logs/2026-11-16_s2-h03-cable-fixed.txt) | The second capture is one 60 s hand-turn session; a subsequent stall-free drive was still required. |
+| Full-speed bench run and watchdog reset | [S2-H04](../../testing/subsystem2/logs/2026-11-10_s2-h04.txt), [S2-H05](../../testing/subsystem2/logs/2026-11-10_s2-h05-coldboot.txt) | Wheels were raised; the watchdog remains off in the mission image. |
+| Distance and turn calibration | [S2-H07 distance repeat](../../testing/subsystem2/logs/2026-11-10_s2-h07-rerun.txt), [S2-H08 track-width repeat](../../testing/subsystem2/logs/2026-11-10_s2-h08-track119.txt) | Distance was tape-measured; the turn end was judged by eye. |
+| PID behaviour at the move and line-follow speeds | [S2-H09 move](../../testing/subsystem2/logs/2026-11-10_s2-h09-move200.txt), [S2-H09 line follow](../../testing/subsystem2/logs/2026-11-10_s2-h09-line.txt) | The 5 mm/s inside-wheel target is near the encoder's speed resolution. |
+| On-target logic after the pin remap | [S2-H03 console, including 67/67 S2 tests](../../testing/subsystem2/logs/2026-11-11_s2-h03-grove4.txt) | The later telemetry-version-3 cases have a [host-only result](../../testing/subsystem2/TEST_LOG.md#results). |
+
+The [system test log](../../testing/system/TEST_LOG.md#results) records the
+later combined mission runs. Those runs do not validate the unmeasured PID
+gains, watchdog operation during a drive, or the revised telemetry cases on
+the Pico W.

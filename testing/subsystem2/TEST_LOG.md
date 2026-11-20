@@ -2,8 +2,9 @@
 
 **Owner:** Dalton (2504003)  ·  **Planned subsystem:** Vehicle Controller and motion control  ·  **Code:** `app_program/subsystem2/`
 
-S2-U01 and S2-U02 test the starter producer, kept until subsystem 3 stops
-using it. S2-U03 onwards test the Vehicle Controller and Motion Control:
+S2-U01 and S2-U02 are retired starter-producer tests (S2 decision 29). The
+historical case descriptions and result rows remain below. S2-U03 onwards
+test the Vehicle Controller and Motion Control:
 S2-U* run automatically in a `TEST=1` build, S2-H* are bench checks, and
 S2-I* are integration demos with teammates. A clean build is not a passed
 test: record a row in Results for every run on the Pico W.
