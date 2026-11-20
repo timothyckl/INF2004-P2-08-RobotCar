@@ -252,7 +252,9 @@ turns within 5 degrees, U-turns within 10 degrees.
 | Distance, 1000 mm Move (S2-H07, 3 runs) | Tape 1007, 1004, 1006 mm against odometry 1001 to 1002 mm: +0.5% | Meets the target scaled to 1000 mm (±40 mm); 3 runs, not 10 |
 | 360 degree turn (S2-H08, track 119 mm with the old circumference, 2 runs) | Odometry 362.1 and 363.5 degrees; physical end on the start line by eye | Used to set the track; no protractor reading |
 | Turns in the mission | Barcode left, right, straight and U-turn at junctions, and the bypass's 45 degree turns, completed on the car ([S3 test log](../../testing/subsystem3/TEST_LOG.md#results), [S5 README](../subsystem5/README.md)) | These end on the line or on odometry with no measured angle |
-| Straight 500 mm (S2-H10, 5 runs, 2026-11-20) | 482, 480, 480, 480, 480 mm (mean 480.4); drift 4 to 6 mm right; odometry 502 to 503 mm | At the 20 mm limit; 4.4% short of odometry, which disagrees with S2-H07's +0.5% and needs an S2-H07 re-run |
+| Straight 500 mm (S2-H10, 5 runs, 2026-11-20, old circumference) | 482, 480, 480, 480, 480 mm (mean 480.4); drift 4 to 6 mm right; odometry 502 to 503 mm | At the 20 mm limit; 4.4% short of odometry |
+| 1000 mm (S2-H07 re-check, 3 runs, same floor) | 960 mm each for 1002 to 1003 mm of odometry; drift 15 to 16 mm right | 4.2% short; led to the decision 31 recalibration |
+| Straight 500 mm (S2-H10, 5 runs, after decision 31) | 500, 510, 500, 500, 510 mm (mean 504); drift 5 mm | **Meets** the 20 mm target (worst +10 mm) |
 | Left and right 90 degrees, 10 runs each | — | **To run:** S2-H10, `S2_CAL_TEST=5`, `6` |
 | U-turn 180 degrees, 10 runs | — | **To run:** S2-H10, `S2_CAL_TEST=7` |
 | STOP latency, latch to motor off, 10 runs | — | **To run:** S2-H11, GP20 during `S2_CAL_TEST=1`; target 20 ms |

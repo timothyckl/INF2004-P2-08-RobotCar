@@ -140,6 +140,13 @@ Straight 500 mm (target: within 20 mm):
 | Distance (mm) | 482 | 480 | 480 | 480 | 480 | | | | | | 480.4 | 480 (-20) |
 | Lateral drift (mm) | 5 R | 6 R | 5 R | 4 R | 5 R | | | | | | 5.0 R | 6 R |
 
+Straight 500 mm after the S2 decision 31 recalibration (`29aee52`):
+
+| Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Distance (mm) | 500 | 510 | 500 | 500 | 510 | | | | | | 504 | 510 (+10) |
+| Lateral drift (mm) | 5 | 5 | 5 | 5 | 5 | | | | | | 5 | 5 |
+
 Left 90 deg (target: within 5 deg):
 
 | Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
@@ -230,3 +237,4 @@ unattended run; a successful build is not that confirmation.
 | 2026-11-20 | S2 host suite (50 cases), incl. new S2-U78 | working tree after `1a2df7f` (telemetry v3, S2 decision 27) | host (cc) | PASS (50 passed, 0 failed) | `make -C testing/host all` | host only. S2-U37, U39 and U40 (revised) are on-target cases: they compile in the `TEST=1` image but have not been run on the Pico W |
 | 2026-11-20 | S2-H10 (straight 500 mm, mode 4) | `9eafa1e` (`TEST=1 S2_CAL_TEST=4`) | Dalton | PASS at the limit (5 of 10 runs) | `logs/2026-11-20_s2-h10-forward500.txt` | Floor, battery and USB; tape measure taped beside the car, front edge started at 300 mm. Five measured runs: 482, 480, 480, 480, 480 mm (mean 480.4, worst -20 mm, exactly the 20 mm limit); drift 4 to 6 mm right (mean 5). The log has eight DONE runs at 19:32 to 19:38, odometry x 502 to 503 mm, y 0, heading -1.0 to +0.5 degrees, no fault; the five measured are taken to be the last five (19:36:11 to 19:38:08), and an earlier run measured with the tape under the wheels also read 480 mm, 5 mm right. Physical distance is a steady 4.4% short of odometry, against +0.5% over 1000 mm in S2-H07 (2026-11-10): a systematic error, not scatter. Not corrected here; re-run S2-H07 on this floor with this tape before changing `MC_WHEEL_CIRC_UM`. Tester stopped at 5 runs |
 | 2026-11-20 | S2-H07 (re-check after S2-H10) | `c280758` (`TEST=1 S2_CAL_TEST=1`, `MC_WHEEL_CIRC_UM` 227233) | Dalton | FAIL (-4.2%, 1% criterion) | `logs/2026-11-20_s2-h07-recheck.txt` | Same floor and taped measuring tape beside the car as the S2-H10 row above; front edge started at 300 mm. Three runs, all DONE, no fault: odometry x 1003, 1002, 1002 mm, heading -0.5 to +0.5 degrees; tape 960, 960, 960 mm; drift 16, 15, 16 mm right. Physical/odometry 0.958 here and 0.956 in the 500 mm runs, so the error scales with distance: an effective circumference of about 217.6 mm on this floor, against 227.2 mm on the 2026-11-10 floor (+0.5%). No value changed |
+| 2026-11-20 | S2-H10 (straight 500 mm, after S2 decision 31) | `29aee52` (`TEST=1 S2_CAL_TEST=4`, `MC_WHEEL_CIRC_UM` 217636, `MC_TRACK_MM` 114) | Dalton | PASS (5 of 10 runs) | `logs/2026-11-20_s2-h10-forward500-recal.txt` | Same floor and tape set-up as the rows above. Five measured runs: 500, 510, 500, 500, 510 mm (mean 504, worst +10 mm, against 480 before the change); drift 5 mm each (side not stated; 4 to 6 mm right before). The log has six DONE runs at 19:48 to 19:49, odometry x 502 to 504 mm, no fault; one (19:48:44) ended 2 degrees left, the others within 0.5 degrees. The recalibration is confirmed on this floor; tape read to the nearest 10 mm |
