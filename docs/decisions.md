@@ -1379,6 +1379,37 @@ Driving jolts, such as leaving the hump, held 200 mg for at most 2 samples
 in about 3300 driving samples, so the margin is one sample; obstacle
 bypass manoeuvres are not in that data.
 
+### 16. No detection during the obstacle bypass (2026-11-20)
+
+Approved by Dalton on the integration branch. Revises decision 12's
+driving modes.
+
+**Problem.** In the SYS-05/06/07 runs of 2026-11-20 every bypass ended in
+a false pick-up, with no one touching the car: at 15:49:52 and 15:51:26
+in BYPASS, at 15:50:34 in REACQUIRE
+(`testing/system/logs/2026-11-20_system-dashboard.jsonl`). The same
+bypasses reported humps of 7 and 16 mm on a flat floor. The bypass drives
+at about 130 mm/s with spins in place (wheel speeds such as +132/-106
+mm/s), over three times line-following speed. Decision 15 set its
+thresholds from line-following data with a one-sample margin and noted
+that bypass manoeuvres were not in it.
+
+**Decision.** Humps, impacts and lifts are detected only in FOLLOW and
+NAVIGATE (`s4_detect_gate()`), no longer in BYPASS or REACQUIRE. SCAN was
+already excluded.
+
+- Lifting the car during a bypass is not detected, as during a scan. The
+  bypass still ends on its own limits, and line following after it
+  re-arms detection after the 32-sample settle.
+- The course hump is on the line, so a bypass does not cross it.
+- NAVIGATE stays: its spins run at 30 mm/s, and the junction runs of
+  2026-11-17 and 2026-11-20 had no false stop.
+- Raising the thresholds was rejected: it needs bypass data not yet
+  logged, and it would weaken detection of real lifts everywhere.
+
+**Tests.** Repeat SYS-05/06/07 (no false pick-up or hump during the
+bypass) and SYS-10 (lifts while following still stop the car).
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

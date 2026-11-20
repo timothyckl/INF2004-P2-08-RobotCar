@@ -416,11 +416,12 @@ s4_motion_read (s4_motion_t * p_motion,
 }
 
 /*
- * Whether hump and impact detection may run this sample (decisions 12
- * and 14): the robot is
- * Running in a driving mode, and has been for S4_SETTLE_SAMPLES samples.
- * *p_settle counts down while driving and is reloaded whenever it is not.
- * A failed state read counts as not driving.
+ * Whether hump, impact and lift detection may run this sample (decisions
+ * 12, 14 and 16): the robot is Running in FOLLOW or NAVIGATE, and has been
+ * for S4_SETTLE_SAMPLES samples. BYPASS and REACQUIRE are excluded: their
+ * fast turns read as lifts and humps (decision 16), as SCAN's braking
+ * would. *p_settle counts down while driving and is reloaded whenever it
+ * is not. A failed state read counts as not driving.
  */
 static bool
 s4_detect_gate (uint8_t * p_settle)
@@ -433,9 +434,7 @@ s4_detect_gate (uint8_t * p_settle)
     {
         b_driving = (S2_SYS_RUNNING == state.state) &&
                     ((S2_MODE_FOLLOW == state.mode) ||
-                     (S2_MODE_NAVIGATE == state.mode) ||
-                     (S2_MODE_BYPASS == state.mode) ||
-                     (S2_MODE_REACQUIRE == state.mode));
+                     (S2_MODE_NAVIGATE == state.mode));
     }
 
     if (!b_driving)
