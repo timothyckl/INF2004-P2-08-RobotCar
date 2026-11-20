@@ -22,9 +22,10 @@ Define a test here before running it. Test IDs never change.
 | SYS-10 | picking the car up stops it | Brief Buddy 4 (collision detection); IF-19 | manual | Common set-up. Lift the car by hand during following, 5 times, once slowly and level. | Every lift: wheels stop, stop cause pick-up; no pick-up stop during SYS-01 laps or over humps (S4-H11) |
 | SYS-11 | boots to Ready from a cold power-bank start | Robustness; S5 decision 12 | manual | Power off for at least 20 s, then on from the power bank; 5 times; dashboard open. | READY with no fault on all 5 boots (power-bank boots came up in FAULT on 2026-11-17 before S5 decision 12) |
 
-**Common set-up.** One committed build of the line image
-(`make NET=lwip MQTT=1 TEST=1 S3_LINE_TEST=1 S3_NAV_F=<n> -j8`), the
-same for the whole set, and its commit in every result row. Power bank,
+**Common set-up.** One committed build of the mission image
+(`make NET=lwip MQTT=1 S3_NAV_F=<n> -j8`, S2 decision 28), the same for
+the whole set, and its commit in every result row. Rows before
+2026-11-20 16:00 used the equivalent `TEST=1 S3_LINE_TEST=1` image. Power bank,
 USB console captured to `logs/` when it can stay plugged in. Broker and
 dashboard on the laptop (`testing/subsystem1/dashboard/README.md`); copy
 each dashboard session log into `logs/`. Course lighting as on the day.
