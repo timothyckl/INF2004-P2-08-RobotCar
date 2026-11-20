@@ -258,7 +258,7 @@ turns within 5 degrees, U-turns within 10 degrees.
 | Left 90 degrees (S2-H10, 2 runs, 2026-11-20) | Just under 5 degrees over, by eye; odometry 94.0 degrees both | **Meets** the 5 degree target with almost no margin; the overshoot is the coast after the brake |
 | Right 90 degrees (S2-H10, 1 run, 2026-11-20) | Just under 5 degrees over, by eye; odometry 93.5 degrees | **Meets** the target with almost no margin; same coast as the left turn, no side bias |
 | U-turn 180 degrees (S2-H10, 1 run, 2026-11-20) | 4 degrees off, by eye; odometry 182.4 degrees | **Meets** the 10 degree target |
-| STOP latency, latch to motor off, 10 runs | — | **To run:** S2-H11, GP20 during `S2_CAL_TEST=1`; target 20 ms |
+| STOP latency, latch to motor off (S2-H11, 7 runs, 2026-11-20) | 901 to 952 us, mean 926 us | **Meets** the 20 ms target about 20 times over; excludes the 30 ms button debounce and remote receipt |
 
 The 90 degree turns end about 4 degrees past their target on odometry
 because a turn brakes only at the target and the car coasts; the team
