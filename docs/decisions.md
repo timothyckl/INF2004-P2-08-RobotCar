@@ -877,6 +877,42 @@ and bypass legs travel the planned distance.
 mission smoke run and the SYS tests run on this build. If the course
 surface differs, repeat S2-H07 there (three runs) before the demo.
 
+### 32. S2 bench tests closed on the runs recorded (2026-11-20)
+
+Approved by Dalton on the integration branch.
+
+**Problem.** S2-H10 asks for 10 runs of each motion and S2-H11 for 10
+STOP-latency runs. Before the demo there is no time left for the rest:
+the tester recorded 5 straight, 2 left 90, 1 right 90 and 1 U-turn run,
+and 7 STOP-latency runs. Every recorded run is within its limit.
+
+**Decision.** The 10-run requirement is waived for S2-H10 and S2-H11.
+Each is closed on the runs actually recorded; no run is repeated or
+copied to fill the tables, and each mean and worst value uses only real
+runs. The closing rows state the sample size.
+
+- S2-H10 straight 500 mm (5 runs, worst +10 mm) and S2-H11 (7 runs,
+  worst 952 us, about 5% of the 20 ms limit) close as PASS.
+- S2-H10 left 90 (2 runs), right 90 (1 run) and U-turn (1 run) close as
+  PASS on a limited sample. The angles were judged by eye, and the 90
+  degree turns end just under the 5 degree limit (odometry 93.5 to 94.0
+  degrees, the coast after the brake), so a little more coast would fail
+  them. If a mission turn misses, the fix is to slow Move/Turn near the
+  target, not to change `MC_TRACK_MM`.
+- S2-H07 closes on the S2-H10 straight runs at 217 636 um (decision 31):
+  504 mm measured for 502 to 504 mm of odometry, within the 1% criterion,
+  over 500 mm instead of 1000 mm.
+- S2-H08 closes on its 2026-11-10 result. Decision 31 changed
+  `MC_TRACK_MM` and `MC_WHEEL_CIRC_UM` by the same ratio, so a commanded
+  turn takes the same encoder counts as in that test; the 360 degree turn
+  was not re-run.
+- S2-H02 has no recorded run and stays open: it is not closed by this
+  decision.
+
+**Risk.** Small samples show that each motion can meet its target, not
+how often it does. SYS-03 (junction turns) and SYS-07 (bypass turns) are
+the larger check of turn accuracy on the course.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
