@@ -118,6 +118,11 @@ A successful build ends with a line like
 `tools/elf2uf2 mtk3pico_smp1_usb_cdc_wifi.elf mtk3pico_smp1_usb_cdc_wifi.uf2`.
 Your firmware is **`build_make/mtk3pico_smp1_usb_cdc_wifi.uf2`**.
 
+This image runs the robot's mission (section 3, *The mission image*).
+For telemetry over WiFi, build the robot's firmware with
+`make NET=lwip MQTT=1 -j8` instead, which gives
+`build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`.
+
 If `make` stops with an error, it tells you which one is wrong:
 `arm-none-eabi-gcc not found` means fix `PATH`, and
 `PICO_SDK_PATH is not set` means fix `PICO_SDK_PATH` (step 1.4).
@@ -222,7 +227,7 @@ the next plain `make` goes back to the defaults.
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
 | `S3_HW_TEST` | **`0`**, `1` | `1` runs only subsystem 3's continuous raw two-front-IR monitor; requires `TEST=1` | `_s3hw` / *(nothing)* | `S3_HARDWARE_TEST` (1 or 0) |
-| `S3_LINE_TEST` | **`0`**, `1` | `1` runs the GP20-controlled S3/S2 line-follow trial; requires `TEST=1` | `_s3line` / *(nothing)* | `S3_LINE_FOLLOW_TEST` (1 or 0) |
+| `S3_LINE_TEST` | **`0`**, `1` | `1` runs the mission in a `TEST=1` image instead of the self-tests (same mission as `TEST=0`); requires `TEST=1` | `_s3line` / *(nothing)* | `APP_MISSION` (1 with `TEST=0` or `S3_LINE_TEST=1`) |
 | `S2_CAL_TEST` | **`0`**, `1`, `2` | starts only subsystem 2; each GP20 press runs forward 1000 mm (`1`) or left 360 degrees (`2`) and prints odometry and a timer check (S2-H06..H08); requires `TEST=1` | `_s2cal1`, `_s2cal2` / *(nothing)* | `S2_CAL_TEST` (0..2) |
 | `S2_HW_TEST` | **`0`**..`4` | subsystem 2 bench sequence instead of the motion and controller tasks: `1` encoder counts, motors off (S2-H03); `2` motors both ways (S2-H01, H02, H04); `3` full speed (S2-H04); `4` watchdog (S2-H05). `2`..`4` SPIN THE MOTORS; requires `TEST=1` | `_s2hw1`..`_s2hw4` / *(nothing)* | `S2_HW_TEST` (0..4) |
 | `S2_MOTION_LOG` | **`0`**, `1` | `1` prints Motion Control's speed loop (target, measured speed, duty, counts per wheel) every 50 ms while moving, for PID tuning | `_mclog` / *(nothing)* | `S2_MOTION_LOG` (1 or 0) |
@@ -246,11 +251,21 @@ includes an SDK header.
 `S3_HW_TEST=1` (only with `TEST=1`) runs the dedicated subsystem 3 raw
 front-IR monitor without starting the other application subsystems. It adds
 the `_s3hw` suffix; see `app_program/subsystem3/README.md`.
-`S3_LINE_TEST=1` selects the supervised, GP20 START/STOP integration trial and
-adds `_s3line`. It has no automatic run-time limit, starts only subsystems 2
-and 3, and caps motor PWM at 20%. Do not combine it with `S3_HW_TEST=1`.
+`S3_LINE_TEST=1` builds the mission (below) into a `TEST=1` image and adds
+`_s3line`, so the commands in earlier test-log rows still build. Do not
+combine it with `S3_HW_TEST=1`.
 `S4_HW_TEST=1` similarly adds subsystem 4's live IMU start-up check and the
 `_s4hw` image suffix; see `docs/subsystem4.md`.
+
+**The mission image.** A `TEST=0` image (and `TEST=1 S3_LINE_TEST=1`)
+runs the robot's mission: the Vehicle Controller and Motion Control
+(subsystem 2), the line and barcode loop (subsystem 3), the IMU terrain
+monitor (subsystem 4) and Obstacle Scan (subsystem 5); subsystem 1 runs in
+the WiFi task when built with `NET=lwip MQTT=1`. Press GP20 (or send
+`START`) in Ready to start a run and GP20 again to stop it. There is no
+run-time limit, and motor PWM is capped at 20% (`motion_config.h`). The
+RP2040 hardware watchdog is not armed (`S2_WATCHDOG`, subsystem 2
+decision 28). `S3_NAV_F` maps the test barcode letter F to a command.
 
 The options are part of the image name, e.g.
 `mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build

@@ -9,7 +9,7 @@ Every build uses the agreed pin mapping in `AGENTS.md`, viewed from behind:
 All three sensors have analogue outputs only; their DOUT wires are
 disconnected, and GP6 is unused. Keep the GP28 battery-sense jumper open.
 
-Subsystem 3 never writes motor PWM. In the line-test integration profile it
+Subsystem 3 never writes motor PWM. In the mission image it
 sends line positions to the Vehicle Controller, and only Motion Control writes
 PWM. The existing consumer task and its mailbox/statistics interfaces remain
 present for the other starter subsystems.
@@ -44,24 +44,25 @@ s3 raw: left_adc=742 right_adc=801 barcode_adc=760
 the example is illustrative and is not a validated threshold. Record stable ranges for every tested surface. This stage does
 not label readings as white or black and does not command the motors.
 
-`S3_LINE_TEST=1` uses these same two AO inputs for line following. The former
+The mission image uses these same two AO inputs for line following. The former
 `S3_CAL_TEST=1` digital-output calibration profile was removed on 2026-11-10
 because the front sensors have no digital outputs; the makefile refuses it.
 
 A normal `TEST=1` build without either S3-specific option reports the hardware
 checks as blocked and runs the regular subsystem tests instead.
 
-## Button-controlled line-follow bench trial
+## Line following in the mission image
 
-First verify both AO channels with `S3_HW_TEST=1`. Raise the wheels clear of
-the floor for the first moving test and build:
+First verify both AO channels with `S3_HW_TEST=1`. Then build the mission
+(S2 decision 28); `TEST=1 S3_LINE_TEST=1` builds the same mission:
 
 ```text
-make -C build_make TEST=1 S3_LINE_TEST=1 CRASH_REPORT=0 -j8
+make -C build_make NET=lwip MQTT=1 -j8
 ```
 
-Flash the generated `_test_s3line.uf2`. This profile starts only Subsystems 2
-and 3. It samples front-left AO on GP26 and front-right AO on GP27 every 10 ms.
+The loop is `s3_follow_run()` in `s3_follow.c`, run by `usermain()` after
+Subsystems 2, 4 and 5 start. It samples front-left AO on GP26 and
+front-right AO on GP27 every 10 ms.
 The drivetrain follows the agreed pin mapping used by every build.
 It waits for Motion Control to become ready, then continuously reports fresh
 line positions while STOP remains latched. Place the car on the track and press
@@ -197,10 +198,10 @@ performance, line following, motor behaviour, or the printed course barcode.
 
 ## Barcode reporting in the line-follow image
 
-The `S3_LINE_TEST=1` image reads ADC2/GP28 in the same 10 ms loop as the
-front sensors, so one task owns the ADC and the barcode state. It only
-prints results; the barcode never steers, and decoded letters do not yet
-reach the Vehicle Controller. Once a capture looks like a barcode (three
+The mission image reads ADC2/GP28 in the same 10 ms loop as the
+front sensors, so one task owns the ADC and the barcode state. The barcode
+never steers; each decoded letter goes to the Vehicle Controller, which
+acts on a mapped command at the next junction (below). Once a capture looks like a barcode (three
 runs of at least 60 ms), each line report carries `S2_LINE_FLAG_BARCODE`
 until it ends, and the controller replaces strong curves with gentle
 corrections (S2 decision 25). A failed ADC2 read abandons the capture
@@ -218,7 +219,7 @@ To validate on the car:
    `barcode_adc` on white, solid black and faded black at the mounted height.
    White must stay within 154..184 and black above about 600, or the
    thresholds in `s3_barcode.c` need re-measuring.
-2. With the `S3_LINE_TEST=1` image, drive past each course barcode in both
+2. With the mission image, drive past each course barcode in both
    directions and record each `s3 bar:` line with the expected letter.
 3. Record the results in `testing/subsystem3/TEST_LOG.md`.
 
@@ -228,7 +229,7 @@ A decoded letter is mapped by `s3_nav_command()`: the brief's example
 A-D, plus the test letter F, set at build time:
 
 ```sh
-make TEST=1 S3_LINE_TEST=1 NET=lwip MQTT=1 S3_NAV_F=1 -j8   # F = left
+make NET=lwip MQTT=1 S3_NAV_F=1 -j8   # F = left
 ```
 
 `S3_NAV_F` is 0 (none), 1 (left), 2 (right), 3 (straight) or 4 (U-turn);

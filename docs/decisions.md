@@ -750,6 +750,40 @@ bypass, 9 junction manoeuvre, 10 fault, 11 starter demo script finished.
 retention, the shared-cycle order, RESET and a fault. S2-U37 covers the
 copy into the telemetry snapshot, and S2-U40 the new flag bit.
 
+### 28. The normal image runs the mission (2026-11-20)
+
+Approved by Dalton on the integration branch. Builds without warnings
+and the host suites pass; not yet run on the car.
+
+Until now the mission (line following, barcode commands, humps, Scan &
+Plan, bypass) ran only in the `TEST=1 S3_LINE_TEST=1` image, as the S3
+"line-follow trial" called from `subsystem3_test()`. A plain `make`
+started the starter Producer and Consumer and the Week 10 demo script
+instead. The graded firmware must not be a test image.
+
+- The makefile derives `APP_MISSION`: 1 when `TEST=0`, or `TEST=1
+  S3_LINE_TEST=1`; 0 in the self-test and bench images. It replaces the
+  C macro `S3_LINE_FOLLOW_TEST`. `S3_LINE_TEST=1` stays as the same
+  mission in a `_test` image, so the commands in earlier test-log rows
+  still build.
+- The S3 loop moved unchanged from `subsystem3_test.c` to
+  `subsystem3/s3_follow.c` (`s3_follow_run()`). It still runs in the
+  initial task, after S2, S4 and S5 start, so its timing is as tested.
+  Only its start-up console lines changed.
+- The 20% PWM cap, the GP20 button and the controller's line, scan,
+  bypass and junction steps follow `APP_MISSION`, so a plain `make`
+  image behaves as the tested `S3_LINE_TEST` image.
+- **Watchdog.** `task_motion.c` armed the RP2040 watchdog in every
+  `TEST=0` image, so this change would have armed it for the first time
+  on the car. It is now behind `S2_WATCHDOG` (default 0). No tested image
+  has armed it, and the controller's console prints run above Motion
+  Control on the same core (`docs/subsystem2.md`), so a blocking print
+  could reset the board mid-run. Arm it only after S2-H05 and a car run
+  with `S2_WATCHDOG=1`.
+
+The self-test image (`TEST=1` alone) still starts the starter Producer
+and Consumer for INT-01; their removal is a separate change.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

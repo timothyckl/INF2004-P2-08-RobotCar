@@ -35,16 +35,16 @@
 #define CTRL_AUTOSTART_MS   5000u
 #define CTRL_LOG_MS         500u
 
-#ifndef S3_LINE_FOLLOW_TEST
-#define S3_LINE_FOLLOW_TEST 0
+#ifndef APP_MISSION
+#define APP_MISSION 0
 #endif
 
 #ifndef S2_CAL_TEST
 #define S2_CAL_TEST 0
 #endif
 
-/* The GP20 START/STOP button is used by the line and calibration images. */
-#define CTRL_BUTTON         (S3_LINE_FOLLOW_TEST || S2_CAL_TEST)
+/* The GP20 START/STOP button is used by the mission and calibration images. */
+#define CTRL_BUTTON         (APP_MISSION || S2_CAL_TEST)
 
 #if CTRL_BUTTON
 #define CTRL_BUTTON_PIN         20u
@@ -60,7 +60,7 @@
 #define CTRL_CAL_HUMP_MM        450u
 #endif
 
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
 #define CTRL_LINE_BASE_MM_S        40
 #define CTRL_LINE_CORRECT_MIN_MM_S 32
 #define CTRL_LINE_CORRECT_MAX_MM_S 38
@@ -187,7 +187,7 @@ typedef struct
 static ctrl_button_t g_button;
 #endif
 
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
 typedef struct
 {
     line_control_t        control;
@@ -249,7 +249,7 @@ static void     apply (ctrl_output_t * p_out, ctrl_input_t const * p_in);
 static ER       send_action (ctrl_action_t action, uint32_t value);
 static uint32_t now_ms (void);
 static void     run_summary (void);
-#if CTRL_BUTTON || S3_LINE_FOLLOW_TEST
+#if CTRL_BUTTON || APP_MISSION
 static bool     local_stop (uint8_t cause);
 #endif
 #if CTRL_BUTTON
@@ -265,7 +265,7 @@ static void     cal_timer_print (uint32_t now);
 static void     cal_report (s2_robot_state_t const * p_state,
                             ctrl_input_t const * p_input);
 #endif
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
 static void     line_step (s2_robot_state_t const * p_state,
                            ctrl_input_t const * p_input);
 static void     line_reset (uint32_t now);
@@ -421,7 +421,7 @@ controller_task (INT stacd, void * exinf)
 #endif
 
     ctrl_init(&g_ctrl, &cfg, now_ms());
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
     (void)scan_control_init(&g_scan, CTRL_SCAN_LIMIT_MS);
     (void)bypass_control_init(&g_bypass, &g_bypass_cfg);
     (void)nav_control_init(&g_nav, &g_nav_cfg);
@@ -440,7 +440,7 @@ controller_task (INT stacd, void * exinf)
         }
 
         read_input(&in);
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
         ctrl_get_state(&g_ctrl, &in, &st);
         ptn = scan_hazard(ptn, &st);    /* a hazard while following scans */
 #endif
@@ -488,8 +488,8 @@ controller_task (INT stacd, void * exinf)
         apply(&out, &in);
 
         ctrl_get_state(&g_ctrl, &in, &st);
-#if S3_LINE_FOLLOW_TEST
-        /* Running is line following (or a scan) only in this image. */
+#if APP_MISSION
+        /* Running is line following (or a scan) in the mission image. */
         scan_update(&st, &in);
 #endif
 #if CTRL_BUTTON
@@ -498,7 +498,7 @@ controller_task (INT stacd, void * exinf)
 #if S2_CAL_TEST
         cal_report(&st, &in);
 #endif
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
         line_step(&st, &in);
         line_telemetry(&st, in.now_ms);
         barcode_telemetry(&st);
@@ -659,7 +659,7 @@ now_ms (void)
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 
-#if CTRL_BUTTON || S3_LINE_FOLLOW_TEST
+#if CTRL_BUTTON || APP_MISSION
 /* Raise CTRL_FLG_LOCAL_STOP and name its cause (S2 decision 27). If two
    are raised before the controller handles them, the first is kept. */
 static bool
@@ -911,7 +911,7 @@ cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 }
 #endif
 
-#if S3_LINE_FOLLOW_TEST
+#if APP_MISSION
 /* A hazard while following starts Scan & Plan instead of the latched
    STOP; the flag is consumed here. During a bypass the flag is consumed
    too: bypass_control checks the hazard level itself, because the bypass

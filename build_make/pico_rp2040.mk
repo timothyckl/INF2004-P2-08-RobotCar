@@ -109,7 +109,7 @@ ifneq ($(S3_CAL_TEST),)
 $(error S3_CAL_TEST was removed: the front sensors have no digital outputs; use S3_HW_TEST=1)
 endif
 
-# S3_LINE_TEST=1 runs the GP20-controlled S3/S2 line-follow integration trial.
+# S3_LINE_TEST=1 builds the mission into a TEST=1 image (see APP_MISSION).
 S3_LINE_TEST ?= 0
 ifneq ($(filter $(S3_LINE_TEST),0 1),$(S3_LINE_TEST))
 $(error Unknown S3_LINE_TEST '$(S3_LINE_TEST)'; use 0 or 1)
@@ -124,6 +124,17 @@ S3_TEST_MODE_COUNT := $(words $(filter 1,$(S3_HW_TEST) \
                                       $(S3_LINE_TEST)))
 ifneq ($(filter 0 1,$(S3_TEST_MODE_COUNT)),$(S3_TEST_MODE_COUNT))
 $(error Choose either S3_HW_TEST or S3_LINE_TEST, not both)
+endif
+
+# APP_MISSION: the robot's mission (line following, barcode commands,
+# humps, Scan & Plan, bypass) runs in the normal image (TEST=0) and in the
+# TEST=1 S3_LINE_TEST=1 image, which is the same mission with a _test name
+# kept so earlier test-log commands still build. Other TEST=1 images run
+# the self-tests or a bench profile instead.
+ifeq ($(TEST)$(S3_LINE_TEST),10)
+APP_MISSION := 0
+else
+APP_MISSION := 1
 endif
 
 # S3_NAV_F selects the command for the test barcode letter F (S2 decision
@@ -318,7 +329,7 @@ ASFLAGS += -DCNF_SMP=1
 endif
 CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
-CFLAGS  += -DS3_LINE_FOLLOW_TEST=$(S3_LINE_TEST)
+CFLAGS  += -DAPP_MISSION=$(APP_MISSION)
 CFLAGS  += -DS3_NAV_F=$(S3_NAV_F)
 CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
 CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
@@ -326,7 +337,7 @@ CFLAGS  += -DS2_HW_TEST=$(S2_HW_TEST)
 CFLAGS  += -DS5_RANGE_DIAGNOSTIC=$(S5_RANGE_DIAG)
 CFLAGS  += -DS4_RAW_LOG=$(S4_RAW_LOG)
 CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
-ifeq ($(S3_LINE_TEST),1)
+ifeq ($(APP_MISSION),1)
 CFLAGS  += -DS2_DEMO_SCRIPT=0
 endif
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)

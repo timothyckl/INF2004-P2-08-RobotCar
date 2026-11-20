@@ -23,8 +23,8 @@
 #include "task_controller.h"
 #include "task_motion.h"
 
-#ifndef S3_LINE_FOLLOW_TEST
-#define S3_LINE_FOLLOW_TEST 0
+#ifndef APP_MISSION
+#define APP_MISSION 0
 #endif
 
 #ifndef S2_CAL_TEST
@@ -32,7 +32,7 @@
 #endif
 
 /* Dedicated trials that do not start the legacy producer. */
-#define S2_NO_PRODUCER      (S3_LINE_FOLLOW_TEST || S2_CAL_TEST)
+#define S2_NO_PRODUCER      (APP_MISSION || S2_CAL_TEST)
 
 /* Robot interface objects (subsystem2.h). Set by s2_controller_create()
    once each object exists; 0 before that, so the S1 adapters (which may

@@ -15,8 +15,8 @@
 #include "drv_encoder.h"
 #include "drv_motor.h"
 
-#ifndef S3_LINE_FOLLOW_TEST
-#define S3_LINE_FOLLOW_TEST 0
+#ifndef APP_MISSION
+#define APP_MISSION 0
 #endif
 
 /* Control period. The kernel tick is 10 ms (config.h CNF_TIMER_PERIOD),
@@ -60,11 +60,12 @@
 #define MC_SPEED_MAX_MM_S       400         /* UNMEASURED: below no-load max */
 #define MC_SPEED_WINDOW         4u          /* speed over the last 4 periods */
 
-/* The supervised line-follow profile uses an uncalibrated speed loop. Limit
-   its authority so missing encoder feedback cannot drive the motors to full
-   power. Normal firmware retains the full driver range. UNMEASURED: validate
-   the minimum starting duty and tune the PID before increasing this limit. */
-#if S3_LINE_FOLLOW_TEST
+/* The mission uses an uncalibrated speed loop. Limit its authority so
+   missing encoder feedback cannot drive the motors to full power; every
+   car run so far used this 20% limit. Calibration and bench images keep
+   the full driver range. UNMEASURED: validate the minimum starting duty
+   and tune the PID before increasing this limit. */
+#if APP_MISSION
 #define MC_CONTROL_DUTY_MAX     ((DRV_MOTOR_DUTY_MAX * 20) / 100)
 #else
 #define MC_CONTROL_DUTY_MAX     DRV_MOTOR_DUTY_MAX

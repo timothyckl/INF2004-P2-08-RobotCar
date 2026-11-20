@@ -33,11 +33,17 @@
 
 #define MC_TASK_CORE        TP_PRC2
 
-/* The hardware watchdog is armed only in the normal firmware. A TEST=1
-   build runs the unit tests in usermain, which can hold the CPU long
-   enough to starve this task on purpose, and a bench build (S2_HW_TEST)
-   never starts this task, so arming it there would reset the board. */
-#define MC_USE_WATCHDOG     ((0 == APP_TEST) && (0 == S2_HW_TEST))
+/* The hardware watchdog stays off until S2-H05 and a car run with it
+   armed (S2 decision 28): no image tested on the car has armed it. Set
+   S2_WATCHDOG to 1 to arm it in the normal firmware. Never in a TEST=1
+   build: the unit tests in usermain can hold the CPU long enough to
+   starve this task on purpose, and a bench build (S2_HW_TEST) never
+   starts this task, so arming it there would reset the board. */
+#ifndef S2_WATCHDOG
+#define S2_WATCHDOG         0
+#endif
+#define MC_USE_WATCHDOG     ((0 != S2_WATCHDOG) && (0 == APP_TEST) \
+                             && (0 == S2_HW_TEST))
 #define MC_LOCK_TMO_MS      10      /* reader wait for the status lock */
 #define MC_LOG_PERIODS      5u      /* S2_MOTION_LOG: one line per 50 ms */
 

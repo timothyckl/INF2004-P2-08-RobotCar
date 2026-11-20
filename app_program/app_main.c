@@ -54,13 +54,14 @@
  */
 
 #include "app.h"
+#include "subsystem3/s3_follow.h"
 
 #ifndef S3_HARDWARE_TEST
 #define S3_HARDWARE_TEST 0
 #endif
 
-#ifndef S3_LINE_FOLLOW_TEST
-#define S3_LINE_FOLLOW_TEST 0
+#ifndef APP_MISSION
+#define APP_MISSION 0
 #endif
 
 #ifndef S2_CAL_TEST
@@ -120,10 +121,11 @@ EXPORT INT usermain(void)
 #endif
 
 
-#if APP_TEST && S3_LINE_FOLLOW_TEST
-	/* Dedicated S3/S2/S4/S5 trial: line following with the forward
-	   obstacle monitor and the IMU terrain monitor (S4 only reports;
-	   it does not affect motion); no unrelated application task runs. */
+#if APP_MISSION
+	/* The mission (normal image, and TEST=1 S3_LINE_TEST=1): Vehicle
+	   Controller and Motion Control (S2), IMU terrain (S4) and Obstacle
+	   Scan (S5) tasks; the line and barcode loop (S3) then runs here in
+	   the initial task. Subsystem 1 runs in the WiFi service task. */
 	CHECK(subsystem2_init(), "subsystem2_init");
 	CHECK(subsystem3_init(), "subsystem3_init");
 	CHECK(subsystem4_init(), "subsystem4_init");
@@ -131,8 +133,8 @@ EXPORT INT usermain(void)
 	CHECK(subsystem2_start(), "subsystem2_start");
 	CHECK(subsystem4_start(), "subsystem4_start");
 	CHECK(scan_lifecycle_start(), "scan_lifecycle_start");
-	tm_printf((UB *)"S3/S2/S4/S5 line-follow test mode\n");
-	subsystem3_test();
+	tm_printf((UB *)"mission image: S2/S3/S4/S5 started\n");
+	s3_follow_run();
 #elif APP_TEST && S2_CAL_TEST
 	/* Dedicated S2 calibration: GP20 runs one manoeuvre per press.
 	   S4 reports terrain alongside it (mode 1 drives the hump-height
@@ -148,7 +150,8 @@ EXPORT INT usermain(void)
 	tm_printf((UB *)"S3 sensor-only test mode\n");
 	subsystem3_test();
 #else
-	/* Phase 1: every subsystem creates its kernel objects */
+	/* Self-test image (TEST=1 alone).
+	   Phase 1: every subsystem creates its kernel objects */
 	CHECK(subsystem1_init(), "subsystem1_init");
 	CHECK(subsystem2_init(), "subsystem2_init");
 	CHECK(subsystem3_init(), "subsystem3_init");
@@ -164,10 +167,9 @@ EXPORT INT usermain(void)
 
 	tm_printf((UB*)"all subsystems started\n\n");
 
-#if APP_TEST
-	/* Test build (make TEST=1): run every subsystem's tests in turn,
-	   here in the initial task, while the system is running.  Tests may
-	   call tk_dly_tsk() to let the other tasks work for a while. */
+	/* Run every subsystem's tests in turn, here in the initial task,
+	   while the system is running.  Tests may call tk_dly_tsk() to let
+	   the other tasks work for a while. */
 	tm_printf((UB*)"[TEST] === test run start ===\n");
 	subsystem1_test();
 	subsystem2_test();
@@ -175,7 +177,6 @@ EXPORT INT usermain(void)
 	subsystem4_test();
 	scan_lifecycle_test();
 	tm_printf((UB*)"[TEST] === test run end ===\n");
-#endif
 #endif
 
 	/* Sleep forever.  Returning from usermain() would shut down. */
