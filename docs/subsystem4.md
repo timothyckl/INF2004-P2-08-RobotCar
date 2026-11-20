@@ -149,6 +149,5 @@ evidence table are in `testing/subsystem4/TEST_LOG.md`.
 - Run reset (START, IF-17), driving state (IF-14) and the telemetry read of
   the run maximum (IF-18, `subsystem4_get_status()`, never waits) are in
   place. Impacts use the same driving gate as humps (decision 14).
-- The legacy S3 message buffer and event flag are still created so the starter
-  code builds unchanged. Subsystem 4 does not consume them; remove them only in
-  a coordinated integration change.
+- The starter message buffer and event flag (IF-03) were removed on
+  2026-11-20 (S2 decision 29).

@@ -775,11 +775,12 @@ instead. The graded firmware must not be a test image.
   image behaves as the tested `S3_LINE_TEST` image.
 - **Watchdog.** `task_motion.c` armed the RP2040 watchdog in every
   `TEST=0` image, so this change would have armed it for the first time
-  on the car. It is now behind `S2_WATCHDOG` (default 0). No tested image
-  has armed it, and the controller's console prints run above Motion
-  Control on the same core (`docs/subsystem2.md`), so a blocking print
-  could reset the board mid-run. Arm it only after S2-H05 and a car run
-  with `S2_WATCHDOG=1`.
+  in a drive. It is now behind `S2_WATCHDOG` (default 0). S2-H05 showed
+  the watchdog resetting the board on the bench (2026-11-10), but no
+  mission run has armed it, and the controller's console prints run
+  above Motion Control on the same core (`docs/subsystem2.md`), so a
+  blocking print could reset the board mid-run. Arm it only after a car
+  run with `S2_WATCHDOG=1` shows no reset.
 
 The self-test image (`TEST=1` alone) still starts the starter Producer
 and Consumer for INT-01; their removal is a separate change (decision 29).

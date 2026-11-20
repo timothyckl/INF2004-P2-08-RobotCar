@@ -33,8 +33,8 @@
 
 #define MC_TASK_CORE        TP_PRC2
 
-/* The hardware watchdog stays off until S2-H05 and a car run with it
-   armed (S2 decision 28): no image tested on the car has armed it. Set
+/* The hardware watchdog stays off until a car run with it armed shows
+   no reset (S2 decision 28); S2-H05 checked it only on the bench. Set
    S2_WATCHDOG to 1 to arm it in the normal firmware. Never in a TEST=1
    build: the unit tests in usermain can hold the CPU long enough to
    starve this task on purpose, and a bench build (S2_HW_TEST) never

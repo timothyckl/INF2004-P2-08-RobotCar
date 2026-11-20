@@ -200,10 +200,10 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-08 | S1 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_REMOTE_STOP` via `controller_raise_remote_stop()` | integration branch, S1 decision 2 |
 | IF-09 | S1 → S2 | message buffer (owned by S2) | `remote_q` | `s2_remote_cmd_t` START/RESET via `controller_send_remote_command()` | integration branch, S1 decision 2 |
 | IF-10 | S2 → S1 | snapshot under state_mutex (`TMO_POL`) | `robot_read_telemetry()` | fills `telemetry_encoder_snapshot_t` (`subsystem1/telemetry_snapshot.h`); S1 encodes the 29-byte version 3 frame, with the last barcode letter and the stop cause | integration branch, S1 decisions 1 and 5 |
-| IF-11 | S2 → S5 | message buffer (owned by S2) | `scan_q` | `s2_scan_cmd_t`: REQUEST, AUTHORISE, STOP_CONFIRM, CANCEL, STOP | S2 proposal; S5 review pending |
-| IF-12 | S5 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_HAZARD`, `CTRL_FLG_SCAN_FAULT` | S2 proposal; S5 review pending |
-| IF-13 | S5 → S2 | snapshot under S5's mutex (`TMO_POL`) | `scan_task_get()` | `scan_task_status_t`: forward verdict, result, `bypass_plan_t` | integration owner; review pending |
-| IF-14 | S2 → S5, S4 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE; S4 detects humps, impacts and lifts only in FOLLOW and NAVIGATE (S4 decisions 12 and 16) | integration owner; review pending |
+| IF-11 | S2 → S5 | message buffer (owned by S2) | `scan_q` | `s2_scan_cmd_t`: REQUEST, AUTHORISE, STOP_CONFIRM, CANCEL, STOP | integration branch, S2 decisions 9 and 11 |
+| IF-12 | S5 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_HAZARD`, `CTRL_FLG_SCAN_FAULT` | integration branch, S2 decisions 9 and 11 |
+| IF-13 | S5 → S2 | snapshot under S5's mutex (`TMO_POL`) | `scan_task_get()` | `scan_task_status_t`: forward verdict, result, `bypass_plan_t` | integration branch, S2 decision 14 |
+| IF-14 | S2 → S5, S4 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE; S4 detects humps, impacts and lifts only in FOLLOW and NAVIGATE (S4 decisions 12 and 16) | integration branch, S2 decision 9 |
 | IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
 | IF-17 | S2 → S4 | snapshot under S2's mutex | `motion_get_status()` | `motion_status_t`: a new `run_id` (START) clears the hump maximum; wheel speed changes mark pitch unreadable while accelerating | integration branch, S2 decision 24 |
 | IF-18 | S4 → S2 | snapshot under S4's mutex (`TMO_POL`) | `subsystem4_get_status()` | `s4_terrain_result_t`: the run's highest hump (`maximum_height_mm`, valid flag), copied into the telemetry snapshot as `hump_max_mm` (8 bits, saturates at 255; IF-10) | integration branch, S4 decision 13 |

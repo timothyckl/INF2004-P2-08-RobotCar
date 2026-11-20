@@ -3,9 +3,10 @@
 Subsystem 2 drives the two DC motors from encoder feedback and owns the
 vehicle's mission state and its latched STOP. Motion Control is the only code
 that writes motor PWM. The Vehicle Controller is the only code that sends
-motion commands or clears STOP. This document describes the Week 10 partial
-integration build. Every interface is PROVISIONAL until the team agrees it in
-`TEAM.md`, and every tuning value is UNMEASURED until calibrated.
+motion commands or clears STOP. The interfaces with the other subsystems are
+listed in `TEAM.md` section 5, and the reasons for each rule below are in
+`docs/decisions.md` (subsystem 2). Test cases and results are in
+`testing/subsystem2/TEST_LOG.md`.
 
 ## Hardware and configuration
 
@@ -16,46 +17,34 @@ integration build. Every interface is PROVISIONAL until the team agrees it in
 | Motor PWM | 20 kHz: 125 MHz clk_sys, divider 1, TOP 6249; duty -6250..+6250 | Robo Pico datasheet table 1 row 10 |
 | Driver truth table | A high B low forward; A low B high backward; both low brake; both high coast | Robo Pico datasheet section 4 |
 | Encoder 1 (right wheel, motor 2) | GP0 (A) / GP1 (B); counts down going forward; `CRASH_REPORT=0` | full lap 2026-11-10 (decision 6) |
-| Encoder 2 (left wheel, motor 1) | GP7 (A) / GP28 (B); counts up going forward; keep the GP28 battery-sense jumper open | as above |
+| Encoder 2 (left wheel, motor 1) | GP16 (A) / GP17 (B), Grove port 4; counts up going forward | S2-H03 2026-11-11 (decision 13) |
 | Encoder power | 3V3 and GND | as above |
 | Motor plug | PH2.0-6P: 01 encoder GND, 02 encoder A, 03 encoder B, 04 encoder VCC, 05 motor +, 06 motor - | as above |
 | Motor wires | M1A GP8 yellow, M1B GP9 black; M2A GP10 yellow, M2B GP11 black | as above |
 | Encoder type | TT motor two-channel Hall (confirmed on the robot; no datasheet) | owner |
-| Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control (normal firmware only) | Pico SDK register headers; RP2040 datasheet not in `docs/datasheets` |
+| Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control; armed only with `S2_WATCHDOG=1` (decision 28) | Pico SDK register headers; S2-H05 on the bench |
 | GPIO interrupt | IO_IRQ_BANK0, IRQ 13, NVIC priority 2, on core 0 | SDK `hardware/regs/intctrl.h` |
+| Start/stop button | GP20, active low, debounced 30 ms | Robo Pico datasheet; mission image |
 
-The authoritative mapping (`AGENTS.md`) puts the encoders on GP0/GP1 (right)
-and GP7/GP28 (left), and the front line sensors' analogue outputs on ADC0/GP26
-and ADC1/GP27. `adc_cnf_sysdep.h` enables ADC pin initialisation for channels 0
-and 1 only; GP28 belongs to the left encoder and must never be configured as an
-ADC input.
-
+The authoritative pin mapping is `AGENTS.md`, section *Agreed pin mapping*.
 Wheel pairing, viewed from behind: the left wheel is motor 1 with encoder 2,
-and the right wheel is motor 2 with encoder 1 (decision 6, 2026-11-10). Earlier
-documents labelled the two sides the other way round; the motor-to-encoder
-pairing itself is unchanged. `motion_config.h` follows this mapping in every
-build.
+and the right wheel is motor 2 with encoder 1 (decision 6). `motion_config.h`
+follows this mapping in every build.
 
-### Bench findings, 2026-11-02
+### Bench findings
 
-- **PWM block in reset.** The kernel releases `RESETS_RESET_PWM` only when it
-  uses PWM as its physical timer (`USE_PTMR`, 0 in `config/config.h`), so the
-  motors did not move at any duty. `drv_motor_init()` now clears that reset
-  itself and never asserts it, because the servo (subsystem 5) shares the block.
-- **Motor 2 mirrored.** Positive duty drove motor 2 backward. At the time
-  motor 2 was taken as the right wheel; per the 2026-11-03 pin mapping it is the
-  left wheel (forward is M2B, GP11), so `MC_LEFT_MOTOR_INVERT` is now 1 and
-  `MC_RIGHT_MOTOR_INVERT` 0.
-- **Encoder mapping measured, 2026-11-04.** Motor 1 drives encoder 1 on the
-  right; motor 2 drives encoder 2 on the left. Three single-revolution trials
-  per wheel produced a provisional common value of 1330 x2 counts/revolution.
-  The later GPIO remap preserves encoder numbering, but S2-H01/H03 must confirm
-  that the configured right-up/left-down signs remain correct on GP26/GP27 and
-  GP7/GP28 before an unattended run.
-- **Full-speed freeze (open).** With both motors at 100% the CPU hung and the
-  motors kept running, with working and non-working encoders alike. A supply
-  dip or motor noise is the likely cause. The duty ramp and the watchdog below
-  are the response; S2-H04 is split to find where it happens.
+- **PWM block in reset (2026-11-02).** The kernel releases `RESETS_RESET_PWM`
+  only when it uses PWM as its physical timer (`USE_PTMR`, 0 in
+  `config/config.h`), so the motors did not move at any duty.
+  `drv_motor_init()` clears that reset itself and never asserts it, because
+  the servo (subsystem 5) shares the block.
+- **Full-speed freeze (2026-11-02).** With both motors at 100% the CPU hung
+  and the motors kept running. The duty ramp and the watchdog were the
+  response. On this branch S2-H04 (full speed, both motors) passed on
+  2026-11-10 with no hang; the cause of the first hang was not identified.
+- **Left encoder dropout (2026-11-16).** An intermittent Grove 4 connection
+  froze encoder 2 while the wheel turned, which gave the left stall faults
+  of that day. After the cable was fixed S2-H03 showed no dropout.
 
 ## Software structure
 
@@ -69,20 +58,26 @@ build.
 | `motion_logic.c` | Pure Motion Control statechart |
 | `task_motion.c` | 10 ms Motion Control task; status under a mutex |
 | `motion_api.c` | Public motion API: builds and queues commands |
-| `controller_logic.c` | Pure minimal Vehicle Controller statechart |
-| `task_controller.c` | Controller task; creates the controller objects |
-| `robot_state.c` | robot_state under state_mutex |
-| `s2_bridge.c`, `robot_state.c` | Adapters for subsystem 1's service bridge (`robot_read_telemetry()` is in `robot_state.c`) |
+| `controller_logic.c` | Pure Vehicle Controller top-level statechart and STOP causes |
+| `line_control.c` | Pure line following: report to wheel speeds, junction crossing |
+| `scan_control.c` | Pure Scan & Plan handshake with subsystem 5 |
+| `bypass_control.c` | Pure execution of subsystem 5's bypass plan and line reacquisition |
+| `nav_control.c` | Pure barcode manoeuvre at the next junction |
+| `task_controller.c` | Controller task: runs the modules above; GP20 button |
+| `robot_state.c` | robot_state under state_mutex; `robot_read_telemetry()` for subsystem 1 |
+| `s2_bridge.c` | Adapters for subsystem 1's service bridge |
 | `motion_config.h` | Every tuning value, marked UNMEASURED or AGREED |
-| `subsystem2_test.c`, `test_motion.c`, `test_controller.c` | On-target tests |
+| `subsystem2_test.c`, `test_*.c` | On-target and host unit cases |
+
+The pure modules make no kernel calls, so they also run on the host
+(`make -C testing/host`).
 
 ### Tasks
 
 | Task | Priority | Core | Period |
 |---|---|---|---|
-| controller | 14 | 1 | waits on `controller_flags`, watchdog 10 ms |
+| controller | 14 | 1 | waits on `controller_flags`, at most 10 ms |
 | motion | 15 | 1 | 10 ms cyclic handler, plus an immediate wake-up on STOP |
-| producer_task (starter) | 15 | 1 | 300 ms, kept until subsystem 3 stops using it |
 
 The kernel tick is 10 ms (`CNF_TIMER_PERIOD`), so 10 ms and 20 ms are the
 only exact periods. 10 ms halves the worst-case STOP latency and gives
@@ -113,30 +108,45 @@ section 6.2).
   Decreases, STOP and Fault are immediate; a sign change passes through 0. It
   is applied before the stall check, so stall timing starts only once the
   ramped duty reaches the stall level.
-- Hardware watchdog: armed when the task starts and kicked only by Motion
-  Control, every period. If the CPU hangs or the task is starved for
-  `MC_WATCHDOG_MS` (200 ms), the chip resets; the reset puts the PWM block back
-  in reset and the pads back to their pull-downs, so the motors stop. The load
-  value is doubled for erratum RP2040-E1, and PSM `WDSEL` is set (its reset value
-  0 would reset nothing). Not armed in `TEST=1` or bench builds. After such a
-  reset the boot prints `[S2] previous reset: WATCHDOG`.
+- Duty cap: the mission image limits duty to 20% of full scale
+  (`MC_CONTROL_DUTY_MAX`), as in every car run so far.
+- Hardware watchdog (only with `S2_WATCHDOG=1`): armed when the task starts
+  and kicked only by Motion Control, every period. If the CPU hangs or the
+  task is starved for `MC_WATCHDOG_MS` (200 ms), the chip resets; the reset
+  puts the PWM block back in reset and the pads back to their pull-downs, so
+  the motors stop. The load value is doubled for erratum RP2040-E1, and PSM
+  `WDSEL` is set (its reset value 0 would reset nothing). Never armed in
+  `TEST=1` or bench builds. After such a reset the boot prints
+  `[S2] previous reset: WATCHDOG`.
 
-### Vehicle Controller (Week 10 subset)
+### Vehicle Controller
 
-States: Initialising, Ready, Running, Stopped, Fault.
+Top-level states: Initialising, Ready, Running, Stopped, Fault.
 
 - STOP is latched at boot and in every state except Running. Only START in
-  Ready clears it, after draining `motion_q`.
+  Ready clears it, after draining `motion_q`. START comes from GP20 or from
+  subsystem 1 (`remote_q`).
 - START needs Ready, Motion Control healthy, and the wheels confirmed still.
-- REMOTE_STOP, LOCAL_STOP and HAZARD latch STOP and go to Stopped. MOTION_FAULT
-  and SCAN_FAULT latch STOP and go to Fault.
+- REMOTE_STOP, LOCAL_STOP (GP20 and on-board failures), LINE_STOP, HAZARD and
+  PICKUP latch STOP and go to Stopped. MOTION_FAULT and SCAN_FAULT latch STOP
+  and go to Fault. The first cause is kept for telemetry (decision 27).
 - RESET: Stopped to Ready, or Fault to Initialising, only with the wheels
   confirmed still.
 - Remote START/RESET older than 2 s are EXPIRED; a repeated request ID is a
   DUPLICATE. Nothing else (including WiFi reconnection) clears STOP.
-- Running holds the demo script (forward 500 mm, left 90 deg, forward 500 mm)
-  when `S2_DEMO_SCRIPT` is 1. Line following, barcode manoeuvre, scan and plan,
-  bypass and line reacquisition are marked TODO in `run_step()`.
+
+Running has substates, published as `robot_state.mode` (`S2_MODE_*`):
+
+| Mode | What the controller does | Decisions |
+|---|---|---|
+| FOLLOW | Steers from subsystem 3's line reports (`line_q`); crosses junctions straight; softens strong curves while a barcode is read | 8, 25 |
+| NAVIGATE | At the junction after a mapped barcode, turns left, right, straight or U-turn, then resumes following | 26 |
+| SCAN | Stops before the obstacle, confirms the stop to subsystem 5, waits for its plan | 9, 11, 12, 15 |
+| BYPASS | Drives subsystem 5's plan segments around the obstacle | 14, 16 to 19 |
+| REACQUIRE | Searches for the original line, stops before it, spins onto it, then FOLLOW | 20 to 22 |
+
+The mission image starts these steps; the `S2_CAL_TEST` images run a fixed
+manoeuvre script instead, and the self-test image runs neither.
 
 ## Motion API (`motion_api.h`)
 
@@ -156,83 +166,52 @@ The command functions only queue a command (non-blocking): `E_OK`, `E_PAR`,
 `E_OBJ` (not created) or `E_TMOUT` (queue full). Call them from the Vehicle
 Controller task only. Results appear in `motion_get_status()`.
 
-## Interfaces for teammates (PROVISIONAL)
-
-| With | Interface |
-|---|---|
-| S1 Hong Yih | `controller_raise_remote_stop()` sets `CTRL_FLG_REMOTE_STOP` (bit 3); `controller_send_remote_command()` sends START/RESET to `remote_q` (2 x 12-byte records, his `remote_command_t` layout); `robot_read_telemetry()` fills `telemetry_encoder_snapshot_t`. All in `s2_s1_adapter.h`, which has no kernel include because S1's `<stddef.h>` `size_t` conflicts with the kernel's |
-| S3 Edmund | S3 calls `s3_nav_take()` with stopped = `SAFETY_FLG_STOP`, authorised = `S2_RS_NAV_AUTHORISED`, junction = his own detection; result as `s2_nav_request_t`. Not yet consumed |
-| S4 Khang | `motion_get_status()` every 10 ms and `s2_distance_delta()` for `distance_delta_mm`; call `s4_terrain_start_new_run()` when `run_id` changes |
-| S5 Timothy | `s2_scan_cmd_t` on `scan_q` (header only); STOP_CONFIRM once `motion_stop_confirmed()` |
-| Everyone with an edge interrupt | `drv_gpio_irq_register()`; rules in `drv_gpio_irq.h` |
-
 ## Build options
 
 | Option | File | Default | Effect |
 |---|---|---|---|
-| `S2_HW_TEST` | `task_motion.h` | 0 | 1: encoder print, motors off; 2: also spins motors; 3: S2-H04 full-speed diagnostic only; 4: S2-H05 watchdog check. Tasks not started. Never commit non-zero |
-| `S2_DEMO_SCRIPT` | `task_controller.h` | 1 | Running performs the demo script |
+| `S2_WATCHDOG` | `task_motion.c` | 0 | 1 arms the hardware watchdog in a `TEST=0` image (decision 28) |
+| `S2_CAL_TEST` | makefile | 0 | 1 forward 1000 mm, 2 left 360 degrees, 3 forward 450 mm, one per GP20 press (S2-H06..H08, S4-H08); needs `TEST=1` |
+| `S2_HW_TEST` | makefile | 0 | 1: encoder print, motors off; 2: also spins motors; 3: S2-H04 full-speed check; 4: S2-H05 watchdog check. Tasks not started; needs `TEST=1` |
+| `S2_MOTION_LOG` | makefile | 0 | Prints the speed loop every 50 ms, for PID tuning |
 | `S2_DEMO_AUTOSTART` | `task_controller.h` | 0 | Local START 5 s after Ready. The robot moves by itself |
 | `S2_DEMO_LOG` | `task_controller.h` | 0 | Console status and STOP latency every 500 ms |
 
 ```sh
-make -C build_make            # firmware
-make -C build_make TEST=1     # firmware with S2-U01..S2-U56
+make -C build_make NET=lwip MQTT=1 -j8   # mission firmware
+make -C build_make TEST=1 -j8            # self-tests S2-U03..S2-U78
+make -C testing/host                     # host cases
 ```
 
-Compilation does not run the tests: flash the UF2 and capture the USB serial
-output, then record results in `testing/subsystem2/TEST_LOG.md`.
+Compilation does not run the on-target tests: flash the UF2 and capture the
+USB serial output, then record results in `testing/subsystem2/TEST_LOG.md`.
 
-## Calibration needed
+## Calibration
 
-All in `motion_config.h`, all UNMEASURED: counts per revolution (S2-H03),
-wheel circumference and track width (ruler), motor and encoder polarity
-(S2-H01, S2-H03), speed and straight-line PID gains, API speeds, the still
-threshold, stall duty and time, timeout factor, tolerances, and the
-controller's init (3 s) and result (20 s) limits. The tables in
-`TEST_LOG.md` record each value and the accuracy runs.
-
-## Removing the starter
-
-The starter producer (IF-01, IF-02) is still built and started. Removing it
-breaks:
-
-- `app_program/subsystem3/task_consumer.c` (Edmund's branch and main): it
-  includes `subsystem2.h` for `SAMPLE_MSG`, waits on `mbx_samples`, and
-  returns blocks with `tk_rel_mpf(mpf_samples, ...)` and
-  `tk_sig_sem(sem_slots, 1)`. It would no longer link.
-- `app_program/subsystem4/task_monitor.c` on main and on the S1 and S5
-  branches reads `sem_slots` / `mpf_samples` with `tk_ref_sem` /
-  `tk_ref_mpf`. Khang's branch has already removed this.
-- `subsystem2_test.c` S2-U01/S2-U02 (mine; delete with the producer).
-- `app_main.c` comments describing IF-01/IF-02 (shared file).
-
-Edmund needs to delete `task_consumer.c` and its `mbx_samples` mailbox
-creation and start-up from `subsystem3.c`/`subsystem3.h`, or replace them with
-his real line-sensor task, in the same merge that removes the producer from
-subsystem 2. TEAM.md section 5 then drops IF-01 and IF-02.
+| Value | Setting | Evidence |
+|---|---|---|
+| Counts per revolution | 1330 (x2 counts) | S2-H03, 2026-11-04 and 2026-11-11 |
+| Wheel circumference (effective) | 227233 um | S2-H07 PASS, 2026-11-10: 1000 mm commanded, 1004 to 1007 mm measured (within 1%) |
+| Track width (effective) | 119 mm | S2-H08, 2026-11-10: a 360 degree turn ends square by eye |
+| Speed and straight-line PID gains | UNMEASURED | runs well at line-follow speeds; no step-response tuning yet |
+| Still threshold, stall, timeouts, tolerances, ramp | UNMEASURED | `motion_config.h` |
 
 ## Known limitations
 
-- S2-U01 to S2-U53 passed on the Pico W (2026-11-02, `806cd45`); S2-U54 to
-  S2-U56 and the watchdog and ramp have not run on the robot yet.
-- **S2-H04 is open:** the CPU hung with both motors at 100%. The ramp and the
-  watchdog limit the risk but the cause is not diagnosed; run S2-H04
-  (`S2_HW_TEST` 3) and S2-H05 (4) next.
-- `S2_DEMO_LOG` prints from the controller, above Motion Control on the same
-  core; a console print that blocks for over 200 ms would starve Motion
-  Control and trigger a watchdog reset.
-- That the pads' reset pull-downs hold both driver inputs low (brake) after a
-  watchdog reset is reasoned, not yet observed (S2-H05).
-- All tuning is UNMEASURED; distances and angles are only as good as the
-  calibration.
+- The hardware watchdog is not armed in the mission (decision 28). S2-H05
+  showed it resetting the board on the bench; a car run with
+  `S2_WATCHDOG=1` is still needed.
+- `S2_DEMO_LOG` and the mission's own console lines print from the
+  controller, above Motion Control on the same core. With the watchdog
+  armed, a print that blocks for over 200 ms would reset the board.
+- The PID gains are unmeasured, and the duty cap limits speed; line
+  following runs at 40 mm/s (`CTRL_LINE_BASE_MM_S`).
 - Move does not slow down near the target, so overshoot depends on braking.
 - Turns use encoder odometry only (the IMU has no gyroscope), so wheel slip
-  shows up directly as angle error.
+  shows up directly as angle error. The track width was set by eye.
 - The encoder decoder uses the current A/B levels when both A edge bits were
   latched before the shared interrupt runs. It recovers the direction and
   counts the pair as two steps. More than one coalesced pair may undercount,
   so interrupt load still requires physical validation.
-- Telemetry `link_up` is left false for S1 to fill, and S1's callback does
-  not pass a request ID yet, so the adapter numbers commands itself.
-- HAZARD is treated as STOP until Scan and Plan exists.
+- S2-U37, S2-U39 and S2-U40 (revised for telemetry version 3) have passed on
+  the host only, not yet on the Pico W.
