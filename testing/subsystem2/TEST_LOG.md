@@ -137,8 +137,8 @@ Straight 500 mm (target: within 20 mm):
 
 | Run | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Mean | Worst |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Distance (mm) | | | | | | | | | | | | |
-| Lateral drift (mm) | | | | | | | | | | | | |
+| Distance (mm) | 482 | 480 | 480 | 480 | 480 | | | | | | 480.4 | 480 (-20) |
+| Lateral drift (mm) | 5 R | 6 R | 5 R | 4 R | 5 R | | | | | | 5.0 R | 6 R |
 
 Left 90 deg (target: within 5 deg):
 
@@ -228,3 +228,4 @@ unattended run; a successful build is not that confirmation.
 | 2026-11-17 | S2 host suite (44 cases, S2-U20..U70), incl. S2-U53 | working tree after `2c40262` (telemetry v2) | host (cc) | PASS (44 passed, 0 failed) | `make -C testing/host all` | host only. S2-U37, U39, U71 and U72 are on-target cases: the `TEST=1` image builds but is not yet run on the Pico W |
 | 2026-11-17 | S2-U24 to S2-U62 (on target) | `4e4b3a5` (`NET=lwip MQTT=1 TEST=1`) | Dalton | PASS (39 seen, 0 failed); run INCOMPLETE | `../subsystem1/logs/2026-11-17_s1-v2-selftest.txt`, `../subsystem1/logs/2026-11-17_s1-v2-selftest-2.txt` | Two boots. Includes the changed S2-U37, U39 (robot state 28 bytes) and U53. In both, the console lost the output before the port opened (S1-U04..U07, S2-U01..U23) and everything after S2-U62, where an S4 "calibration failed, car moved" line cut in: S2-U63..U72 and the S2 summary were never printed, so U71/U72 are not yet observed on target. S3 2/2, S4 34/34, S5 47/47 summaries printed |
 | 2026-11-20 | S2 host suite (50 cases), incl. new S2-U78 | working tree after `1a2df7f` (telemetry v3, S2 decision 27) | host (cc) | PASS (50 passed, 0 failed) | `make -C testing/host all` | host only. S2-U37, U39 and U40 (revised) are on-target cases: they compile in the `TEST=1` image but have not been run on the Pico W |
+| 2026-11-20 | S2-H10 (straight 500 mm, mode 4) | `9eafa1e` (`TEST=1 S2_CAL_TEST=4`) | Dalton | PASS at the limit (5 of 10 runs) | `logs/2026-11-20_s2-h10-forward500.txt` | Floor, battery and USB; tape measure taped beside the car, front edge started at 300 mm. Five measured runs: 482, 480, 480, 480, 480 mm (mean 480.4, worst -20 mm, exactly the 20 mm limit); drift 4 to 6 mm right (mean 5). The log has eight DONE runs at 19:32 to 19:38, odometry x 502 to 503 mm, y 0, heading -1.0 to +0.5 degrees, no fault; the five measured are taken to be the last five (19:36:11 to 19:38:08), and an earlier run measured with the tape under the wheels also read 480 mm, 5 mm right. Physical distance is a steady 4.4% short of odometry, against +0.5% over 1000 mm in S2-H07 (2026-11-10): a systematic error, not scatter. Not corrected here; re-run S2-H07 on this floor with this tape before changing `MC_WHEEL_CIRC_UM`. Tester stopped at 5 runs |
