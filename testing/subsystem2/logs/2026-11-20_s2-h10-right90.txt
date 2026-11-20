@@ -1,0 +1,26 @@
+# serial log started 2026-11-20 19:55:14
+# connected /dev/cu.usbmodemMTK3PICO1 19:55:14
+# disconnected 19:55:15
+# connected /dev/cu.usbmodemMTK3PICO1 19:55:36
+19:55:36 
+19:55:36 
+19:55:36 microT-Kernel Version 3.00
+19:55:36 
+19:55:36 
+19:55:36 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+19:55:36 dual-core (SMP) build, usermain on core 0
+19:55:36 S2 calibration test mode 6
+19:55:36 [S2] GP20 button ready: press to START or STOP
+19:55:36 wifi: cyw43_utk_task starting (proc 1)
+19:55:36 wifi: cyw43_init() ...
+19:55:36 wifi: cyw43_init() returned, bringing interface up ...
+19:55:36 s4: LSM303DLHC ready; calibrating
+19:55:37 s4: terrain fault 3; sensor restart
+19:55:38 s4: LSM303DLHC ready; calibrating
+19:55:40 s4: stationary calibration complete (50 samples in 1500 ms)
+19:55:52 [S2] GP20: START requested
+19:55:52 s4: new run 1; hump maximum cleared
+19:55:53 [S2] CAL right 90 degrees finished
+19:55:53 [S2] CAL odometry: x=0 mm y=0 mm heading=-93482 mdeg; result=2 reason=0 state=4 fault=0
+19:55:53 [S2] CAL timer: 17202910 us in 17080 ms of kernel time (expect 1000 us per ms)
+19:55:53 [S2] CAL STOP latency: latch to motor off 1002 us

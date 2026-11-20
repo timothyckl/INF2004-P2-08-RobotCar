@@ -256,7 +256,7 @@ turns within 5 degrees, U-turns within 10 degrees.
 | 1000 mm (S2-H07 re-check, 3 runs, same floor) | 960 mm each for 1002 to 1003 mm of odometry; drift 15 to 16 mm right | 4.2% short; led to the decision 31 recalibration |
 | Straight 500 mm (S2-H10, 5 runs, after decision 31) | 500, 510, 500, 500, 510 mm (mean 504); drift 5 mm | **Meets** the 20 mm target (worst +10 mm) |
 | Left 90 degrees (S2-H10, 2 runs, 2026-11-20) | Just under 5 degrees over, by eye; odometry 94.0 degrees both | **Meets** the 5 degree target with almost no margin; the overshoot is the coast after the brake |
-| Right 90 degrees, 10 runs | — | **To run:** S2-H10, `S2_CAL_TEST=6` |
+| Right 90 degrees (S2-H10, 1 run, 2026-11-20) | Just under 5 degrees over, by eye; odometry 93.5 degrees | **Meets** the target with almost no margin; same coast as the left turn, no side bias |
 | U-turn 180 degrees, 10 runs | — | **To run:** S2-H10, `S2_CAL_TEST=7` |
 | STOP latency, latch to motor off, 10 runs | — | **To run:** S2-H11, GP20 during `S2_CAL_TEST=1`; target 20 ms |
 
