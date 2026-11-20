@@ -52,12 +52,41 @@
 #define CTRL_BUTTON_DEBOUNCE_MS 30u
 #endif
 
-#if S2_CAL_TEST
-#define CTRL_CAL_DISTANCE_MM    1000u
-#define CTRL_CAL_ANGLE_MDEG     360000u
-/* Mode 3: one hump pass. A contact starting about 100 mm before the
-   195 mm hump has crossed it and settled after 450 mm. */
-#define CTRL_CAL_HUMP_MM        450u
+/* S2_CAL_TEST (makefile): one manoeuvre per GP20 press, then the
+   odometry and the last STOP's latency are printed. 1 to 3 calibrate
+   (S2-H07, S2-H08, S4-H08); 4 to 7 are the accuracy runs (S2-H10). */
+#if S2_CAL_TEST == 1
+#define CTRL_CAL_ACTION         CTRL_ACT_FORWARD
+#define CTRL_CAL_VALUE          1000u
+#define CTRL_CAL_NAME           "forward 1000 mm"
+#elif S2_CAL_TEST == 2
+#define CTRL_CAL_ACTION         CTRL_ACT_LEFT
+#define CTRL_CAL_VALUE          360000u
+#define CTRL_CAL_NAME           "left 360 degrees"
+#elif S2_CAL_TEST == 3
+/* One hump pass. A contact starting about 100 mm before the 195 mm hump
+   has crossed it and settled after 450 mm. */
+#define CTRL_CAL_ACTION         CTRL_ACT_FORWARD
+#define CTRL_CAL_VALUE          450u
+#define CTRL_CAL_NAME           "forward 450 mm (hump pass)"
+#elif S2_CAL_TEST == 4
+#define CTRL_CAL_ACTION         CTRL_ACT_FORWARD
+#define CTRL_CAL_VALUE          500u
+#define CTRL_CAL_NAME           "forward 500 mm"
+#elif S2_CAL_TEST == 5
+#define CTRL_CAL_ACTION         CTRL_ACT_LEFT
+#define CTRL_CAL_VALUE          90000u
+#define CTRL_CAL_NAME           "left 90 degrees"
+#elif S2_CAL_TEST == 6
+#define CTRL_CAL_ACTION         CTRL_ACT_RIGHT
+#define CTRL_CAL_VALUE          90000u
+#define CTRL_CAL_NAME           "right 90 degrees"
+#elif S2_CAL_TEST == 7
+#define CTRL_CAL_ACTION         CTRL_ACT_LEFT
+#define CTRL_CAL_VALUE          180000u
+#define CTRL_CAL_NAME           "U-turn, left 180 degrees"
+#elif S2_CAL_TEST != 0
+#error "S2_CAL_TEST must be 0 to 7"
 #endif
 
 #if APP_MISSION
@@ -131,27 +160,14 @@ typedef char ctrl_scan_codes_match_t[
      && (BYPASS_CONTROL_SEGMENTS == BYPASS_PLAN_SEGMENTS)) ? 1 : -1];
 #endif
 
-#if S2_CAL_TEST == 1
-static const ctrl_step_t g_demo[] =
+#if S2_CAL_TEST
+static const ctrl_step_t g_cal_script[] =
 {
-    {CTRL_ACT_FORWARD, CTRL_CAL_DISTANCE_MM}
+    {CTRL_CAL_ACTION, CTRL_CAL_VALUE}
 };
-#define CTRL_SCRIPT     g_demo
-#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
-#elif S2_CAL_TEST == 2
-static const ctrl_step_t g_demo[] =
-{
-    {CTRL_ACT_LEFT, CTRL_CAL_ANGLE_MDEG}
-};
-#define CTRL_SCRIPT     g_demo
-#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
-#elif S2_CAL_TEST == 3
-static const ctrl_step_t g_demo[] =
-{
-    {CTRL_ACT_FORWARD, CTRL_CAL_HUMP_MM}
-};
-#define CTRL_SCRIPT     g_demo
-#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
+#define CTRL_SCRIPT     g_cal_script
+#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_cal_script) \
+                                   / sizeof(g_cal_script[0])))
 #else
 #define CTRL_SCRIPT     NULL
 #define CTRL_SCRIPT_LEN 0u
@@ -872,24 +888,20 @@ cal_timer_print (uint32_t now)
 
 /* Print the odometry once when a run ends. Odometry drives the manoeuvre,
    so it always reads close to the command: the calibration value is the
-   physical distance or angle measured on the floor. */
+   physical distance or angle measured on the floor. The STOP latency is
+   that of the last latch: a GP20 press during the move for S2-H11, or the
+   end of the script otherwise. */
 static void
 cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
 {
-    static uint8_t last_state = 0u;
+    static uint8_t  last_state    = 0u;
+    static uint32_t printed_latch = 0u;
+    uint32_t        latch_us      = 0u;
+    uint32_t        off_us        = 0u;
 
     if ((S2_SYS_RUNNING == last_state) && (S2_SYS_RUNNING != p_state->state))
     {
-#if S2_CAL_TEST == 1
-        tm_printf((UB *)"[S2] CAL forward %u mm finished\n",
-                  (UINT)CTRL_CAL_DISTANCE_MM);
-#elif S2_CAL_TEST == 3
-        tm_printf((UB *)"[S2] CAL hump pass, forward %u mm finished\n",
-                  (UINT)CTRL_CAL_HUMP_MM);
-#else
-        tm_printf((UB *)"[S2] CAL left %u mdeg finished\n",
-                  (UINT)CTRL_CAL_ANGLE_MDEG);
-#endif
+        tm_printf((UB *)"[S2] CAL %s finished\n", (UB *)CTRL_CAL_NAME);
         tm_printf((UB *)"[S2] CAL odometry: x=%d mm y=%d mm heading=%d mdeg;"
                   " result=%u reason=%u state=%u fault=%u\n",
                   (INT)p_input->status.x_mm, (INT)p_input->status.y_mm,
@@ -898,6 +910,15 @@ cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
                   (UINT)p_input->status.last_reason,
                   (UINT)p_state->state, (UINT)p_state->fault);
         cal_timer_print(p_input->now_ms);
+    }
+
+    /* Motion Control records motor off a period or so after the latch;
+       print each latch once, when both times are known. */
+    if (s2_stop_timing(&latch_us, &off_us) && (latch_us != printed_latch))
+    {
+        printed_latch = latch_us;
+        tm_printf((UB *)"[S2] CAL STOP latency: latch to motor off %u us\n",
+                  (UINT)(off_us - latch_us));
     }
 
     last_state = p_state->state;

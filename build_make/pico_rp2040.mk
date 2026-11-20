@@ -150,10 +150,13 @@ endif
 
 # S2_CAL_TEST runs a GP20-started subsystem 2 calibration manoeuvre:
 # 1 = forward 1000 mm (distance scale), 2 = left 360 degrees (track width),
-# 3 = forward 450 mm per press (hump passes for subsystem 4, S4-H08).
+# 3 = forward 450 mm per press (hump passes for subsystem 4, S4-H08);
+# accuracy runs (S2-H10): 4 = forward 500 mm, 5 = left 90 degrees,
+# 6 = right 90 degrees, 7 = U-turn (left 180 degrees). Every mode prints
+# the latency of each STOP latch (S2-H11: press GP20 during mode 1).
 S2_CAL_TEST ?= 0
-ifneq ($(filter $(S2_CAL_TEST),0 1 2 3),$(S2_CAL_TEST))
-$(error Unknown S2_CAL_TEST '$(S2_CAL_TEST)'; use 0 to 3)
+ifneq ($(filter $(S2_CAL_TEST),0 1 2 3 4 5 6 7),$(S2_CAL_TEST))
+$(error Unknown S2_CAL_TEST '$(S2_CAL_TEST)'; use 0 to 7)
 endif
 ifneq ($(S2_CAL_TEST),0)
 ifneq ($(TEST),1)

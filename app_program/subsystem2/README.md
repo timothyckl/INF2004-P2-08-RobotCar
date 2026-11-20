@@ -174,7 +174,7 @@ Controller task only. Results appear in `motion_get_status()`.
 | Option | File | Default | Effect |
 |---|---|---|---|
 | `S2_WATCHDOG` | `task_motion.c` | 0 | 1 arms the hardware watchdog in a `TEST=0` image (decision 28) |
-| `S2_CAL_TEST` | makefile | 0 | 1 forward 1000 mm, 2 left 360 degrees, 3 forward 450 mm, one per GP20 press (S2-H06..H08, S4-H08); needs `TEST=1` |
+| `S2_CAL_TEST` | makefile | 0 | One manoeuvre per GP20 press: 1 forward 1000 mm, 2 left 360 degrees, 3 forward 450 mm (S2-H06..H08, S4-H08); 4 forward 500 mm, 5 left 90, 6 right 90, 7 left 180 degrees (S2-H10). Prints odometry and each STOP's latency (S2-H11); needs `TEST=1` |
 | `S2_HW_TEST` | makefile | 0 | 1: encoder print, motors off; 2: also spins motors; 3: S2-H04 full-speed check; 4: S2-H05 watchdog check. Tasks not started; needs `TEST=1` |
 | `S2_MOTION_LOG` | makefile | 0 | Prints the speed loop every 50 ms, for PID tuning |
 | `S2_DEMO_AUTOSTART` | `task_controller.h` | 0 | Local START 5 s after Ready. The robot moves by itself |
@@ -196,8 +196,73 @@ USB serial output, then record results in `testing/subsystem2/TEST_LOG.md`.
 | Counts per revolution | 1330 (x2 counts) | S2-H03, 2026-11-04 and 2026-11-11 |
 | Wheel circumference (effective) | 227233 um | S2-H07 PASS, 2026-11-10: 1000 mm commanded, 1004 to 1007 mm measured (within 1%) |
 | Track width (effective) | 119 mm | S2-H08, 2026-11-10: a 360 degree turn ends square by eye |
-| Speed and straight-line PID gains | UNMEASURED | runs well at line-follow speeds; no step-response tuning yet |
+| Speed and straight-line PID gains | Set once, kept | S2-H09 step response passed at 200 mm/s and at 32 to 40 mm/s (PID tuning report below) |
 | Still threshold, stall, timeouts, tolerances, ramp | UNMEASURED | `motion_config.h` |
+
+## PID tuning report
+
+**Loops.** Each wheel has a speed PID (`pid.c`): measured speed in mm/s
+in, signed duty out, every 10 ms. Speed is taken over the last four
+periods, so one encoder count changes it by 4.3 mm/s (227 233 um / 1330
+counts per 40 ms). Above it, Move runs a straight-line PID on the
+left-minus-right distance; its output (mm/s), limited to the Move speed,
+is added to the left wheel's target and taken from the right's. Both use integer gains scaled by 1024,
+clamp their output, stop integrating while saturated, and take the
+derivative of the measurement, not of the error (S2-U03 to S2-U09).
+
+| Loop | Kp | Ki | Kd | Output limit |
+|---|---|---|---|---|
+| Wheel speed | 8.0 duty per mm/s | 1.0 | 0 | ±6250 duty; ±1250 (20%) in the mission |
+| Straight line | 2.0 mm/s per mm | 0.1 | 0 | ±400 mm/s, then the Move speed |
+
+**Method.** The gains in `motion_config.h` were set before any car run
+and then checked rather than swept: S2-H09 logged target, measured
+speed and duty every 50 ms (`S2_MOTION_LOG=1`) for a 200 mm/s Move and
+for line following at 32 to 40 mm/s. Its criteria were the target reached
+within 300 ms, overshoot under 20% and no sustained oscillation. Both
+passed, so the gains were kept; no other gain set was tried.
+
+| Case (S2-H09, 2026-11-10) | Rise | Overshoot | Steady state |
+|---|---|---|---|
+| 0 to 200 mm/s Move ([log](../../testing/subsystem2/logs/2026-11-10_s2-h09-move200.txt)) | 188/196 mm/s at 150 ms, at target by 200 ms | 205 mm/s peak, within one 4.3 mm/s count | 196 to 205 mm/s, duty 1700 to 1830; no oscillation |
+| Line following at 32 to 40 mm/s ([log](../../testing/subsystem2/logs/2026-11-10_s2-h09-line.txt)) | — (targets change every report) | — | 40 mm/s target: mean 40.1 (left) and 39.5 (right), sd 3.8 and 3.6 mm/s, equal to the speed quantisation; peak duty 1120 of the 1250 cap |
+
+The rise is limited by the duty ramp (312 duty per period, full scale in
+200 ms), not by the PID. The weak point is the 5 mm/s inside-wheel target
+of a sustained curve: half its samples read 0 and peaks reach 25 to 29
+mm/s, because 5 mm/s is about one count per 40 ms window and the motor
+sticks below its breakaway duty. A 0 mm/s inside wheel (braked) stalled
+the right wheel against the 20% cap, and 10 mm/s could not hold the loop,
+so 5 mm/s was kept (S2 decision 8). The straight-line PID is justified by
+S2-U24: with a wheel slipping for 200 ms and 20% weaker after, a 500 mm
+Move ends within 5 mm and 2 degrees only with it on.
+
+Not measured: a step response under the mission's 20% cap at Move speed
+(at 200 mm/s the wheels needed 27 to 29% duty, so mission moves run
+slower, about 130 mm/s in the bypass), and the straight-line loop's
+response on the floor.
+
+## Motion accuracy evaluation
+
+Targets from Tribunal 1 (A4): straight within 2 cm per 50 cm, 90 degree
+turns within 5 degrees, U-turns within 10 degrees.
+
+| Measure | Result | Status |
+|---|---|---|
+| Distance, 1000 mm Move (S2-H07, 3 runs) | Tape 1007, 1004, 1006 mm against odometry 1001 to 1002 mm: +0.5% | Meets the target scaled to 1000 mm (±40 mm); 3 runs, not 10 |
+| 360 degree turn (S2-H08, track 119 mm, 2 runs) | Odometry 362.1 and 363.5 degrees; physical end on the start line by eye | Used to set the track; no protractor reading |
+| Turns in the mission | Barcode left, right, straight and U-turn at junctions, and the bypass's 45 degree turns, completed on the car ([S3 test log](../../testing/subsystem3/TEST_LOG.md#results), [S5 README](../subsystem5/README.md)) | These end on the line or on odometry with no measured angle |
+| Straight 500 mm, 10 runs | — | **To run:** S2-H10, `S2_CAL_TEST=4` |
+| Left and right 90 degrees, 10 runs each | — | **To run:** S2-H10, `S2_CAL_TEST=5`, `6` |
+| U-turn 180 degrees, 10 runs | — | **To run:** S2-H10, `S2_CAL_TEST=7` |
+| STOP latency, latch to motor off, 10 runs | — | **To run:** S2-H11, GP20 during `S2_CAL_TEST=1`; target 20 ms |
+
+Odometry error sources: wheel slip, which turns show directly because
+there is no gyroscope; the track width set by eye; and Move not slowing
+near the target, so the stop distance depends on braking (about 8 mm of
+coast after 200 mm/s in S2-H09). The calibration images use the full
+duty range; the mission caps duty at 20%, so its moves and turns run
+slower than these tests.
 
 ## Known limitations
 
@@ -207,7 +272,8 @@ USB serial output, then record results in `testing/subsystem2/TEST_LOG.md`.
 - `S2_DEMO_LOG` and the mission's own console lines print from the
   controller, above Motion Control on the same core. With the watchdog
   armed, a print that blocks for over 200 ms would reset the board.
-- The PID gains are unmeasured, and the duty cap limits speed; line
+- The PID gains were checked at two speed ranges only (S2-H09), and the
+  mission's 20% duty cap keeps moves below the 200 mm/s API speed; line
   following runs at 40 mm/s (`CTRL_LINE_BASE_MM_S`).
 - Move does not slow down near the target, so overshoot depends on braking.
 - Turns use encoder odometry only (the IMU has no gyroscope), so wheel slip
