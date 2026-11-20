@@ -68,7 +68,12 @@ subsystem 5 files against the team's BARR-C subset.
    50 mm of whole-body clearance; physical clearance over the course is
    not yet validated. It turns 45 degrees, never 90 (S2 decision 17), and
    selects the left route whenever that route is valid (S2 decision 16).
-   No safe route gives `NO_ROUTE`, and the controller stops.
+   A route may start by reversing (up to 150 mm) to make room for the
+   turn. No safe route gives `NO_ROUTE`, and the controller stops. There
+   is no automatic reattempt: a scan without a route, or a failed bypass,
+   latches STOP (stop cause scan or bypass). A new run needs GP20, which
+   resets and restarts once the wheels are still, or a remote `RESET`
+   followed by `START`.
 5. **Pass and rejoin.** The controller turns towards the obstacle and asks
    for side looks until a look reads past the far end. It then turns back,
    searches for the original line, stops before it and spins onto it (S2
@@ -85,6 +90,13 @@ extents from the sensor axis. If both edges are observed, reported width is
 `left extent + right extent` and centre offset is
 `(left extent - right extent) / 2`. A missing or inconsistent edge stays
 unknown; the planner cannot treat unobserved space as a gap.
+
+The firmware does not report a measured left or right clearance. For
+each side it has the obstacle's edge (its lateral extent) and whether a
+beam passed it; a side with an observed edge is then checked against the
+whole vehicle. The clearance it reports with a plan
+(`estimated_min_clearance_mm`) is the configured 50 mm target, not a
+measurement, and the free space beyond each edge is not ranged.
 
 ### Worked on-car scan and route
 

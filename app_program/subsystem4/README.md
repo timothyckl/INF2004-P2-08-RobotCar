@@ -176,6 +176,7 @@ with none reported on a flat lap. That complete system case has not yet run.
 | Five 450 mm flat passes at about 180 mm/s, before the longer tilt average | One false hump per pass, 18–24 mm; moving height 99th percentile 20.9 mm ([S4-H07](../../testing/subsystem4/logs/2026-11-13_s4-h03-2.txt)) | Motion and vibration dominated the still noise; the original filter was unsuitable at that speed. |
 | Line following at about 40 mm/s with the 16-sample tilt average | About 82 s of driving: one 4 mm event on a smooth floor undulation; no vibration hump reported ([S4-H07](../../testing/subsystem4/logs/2026-11-13_s4-h07-line-avg.txt)) | The longer average reduced vibration effects in this trial, but did not prove zero false positives. |
 | Ruler-measured 10 mm hump under the right wheel, after scaling and driving gate | Four crossings reported 11, 10, 10 and 9 mm, once per crossing; mean 10 mm ([S4-H08](../../testing/subsystem4/logs/2026-11-13_s4-h08-gated.txt)). A later three-pass repeat reported 10, 10 and 9 mm, with one additional false 6 mm hump and candidate impact ([repeat](../../testing/subsystem4/logs/2026-11-16_s4-raw-d14.txt)). | The known course-height case met the later SYS-04 ±2 mm height figure in these passes. It does not establish accuracy for other heights, contact points or surfaces. |
+| Course laps over the 10 mm hump with telemetry | Two laps on 2026-11-17: the hump reported once per lap as 10 mm and valid in telemetry, with no pick-up stop afterwards; lap 1's console also shows no impact ([S4 test log](../../testing/subsystem4/TEST_LOG.md#results), [console](../../testing/subsystem1/logs/2026-11-17_s1-h01-fix-console.txt)) | The unconfirmed post-hump stops of 2026-11-16 did not recur in these laps. |
 | Lift while following | Ten runs ended with a pick-up STOP in the S4-H11 session, although some post-hump stops were not confirmed as deliberate lifts ([S4-H11](../../testing/subsystem4/logs/2026-11-16_s4-h11-pickup-raw.txt)). SYS-10 then failed 0/5 on one boot and passed 5/5 on the next ([system results](../../testing/system/TEST_LOG.md#results)). | Lift detection is boot-dependent in the system record; the failed boot's cause was not captured. |
 
 The measured hump was 195 mm across the path and 50 mm along it, with only
@@ -195,3 +196,12 @@ now disables detection in BYPASS and REACQUIRE; that revision has not yet
 been re-tested on the car. The evidence supports the measured 10 mm hump
 case, while general terrain classification, impact behaviour and reliable
 pick-up detection remain unverified.
+
+The brief also lists motion classification (stationary, accelerating,
+turning, climbing and descending a hump, sudden impact) and turn-rate
+monitoring. Subsystem 4 classifies less: its states are calibrating,
+monitoring, on a hump and fault, and its events are ready, hump complete,
+impact, lift and fault (`terrain_logic.h`). Climbing and descending are one
+on-hump state, and stationary, accelerating and turning are not reported.
+Turn rate is not measured, because the LSM303DLHC has no gyroscope;
+subsystem 2's encoder odometry supplies the heading instead.
