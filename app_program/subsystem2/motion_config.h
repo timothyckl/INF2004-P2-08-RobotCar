@@ -33,10 +33,15 @@
    three) / about 380 degrees measured for a commanded left 360 gave 124.
    124 and 122 still turned too far by eye; 120 ended 1-2 degrees past a
    full turn to the left, so 119 (1 mm is about 2.9 degrees per full
-   turn, the finest step). */
+   turn, the finest step).
+   Recalibrated 2026-11-20 on a floor like the course (S2 decision 31):
+   1000 mm of odometry measured 960 mm (S2-H07 re-check, 3 runs), so the
+   circumference is 227233 x 960 / 1002.33. The track is scaled by the
+   same ratio (119 to 114) so that a turn takes the same encoder counts
+   as in every tested run; only distances and speeds change. */
 #define MC_COUNTS_PER_REV       1330u       /* x2 counts per wheel rev */
-#define MC_WHEEL_CIRC_UM        227233u     /* um, effective (S2-H07) */
-#define MC_TRACK_MM             119u        /* effective (S2-H08) */
+#define MC_WHEEL_CIRC_UM        217636u     /* um, effective (S2-H07) */
+#define MC_TRACK_MM             114u        /* effective (S2-H08) */
 
 /* Wiring viewed from behind, ultrasonic sensor forward: left wheel = motor 1
    + encoder 2 (GP16/GP17), right wheel = motor 2 + encoder 1 (GP0/GP1).

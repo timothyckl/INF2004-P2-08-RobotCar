@@ -855,6 +855,28 @@ the other ~300, mostly narrowing casts in arithmetic, have no comment.
 The strict compile shows no implicit conversion, so each cast is
 deliberate, but its range argument is not written down yet.
 
+### 31. Wheel circumference recalibrated for the course floor (2026-11-20)
+
+Approved by Dalton on the integration branch.
+
+**Problem.** On a floor similar to the course, S2-H10 (500 mm, five runs)
+measured 480.4 mm for 502.4 mm of odometry, and the S2-H07 re-check
+(1000 mm, three runs) measured 960 mm for 1002.3 mm: 4.2% to 4.4% short,
+in proportion to distance. S2-H07 on 2026-11-10, on another floor, was
++0.5%. The effective circumference depends on the surface.
+
+**Decision.** `MC_WHEEL_CIRC_UM` 227 233 to 217 636 um (x 960 / 1002.33),
+and `MC_TRACK_MM` 119 to 114 by the same ratio. Turn angles depend only on
+track / circumference, so a commanded turn takes the same encoder counts
+as in every tested run (S2-H08, junction turns, bypass turns). Distances
+and speeds change: a commanded speed is now about 4.4% faster on the
+floor than before, so line following at 40 mm/s really runs at 40 mm/s,
+and bypass legs travel the planned distance.
+
+**Tests.** S2-H10 straight 500 mm is repeated on the new value; the
+mission smoke run and the SYS tests run on this build. If the course
+surface differs, repeat S2-H07 there (three runs) before the demo.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

@@ -132,8 +132,8 @@
    Dalton); 3 s for a look's answer, above S5's own 2.5 s look limit, and
    for the wheels to stop once the line is found (S2 decision 20). */
 #define CTRL_BYPASS_STEP_MM          50u
-/* UNMEASURED: align spin wheel speed (S2 decision 21); about 29 degrees/s
-   on the 119 mm track, so the sensors sweep the tape at about 65 mm/s.
+/* UNMEASURED: align spin wheel speed (S2 decision 21); about 30 degrees/s
+   on the 114 mm track, so the sensors sweep the tape at about 65 mm/s.
    Halved from 60 on 2026-11-12: a spin at 60 turned 137 degrees past the
    line with no report, as the 3-sample mask filter and the averaging take
    about 40 to 70 ms of the ~140 ms each sensor spent on the tape. */
@@ -142,7 +142,7 @@
 /* S2 decision 26: barcode command at the next junction. UNMEASURED: a held
    command expires after 60 s (on 2026-11-17 the + after barcode F came
    21.4 s after the decode, so 20 s was too short); each stop, step
-   and spin is bounded by 12 s (a 180 + 45 degree spin at about 29 deg/s
+   and spin is bounded by 12 s (a 180 + 45 degree spin at about 30 deg/s
    takes under 8 s). Black is accepted from 30 degrees short of the turn,
    and 45 degrees past it fails, as for the bypass align (decision 21). */
 #define CTRL_NAV_PENDING_MS       60000u

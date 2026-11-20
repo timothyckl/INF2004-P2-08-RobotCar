@@ -194,8 +194,8 @@ USB serial output, then record results in `testing/subsystem2/TEST_LOG.md`.
 | Value | Setting | Evidence |
 |---|---|---|
 | Counts per revolution | 1330 (x2 counts) | S2-H03, 2026-11-04 and 2026-11-11 |
-| Wheel circumference (effective) | 227233 um | S2-H07 PASS, 2026-11-10: 1000 mm commanded, 1004 to 1007 mm measured (within 1%) |
-| Track width (effective) | 119 mm | S2-H08, 2026-11-10: a 360 degree turn ends square by eye |
+| Wheel circumference (effective) | 217636 um | S2-H07 re-check, 2026-11-20, floor like the course: 960 mm for 1002 mm of odometry (decision 31). Was 227233 um from 2026-11-10 on another floor |
+| Track width (effective) | 114 mm | Scaled with the circumference (decision 31); S2-H08, 2026-11-10, set 119 mm: a 360 degree turn ends square by eye |
 | Speed and straight-line PID gains | Set once, kept | S2-H09 step response passed at 200 mm/s and at 32 to 40 mm/s (PID tuning report below) |
 | Still threshold, stall, timeouts, tolerances, ramp | UNMEASURED | `motion_config.h` |
 
@@ -203,7 +203,7 @@ USB serial output, then record results in `testing/subsystem2/TEST_LOG.md`.
 
 **Loops.** Each wheel has a speed PID (`pid.c`): measured speed in mm/s
 in, signed duty out, every 10 ms. Speed is taken over the last four
-periods, so one encoder count changes it by 4.3 mm/s (227 233 um / 1330
+periods, so one encoder count changes it by 4.1 mm/s (217 636 um / 1330
 counts per 40 ms). Above it, Move runs a straight-line PID on the
 left-minus-right distance; its output (mm/s), limited to the Move speed,
 is added to the left wheel's target and taken from the right's. Both use integer gains scaled by 1024,
@@ -250,7 +250,7 @@ turns within 5 degrees, U-turns within 10 degrees.
 | Measure | Result | Status |
 |---|---|---|
 | Distance, 1000 mm Move (S2-H07, 3 runs) | Tape 1007, 1004, 1006 mm against odometry 1001 to 1002 mm: +0.5% | Meets the target scaled to 1000 mm (±40 mm); 3 runs, not 10 |
-| 360 degree turn (S2-H08, track 119 mm, 2 runs) | Odometry 362.1 and 363.5 degrees; physical end on the start line by eye | Used to set the track; no protractor reading |
+| 360 degree turn (S2-H08, track 119 mm with the old circumference, 2 runs) | Odometry 362.1 and 363.5 degrees; physical end on the start line by eye | Used to set the track; no protractor reading |
 | Turns in the mission | Barcode left, right, straight and U-turn at junctions, and the bypass's 45 degree turns, completed on the car ([S3 test log](../../testing/subsystem3/TEST_LOG.md#results), [S5 README](../subsystem5/README.md)) | These end on the line or on odometry with no measured angle |
 | Straight 500 mm (S2-H10, 5 runs, 2026-11-20) | 482, 480, 480, 480, 480 mm (mean 480.4); drift 4 to 6 mm right; odometry 502 to 503 mm | At the 20 mm limit; 4.4% short of odometry, which disagrees with S2-H07's +0.5% and needs an S2-H07 re-run |
 | Left and right 90 degrees, 10 runs each | — | **To run:** S2-H10, `S2_CAL_TEST=5`, `6` |
