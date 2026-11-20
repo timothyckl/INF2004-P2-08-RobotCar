@@ -11,7 +11,7 @@
  *   1. reads Motion Control status;
  *   2. handles flags first (STOP before any queued command);
  *   3. handles every remote_q record (non-blocking);
- *   4. runs the periodic step (demo script);
+ *   4. runs the periodic step (mission steps or calibration script);
  *   5. publishes robot_state under state_mutex.
  * Bits stay set until handled, so the wait returns at once for a bit
  * already pending.
@@ -149,15 +149,6 @@ static const ctrl_step_t g_demo[] =
 static const ctrl_step_t g_demo[] =
 {
     {CTRL_ACT_FORWARD, CTRL_CAL_HUMP_MM}
-};
-#define CTRL_SCRIPT     g_demo
-#define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))
-#elif S2_DEMO_SCRIPT
-static const ctrl_step_t g_demo[] =
-{
-    {CTRL_ACT_FORWARD, 500u},
-    {CTRL_ACT_LEFT,    90000u},
-    {CTRL_ACT_FORWARD, 500u}
 };
 #define CTRL_SCRIPT     g_demo
 #define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_demo) / sizeof(g_demo[0])))

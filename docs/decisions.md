@@ -782,7 +782,24 @@ instead. The graded firmware must not be a test image.
   with `S2_WATCHDOG=1`.
 
 The self-test image (`TEST=1` alone) still starts the starter Producer
-and Consumer for INT-01; their removal is a separate change.
+and Consumer for INT-01; their removal is a separate change (decision 29).
+
+### 29. The starter producer, consumer and demo script are removed (2026-11-20)
+
+Approved by Dalton on the integration branch. Builds without warnings
+and the host suites pass; the mission image did not use any of it.
+
+- Removed: S2's `producer_task`, `sem_slots`, `mpf_samples` and
+  `SAMPLE_MSG`; S3's `consumer_task`, `mbx_samples`, `mtx_stats` and
+  `app_stats`; S4's `mbf_summary`, `flg_events` and `FLG_BATCH`. IF-01 to
+  IF-04 are retired in `TEAM.md`. `subsystem3_init()` now only sets up
+  the sensor inputs, and `subsystem3_start()` starts nothing.
+- Removed: the Week 10 demo script (`S2_DEMO_SCRIPT`). The script runner
+  stays for the `S2_CAL_TEST` images, so the stop cause 11 (`S2_STOP_DONE`)
+  now means a calibration script finished.
+- Retired tests: S2-U01 and S2-U02 (producer values and pool counts),
+  S3-U01 (consumer statistics) and INT-01 (samples S2 to S3). INT-02 was
+  already blocked (no receiver since 2026-11-03). Their IDs stay unused.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 

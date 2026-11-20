@@ -169,18 +169,17 @@ What students *can* do:
 1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
 change it only by team agreement. Write down every task you create.
 
-The table below is the starter's allocation, not the robot's final priorities.
 The design orders application work as Vehicle Controller, Motion Control,
-Obstacle Scan, Line Sensor, IMU/Terrain, then Wireless Comms. Numeric priorities
-and affinities remain to be reconciled with this port's kernel service tasks.
+Obstacle Scan, Line Sensor, IMU/Terrain, then Wireless Comms. The table records
+the tasks the mission image creates (S2 decision 28).
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
 | 1 | 12–13 | none: the MQTT bridge runs in the kernel's WiFi task (S1 decision 2) |
-| 2 | 14–15 | *example:* producer_task – 14 – core 1 |
-| 3 | 16–17 | *example:* consumer_task – 16 – core 0 |
-| 4 | 18–19 | s4_imu_task – 18 – any |
-| 5 | 20–21 | |
+| 2 | 14–15 | controller_task – 14 – core 1; motion_task – 15 – core 1 |
+| 3 | 16–17 | none: `s3_follow_run()` runs in the initial task (priority 1) after the other tasks start |
+| 4 | 18–19 | s4_imu_task – 18 – any; s4_watch_task – 19 – any (`S4_RAW_LOG` only) |
+| 5 | 20–21 | obstacle_scan – 20 – any |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
@@ -192,10 +191,10 @@ sends to it or waits on it. Agree on the data format before coding.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
-| IF-01 | S2 → S3 | mailbox (owned by S3) | `mbx_samples` | `SAMPLE_MSG` in `subsystem2.h` | *example* |
-| IF-02 | S3 → S2 | semaphore + fixed memory pool (owned by S2) | `sem_slots`, `mpf_samples` | receiver returns the block, then 1 slot | *example* |
-| IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | text line ≤ `S4_SUMMARY_MAX` bytes, then `FLG_BATCH` | *example* |
-| IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | `APP_STATS`, read only while locked | *example* |
+| IF-01 | S2 → S3 | mailbox (owned by S3) | `mbx_samples` | *retired 2026-11-20 with the starter producer and consumer (S2 decision 29)* | *example* |
+| IF-02 | S3 → S2 | semaphore + fixed memory pool (owned by S2) | `sem_slots`, `mpf_samples` | *retired 2026-11-20 with the starter producer and consumer (S2 decision 29)* | *example* |
+| IF-03 | S3 → S4 | message buffer + event flag (owned by S4) | `mbf_summary`, `flg_events` | *retired 2026-11-20 with the starter producer and consumer (S2 decision 29)* | *example* |
+| IF-04 | S4 → S3 | shared data under a mutex (owned by S3) | `app_stats`, `mtx_stats` | *retired 2026-11-20 with the starter producer and consumer (S2 decision 29)* | *example* |
 | IF-05 | S4 → S1 | task control | `tid_led` | *retired 2026-11-17 with the LED task (S1 decision 2)* | *example* |
 | IF-06 | S3 → S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
 | IF-08 | S1 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_REMOTE_STOP` via `controller_raise_remote_stop()` | integration branch, S1 decision 2 |

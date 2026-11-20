@@ -187,7 +187,7 @@ bool s2_line_stop (void);    /* urgent STOP flag, CTRL_FLG_LINE_STOP */
 #define S2_STOP_BYPASS          8u      /* bypass failed */
 #define S2_STOP_NAV             9u      /* junction manoeuvre failed */
 #define S2_STOP_FAULT           10u     /* see s2_robot_state_t.fault */
-#define S2_STOP_DONE            11u     /* starter demo script finished */
+#define S2_STOP_DONE            11u     /* calibration script finished */
 
 typedef struct
 {
@@ -304,36 +304,5 @@ IMPORT ID nav_q;
  *  without blocking; false if either is invalid or the queue is full. */
 bool s2_nav_submit (uint8_t command, char symbol, uint32_t scan_id,
                     uint32_t staged_ms);
-
-/* ---------------------------------------------------------------------
- *  LEGACY STARTER (IF-01, IF-02): kept while subsystems 3 and 4 use it.
- * --------------------------------------------------------------------- */
-#define S2_PRI_PRODUCER		S2_PRI_MOTION	/* below the controller */
-#define S2_PERIOD_MS		300	/* one sample every 300 ms */
-
-/* ---------------------------------------------------------------------
- *  IF-01 data format: one sample, sent to subsystem 3's mailbox.
- *  A mailbox message MUST start with a T_MSG header: the kernel links
- *  messages together through it, so the data itself is never copied.
- * --------------------------------------------------------------------- */
-typedef struct {
-	T_MSG	hdr;		/* used by the kernel, do not touch */
-	UW	seq;		/* sample sequence number */
-	UW	time_ms;	/* system time when the sample was taken */
-	INT	value;		/* the "measurement", 0..100 */
-	INT	prc;		/* processor (core) that produced it: 1 or 2 */
-} SAMPLE_MSG;
-
-#define S2_POOL_COUNT	4	/* at most 4 samples in flight */
-
-/* IF-02: the receiver of a sample gives its memory block back to
-   mpf_samples (tk_rel_mpf) and then a slot back to sem_slots
-   (tk_sig_sem, count 1).  Nothing else may use these two objects. */
-IMPORT ID	sem_slots;
-IMPORT ID	mpf_samples;
-
-/* Private to subsystem 2 */
-IMPORT void	producer_task(INT stacd, void *exinf);
-IMPORT INT	s2_make_value(UW seq);
 
 #endif /* SUBSYSTEM2_H */

@@ -24,6 +24,10 @@ Note, 2026-11-03: subsystem 4 replaced its starter monitor, so
 IF-03 (`TEAM.md` section 5). INT-02 cannot run until IF-03 is retired or
 given a new receiver.
 
+Note, 2026-11-20: the starter producer, consumer and IF-01 to IF-04 were
+removed (S2 decision 29). INT-01 and INT-02 are retired; their IDs stay
+unused.
+
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
 

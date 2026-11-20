@@ -2,10 +2,11 @@
  * @file controller_logic.h
  * @brief Subsystem 2 minimal Vehicle Controller (pure logic).
  *
- * Week 10 scope: Initialising, Ready, Running, Stopped, Fault from the
- * system statechart (design review section 5). No kernel calls: the task
- * wrapper (task_controller.c) feeds flags, remote commands, Motion
- * Control status and time, then applies the output.
+ * Top-level states Initialising, Ready, Running, Stopped, Fault from the
+ * system statechart (design review section 5); the Running substates
+ * (follow, scan, bypass, navigate) are in task_controller.c. No kernel
+ * calls: the task wrapper (task_controller.c) feeds flags, remote
+ * commands, Motion Control status and time, then applies the output.
  *
  * Rules:
  * - STOP is latched at boot and stays latched in every state except
@@ -58,7 +59,7 @@ typedef struct
     uint32_t           init_limit_ms;   /* Initialising to Fault(INIT) */
     uint32_t           result_limit_ms; /* wait for a motion result */
     uint32_t           remote_max_age_ms;
-    ctrl_step_t const * p_script;       /* Running demo steps, or NULL */
+    ctrl_step_t const * p_script;       /* calibration steps, or NULL */
     uint8_t            script_len;
 } ctrl_cfg_t;
 

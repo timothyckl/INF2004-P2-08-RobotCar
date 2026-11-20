@@ -307,7 +307,7 @@ fault (ctrl_t * p_c, uint8_t code, uint32_t now_ms, ctrl_output_t * p_out)
 
 /*
  * One cause for the STOP bits of one cycle, most specific first: picking
- * the car up ends the demo, so it is never reported as anything else.
+ * the car up ends the run, so it is never reported as anything else.
  */
 static uint8_t
 stop_cause (uint32_t bits, uint8_t local_cause)
@@ -363,13 +363,11 @@ wheels_stopped (ctrl_input_t const * p_in)
 }
 
 /*
- * Running. Only the demo script lives here for Week 10. Later substates
- * go in this function:
- *   TODO(line following): steer from S3's line position.
- *   TODO(barcode manoeuvre): s2_nav_request_t to motion_turn_left/right.
- *   TODO(scan and plan): HAZARD, scan_q REQUEST/AUTHORISE/STOP_CONFIRM.
- *   TODO(bypass): execute S5's plan segments.
- *   TODO(reacquire line): bounded search, then line following.
+ * Running: steps a fixed manoeuvre script (the S2_CAL_TEST calibration
+ * images) and waits for each step's DONE. In the mission image there is
+ * no script; task_controller.c drives line following, Scan & Plan, the
+ * bypass and junction manoeuvres through line_control, scan_control,
+ * bypass_control and nav_control.
  */
 static void
 run_step (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
@@ -411,13 +409,13 @@ run_step (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
     }
     else if (p_c->cfg.script_len > 0u)
     {
-        /* Script finished: hold still. (Complete comes later.) */
+        /* Script finished: hold still. */
         latch(p_c, S2_STOP_DONE, p_out);
         enter(p_c, S2_SYS_STOPPED, p_in->now_ms);
     }
     else
     {
-        /* No script: Running with nothing to do yet. */
+        /* No script: the mission's steps run in task_controller.c. */
     }
 }
 

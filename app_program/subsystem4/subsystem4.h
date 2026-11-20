@@ -20,13 +20,6 @@
 #define S4_POLL_PERIOD_MS       10u
 #define S4_RETRY_PERIOD_MS      1000u
 
-/* Legacy starter interface retained until subsystem integration begins. */
-#define S4_SUMMARY_MAX          48
-#define FLG_BATCH               0x0002u
-
-IMPORT ID mbf_summary;
-IMPORT ID flg_events;
-
 ER subsystem4_get_status(s4_terrain_result_t * p_result);
 
 #if S4_RAW_LOG

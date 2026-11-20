@@ -722,28 +722,10 @@ static void hw_test(void)
 
 EXPORT void subsystem2_test(void)
 {
-	T_RSEM	rsem;
-	T_RMPF	rmpf;
-	UW	seq;
-	INT	v, bad = 0;
-
 	TEST_INIT();
 
-	/* S2-U01: every sample value is inside the documented 0..100 range */
-	for (seq = 0; seq < 40; seq++) {
-		v = s2_make_value(seq);
-		if (v < 0 || v > 100) bad++;
-	}
-	TEST_CHECK("S2-U01", bad == 0, "sample values stay within 0..100");
-
-	/* S2-U02: flow control never over- or under-counts */
-	TEST_CHECK("S2-U02",
-		   tk_ref_sem(sem_slots, &rsem) == E_OK &&
-		   rsem.semcnt >= 0 && rsem.semcnt <= S2_POOL_COUNT &&
-		   tk_ref_mpf(mpf_samples, &rmpf) == E_OK &&
-		   rmpf.frbcnt <= S2_POOL_COUNT,
-		   "free slots and free blocks within pool size");
-
+	/* S2-U01 and S2-U02 tested the starter producer, removed by
+	   S2 decision 29. */
 	TEST_CHECK("S2-U03", test_pid_proportional(),
 		   "PID proportional term is kp * error");
 	TEST_CHECK("S2-U04", test_pid_clamp(),
@@ -827,7 +809,7 @@ EXPORT void subsystem2_test(void)
 	TEST_CHECK("S2-U43", test_ctrl_start(),
 		   "START only in Ready with healthy motion");
 	TEST_CHECK("S2-U44", test_ctrl_script(),
-		   "demo script steps wait for DONE");
+		   "script steps wait for DONE");
 	TEST_CHECK("S2-U45", test_ctrl_stop_running(),
 		   "STOP bits in Running go to Stopped");
 	TEST_CHECK("S2-U46", test_ctrl_stop_other(),

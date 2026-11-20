@@ -28,9 +28,7 @@ static void s3_test_raw_monitor(void);
 #else
 static UB const g_s3_blocked[] =
     "[TEST] S3-H01..H03 BLOCKED  use S3_HW_TEST=1 for raw input "
-    "or S3_LINE_TEST=1 for line following\n";
-
-static APP_STATS s3_test_read_stats(void);
+    "or the mission image for line following\n";
 #endif
 
 void
@@ -39,25 +37,16 @@ subsystem3_test (void)
 #if S3_HARDWARE_TEST
     s3_test_raw_monitor();
 #else
-    APP_STATS before;
-    APP_STATS after;
-
+    /* INT-01 and S3-U01 tested the starter consumer, removed by S2
+       decision 29. The S3 logic cases run on the host
+       (testing/subsystem3). */
     TEST_INIT();
 
     tm_printf(g_s3_blocked);
-    before = s3_test_read_stats();
-    (void) tk_dly_tsk(2000u);
-    after = s3_test_read_stats();
-    TEST_CHECK("INT-01", after.received >= (before.received + 5u),
-               "samples flow from subsystem 2 to subsystem 3");
-    TEST_CHECK("S3-U01",
-               (after.received > 0u) && (after.min <= after.max) &&
-               (after.min >= 0) && (after.max <= 100),
-               "legacy statistics remain self-consistent");
-
     TEST_SUMMARY("subsystem3");
 #endif
 }
+
 #if S3_HARDWARE_TEST
 static void
 s3_test_raw_monitor (void)
@@ -88,18 +77,6 @@ s3_test_raw_monitor (void)
         }
         (void) tk_dly_tsk(S3_RAW_SAMPLE_MS);
     }
-}
-#else
-static APP_STATS
-s3_test_read_stats (void)
-{
-    APP_STATS statistics = {0};
-
-    (void) tk_loc_mtx(mtx_stats, TMO_FEVR);
-    statistics = app_stats;
-    (void) tk_unl_mtx(mtx_stats);
-
-    return (statistics);
 }
 #endif
 

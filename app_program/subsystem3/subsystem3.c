@@ -1,54 +1,25 @@
 /**
  * @file subsystem3.c
- * @brief Create and start the subsystem 3 objects and legacy consumer task.
+ * @brief Initialise the subsystem 3 sensor inputs.
+ *
+ * Subsystem 3 has no task of its own: the mission runs s3_follow_run()
+ * in the initial task (s3_follow.h).
  */
 
 #include "subsystem3.h"
 #include "s3_ir_gpio.h"
 
-EXPORT ID mbx_samples; /* IF-01 */
-EXPORT ID mtx_stats;   /* IF-04 */
-EXPORT APP_STATS app_stats;
-
 EXPORT ER
 subsystem3_init (void)
 {
-    T_CMBX mailbox_config = {0};
-    T_CMTX mutex_config = {0};
-    ER sensor_error;
-
-    /* Inputs only: this test stage never commands either motor. */
-    sensor_error = s3_ir_gpio_init();
-    if (sensor_error < E_OK)
-    {
-        return (sensor_error);
-    }
-
-    /*
-     * The mailbox passes a pointer without copying its message. Subsystem 2
-     * therefore allocates message storage from its memory pool.
-     */
-    mailbox_config.mbxatr = TA_TFIFO | TA_MFIFO;
-    mbx_samples = tk_cre_mbx(&mailbox_config);
-    if (mbx_samples < E_OK)
-    {
-        return (mbx_samples);
-    }
-
-    /* Priority inheritance protects the shared legacy statistics. */
-    mutex_config.mtxatr = TA_INHERIT;
-    mtx_stats = tk_cre_mtx(&mutex_config);
-
-    return ((mtx_stats < E_OK) ? mtx_stats : E_OK);
+    /* Inputs only: subsystem 3 never commands either motor. */
+    return (s3_ir_gpio_init());
 }
 
 EXPORT ER
 subsystem3_start (void)
 {
-    ID const task_id = app_start_task(consumer_task, S3_PRI_CONSUMER,
-                                      TP_PRC1, "consumer_task");
-
-    return ((task_id < E_OK) ? task_id : E_OK);
+    return (E_OK);
 }
 
 /* End of file. */
