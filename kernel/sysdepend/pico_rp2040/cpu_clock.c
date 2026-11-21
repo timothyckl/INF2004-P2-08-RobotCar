@@ -104,6 +104,11 @@ EXPORT void startup_clock(ATR clkatr)
 
 	out_w(CLK_REF+CLK_x_DIV, div);
 
+	/* 1 us timer tick from clk_ref (XOSC / 1). Only the boot ROM's BOOTSEL
+	   path leaves CYCLES set; after a cold power-up it is 0 (clk_ref / 512),
+	   and the system timer runs 43 times slow. */
+	out_w(WATCHDOG_TICK, (XOSC_MHz & WATCHDOG_TICK_CYCLES) | WATCHDOG_TICK_ENABLE);
+
 	/* CLK SYS settings */
 	div = (TMCLK_MHz << 8) / TMCLK_MHz;
 	if (div > in_w(CLK_SYS+CLK_x_DIV)) out_w(CLK_SYS+CLK_x_DIV, div);

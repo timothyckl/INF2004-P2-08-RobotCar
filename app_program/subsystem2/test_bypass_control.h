@@ -1,0 +1,24 @@
+/**
+ * @file test_bypass_control.h
+ * @brief Tests for the pure bypass and line reacquisition.
+ */
+#ifndef TEST_BYPASS_CONTROL_H
+#define TEST_BYPASS_CONTROL_H
+
+#include <stdbool.h>
+
+#if APP_TEST
+
+bool test_bypass_control_segments(void);    /* S2-U64 */
+bool test_bypass_control_motion(void);      /* S2-U65 */
+bool test_bypass_control_hazard(void);      /* S2-U66 */
+bool test_bypass_control_reacquire(void);   /* S2-U67 */
+bool test_bypass_control_pass(void);        /* S2-U68 */
+bool test_bypass_control_pass_fail(void);   /* S2-U69 */
+bool test_bypass_control_look_turn(void);   /* S2-U70 */
+
+#endif
+
+#endif /* TEST_BYPASS_CONTROL_H */
+
+/* End of file. */

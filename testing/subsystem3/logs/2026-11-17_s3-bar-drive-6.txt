@@ -1,0 +1,1543 @@
+HITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/190 filtered=130/189 threshold=232/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/184 filtered=131/187 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/178 filtered=128/181 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/191 filtered=133/189 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/182 filtered=131/186 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/180 filtered=139/180 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=135/191 filtered=130/191 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=129/178 filtered=133/184 threshold=234/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=138/192 filtered=138/186 threshold=231/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=240/2075 filtered=219/1670 threshold=232/684 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+s3 line: adc=1986/2760 filtered=1412/2505 threshold=232/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2666/3196 filtered=2736/3225 threshold=232/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=180/1733 filtered=186/2174 threshold=232/684 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+s3 line: adc=588/1181 filtered=447/1373 threshold=232/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=182/214 filtered=188/285 threshold=232/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=193/188 filtered=214/188 threshold=232/685 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=142/177 filtered=151/182 threshold=232/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=13 threshold=556 (decoded=0 errors=1)
+s3 bar:  runs 0..: 19 539 780 100 59 39 20 19
+s3 bar:  runs 8..: 20 20 159 20 19
+s3 bar:  open run WHITE for 700 ms
+s3 line: adc=160/183 filtered=150/184 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/185 filtered=136/187 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=133/194 filtered=137/193 threshold=240/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/194 filtered=152/193 threshold=243/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=138/194 filtered=140/194 threshold=245/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=166/185 filtered=158/188 threshold=246/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=129/185 filtered=143/188 threshold=245/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/192 filtered=151/192 threshold=244/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/186 filtered=144/189 threshold=247/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=135/185 filtered=137/185 threshold=244/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: START requested
+s4: new run 1; hump maximum cleared
+s3 line: adc=149/185 filtered=139/188 threshold=244/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=5 threshold=554 (decoded=0 errors=2)
+s3 bar:  runs 0..: 39 20 19 40 279
+s3 bar:  open run WHITE for 720 ms
+s3 line: adc=148/196 filtered=148/191 threshold=241/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/168 filtered=145/178 threshold=242/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/194 filtered=131/194 threshold=243/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/190 filtered=152/191 threshold=241/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/186 filtered=160/187 threshold=244/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=162/201 filtered=152/187 threshold=247/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=163/186 filtered=156/183 threshold=248/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=140/197 filtered=146/197 threshold=250/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=638/179 filtered=489/183 threshold=253/687 left=BLACK right=WHITE mask=1 strength=25 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 bar: capture rejected, runs=16 threshold=562 (decoded=0 errors=3)
+s3 bar:  runs 0..: 179 20 40 39 20 19 20 59
+s3 bar:  runs 8..: 139 59 240 39 40 39 20 19
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=168/182 filtered=187/183 threshold=253/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/179 filtered=134/185 threshold=250/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1056/185 filtered=762/186 threshold=249/688 left=BLACK right=WHITE mask=1 strength=45 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 bar: capture rejected, runs=17 threshold=560 (decoded=0 errors=4)
+s3 bar:  runs 0..: 19 19 39 20 20 99 39 100
+s3 bar:  runs 8..: 39 20 59 20 39 20 19 19
+s3 bar:  runs 16..: 20
+s3 bar:  open run WHITE for 719 ms
+s3 line: adc=980/184 filtered=1154/183 threshold=249/687 left=BLACK right=WHITE mask=1 strength=74 command=LEFT
+s3 line: adc=154/193 filtered=180/193 threshold=249/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=171/194 filtered=157/191 threshold=247/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=936/194 filtered=665/192 threshold=248/689 left=BLACK right=WHITE mask=1 strength=38 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1116/195 filtered=1122/191 threshold=248/690 left=BLACK right=WHITE mask=1 strength=72 command=LEFT
+s3 line: adc=192/194 filtered=199/192 threshold=248/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=204/192 filtered=208/192 threshold=249/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=746/182 filtered=535/184 threshold=249/691 left=BLACK right=WHITE mask=1 strength=29 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=1456/200 filtered=1428/193 threshold=249/688 left=BLACK right=WHITE mask=1 strength=95 command=LEFT
+s3 line: adc=1637/186 filtered=1642/186 threshold=249/688 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=200/196 filtered=201/192 threshold=249/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=172/194 filtered=162/193 threshold=250/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=7 threshold=563 (decoded=0 errors=5)
+s3 bar:  runs 0..: 79 20 59 40 79 359 140
+s3 bar:  open run WHITE for 719 ms
+s3 line: adc=788/186 filtered=591/188 threshold=251/692 left=BLACK right=WHITE mask=1 strength=33 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1172/192 filtered=1236/189 threshold=251/688 left=BLACK right=WHITE mask=1 strength=80 command=LEFT
+s3 line: adc=165/178 filtered=180/181 threshold=251/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/187 filtered=148/186 threshold=250/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=220/189 filtered=212/187 threshold=249/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=397/183 filtered=347/184 threshold=250/689 left=BLACK right=WHITE mask=1 strength=15 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=526/196 filtered=632/192 threshold=250/686 left=BLACK right=WHITE mask=1 strength=36 command=LEFT
+s3 line: adc=174/190 filtered=188/192 threshold=250/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=21 threshold=560 (decoded=0 errors=6)
+s3 bar:  runs 0..: 220 19 19 60 100 19 119 19
+s3 bar:  runs 8..: 20 19 60 80 119 79 20 139
+s3 bar:  runs 16..: 60 80 259 120 359
+s3 bar:  open run WHITE for 719 ms
+s3 line: adc=121/195 filtered=124/195 threshold=251/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=144/203 filtered=141/204 threshold=248/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=155/194 filtered=151/194 threshold=247/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=417/183 filtered=346/186 threshold=249/693 left=BLACK right=WHITE mask=1 strength=15 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=177/185 filtered=188/185 threshold=249/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/193 filtered=142/193 threshold=248/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/182 filtered=131/184 threshold=245/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=169/190 filtered=156/191 threshold=243/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/190 filtered=154/189 threshold=244/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=26 threshold=554 (decoded=0 errors=7)
+s3 bar:  runs 0..: 40 680 39 179 20 140 80 19
+s3 bar:  runs 8..: 19 19 99 60 480 19 360 60
+s3 bar:  runs 16..: 20 60 20 39 20 59 19 619
+s3 bar:  runs 24..: 200 19
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=203/200 filtered=204/198 threshold=247/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=292/194 filtered=282/193 threshold=248/694 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=190/272 filtered=191/232 threshold=248/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=286/190 filtered=277/193 threshold=249/696 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=248/208 filtered=249/209 threshold=249/697 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+s3 line: adc=245/1626 filtered=241/1309 threshold=249/698 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+s3 line: adc=197/2965 filtered=206/2750 threshold=249/698 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+[S2] line: normal following resumed
+wifi: joining "Pixel_1232" ...
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 bar: capture rejected, runs=10 threshold=554 (decoded=0 errors=8)
+s3 bar:  runs 0..: 160 19 60 19 180 19 100 20
+s3 bar:  runs 8..: 399 160
+s3 bar:  open run BLACK for 800 ms
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=149/2561 filtered=148/2747 threshold=252/698 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 line: adc=179/230 filtered=174/309 threshold=251/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=177/196 filtered=181/196 threshold=252/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/192 filtered=181/191 threshold=256/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/185 filtered=134/189 threshold=257/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/185 filtered=144/185 threshold=254/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=11 threshold=554 (decoded=0 errors=9)
+s3 bar:  runs 0..: 640 39 20 159 100 20 100 419
+s3 bar:  runs 8..: 40 60 19
+s3 bar:  open run WHITE for 700 ms
+s3 line: adc=152/182 filtered=143/186 threshold=251/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/192 filtered=146/189 threshold=247/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=133/184 filtered=137/185 threshold=244/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/181 filtered=136/183 threshold=243/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1238/188 filtered=1102/187 threshold=243/688 left=BLACK right=WHITE mask=1 strength=71 command=LEFT
+[S2] S4 PICKUP: car lifted, STOP latched
+[S2] run summary: distance 909 mm, highest hump 0 mm (none)
+s4: car lifted; STOP requested
+s3 line: adc=308/2283 filtered=293/1949 threshold=243/688 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3769/3854 filtered=3763/3854 threshold=243/688 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+s3 bar: capture rejected, runs=0 threshold=555 (decoded=0 errors=10)
+s3 bar:  open run BLACK for 800 ms
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=688/2694 filtered=1001/2714 threshold=243/688 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=222/3130 filtered=224/3275 threshold=243/688 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+s3 line: adc=166/174 filtered=178/270 threshold=244/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=113/3409 filtered=124/3062 threshold=245/689 left=WHITE right=BLACK mask=2 strength=92 command=RIGHT
+s3 line: adc=131/2707 filtered=130/2709 threshold=241/689 left=WHITE right=BLACK mask=2 strength=81 command=RIGHT
+s3 line: adc=145/2723 filtered=138/2725 threshold=238/689 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 bar: capture rejected, runs=7 threshold=554 (decoded=0 errors=11)
+s3 bar:  runs 0..: 39 20 99 20 80 19 20
+s3 bar:  open run WHITE for 720 ms
+s3 line: adc=146/2737 filtered=142/2737 threshold=239/689 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 line: adc=125/2712 filtered=131/2719 threshold=236/689 left=WHITE right=BLACK mask=2 strength=81 command=RIGHT
+s3 line: adc=132/2722 filtered=135/2721 threshold=236/689 left=WHITE right=BLACK mask=2 strength=81 command=RIGHT
+s3 line: adc=145/2704 filtered=142/2707 threshold=235/689 left=WHITE right=BLACK mask=2 strength=81 command=RIGHT
+s3 line: adc=149/2730 filtered=139/2730 threshold=236/689 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 line: adc=125/2744 filtered=129/2744 threshold=235/689 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 line: adc=147/2744 filtered=144/2743 threshold=235/689 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 bar: capture rejected, runs=10 threshold=554 (decoded=0 errors=12)
+s3 bar:  runs 0..: 79 20 159 100 599 99 260 19
+s3 bar:  runs 8..: 520 19
+s3 bar:  open run BLACK for 800 ms
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=149/2728 filtered=139/2733 threshold=236/689 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 2; hump maximum cleared
+s3 line: adc=145/2892 filtered=142/2842 threshold=235/689 left=WHITE right=BLACK mask=2 strength=85 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=158/196 filtered=145/247 threshold=234/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/193 filtered=154/192 threshold=236/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=2 threshold=554 (decoded=0 errors=13)
+s3 bar:  runs 0..: 179 19
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=168/190 filtered=162/190 threshold=237/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=220/194 filtered=208/192 threshold=240/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=222/184 filtered=235/186 threshold=241/691 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=221/182 filtered=215/183 threshold=241/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/185 filtered=135/188 threshold=241/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/206 filtered=137/201 threshold=240/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/196 filtered=146/196 threshold=240/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/193 filtered=137/193 threshold=239/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=997/194 filtered=725/188 threshold=242/690 left=BLACK right=WHITE mask=1 strength=43 command=LEFT
+wifi: joining "Pixel_1232" ...
+[S2] line: barcode capture; strong curves softened
+[S2] line: barcode capture ended
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=908/190 filtered=983/189 threshold=242/687 left=BLACK right=WHITE mask=1 strength=62 command=LEFT
+s3 line: adc=154/192 filtered=167/191 threshold=242/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=143/192 filtered=140/191 threshold=241/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1113/171 filtered=848/200 threshold=243/691 left=BLACK right=WHITE mask=1 strength=52 command=LEFT
+s3 bar: capture rejected, runs=17 threshold=561 (decoded=0 errors=14)
+s3 bar:  runs 0..: 79 120 540 60 19 19 59 20
+s3 bar:  runs 8..: 140 19 140 20 99 100 40 79
+s3 bar:  runs 16..: 20
+s3 bar:  open run WHITE for 719 ms
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1451/184 filtered=1451/188 threshold=243/693 left=BLACK right=WHITE mask=1 strength=96 command=LEFT
+s3 line: adc=194/187 filtered=204/187 threshold=243/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=216/197 filtered=210/195 threshold=246/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=844/185 filtered=627/186 threshold=246/695 left=BLACK right=WHITE mask=1 strength=36 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1342/195 filtered=1348/192 threshold=246/692 left=BLACK right=WHITE mask=1 strength=89 command=LEFT
+s3 line: adc=746/182 filtered=763/182 threshold=246/692 left=BLACK right=WHITE mask=1 strength=46 command=LEFT
+s3 line: adc=204/190 filtered=205/193 threshold=246/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=201/183 filtered=198/188 threshold=249/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1089/186 filtered=766/186 threshold=249/695 left=BLACK right=WHITE mask=1 strength=46 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=1469/200 filtered=1496/196 threshold=249/693 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=180/188 filtered=189/185 threshold=249/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=149/177 filtered=149/183 threshold=250/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=817/182 filtered=617/185 threshold=252/689 left=BLACK right=WHITE mask=1 strength=34 command=LEFT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=268/187 filtered=469/186 threshold=252/688 left=BLACK right=WHITE mask=1 strength=24 command=LEFT
+s3 line: adc=178/188 filtered=185/188 threshold=252/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/181 filtered=126/184 threshold=251/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/192 filtered=158/190 threshold=248/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=486/197 filtered=384/196 threshold=249/687 left=BLACK right=WHITE mask=1 strength=17 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=171/194 filtered=185/194 threshold=249/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/189 filtered=139/190 threshold=248/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/176 filtered=127/185 threshold=245/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/184 filtered=154/186 threshold=245/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=24 threshold=568 (decoded=0 errors=15)
+s3 bar:  runs 0..: 419 20 59 20 400 219 720 479
+s3 bar:  runs 8..: 40 219 19 100 719 40 60 39
+s3 bar:  runs 16..: 20 20 19 199 419 20 19 60
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=282/189 filtered=269/188 threshold=248/692 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=167/184 filtered=181/186 threshold=248/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=145/209 filtered=140/202 threshold=245/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/258 filtered=146/223 threshold=242/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 bar: capture rejected, runs=6 threshold=568 (decoded=0 errors=16)
+s3 bar:  runs 0..: 19 20 60 19 80 40
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=116/189 filtered=122/191 threshold=238/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/186 filtered=134/189 threshold=235/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/201 filtered=125/198 threshold=237/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/195 filtered=151/194 threshold=240/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=159/182 filtered=154/188 threshold=244/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=18 threshold=567 (decoded=0 errors=17)
+s3 bar:  runs 0..: 40 20 19 339 40 19 59 40
+s3 bar:  runs 8..: 20 219 60 59 439 20 139 40
+s3 bar:  runs 16..: 19 140
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=171/191 filtered=166/190 threshold=247/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=239/187 filtered=239/187 threshold=250/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=274/186 filtered=267/189 threshold=251/692 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=174/184 filtered=192/185 threshold=251/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/328 filtered=141/310 threshold=248/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/1286 filtered=141/1071 threshold=247/695 left=WHITE right=BLACK mask=2 strength=28 command=RIGHT
+wifi: joining "Pixel_1232" ...
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=118/200 filtered=131/284 threshold=245/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=9 threshold=571 (decoded=0 errors=18)
+s3 bar:  runs 0..: 639 20 299 20 239 20 659 60
+s3 bar:  runs 8..: 80
+s3 bar:  open run WHITE for 719 ms
+s3 line: adc=1258/184 filtered=963/185 threshold=243/692 left=BLACK right=WHITE mask=1 strength=60 command=LEFT
+[S2] S4 PICKUP: car lifted, STOP latched
+[S2] run summary: distance 819 mm, highest hump 0 mm (none)
+s4: car lifted; STOP requested
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=1096/2456 filtered=800/2115 threshold=243/693 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3792/3901 filtered=3799/3910 threshold=243/693 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=0 threshold=572 (decoded=0 errors=19)
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=2303/3017 filtered=2362/3132 threshold=243/693 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=133/163 filtered=225/228 threshold=243/693 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=190/218 filtered=187/212 threshold=243/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=2761/520 filtered=2493/662 threshold=243/694 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2588/221 filtered=2642/291 threshold=243/694 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=1619/533 filtered=1208/674 threshold=243/696 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=1812/218 filtered=1722/290 threshold=243/696 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=166/176 filtered=173/181 threshold=243/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=183/190 filtered=183/190 threshold=246/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=4 threshold=569 (decoded=0 errors=20)
+s3 bar:  runs 0..: 20 299 99 300
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=189/181 filtered=188/185 threshold=249/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=187/182 filtered=189/188 threshold=253/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/189 filtered=186/189 threshold=256/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=180/190 filtered=186/190 threshold=259/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=179/190 filtered=185/188 threshold=262/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=204/192 filtered=199/190 threshold=266/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/182 filtered=182/186 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/186 filtered=189/182 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/191 filtered=183/190 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=181/180 filtered=183/182 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=199/178 filtered=191/180 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=189/190 filtered=189/190 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=190/188 filtered=190/187 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=173/194 filtered=178/193 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=201/186 filtered=192/186 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=185/198 filtered=191/192 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=188/196 filtered=193/191 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=194/190 filtered=193/191 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=197/193 filtered=193/191 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=177/180 filtered=176/183 threshold=268/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/190 filtered=195/187 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=197/192 filtered=191/188 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=174/180 filtered=182/180 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=194/192 filtered=188/190 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=198/193 filtered=195/185 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=197/184 filtered=187/185 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=200/192 filtered=198/190 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=196/179 filtered=192/182 threshold=268/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=170/197 filtered=180/190 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=181/193 filtered=186/193 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/193 filtered=189/191 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=187/180 filtered=187/184 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=180/196 filtered=180/193 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=194/180 filtered=184/184 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=190/178 filtered=183/182 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=183/174 filtered=183/178 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=190/184 filtered=183/188 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=187/194 filtered=188/194 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=193/191 filtered=193/186 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=174/194 filtered=177/190 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=193/192 filtered=190/189 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/195 filtered=187/188 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=194/180 filtered=192/181 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=175/194 filtered=184/191 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=194/189 filtered=189/189 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=200/187 filtered=197/188 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=171/181 filtered=178/184 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/188 filtered=179/187 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=175/181 filtered=183/184 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=192/182 filtered=193/186 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=183/188 filtered=181/184 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=170/197 filtered=176/193 threshold=268/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=193/190 filtered=186/187 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=184/179 filtered=185/183 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=185/194 filtered=186/193 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=174/194 filtered=182/190 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/190 filtered=176/191 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=186/179 filtered=188/183 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=198/178 filtered=192/183 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/190 filtered=186/190 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=189/188 filtered=185/190 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=193/195 filtered=192/194 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=175/185 filtered=185/188 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=170/189 filtered=173/191 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=181/182 filtered=181/185 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=182/179 filtered=184/182 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=182/187 filtered=186/188 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=179/180 filtered=178/181 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=185/187 filtered=190/186 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=200/189 filtered=188/186 threshold=268/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=182/195 filtered=182/190 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=196/196 filtered=187/191 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=197/179 filtered=187/184 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=187/184 filtered=186/186 threshold=268/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=169/196 filtered=176/194 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=200/194 filtered=192/187 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=179/181 filtered=180/183 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=182/193 filtered=182/191 threshold=268/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/177 filtered=177/178 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=170/180 filtered=178/184 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/191 filtered=180/189 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=171/194 filtered=176/190 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=181/193 filtered=181/190 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=190/184 filtered=183/186 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=196/189 filtered=185/188 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=178/192 filtered=188/188 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/180 filtered=184/185 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=200/180 filtered=196/183 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=182/192 filtered=185/191 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=177/181 filtered=183/183 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=184/190 filtered=182/186 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=198/188 filtered=193/188 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/192 filtered=183/189 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=183/179 filtered=180/182 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=196/179 filtered=188/179 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=170/179 filtered=176/181 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=194/185 filtered=192/187 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=177/184 filtered=186/188 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=193/192 filtered=191/192 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=170/194 filtered=179/191 threshold=268/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/194 filtered=182/189 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=192/196 filtered=188/192 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=183/182 filtered=185/184 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=177/193 filtered=178/191 threshold=268/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=198/193 filtered=190/191 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=184/192 filtered=186/188 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=185/187 filtered=181/186 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=204/178 filtered=194/185 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=168/196 filtered=178/191 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=174/192 filtered=179/191 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=178/181 filtered=179/182 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=200/182 filtered=193/185 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=173/178 filtered=180/181 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/174 filtered=185/182 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=189/190 filtered=193/185 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/190 filtered=191/189 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=194/186 filtered=191/186 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=171/188 filtered=175/187 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=169/193 filtered=173/191 threshold=268/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=174/195 filtered=174/189 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=195/177 filtered=195/183 threshold=268/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=170/187 filtered=175/189 threshold=268/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=176/179 filtered=178/179 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=192/177 filtered=186/180 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=198/180 filtered=188/183 threshold=268/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=194/185 filtered=186/187 threshold=268/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 3; hump maximum cleared
+s3 line: adc=161/194 filtered=174/190 threshold=268/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=164/191 filtered=158/192 threshold=265/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=57/190 filtered=107/187 threshold=262/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/183 filtered=146/183 threshold=258/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=129/197 filtered=142/190 threshold=255/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=148/202 filtered=151/196 threshold=254/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/198 filtered=142/195 threshold=253/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/184 filtered=140/189 threshold=249/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/193 filtered=142/192 threshold=248/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=0 threshold=584 (decoded=0 errors=21)
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=158/181 filtered=152/185 threshold=249/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1160/180 filtered=870/182 threshold=251/688 left=BLACK right=WHITE mask=1 strength=53 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=283/194 filtered=616/194 threshold=251/687 left=BLACK right=WHITE mask=1 strength=34 command=LEFT
+s3 line: adc=157/192 filtered=176/186 threshold=251/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/181 filtered=147/186 threshold=250/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1003/181 filtered=748/185 threshold=252/687 left=BLACK right=WHITE mask=1 strength=44 command=LEFT
+s3 bar: capture rejected, runs=3 threshold=584 (decoded=0 errors=22)
+s3 bar:  runs 0..: 359 20 359
+s3 bar:  open run WHITE for 719 ms
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=541/181 filtered=794/185 threshold=252/687 left=BLACK right=WHITE mask=1 strength=48 command=LEFT
+s3 line: adc=201/196 filtered=208/193 threshold=252/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=250/198 filtered=233/196 threshold=253/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=884/182 filtered=666/185 threshold=253/685 left=BLACK right=WHITE mask=1 strength=38 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1332/196 filtered=1329/195 threshold=253/686 left=BLACK right=WHITE mask=1 strength=87 command=LEFT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=176/187 filtered=195/191 threshold=253/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1104/194 filtered=793/192 threshold=254/691 left=BLACK right=WHITE mask=1 strength=47 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1592/193 filtered=1545/192 threshold=254/690 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=435/190 filtered=567/192 threshold=254/692 left=BLACK right=WHITE mask=1 strength=31 command=LEFT
+s3 line: adc=196/185 filtered=201/185 threshold=254/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=3 threshold=584 (decoded=0 errors=23)
+s3 bar:  runs 0..: 39 39 320
+s3 bar:  open run WHITE for 719 ms
+s3 line: adc=158/201 filtered=151/197 threshold=253/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=990/190 filtered=730/190 threshold=255/692 left=BLACK right=WHITE mask=1 strength=43 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1261/186 filtered=1282/187 threshold=255/690 left=BLACK right=WHITE mask=1 strength=84 command=LEFT
+s3 line: adc=152/194 filtered=171/194 threshold=255/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/195 filtered=138/192 threshold=252/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=16 threshold=584 (decoded=0 errors=24)
+s3 bar:  runs 0..: 59 60 20 39 20 19 19 40
+s3 bar:  runs 8..: 139 39 20 80 19 120 39 40
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=166/178 filtered=166/179 threshold=249/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=947/197 filtered=710/191 threshold=251/688 left=BLACK right=WHITE mask=1 strength=41 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=218/186 filtered=235/189 threshold=251/689 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+s3 line: adc=181/186 filtered=198/188 threshold=251/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=138/188 filtered=138/193 threshold=252/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/183 filtered=157/186 threshold=251/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=196/185 filtered=193/188 threshold=253/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=21 threshold=578 (decoded=0 errors=25)
+s3 bar:  runs 0..: 20 20 39 679 19 80 19 59
+s3 bar:  runs 8..: 20 40 119 39 20 19 19 20
+s3 bar:  runs 16..: 79 239 280 20 39
+s3 bar:  open run WHITE for 719 ms
+s3 line: adc=536/195 filtered=447/192 threshold=254/689 left=BLACK right=WHITE mask=1 strength=22 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=164/193 filtered=184/193 threshold=254/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/190 filtered=129/189 threshold=253/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/185 filtered=127/186 threshold=250/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=0 threshold=572 (decoded=0 errors=26)
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=137/196 filtered=136/189 threshold=246/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=171/198 filtered=162/196 threshold=247/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=172/187 filtered=176/190 threshold=250/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+wifi: joining "Pixel_1232" ...
+s3 line: adc=216/200 filtered=212/199 threshold=253/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=231/180 filtered=233/186 threshold=257/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=349/180 filtered=316/185 threshold=257/688 left=BLACK right=WHITE mask=1 strength=12 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=162/191 filtered=182/191 threshold=257/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=155/198 filtered=155/196 threshold=254/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/185 filtered=158/189 threshold=255/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/200 filtered=145/197 threshold=255/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: capture rejected, runs=2 threshold=555 (decoded=0 errors=27)
+s3 bar:  runs 0..: 60 59
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=141/187 filtered=140/189 threshold=252/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/184 filtered=142/184 threshold=249/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/189 filtered=142/191 threshold=248/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: STOP requested
+s3 line: adc=137/226 filtered=136/225 threshold=245/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/227 filtered=137/225 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/214 filtered=140/215 threshold=241/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=125/216 filtered=127/216 threshold=241/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=148/219 filtered=148/222 threshold=241/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=134/222 filtered=133/223 threshold=241/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/211 filtered=134/215 threshold=242/717 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/222 filtered=139/221 threshold=241/720 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/230 filtered=129/226 threshold=238/722 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/217 filtered=128/217 threshold=237/721 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/224 filtered=137/224 threshold=238/722 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/219 filtered=126/218 threshold=235/721 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/214 filtered=129/220 threshold=237/722 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/227 filtered=130/225 threshold=235/722 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/219 filtered=139/218 threshold=237/721 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=132/213 filtered=131/220 threshold=236/724 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=157/177 filtered=150/179 threshold=236/723 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=2268/2438 filtered=2014/1972 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3917/3977 filtered=3910/3976 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=0 threshold=554 (decoded=0 errors=28)
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=3987/4029 filtered=3984/4029 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3989/4024 filtered=3982/4025 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2880/3617 filtered=2913/3627 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2882/3583 filtered=2850/3573 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2854/3580 filtered=2838/3577 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2484/3421 filtered=2432/3416 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2981/3594 filtered=2976/3589 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=9 threshold=554 (decoded=0 errors=29)
+s3 bar:  runs 0..: 179 39 20 19 20 20 60 279
+s3 bar:  runs 8..: 39
+s3 bar:  open run WHITE for 700 ms
+wifi: joining "Pixel_1232" ...
+s3 line: adc=2934/3568 filtered=2974/3588 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=2660/3498 filtered=2655/3503 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=3249/3646 filtered=3113/3591 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3942/3989 filtered=3948/3996 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3824/3905 filtered=3823/3907 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3842/3905 filtered=3841/3905 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3804/3902 filtered=3807/3902 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3813/3886 filtered=3810/3890 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3792/3869 filtered=3787/3875 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3823/3907 filtered=3816/3901 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3887/3953 filtered=3880/3951 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3064/3341 filtered=3120/3385 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=2201/2817 filtered=2165/2798 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=1280/2465 filtered=1311/2469 threshold=235/721 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=192/1196 filtered=198/1357 threshold=235/721 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+s3 line: adc=172/226 filtered=173/278 threshold=236/721 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/189 filtered=141/189 threshold=237/718 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/187 filtered=138/187 threshold=236/715 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/185 filtered=140/185 threshold=237/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/181 filtered=130/182 threshold=235/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/190 filtered=129/187 threshold=234/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/188 filtered=140/189 threshold=235/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/180 filtered=141/185 threshold=236/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/188 filtered=138/189 threshold=235/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=141/192 filtered=136/187 threshold=234/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=124/195 filtered=134/188 threshold=235/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=153/190 filtered=144/190 threshold=234/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/181 filtered=129/185 threshold=232/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/184 filtered=140/186 threshold=232/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/187 filtered=131/187 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/190 filtered=138/187 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/178 filtered=145/181 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/192 filtered=132/187 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/184 filtered=136/185 threshold=233/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/188 filtered=144/189 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/191 filtered=138/191 threshold=236/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=149/180 filtered=142/182 threshold=237/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/190 filtered=141/188 threshold=236/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=120/193 filtered=128/192 threshold=237/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/180 filtered=147/185 threshold=235/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/169 filtered=137/177 threshold=234/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/178 filtered=129/179 threshold=233/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/193 filtered=130/192 threshold=230/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=150/181 filtered=141/185 threshold=231/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/180 filtered=143/181 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/192 filtered=125/189 threshold=233/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/184 filtered=133/185 threshold=232/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=120/177 filtered=129/182 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=120/189 filtered=130/187 threshold=237/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=153/180 filtered=143/186 threshold=236/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/182 filtered=129/184 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/188 filtered=133/188 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/192 filtered=128/189 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/193 filtered=133/189 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/193 filtered=132/191 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/182 filtered=127/183 threshold=231/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/187 filtered=122/188 threshold=230/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/193 filtered=141/192 threshold=233/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/184 filtered=142/183 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=149/195 filtered=137/192 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/179 filtered=139/179 threshold=231/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=126/187 filtered=133/188 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/189 filtered=139/189 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/181 filtered=137/184 threshold=235/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=135/189 filtered=140/189 threshold=236/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/190 filtered=130/188 threshold=237/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/183 filtered=125/185 threshold=237/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/192 filtered=145/190 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/183 filtered=134/187 threshold=236/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/188 filtered=129/185 threshold=235/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=139/182 filtered=136/185 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=132/189 filtered=128/189 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=152/192 filtered=139/187 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/180 filtered=140/185 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/192 filtered=135/187 threshold=231/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/188 filtered=143/187 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/192 filtered=138/192 threshold=236/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/179 filtered=126/181 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/188 filtered=144/188 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/183 filtered=120/186 threshold=236/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/180 filtered=137/183 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/187 filtered=131/187 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=120/181 filtered=122/184 threshold=237/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/194 filtered=136/189 threshold=237/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=123/193 filtered=129/192 threshold=238/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/188 filtered=123/188 threshold=239/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/188 filtered=144/189 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/182 filtered=146/184 threshold=238/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/193 filtered=129/189 threshold=239/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/187 filtered=133/186 threshold=239/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/177 filtered=138/183 threshold=238/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/187 filtered=135/187 threshold=234/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/193 filtered=130/188 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=144/186 filtered=145/185 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=124/195 filtered=134/191 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=137/187 filtered=139/190 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/182 filtered=135/182 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/192 filtered=129/191 threshold=231/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/187 filtered=122/186 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/180 filtered=136/184 threshold=232/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/180 filtered=132/184 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/193 filtered=129/189 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/181 filtered=137/186 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/180 filtered=132/183 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/181 filtered=137/183 threshold=235/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=155/193 filtered=147/188 threshold=234/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/180 filtered=143/183 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=136/188 filtered=128/189 threshold=231/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/181 filtered=141/181 threshold=233/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/187 filtered=142/187 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/186 filtered=134/186 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/182 filtered=145/183 threshold=237/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/191 filtered=145/190 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/191 filtered=146/188 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/187 filtered=145/187 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/186 filtered=133/186 threshold=236/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=148/185 filtered=140/183 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=116/180 filtered=126/183 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=143/185 filtered=136/186 threshold=237/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/187 filtered=144/187 threshold=240/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/182 filtered=137/183 threshold=237/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/184 filtered=134/182 threshold=234/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/183 filtered=122/184 threshold=233/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/192 filtered=138/189 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/190 filtered=143/188 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/192 filtered=124/187 threshold=236/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/180 filtered=141/184 threshold=235/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/192 filtered=132/191 threshold=233/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=128/194 filtered=131/186 threshold=231/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/193 filtered=149/189 threshold=230/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=134/182 filtered=136/187 threshold=231/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/188 filtered=141/188 threshold=235/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/170 filtered=132/180 threshold=236/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/180 filtered=137/180 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/184 filtered=127/186 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/184 filtered=137/185 threshold=234/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/188 filtered=129/184 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/193 filtered=140/190 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/185 filtered=141/185 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=141/172 filtered=139/177 threshold=237/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=121/188 filtered=126/188 threshold=236/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=136/180 filtered=137/183 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/193 filtered=143/190 threshold=236/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/189 filtered=127/187 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/188 filtered=125/186 threshold=237/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/187 filtered=136/187 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/181 filtered=138/184 threshold=238/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/185 filtered=130/187 threshold=240/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/182 filtered=132/184 threshold=240/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/183 filtered=135/185 threshold=237/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/180 filtered=145/182 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=138/188 filtered=129/187 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/192 filtered=140/191 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=139/180 filtered=139/185 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/178 filtered=128/184 threshold=233/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/187 filtered=141/186 threshold=234/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/192 filtered=131/190 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/192 filtered=126/188 threshold=235/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/192 filtered=123/191 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/187 filtered=126/188 threshold=230/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/182 filtered=140/184 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/181 filtered=140/183 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=141/171 filtered=138/177 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=133/178 filtered=131/178 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=137/184 filtered=131/185 threshold=234/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/181 filtered=130/183 threshold=235/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/188 filtered=132/186 threshold=236/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/189 filtered=141/187 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=136/179 filtered=134/184 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/185 filtered=138/186 threshold=236/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/181 filtered=131/180 threshold=235/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/180 filtered=127/184 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/186 filtered=141/187 threshold=234/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/192 filtered=130/191 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=125/178 filtered=135/181 threshold=234/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=120/179 filtered=130/185 threshold=236/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/183 filtered=143/183 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/187 filtered=131/186 threshold=238/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/182 filtered=138/184 threshold=239/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/192 filtered=129/189 threshold=237/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/189 filtered=145/188 threshold=236/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/181 filtered=132/182 threshold=238/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/170 filtered=129/179 threshold=238/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/192 filtered=139/188 threshold=235/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/181 filtered=137/182 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=141/188 filtered=139/186 threshold=233/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=129/191 filtered=136/188 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=144/181 filtered=141/185 threshold=237/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=143/188 filtered=138/189 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/191 filtered=132/187 threshold=236/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/180 filtered=139/184 threshold=237/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/180 filtered=139/180 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/188 filtered=135/185 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/182 filtered=136/184 threshold=233/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/193 filtered=139/191 threshold=234/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/187 filtered=140/187 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/195 filtered=133/192 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=138/193 filtered=140/191 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=138/175 filtered=134/178 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/193 filtered=135/190 threshold=231/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/192 filtered=135/189 threshold=230/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/178 filtered=130/184 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/194 filtered=128/191 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/182 filtered=131/185 threshold=234/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/179 filtered=135/181 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=135/188 filtered=140/188 threshold=232/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/190 filtered=129/189 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/182 filtered=130/184 threshold=231/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=122/189 filtered=131/185 threshold=234/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=152/185 filtered=148/184 threshold=233/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=147/188 filtered=141/188 threshold=232/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/184 filtered=129/186 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/184 filtered=141/184 threshold=231/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/190 filtered=135/189 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/182 filtered=127/186 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=143/188 filtered=140/189 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/187 filtered=139/187 threshold=235/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/181 filtered=137/184 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/179 filtered=135/180 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/187 filtered=134/182 threshold=232/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=175/186 filtered=154/188 threshold=231/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=153/193 filtered=146/185 threshold=232/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/187 filtered=130/188 threshold=233/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/189 filtered=136/186 threshold=233/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/182 filtered=143/184 threshold=232/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/193 filtered=142/189 threshold=231/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/188 filtered=125/186 threshold=234/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/181 filtered=129/181 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/182 filtered=129/183 threshold=232/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/180 filtered=138/183 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/185 filtered=130/185 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=139/194 filtered=134/192 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=129/180 filtered=134/184 threshold=235/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=132/184 filtered=137/188 threshold=236/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/192 filtered=130/190 threshold=238/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/192 filtered=137/193 threshold=236/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/189 filtered=135/191 threshold=234/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/196 filtered=123/190 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/178 filtered=134/182 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/188 filtered=136/188 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/178 filtered=137/184 threshold=234/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/210 filtered=139/197 threshold=235/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=218/2547 filtered=195/2094 threshold=236/686 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+s3 line: adc=2460/3152 filtered=1756/2894 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+s3 line: adc=3963/4017 filtered=3960/4016 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> joined AP, waiting for IP (1)
+s3 bar: capture rejected, runs=4 threshold=582 (decoded=0 errors=30)
+s3 bar:  runs 0..: 19 220 19 59
+s3 bar:  open run BLACK for 820 ms
+s3 line: adc=4003/4026 filtered=4000/4029 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4010/4054 filtered=4006/4050 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4018/4057 filtered=4012/4057 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4037/4069 filtered=4032/4065 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4028/4060 filtered=4028/4060 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4035/4066 filtered=4038/4067 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4050/4083 filtered=4047/4083 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4053/4086 filtered=4049/4085 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4037/4086 filtered=4042/4083 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4060/4078 filtered=4060/4082 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4038/4093 filtered=4046/4092 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4073/4084 filtered=4067/4088 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4069/4095 filtered=4058/4095 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4044/4094 filtered=4045/4090 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4061/4093 filtered=4053/4088 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4056/4090 filtered=4052/4087 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4040/4080 filtered=4047/4083 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4058/4080 filtered=4054/4085 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4060/4083 filtered=4060/4083 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4064/4095 filtered=4055/4094 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4064/4095 filtered=4060/4094 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4048/4085 filtered=4048/4086 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+s3 line: adc=4054/4084 filtered=4046/4080 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4034/4064 filtered=4029/4072 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4045/4061 filtered=4037/4063 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=4 threshold=583 (decoded=0 errors=31)
+s3 bar:  runs 0..: 20 279 140 39
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=4043/4065 filtered=4043/4065 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4052/4070 filtered=4046/4071 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4033/4024 filtered=4042/4035 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4046/4058 filtered=4047/4058 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4057/4056 filtered=4053/4057 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4035/4064 filtered=4041/4063 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4040/4045 filtered=4031/4046 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4041/4053 filtered=4039/4051 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4016/4050 filtered=4026/4051 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4017/4038 filtered=4027/4038 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4042/4043 filtered=4039/4044 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4041/4051 filtered=4035/4051 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4037/4046 filtered=4034/4047 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4010/4049 filtered=4017/4047 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4026/4052 filtered=4027/4052 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4030/4048 filtered=4027/4051 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4037/4054 filtered=4037/4052 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4022/4050 filtered=4021/4050 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4029/4052 filtered=4031/4055 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4030/4057 filtered=4025/4055 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+s3 line: adc=4019/4062 filtered=4020/4059 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4048/4057 filtered=4040/4058 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4038/4060 filtered=4030/4059 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4017/4055 filtered=4020/4055 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4018/4062 filtered=4027/4061 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=0 threshold=583 (decoded=0 errors=32)
+s3 bar:  open run BLACK for 819 ms
+s3 line: adc=4040/4058 filtered=4038/4058 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4035/4057 filtered=4031/4056 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4033/4060 filtered=4031/4058 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4001/4052 filtered=4002/4050 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3989/4041 filtered=3989/4043 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3989/4040 filtered=3993/4043 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4026/4052 filtered=4018/4051 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4010/4039 filtered=4017/4044 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3365/3574 filtered=3460/3640 threshold=236/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=172/235 filtered=184/751 threshold=236/686 left=WHITE right=BLACK mask=2 strength=18 command=RIGHT
+s3 line: adc=118/177 filtered=130/253 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/175 filtered=133/177 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=140/184 filtered=135/184 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/182 filtered=122/182 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/188 filtered=132/186 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/178 filtered=127/179 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/177 filtered=128/179 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/177 filtered=131/180 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/182 filtered=136/182 threshold=230/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=138/177 filtered=138/180 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=110/187 filtered=118/182 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=150/180 filtered=143/179 threshold=230/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/185 filtered=121/183 threshold=231/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/185 filtered=125/181 threshold=231/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/180 filtered=120/179 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/185 filtered=126/183 threshold=229/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/185 filtered=132/184 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/178 filtered=118/179 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/182 filtered=138/181 threshold=231/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/184 filtered=128/181 threshold=230/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/184 filtered=133/181 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=116/178 filtered=118/179 threshold=230/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/189 filtered=122/182 threshold=229/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=131/184 filtered=134/182 threshold=228/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/184 filtered=140/182 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/184 filtered=127/182 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=125/186 filtered=131/183 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/184 filtered=128/184 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/182 filtered=119/182 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/182 filtered=125/182 threshold=232/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/185 filtered=136/183 threshold=233/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=119/182 filtered=121/180 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=122/183 filtered=122/181 threshold=235/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=147/185 filtered=132/182 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=120/178 filtered=128/182 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/176 filtered=128/178 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/180 filtered=121/182 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=116/179 filtered=118/179 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/182 filtered=126/181 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/182 filtered=135/182 threshold=229/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/178 filtered=139/181 threshold=228/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/184 filtered=122/180 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/179 filtered=137/181 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/182 filtered=121/182 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=126/181 filtered=129/181 threshold=233/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/178 filtered=133/181 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=114/185 filtered=125/183 threshold=234/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/182 filtered=123/183 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/179 filtered=120/180 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/184 filtered=125/183 threshold=233/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/185 filtered=136/182 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/182 filtered=140/181 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/181 filtered=122/178 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/180 filtered=138/180 threshold=230/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/178 filtered=129/181 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=115/178 filtered=122/180 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=128/189 filtered=131/184 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=145/184 filtered=134/183 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=113/181 filtered=115/181 threshold=234/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/182 filtered=125/181 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/178 filtered=134/180 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/185 filtered=126/184 threshold=230/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/185 filtered=141/181 threshold=229/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/185 filtered=126/185 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/166 filtered=142/173 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/184 filtered=138/182 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/181 filtered=140/181 threshold=234/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=111/186 filtered=118/186 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/171 filtered=144/176 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=116/180 filtered=119/179 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/178 filtered=140/180 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/177 filtered=134/178 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=121/176 filtered=118/178 threshold=230/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/177 filtered=126/179 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/186 filtered=136/185 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=222/190 filtered=220/187 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/1231 filtered=171/1094 threshold=233/683 left=WHITE right=BLACK mask=2 strength=29 command=RIGHT
+s3 line: adc=160/193 filtered=148/233 threshold=234/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=219/2139 filtered=211/1809 threshold=235/683 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+s3 line: adc=1558/2688 filtered=1090/2535 threshold=235/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3876/3947 filtered=3880/3948 threshold=235/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=4 threshold=570 (decoded=0 errors=33)
+s3 bar:  runs 0..: 39 100 40 239
+s3 bar:  open run BLACK for 800 ms
+wifi: joining "Pixel_1232" ...
+s3 line: adc=2041/3147 filtered=2272/3223 threshold=235/683 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=3948/229 filtered=2371/279 threshold=235/683 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=1384/178 filtered=1380/182 threshold=235/683 left=BLACK right=WHITE mask=1 strength=91 command=LEFT
+s3 bar: capture rejected, runs=3 threshold=572 (decoded=0 errors=34)
+s3 bar:  runs 0..: 19 39 60
+s3 bar:  open run WHITE for 700 ms
+s3 line: adc=1366/175 filtered=1366/177 threshold=235/682 left=BLACK right=WHITE mask=1 strength=90 command=LEFT
+s3 line: adc=1384/184 filtered=1383/182 threshold=235/679 left=BLACK right=WHITE mask=1 strength=91 command=LEFT
+s3 line: adc=146/176 filtered=159/177 threshold=235/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/181 filtered=138/182 threshold=234/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=143/177 filtered=138/177 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 4; hump maximum cleared
+s3 line: adc=144/176 filtered=141/178 threshold=232/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/178 filtered=153/179 threshold=233/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=180/180 filtered=171/182 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=234/180 filtered=230/176 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=511/186 filtered=398/184 threshold=239/680 left=BLACK right=WHITE mask=1 strength=19 command=LEFT
+wifi: joining "Pixel_1232" ...
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=147/177 filtered=162/179 threshold=239/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/184 filtered=141/184 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=168/180 filtered=161/179 threshold=237/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=680/179 filtered=490/179 threshold=238/680 left=BLACK right=WHITE mask=1 strength=26 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=474/180 filtered=690/181 threshold=238/680 left=BLACK right=WHITE mask=1 strength=41 command=LEFT
+s3 line: adc=179/182 filtered=187/181 threshold=238/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/182 filtered=146/182 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=714/181 filtered=541/181 threshold=240/681 left=BLACK right=WHITE mask=1 strength=29 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=813/176 filtered=827/178 threshold=240/682 left=BLACK right=WHITE mask=1 strength=51 command=LEFT
+s3 line: adc=179/183 filtered=192/183 threshold=240/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=229/183 filtered=220/181 threshold=243/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=679/185 filtered=516/182 threshold=243/683 left=BLACK right=WHITE mask=1 strength=27 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=722/177 filtered=745/179 threshold=243/681 left=BLACK right=WHITE mask=1 strength=44 command=LEFT
+s3 line: adc=476/182 filtered=527/182 threshold=243/680 left=BLACK right=WHITE mask=1 strength=28 command=LEFT
+s3 line: adc=180/180 filtered=190/180 threshold=243/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=209/185 filtered=197/186 threshold=244/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=873/181 filtered=645/182 threshold=244/683 left=BLACK right=WHITE mask=1 strength=37 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=930/178 filtered=921/179 threshold=244/681 left=BLACK right=WHITE mask=1 strength=57 command=LEFT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=166/184 filtered=174/181 threshold=244/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/184 filtered=141/185 threshold=241/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=677/171 filtered=531/177 threshold=242/680 left=BLACK right=WHITE mask=1 strength=29 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=144/184 filtered=158/184 threshold=242/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=195/177 filtered=191/180 threshold=243/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=354/177 filtered=319/178 threshold=246/680 left=BLACK right=WHITE mask=1 strength=13 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=161/184 filtered=179/183 threshold=246/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/172 filtered=131/177 threshold=244/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/177 filtered=140/180 threshold=244/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] line: barcode capture; strong curves softened
+s3 line: adc=253/182 filtered=234/182 threshold=246/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=433/178 filtered=352/179 threshold=246/682 left=BLACK right=WHITE mask=1 strength=15 command=LEFT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=940/186 filtered=932/187 threshold=246/679 left=BLACK right=WHITE mask=1 strength=58 command=LEFT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=202/174 filtered=208/176 threshold=246/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=181/172 filtered=181/176 threshold=249/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=309/178 filtered=295/179 threshold=250/680 left=BLACK right=WHITE mask=1 strength=11 command=LEFT
+s3 line: adc=1125/178 filtered=1080/180 threshold=250/680 left=BLACK right=WHITE mask=1 strength=69 command=LEFT
+s3 line: adc=217/184 filtered=218/184 threshold=250/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=174/185 filtered=163/182 threshold=253/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=179/184 filtered=176/185 threshold=255/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=188/186 filtered=183/185 threshold=259/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=346/186 filtered=323/183 threshold=260/682 left=BLACK right=WHITE mask=1 strength=12 command=LEFT
+s3 line: adc=196/179 filtered=211/181 threshold=260/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/184 filtered=135/184 threshold=259/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/182 filtered=144/183 threshold=256/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=139/182 filtered=148/182 threshold=254/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=162/170 filtered=160/176 threshold=253/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 bar: DECODED F (decoded=1 errors=34)
+[S2] line: barcode capture ended
+s3 line: adc=180/179 filtered=178/183 threshold=255/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=994/177 filtered=734/177 threshold=258/682 left=BLACK right=WHITE mask=1 strength=43 command=LEFT
+[S2] S4 PICKUP: car lifted, STOP latched
+[S2] run summary: distance 744 mm, highest hump 0 mm (none)
+s4: car lifted; STOP requested
+s3 line: adc=396/2196 filtered=348/1782 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3019/3384 filtered=2988/3363 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=0 threshold=577 (decoded=1 errors=35)
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=3882/3938 filtered=3859/3923 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4022/4045 filtered=4019/4044 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4024/4050 filtered=4027/4052 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4003/4043 filtered=4010/4044 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4003/4040 filtered=4005/4042 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4016/4041 filtered=4012/4040 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+s3 line: adc=4011/4038 filtered=4004/4039 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4025/4086 filtered=4040/4073 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4010/4059 filtered=4020/4057 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4029/4054 filtered=4021/4054 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3882/3934 filtered=3897/3949 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=460/1825 filtered=802/1853 threshold=258/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=1173/233 filtered=727/290 threshold=258/684 left=BLACK right=WHITE mask=1 strength=42 command=LEFT
+s3 line: adc=155/208 filtered=165/208 threshold=258/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1212/210 filtered=1087/208 threshold=257/687 left=BLACK right=WHITE mask=1 strength=69 command=LEFT
+s3 line: adc=218/185 filtered=224/188 threshold=257/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=248/176 filtered=249/178 threshold=258/686 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+s3 line: adc=241/181 filtered=247/178 threshold=258/683 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 5; hump maximum cleared
+s3 line: adc=1163/180 filtered=1202/181 threshold=258/682 left=BLACK right=WHITE mask=1 strength=78 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=166/181 filtered=182/181 threshold=258/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/191 filtered=122/191 threshold=255/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=140/250 filtered=137/249 threshold=252/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/944 filtered=133/835 threshold=249/685 left=WHITE right=BLACK mask=2 strength=21 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=149/259 filtered=144/342 threshold=247/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=115/184 filtered=123/183 threshold=244/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/178 filtered=135/181 threshold=241/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/184 filtered=133/181 threshold=238/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=629/175 filtered=483/177 threshold=241/679 left=BLACK right=WHITE mask=1 strength=25 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=153/176 filtered=171/180 threshold=241/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=126/179 filtered=131/180 threshold=238/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=701/178 filtered=505/178 threshold=238/680 left=BLACK right=WHITE mask=1 strength=27 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=251/182 filtered=335/181 threshold=238/678 left=BLACK right=WHITE mask=1 strength=14 command=LEFT
+s3 line: adc=182/173 filtered=189/176 threshold=238/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=222/182 filtered=204/182 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=677/182 filtered=517/181 threshold=241/679 left=BLACK right=WHITE mask=1 strength=28 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: joining "Pixel_1232" ...
+s3 line: adc=652/178 filtered=630/178 threshold=241/679 left=BLACK right=WHITE mask=1 strength=36 command=LEFT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=173/172 filtered=183/178 threshold=241/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=589/198 filtered=476/193 threshold=244/682 left=BLACK right=WHITE mask=1 strength=24 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=915/180 filtered=897/180 threshold=244/684 left=BLACK right=WHITE mask=1 strength=56 command=LEFT
+s3 line: adc=1309/180 filtered=1237/180 threshold=244/682 left=BLACK right=WHITE mask=1 strength=81 command=LEFT
+s3 line: adc=152/185 filtered=176/185 threshold=244/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1008/185 filtered=793/184 threshold=247/684 left=BLACK right=WHITE mask=1 strength=48 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=883/176 filtered=919/178 threshold=247/682 left=BLACK right=WHITE mask=1 strength=57 command=LEFT
+s3 line: adc=148/180 filtered=168/179 threshold=247/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/189 filtered=139/183 threshold=244/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=663/185 filtered=509/184 threshold=244/684 left=BLACK right=WHITE mask=1 strength=27 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=154/184 filtered=169/184 threshold=244/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=187/185 filtered=180/181 threshold=247/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=172/187 filtered=165/183 threshold=250/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=369/182 filtered=326/183 threshold=251/683 left=BLACK right=WHITE mask=1 strength=13 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=169/177 filtered=184/178 threshold=251/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=150/184 filtered=149/183 threshold=250/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=148/176 filtered=144/177 threshold=247/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=268/179 filtered=261/192 threshold=250/679 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+[S2] line: barcode capture; strong curves softened
+s3 line: adc=315/185 filtered=358/182 threshold=250/682 left=BLACK right=WHITE mask=1 strength=15 command=LEFT
+s3 line: adc=204/179 filtered=208/179 threshold=250/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=220/183 filtered=204/183 threshold=253/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=446/182 filtered=369/181 threshold=254/680 left=BLACK right=WHITE mask=1 strength=16 command=LEFT
+s3 line: adc=675/187 filtered=691/182 threshold=254/681 left=BLACK right=WHITE mask=1 strength=40 command=LEFT
+s3 line: adc=218/185 filtered=223/185 threshold=254/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/177 filtered=151/178 threshold=257/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/180 filtered=149/182 threshold=254/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=156/177 filtered=151/177 threshold=253/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=247/187 filtered=248/185 threshold=256/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=258/184 filtered=269/182 threshold=256/685 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=219/190 filtered=221/184 threshold=256/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/177 filtered=141/179 threshold=255/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/187 filtered=157/182 threshold=253/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=172/179 filtered=169/179 threshold=255/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=189/183 filtered=189/182 threshold=258/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: DECODED F (decoded=2 errors=35)
+[S2] line: barcode capture ended
+s3 line: adc=233/186 filtered=240/183 threshold=261/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=306/182 filtered=291/182 threshold=261/680 left=BLACK right=WHITE mask=1 strength=10 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=177/177 filtered=194/179 threshold=261/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/195 filtered=124/196 threshold=258/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/326 filtered=132/310 threshold=255/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/1042 filtered=131/962 threshold=254/686 left=WHITE right=BLACK mask=2 strength=25 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=140/204 filtered=132/274 threshold=252/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=121/182 filtered=127/181 threshold=249/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/181 filtered=139/182 threshold=245/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=141/172 filtered=137/177 threshold=244/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=680/180 filtered=485/179 threshold=245/681 left=BLACK right=WHITE mask=1 strength=25 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1255/176 filtered=1244/177 threshold=245/680 left=BLACK right=WHITE mask=1 strength=81 command=LEFT
+s3 line: adc=173/186 filtered=176/184 threshold=245/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=146/3088 filtered=143/2576 threshold=243/683 left=WHITE right=BLACK mask=2 strength=77 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=121/196 filtered=122/253 threshold=242/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1120/177 filtered=803/180 threshold=242/683 left=BLACK right=WHITE mask=1 strength=49 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=685/176 filtered=912/180 threshold=242/680 left=BLACK right=WHITE mask=1 strength=57 command=LEFT
+s3 line: adc=171/185 filtered=180/185 threshold=242/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=201/185 filtered=186/182 threshold=245/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=932/172 filtered=688/176 threshold=245/678 left=BLACK right=WHITE mask=1 strength=40 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=325/186 filtered=536/191 threshold=245/682 left=BLACK right=WHITE mask=1 strength=29 command=LEFT
+s3 line: adc=166/186 filtered=184/184 threshold=245/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=991/171 filtered=801/173 threshold=244/682 left=BLACK right=WHITE mask=1 strength=48 command=LEFT
+wifi: joining "Pixel_1232" ...
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=980/188 filtered=978/185 threshold=244/681 left=BLACK right=WHITE mask=1 strength=62 command=LEFT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=833/181 filtered=773/178 threshold=244/680 left=BLACK right=WHITE mask=1 strength=46 command=LEFT
+s3 line: adc=182/179 filtered=184/179 threshold=244/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1090/179 filtered=788/180 threshold=247/680 left=BLACK right=WHITE mask=1 strength=47 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=1482/174 filtered=1500/176 threshold=247/680 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+s3 line: adc=176/179 filtered=185/179 threshold=247/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=172/182 filtered=166/179 threshold=244/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=922/182 filtered=696/182 threshold=245/681 left=BLACK right=WHITE mask=1 strength=41 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=233/187 filtered=412/184 threshold=245/683 left=BLACK right=WHITE mask=1 strength=20 command=LEFT
+s3 line: adc=125/181 filtered=145/178 threshold=245/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/179 filtered=126/180 threshold=242/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=166/186 filtered=166/182 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=1001/180 filtered=697/180 threshold=242/679 left=BLACK right=WHITE mask=1 strength=41 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=123/182 filtered=139/181 threshold=242/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=140/189 filtered=132/188 threshold=239/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=151/184 filtered=139/182 threshold=238/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=176/181 filtered=166/182 threshold=240/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=828/180 filtered=615/180 threshold=241/681 left=BLACK right=WHITE mask=1 strength=35 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=131/171 filtered=161/173 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=138/187 filtered=139/185 threshold=238/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=135/186 filtered=134/184 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/179 filtered=126/180 threshold=235/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/174 filtered=138/176 threshold=232/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=120/185 filtered=120/181 threshold=229/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=188/174 filtered=175/175 threshold=232/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=230/173 filtered=229/175 threshold=234/678 left=BLACK right=WHITE mask=1 strength=7 command=LEFT
+[S2] line: sustained LEFT; strong curve target=5/35 mm/s
+s3 line: adc=168/184 filtered=184/181 threshold=234/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=134/196 filtered=132/197 threshold=235/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=115/192 filtered=123/192 threshold=234/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=139/193 filtered=142/192 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=139/184 filtered=136/186 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=262/2595 filtered=231/2042 threshold=237/687 left=WHITE right=BLACK mask=2 strength=60 command=RIGHT
+s3 line: adc=1035/3178 filtered=850/2978 threshold=237/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S2] line: BOTH BLACK; confirming junction
+[S2] line: junction confirmed; crossing straight
+s3 line: adc=144/202 filtered=152/250 threshold=237/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] line: junction cleared; holding straight exit
+s3 line: adc=141/185 filtered=135/185 threshold=234/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S2] line: normal following resumed
+s3 line: adc=115/186 filtered=122/185 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/187 filtered=135/186 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/180 filtered=138/182 threshold=235/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 bar: single bar (crossing line), ignored
+s3 line: adc=141/180 filtered=137/180 threshold=234/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=122/184 filtered=127/183 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=118/186 filtered=125/183 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=130/192 filtered=135/189 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=153/213 filtered=140/207 threshold=227/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/1929 filtered=129/1578 threshold=229/686 left=WHITE right=BLACK mask=2 strength=45 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=136/197 filtered=134/251 threshold=229/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/197 filtered=138/193 threshold=229/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=140/2195 filtered=131/1772 threshold=228/686 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=124/261 filtered=127/702 threshold=229/686 left=WHITE right=BLACK mask=2 strength=17 command=RIGHT
+s3 line: adc=130/190 filtered=128/263 threshold=229/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=117/2360 filtered=127/1948 threshold=230/688 left=WHITE right=BLACK mask=2 strength=57 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=137/2628 filtered=136/2756 threshold=230/688 left=WHITE right=BLACK mask=2 strength=83 command=RIGHT
+s3 line: adc=139/213 filtered=134/290 threshold=231/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/2334 filtered=129/1900 threshold=230/690 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=130/3107 filtered=124/3155 threshold=231/690 left=WHITE right=BLACK mask=2 strength=95 command=RIGHT
+s3 line: adc=141/253 filtered=133/300 threshold=230/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=138/2202 filtered=134/1735 threshold=231/692 left=WHITE right=BLACK mask=2 strength=50 command=RIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=147/3189 filtered=141/3196 threshold=232/692 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+s3 line: adc=140/233 filtered=138/279 threshold=233/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=147/2345 filtered=142/1953 threshold=234/694 left=WHITE right=BLACK mask=2 strength=57 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=120/2826 filtered=129/2897 threshold=233/694 left=WHITE right=BLACK mask=2 strength=87 command=RIGHT
+s3 line: adc=121/705 filtered=125/585 threshold=231/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/2338 filtered=139/1961 threshold=233/695 left=WHITE right=BLACK mask=2 strength=57 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=114/3168 filtered=123/3170 threshold=230/695 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+s3 line: adc=123/1624 filtered=128/1705 threshold=233/695 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+s3 line: adc=143/291 filtered=136/329 threshold=234/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=144/2286 filtered=139/1851 threshold=235/697 left=WHITE right=BLACK mask=2 strength=53 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=121/2909 filtered=124/2923 threshold=234/697 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+s3 line: adc=142/2723 filtered=137/2754 threshold=233/697 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+s3 line: adc=124/1172 filtered=132/1334 threshold=233/697 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+s3 line: adc=142/252 filtered=146/304 threshold=234/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=141/2061 filtered=136/1640 threshold=234/698 left=WHITE right=BLACK mask=2 strength=46 command=RIGHT
+wifi: joining "Pixel_1232" ...
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=130/2781 filtered=139/2798 threshold=233/698 left=WHITE right=BLACK mask=2 strength=84 command=RIGHT
+s3 line: adc=110/2938 filtered=115/2937 threshold=234/698 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=145/2821 filtered=145/2874 threshold=233/698 left=WHITE right=BLACK mask=2 strength=86 command=RIGHT
+s3 line: adc=136/253 filtered=138/306 threshold=234/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=118/2340 filtered=122/1901 threshold=233/699 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+[S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+s3 line: adc=116/3289 filtered=119/3304 threshold=234/699 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+[S2] S4 PICKUP: car lifted, STOP latched
+[S2] run summary: distance 2100 mm, highest hump 0 mm (none)
+s4: car lifted; STOP requested
+s3 line: adc=2691/3150 filtered=2005/2803 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4026/4059 filtered=4031/4059 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 bar: capture rejected, runs=0 threshold=568 (decoded=2 errors=36)
+s3 bar:  open run BLACK for 800 ms
+s3 line: adc=4053/4069 filtered=4052/4069 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4030/4057 filtered=4033/4058 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4037/4069 filtered=4040/4068 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4035/4075 filtered=4040/4075 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=4074/4076 filtered=4063/4078 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4030/4075 filtered=4044/4072 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=4061/4073 filtered=4053/4073 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4044/4075 filtered=4046/4075 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=4042/4054 filtered=4041/4060 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3795/3871 filtered=3799/3878 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=3534/3688 filtered=3557/3707 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=292/2705 filtered=534/2754 threshold=234/699 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=213/1755 filtered=212/1901 threshold=234/699 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+s3 line: adc=169/225 filtered=170/304 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=155/207 filtered=149/204 threshold=234/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=157/204 filtered=156/204 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/202 filtered=147/201 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=162/206 filtered=145/204 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=123/209 filtered=136/206 threshold=243/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=145/204 filtered=148/204 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=151/199 filtered=145/202 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/198 filtered=152/200 threshold=245/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/204 filtered=154/204 threshold=244/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/200 filtered=144/201 threshold=244/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=159/198 filtered=148/200 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=156/203 filtered=152/203 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=147/186 filtered=140/195 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/204 filtered=138/204 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=141/202 filtered=142/202 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=159/198 filtered=142/201 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=157/200 filtered=154/202 threshold=244/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=148/198 filtered=147/201 threshold=245/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/210 filtered=139/207 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=153/197 filtered=147/200 threshold=244/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=149/205 filtered=149/204 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=160/207 filtered=149/204 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=155/205 filtered=151/205 threshold=242/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/203 filtered=139/203 threshold=240/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=145/200 filtered=142/202 threshold=241/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=132/200 filtered=140/202 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=160/200 filtered=157/202 threshold=245/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=124/204 filtered=137/204 threshold=246/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=144/208 filtered=145/207 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/198 filtered=148/199 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=133/211 filtered=134/206 threshold=246/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=152/203 filtered=152/203 threshold=247/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=128/206 filtered=132/202 threshold=244/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=129/198 filtered=134/199 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=134/211 filtered=142/208 threshold=244/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=142/201 filtered=136/201 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=154/204 filtered=151/202 threshold=245/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: joining "Pixel_1232" ...
+s3 line: adc=129/205 filtered=133/205 threshold=244/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> joined AP, waiting for IP (1)
+s3 line: adc=137/204 filtered=136/203 threshold=245/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+wifi: link status -> FAILED: SSID not found (out of range, wrong name, or 5GHz-only network -- this chip is 2.4GHz only) (-2)
+s3 line: adc=153/204 filtered=153/202 threshold=245/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=131/206 filtered=137/203 threshold=244/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=130/207 filtered=138/206 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=137/200 filtered=140/201 threshold=246/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT

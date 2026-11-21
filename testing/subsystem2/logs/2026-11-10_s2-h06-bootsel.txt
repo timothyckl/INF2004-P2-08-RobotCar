@@ -1,0 +1,4 @@
+[S2] GP20: START requested
+[S2] CAL forward 1000 mm finished
+[S2] CAL odometry: x=1002 mm y=0 mm heading=0 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 37942811 us in 37820 ms of kernel time (expect 1000 us per ms)

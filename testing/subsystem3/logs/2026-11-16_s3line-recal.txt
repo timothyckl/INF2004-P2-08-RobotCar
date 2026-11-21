@@ -1,0 +1,617 @@
+15:11:34 s3 line: adc=1462/182 filtered=1467/183 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:34 s3 line: adc=1460/169 filtered=1465/176 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:35 s3 line: adc=1464/185 filtered=1469/187 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:35 s3 line: adc=1486/170 filtered=1477/174 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:36 s3 line: adc=1482/188 filtered=1477/181 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:36 s3 line: adc=1483/186 filtered=1478/186 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:37 s3 line: adc=1482/190 filtered=1470/182 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:37 s3 line: adc=1477/189 filtered=1479/187 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:38 s3 line: adc=1458/181 filtered=1463/180 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:38 s3 line: adc=1486/180 filtered=1478/183 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:39 s3 line: adc=1480/189 filtered=1475/184 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:39 s3 line: adc=1477/176 filtered=1474/176 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:40 s3 line: adc=1474/183 filtered=1478/182 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:40 s3 line: adc=1482/171 filtered=1481/175 threshold=168/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:11:41 s3 line: adc=1458/188 filtered=1461/188 threshold=168/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:41 s3 line: adc=1460/185 filtered=1467/183 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:42 s3 line: adc=1468/189 filtered=1468/184 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:43 s3 line: adc=1460/174 filtered=1460/178 threshold=168/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:43 s3 line: adc=1476/182 filtered=1474/184 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:44 s3 line: adc=1472/170 filtered=1472/177 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:44 s3 line: adc=1459/178 filtered=1468/179 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:45 s3 line: adc=1485/174 filtered=1476/179 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:45 s3 line: adc=1461/188 filtered=1468/183 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:46 s3 line: adc=1465/174 filtered=1465/179 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:46 s3 line: adc=1481/182 filtered=1478/183 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:47 s3 line: adc=1472/172 filtered=1468/177 threshold=168/678 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:47 s3 line: adc=1484/172 filtered=1481/179 threshold=168/682 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:11:48 s3 line: adc=1457/176 filtered=1461/181 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:48 s3 line: adc=1482/179 filtered=1476/180 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:49 s3 line: adc=1470/189 filtered=1475/186 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:49 s3 line: adc=1476/175 filtered=1478/177 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:50 s3 line: adc=1459/177 filtered=1462/181 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:50 s3 line: adc=1468/185 filtered=1468/186 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:51 s3 line: adc=1465/182 filtered=1463/180 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:51 s3 line: adc=1480/185 filtered=1471/185 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:52 s3 line: adc=1469/189 filtered=1469/187 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:52 s3 line: adc=1458/189 filtered=1464/185 threshold=168/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:53 s3 line: adc=1457/184 filtered=1459/184 threshold=168/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:53 s3 line: adc=1458/170 filtered=1469/173 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:54 s3 line: adc=1464/175 filtered=1468/178 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:54 s3 line: adc=1459/181 filtered=1465/177 threshold=168/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:55 s3 line: adc=1485/184 filtered=1481/182 threshold=168/682 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:11:56 s3 line: adc=1474/186 filtered=1469/183 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:56 s3 line: adc=1485/163 filtered=1475/169 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:57 s3 line: adc=1483/176 filtered=1477/176 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:57 s3 line: adc=1478/188 filtered=1477/186 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:11:58 s3 line: adc=1457/182 filtered=1462/181 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:58 s3 line: adc=1485/186 filtered=1481/184 threshold=168/682 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:11:59 s3 line: adc=1459/172 filtered=1459/176 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:11:59 s3 line: adc=1461/180 filtered=1469/180 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:00 s3 line: adc=1461/190 filtered=1470/187 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:00 s3 line: adc=1459/184 filtered=1462/184 threshold=168/684 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:01 s3 line: adc=1477/175 filtered=1469/176 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:01 s3 line: adc=1484/164 filtered=1475/174 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:02 s3 line: adc=1473/179 filtered=1476/183 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:02 s3 line: adc=1482/174 filtered=1482/180 threshold=168/679 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:03 s3 line: adc=1482/174 filtered=1478/180 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:03 s3 line: adc=1478/190 filtered=1478/186 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:04 s3 line: adc=1473/181 filtered=1475/182 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:04 s3 line: adc=1468/182 filtered=1472/185 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:05 s3 line: adc=1467/176 filtered=1470/182 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:05 s3 line: adc=1459/176 filtered=1459/179 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:06 s3 line: adc=1467/173 filtered=1475/178 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:06 s3 line: adc=1486/188 filtered=1480/188 threshold=168/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:07 s3 line: adc=1460/175 filtered=1467/179 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:07 s3 line: adc=1459/179 filtered=1468/178 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:08 s3 line: adc=1472/184 filtered=1476/178 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:09 s3 line: adc=1460/171 filtered=1467/178 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:09 s3 line: adc=1484/186 filtered=1477/182 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:10 s3 line: adc=1459/185 filtered=1461/181 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:10 s3 line: adc=1473/175 filtered=1469/177 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:11 s3 line: adc=1481/190 filtered=1477/184 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:11 s3 line: adc=1484/189 filtered=1477/180 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:12 s3 line: adc=1459/188 filtered=1463/181 threshold=168/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:12 s3 line: adc=1469/189 filtered=1472/181 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:13 s3 line: adc=1453/176 filtered=1457/180 threshold=168/682 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:13 s3 line: adc=1480/174 filtered=1482/175 threshold=168/679 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:14 s3 line: adc=1485/176 filtered=1483/179 threshold=168/680 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:14 s3 line: adc=1458/187 filtered=1462/187 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:15 s3 line: adc=1482/185 filtered=1480/183 threshold=168/679 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:15 s3 line: adc=1460/175 filtered=1468/180 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:16 s3 line: adc=1484/187 filtered=1476/185 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:16 s3 line: adc=1485/169 filtered=1484/177 threshold=168/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:17 s3 line: adc=1458/180 filtered=1463/178 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:17 s3 line: adc=1470/182 filtered=1468/184 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:18 s3 line: adc=1484/188 filtered=1480/187 threshold=168/681 left=BLACK right=WHITE mask=1 strength=99 command=LEFT
+15:12:18 s3 line: adc=1477/188 filtered=1472/188 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:19 s3 line: adc=1485/187 filtered=1474/181 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:19 s3 line: adc=1477/169 filtered=1476/177 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:20 s3 line: adc=1465/187 filtered=1463/187 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:20 s3 line: adc=1481/172 filtered=1472/177 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:21 s3 line: adc=1459/178 filtered=1467/179 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:22 s3 line: adc=1457/190 filtered=1465/184 threshold=168/681 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:22 s3 line: adc=1474/177 filtered=1469/177 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:23 s3 line: adc=1460/177 filtered=1468/181 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:23 s3 line: adc=1473/173 filtered=1467/177 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:24 s3 line: adc=1481/179 filtered=1472/183 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:24 s3 line: adc=1458/176 filtered=1467/179 threshold=168/678 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:25 s3 line: adc=1465/169 filtered=1466/176 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:25 s3 line: adc=1470/184 filtered=1467/180 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:26 s3 line: adc=1473/182 filtered=1470/182 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:26 s3 line: adc=1470/179 filtered=1467/178 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:27 s3 line: adc=1484/172 filtered=1473/177 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:27 s3 line: adc=1472/187 filtered=1466/186 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:28 s3 line: adc=1460/182 filtered=1468/180 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:28 s3 line: adc=1467/185 filtered=1474/185 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:29 s3 line: adc=1461/168 filtered=1464/175 threshold=168/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:29 s3 line: adc=1482/190 filtered=1478/184 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:30 s3 line: adc=1482/185 filtered=1473/183 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:30 s3 line: adc=1459/176 filtered=1464/180 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:31 s3 line: adc=1458/180 filtered=1467/179 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:31 s3 line: adc=1473/173 filtered=1472/180 threshold=168/680 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:32 s3 line: adc=1464/181 filtered=1466/181 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:32 s3 line: adc=1478/177 filtered=1477/176 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:33 s3 line: adc=1478/190 filtered=1472/186 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:33 s3 line: adc=1470/188 filtered=1468/183 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:34 s3 line: adc=1457/169 filtered=1468/178 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:35 s3 line: adc=1465/181 filtered=1467/181 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:35 s3 line: adc=1477/173 filtered=1471/177 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:36 s3 line: adc=1480/188 filtered=1474/187 threshold=168/683 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:36 s3 line: adc=1458/184 filtered=1469/180 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:37 s3 line: adc=1468/170 filtered=1472/175 threshold=168/679 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:37 s3 line: adc=1460/189 filtered=1466/186 threshold=168/681 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:38 s3 line: adc=1470/177 filtered=1463/181 threshold=168/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:38 s3 line: adc=1462/173 filtered=1458/175 threshold=168/683 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:39 s3 line: adc=1454/186 filtered=1458/184 threshold=168/680 left=BLACK right=WHITE mask=1 strength=97 command=LEFT
+15:12:39 s3 line: adc=1471/184 filtered=1468/181 threshold=168/682 left=BLACK right=WHITE mask=1 strength=98 command=LEFT
+15:12:40 s3 line: adc=2491/217 filtered=2553/230 threshold=168/683 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+15:12:40 s3 line: adc=133/210 filtered=141/220 threshold=168/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:41 s3 line: adc=148/193 filtered=145/190 threshold=167/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:41 s3 line: adc=131/170 filtered=134/174 threshold=166/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:42 s3 line: adc=161/229 filtered=169/222 threshold=166/683 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:12:42 s3 line: adc=171/1822 filtered=183/1527 threshold=166/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:42 s3 line: adc=203/1260 filtered=197/1391 threshold=166/684 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:43 s3 line: adc=191/320 filtered=193/347 threshold=166/684 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+15:12:43 s3 line: adc=158/242 filtered=167/245 threshold=166/687 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:12:43 s3 line: adc=164/222 filtered=160/226 threshold=166/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:44 s3 line: adc=182/256 filtered=178/253 threshold=166/689 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:12:44 [S2] GP20: START requested
+15:12:44 s4: new run 1; hump maximum cleared
+15:12:44 s3 line: adc=141/225 filtered=145/223 threshold=166/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:44 s3 line: adc=184/290 filtered=174/275 threshold=166/691 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:12:44 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:12:45 s3 line: adc=159/240 filtered=167/238 threshold=166/695 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:12:45 s3 line: adc=176/1052 filtered=170/965 threshold=166/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:45 [S2] line: BOTH BLACK; confirming junction
+15:12:45 [S2] line: junction confirmed; crossing straight
+15:12:45 s3 line: adc=151/2788 filtered=153/2761 threshold=166/697 left=WHITE right=BLACK mask=2 strength=83 command=RIGHT
+15:12:45 [S2] line: junction cleared; holding straight exit
+15:12:46 s3 line: adc=158/3230 filtered=158/3173 threshold=167/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:46 s3 line: adc=167/3368 filtered=160/3382 threshold=167/697 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:12:46 [S2] line: normal following resumed
+15:12:46 s3 line: adc=178/3582 filtered=175/3607 threshold=169/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:46 [S2] line: BOTH BLACK; confirming junction
+15:12:46 [S2] line: junction confirmed; crossing straight
+15:12:47 s3 line: adc=189/3721 filtered=184/3693 threshold=169/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:47 s3 line: adc=176/3416 filtered=173/3378 threshold=169/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:48 s3 line: adc=154/2854 filtered=164/3033 threshold=169/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:48 [S2] line: junction/recovery bound exceeded; STOP
+15:12:48 s3 line: adc=163/3201 filtered=168/3168 threshold=169/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:49 s3 line: adc=158/2468 filtered=162/2565 threshold=169/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:49 s3 line: adc=210/309 filtered=198/363 threshold=169/697 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+15:12:49 s3 line: adc=189/699 filtered=329/710 threshold=169/698 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:12:50 s3 line: adc=173/314 filtered=186/383 threshold=169/698 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+15:12:50 s3 line: adc=176/212 filtered=177/217 threshold=169/701 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:12:51 s3 line: adc=1157/180 filtered=1174/180 threshold=169/700 left=BLACK right=WHITE mask=1 strength=76 command=LEFT
+15:12:51 s3 line: adc=1456/181 filtered=1411/180 threshold=169/696 left=BLACK right=WHITE mask=1 strength=93 command=LEFT
+15:12:52 s3 line: adc=1852/182 filtered=1833/181 threshold=169/693 left=BLACK right=WHITE mask=1 strength=100 command=LEFT
+15:12:52 s3 line: adc=125/186 filtered=128/181 threshold=169/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:52 s3 line: adc=138/2941 filtered=129/2383 threshold=167/690 left=WHITE right=BLACK mask=2 strength=71 command=RIGHT
+15:12:53 s3 line: adc=135/3502 filtered=130/3494 threshold=167/690 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:12:53 s3 line: adc=117/3515 filtered=126/3515 threshold=168/690 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:12:54 s3 line: adc=141/189 filtered=131/257 threshold=167/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:54 s3 line: adc=119/182 filtered=122/183 threshold=164/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:55 s3 line: adc=1546/187 filtered=1109/182 threshold=163/685 left=BLACK right=WHITE mask=1 strength=71 command=LEFT
+15:12:55 s3 line: adc=1331/170 filtered=1402/172 threshold=163/684 left=BLACK right=WHITE mask=1 strength=93 command=LEFT
+15:12:55 s3 line: adc=117/180 filtered=130/179 threshold=163/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:56 s3 line: adc=126/178 filtered=129/178 threshold=164/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:56 s3 line: adc=144/180 filtered=143/181 threshold=163/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:57 s3 line: adc=124/186 filtered=128/183 threshold=165/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:57 s3 line: adc=138/180 filtered=132/181 threshold=164/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:57 [S2] GP20: RESET requested before restart
+15:12:57 [S2] GP20: START requested
+15:12:58 s4: new run 2; hump maximum cleared
+15:12:58 s3 line: adc=146/189 filtered=135/188 threshold=163/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:58 s3 line: adc=140/189 filtered=131/189 threshold=162/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:12:59 s3 line: adc=129/168 filtered=130/179 threshold=162/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:00 s3 line: adc=144/189 filtered=136/187 threshold=163/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:00 s3 line: adc=148/178 filtered=144/184 threshold=164/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:01 s3 line: adc=149/190 filtered=144/188 threshold=165/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:01 s3 line: adc=134/172 filtered=131/176 threshold=165/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:02 s3 line: adc=132/188 filtered=133/185 threshold=164/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:02 s3 line: adc=145/185 filtered=135/186 threshold=167/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:03 s3 line: adc=152/189 filtered=142/189 threshold=168/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:03 s3 line: adc=148/192 filtered=146/191 threshold=166/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:04 s3 line: adc=149/177 filtered=146/184 threshold=165/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:04 s3 line: adc=124/178 filtered=124/180 threshold=164/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:05 s3 line: adc=144/185 filtered=142/184 threshold=165/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:05 s3 line: adc=131/189 filtered=137/183 threshold=169/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:06 s3 line: adc=152/173 filtered=140/178 threshold=166/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:06 s3 line: adc=123/179 filtered=129/179 threshold=169/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:07 s3 line: adc=147/187 filtered=141/185 threshold=170/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:07 s3 line: adc=159/187 filtered=157/189 threshold=174/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:08 s3 line: adc=168/188 filtered=173/184 threshold=175/683 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:13:08 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:13:08 s3 line: adc=160/201 filtered=153/198 threshold=175/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:08 s3 line: adc=151/473 filtered=139/379 threshold=174/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:08 s3 line: adc=142/1492 filtered=140/1255 threshold=173/687 left=WHITE right=BLACK mask=2 strength=34 command=RIGHT
+15:13:09 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:13:09 s3 line: adc=133/213 filtered=134/264 threshold=173/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:09 s3 line: adc=154/194 filtered=157/193 threshold=174/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:10 s3 line: adc=165/200 filtered=163/193 threshold=175/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:10 s3 line: adc=146/193 filtered=151/190 threshold=176/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:11 s3 line: adc=125/176 filtered=132/179 threshold=177/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:11 s3 line: adc=229/236 filtered=207/225 threshold=176/688 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+15:13:12 s3 line: adc=1055/2564 filtered=836/2142 threshold=176/688 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:12 [S2] line: BOTH BLACK; confirming junction
+15:13:12 [S2] line: junction confirmed; crossing straight
+15:13:12 s3 line: adc=163/209 filtered=173/263 threshold=176/688 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:13:12 [S2] line: junction cleared; holding straight exit
+15:13:12 s3 line: adc=182/177 filtered=170/180 threshold=176/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:12 s3 line: adc=165/177 filtered=171/179 threshold=176/688 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:13:13 [S2] line: normal following resumed
+15:13:13 s3 line: adc=187/190 filtered=191/190 threshold=176/688 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:13:13 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:13:13 s3 line: adc=150/176 filtered=149/184 threshold=176/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:14 s3 line: adc=145/1566 filtered=140/1344 threshold=175/691 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+15:13:14 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:13:14 s3 line: adc=130/224 filtered=131/289 threshold=175/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:14 [S2] GP20: STOP requested
+15:13:14 [S2] run summary: distance 647 mm, highest hump 0 mm (none)
+15:13:15 s3 line: adc=121/176 filtered=123/180 threshold=171/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:15 s3 line: adc=118/189 filtered=131/184 threshold=170/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:16 s3 line: adc=126/181 filtered=129/185 threshold=171/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:16 s3 line: adc=138/189 filtered=137/189 threshold=170/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:17 s3 line: adc=137/190 filtered=139/187 threshold=174/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:17 s3 line: adc=142/192 filtered=139/189 threshold=171/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:18 s3 line: adc=120/190 filtered=129/189 threshold=172/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:18 s3 line: adc=125/193 filtered=127/188 threshold=171/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:19 s3 line: adc=122/192 filtered=122/187 threshold=169/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:19 s3 line: adc=137/185 filtered=134/184 threshold=168/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:20 s3 line: adc=118/179 filtered=128/180 threshold=167/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:20 s3 line: adc=141/192 filtered=135/187 threshold=166/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:21 s3 line: adc=136/189 filtered=139/187 threshold=168/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:21 s3 line: adc=146/190 filtered=143/189 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:22 s3 line: adc=125/181 filtered=125/182 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:22 s3 line: adc=128/176 filtered=130/182 threshold=168/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:23 s3 line: adc=125/179 filtered=132/183 threshold=168/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:23 s3 line: adc=137/186 filtered=135/184 threshold=165/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:24 s3 line: adc=124/180 filtered=129/180 threshold=166/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:24 s3 line: adc=118/174 filtered=125/179 threshold=165/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:25 s3 line: adc=148/179 filtered=145/176 threshold=167/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:25 s3 line: adc=126/186 filtered=127/184 threshold=170/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:26 s3 line: adc=147/187 filtered=139/184 threshold=169/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:26 s3 line: adc=146/190 filtered=140/187 threshold=170/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:27 s3 line: adc=123/188 filtered=129/188 threshold=168/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:28 s3 line: adc=124/190 filtered=131/189 threshold=167/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:28 s3 line: adc=117/192 filtered=129/187 threshold=168/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:29 s3 line: adc=123/180 filtered=127/184 threshold=170/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:29 s3 line: adc=126/181 filtered=131/180 threshold=168/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:30 s3 line: adc=146/190 filtered=146/187 threshold=167/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:30 s3 line: adc=136/186 filtered=135/187 threshold=168/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:31 s3 line: adc=116/191 filtered=127/186 threshold=167/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:31 s3 line: adc=144/177 filtered=136/181 threshold=167/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:32 s3 line: adc=124/179 filtered=131/182 threshold=168/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:32 s3 line: adc=123/178 filtered=127/181 threshold=165/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:33 s3 line: adc=125/180 filtered=127/182 threshold=165/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:33 s3 line: adc=121/192 filtered=128/189 threshold=168/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:34 s3 line: adc=126/182 filtered=125/182 threshold=169/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:34 s3 line: adc=145/191 filtered=137/189 threshold=168/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:35 s3 line: adc=138/188 filtered=130/185 threshold=167/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:35 s3 line: adc=126/190 filtered=133/185 threshold=168/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:36 s3 line: adc=146/177 filtered=138/181 threshold=166/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:36 s3 line: adc=120/178 filtered=126/178 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:37 s3 line: adc=121/193 filtered=131/186 threshold=169/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:37 s3 line: adc=147/184 filtered=143/184 threshold=168/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:38 s3 line: adc=149/189 filtered=160/210 threshold=167/686 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:13:38 s3 line: adc=1932/3404 filtered=1100/3249 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:38 s3 line: adc=4062/4086 filtered=4051/4087 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:39 s3 line: adc=4047/4089 filtered=4051/4087 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:40 s3 line: adc=4034/4087 filtered=4044/4081 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:40 s3 line: adc=4040/4075 filtered=4047/4079 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:41 s3 line: adc=4046/4078 filtered=4049/4078 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:41 s3 line: adc=4038/4078 filtered=4047/4079 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:42 s3 line: adc=4059/4088 filtered=4057/4085 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:42 s3 line: adc=4053/4088 filtered=4053/4086 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:43 s3 line: adc=4043/4086 filtered=4049/4085 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:43 s3 line: adc=4056/4073 filtered=4055/4077 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:44 s3 line: adc=4044/4075 filtered=4042/4075 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:44 s3 line: adc=4028/4062 filtered=4034/4067 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:45 s3 line: adc=4042/4063 filtered=4039/4067 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:45 s3 line: adc=4034/4062 filtered=4035/4067 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:46 s3 line: adc=4038/4067 filtered=4038/4071 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:46 s3 line: adc=4024/4072 filtered=4034/4068 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:47 s3 line: adc=4029/4068 filtered=4032/4073 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:47 s3 line: adc=3981/4037 filtered=3991/4036 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:48 s3 line: adc=3147/3323 filtered=3213/3393 threshold=167/686 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:48 s3 line: adc=184/200 filtered=158/227 threshold=167/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:48 s3 line: adc=223/288 filtered=212/428 threshold=167/686 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+15:13:48 s3 line: adc=136/181 filtered=134/186 threshold=167/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:49 s3 line: adc=142/190 filtered=142/188 threshold=168/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:49 [S2] GP20: RESET requested before restart
+15:13:49 [S2] GP20: START requested
+15:13:49 s4: new run 3; hump maximum cleared
+15:13:50 s3 line: adc=124/179 filtered=131/180 threshold=165/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:50 s3 line: adc=142/194 filtered=133/190 threshold=165/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:51 s3 line: adc=126/192 filtered=134/190 threshold=166/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:51 s3 line: adc=126/194 filtered=135/192 threshold=169/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:52 s3 line: adc=131/187 filtered=134/186 threshold=172/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:52 s3 line: adc=140/190 filtered=142/187 threshold=170/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:53 s3 line: adc=133/178 filtered=138/181 threshold=173/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:53 s3 line: adc=167/190 filtered=171/187 threshold=176/685 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:13:53 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:13:54 s3 line: adc=155/181 filtered=156/183 threshold=176/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:54 s3 line: adc=136/334 filtered=138/305 threshold=173/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:54 s3 line: adc=120/1232 filtered=125/1076 threshold=172/687 left=WHITE right=BLACK mask=2 strength=29 command=RIGHT
+15:13:54 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:13:55 s3 line: adc=121/193 filtered=126/268 threshold=171/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:55 s3 line: adc=130/189 filtered=130/186 threshold=172/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:56 s3 line: adc=144/166 filtered=153/178 threshold=174/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:56 s3 line: adc=170/193 filtered=166/191 threshold=177/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:57 s3 line: adc=179/192 filtered=174/192 threshold=180/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:57 s3 line: adc=182/197 filtered=179/195 threshold=183/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:57 s3 line: adc=236/241 filtered=216/231 threshold=184/689 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+15:13:57 s3 line: adc=1073/2458 filtered=774/1920 threshold=184/689 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:13:57 [S2] line: BOTH BLACK; confirming junction
+15:13:57 [S2] line: junction confirmed; crossing straight
+15:13:58 s3 line: adc=183/204 filtered=186/251 threshold=184/689 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:13:58 [S2] line: junction cleared; holding straight exit
+15:13:58 s3 line: adc=181/194 filtered=176/192 threshold=184/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:58 s3 line: adc=195/179 filtered=195/181 threshold=186/687 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:13:58 [S2] line: normal following resumed
+15:13:59 s3 line: adc=239/180 filtered=235/182 threshold=186/688 left=BLACK right=WHITE mask=1 strength=6 command=LEFT
+15:13:59 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:13:59 s3 line: adc=141/175 filtered=148/179 threshold=186/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:13:59 s3 line: adc=145/356 filtered=143/320 threshold=183/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:00 s3 line: adc=141/1138 filtered=134/1024 threshold=182/690 left=WHITE right=BLACK mask=2 strength=27 command=RIGHT
+15:14:00 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:00 s3 line: adc=146/210 filtered=136/299 threshold=180/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:00 s3 line: adc=143/193 filtered=136/190 threshold=177/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:01 s3 line: adc=131/189 filtered=131/187 threshold=174/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:01 s3 line: adc=155/192 filtered=151/191 threshold=176/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:02 s3 line: adc=146/193 filtered=143/192 threshold=175/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:02 s3 line: adc=145/192 filtered=144/192 threshold=174/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:03 s3 line: adc=147/2157 filtered=146/1751 threshold=171/690 left=WHITE right=BLACK mask=2 strength=50 command=RIGHT
+15:14:03 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:03 s3 line: adc=118/205 filtered=125/269 threshold=172/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:04 s3 line: adc=133/194 filtered=135/193 threshold=170/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:04 s3 line: adc=120/1894 filtered=122/1508 threshold=169/688 left=WHITE right=BLACK mask=2 strength=42 command=RIGHT
+15:14:04 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:05 s3 line: adc=148/211 filtered=143/268 threshold=168/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:05 s3 line: adc=146/1909 filtered=145/1516 threshold=167/690 left=WHITE right=BLACK mask=2 strength=43 command=RIGHT
+15:14:05 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:06 s3 line: adc=130/2122 filtered=134/2348 threshold=166/690 left=WHITE right=BLACK mask=2 strength=69 command=RIGHT
+15:14:06 s3 line: adc=146/225 filtered=146/286 threshold=168/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:06 s3 line: adc=146/2294 filtered=137/1838 threshold=169/692 left=WHITE right=BLACK mask=2 strength=53 command=RIGHT
+15:14:07 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:07 s3 line: adc=123/3289 filtered=125/3292 threshold=166/692 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:14:07 s3 line: adc=133/274 filtered=133/315 threshold=167/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:08 s3 line: adc=144/2138 filtered=145/1772 threshold=170/694 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+15:14:08 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:08 s3 line: adc=136/3181 filtered=136/3220 threshold=171/694 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:09 s3 line: adc=128/236 filtered=131/293 threshold=171/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:09 s3 line: adc=155/1981 filtered=147/1581 threshold=172/696 left=WHITE right=BLACK mask=2 strength=45 command=RIGHT
+15:14:09 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:10 s3 line: adc=129/3069 filtered=135/3071 threshold=173/696 left=WHITE right=BLACK mask=2 strength=93 command=RIGHT
+15:14:10 s3 line: adc=139/228 filtered=136/282 threshold=170/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:10 s3 line: adc=146/2256 filtered=143/1802 threshold=172/698 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+15:14:11 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:11 s3 line: adc=146/3076 filtered=135/3097 threshold=172/698 left=WHITE right=BLACK mask=2 strength=93 command=RIGHT
+15:14:11 s3 line: adc=145/2110 filtered=145/2221 threshold=171/698 left=WHITE right=BLACK mask=2 strength=65 command=RIGHT
+15:14:12 s3 line: adc=140/237 filtered=141/302 threshold=171/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:12 s3 line: adc=122/2309 filtered=132/1881 threshold=172/700 left=WHITE right=BLACK mask=2 strength=54 command=RIGHT
+15:14:12 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:12 s3 line: adc=129/2914 filtered=136/2915 threshold=172/700 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+15:14:13 s3 line: adc=149/2754 filtered=146/2744 threshold=171/700 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+15:14:14 s3 line: adc=129/2559 filtered=129/2577 threshold=169/700 left=WHITE right=BLACK mask=2 strength=77 command=RIGHT
+15:14:14 s3 line: adc=180/273 filtered=171/340 threshold=172/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:14 s3 line: adc=177/253 filtered=176/245 threshold=173/701 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:14:14 s3 line: adc=132/2294 filtered=145/1873 threshold=173/701 left=WHITE right=BLACK mask=2 strength=54 command=RIGHT
+15:14:14 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:15 s3 line: adc=138/3185 filtered=133/3077 threshold=172/701 left=WHITE right=BLACK mask=2 strength=93 command=RIGHT
+15:14:15 s3 line: adc=131/2677 filtered=132/2405 threshold=171/701 left=WHITE right=BLACK mask=2 strength=71 command=RIGHT
+15:14:15 [S2] S5 HAZARD: stopping to scan, request 1
+15:14:16 s3 line: adc=134/3208 filtered=136/3210 threshold=169/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:16 s3 line: adc=123/3223 filtered=132/3222 threshold=168/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:17 s3 line: adc=129/3210 filtered=138/3212 threshold=165/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:17 s3 line: adc=128/3220 filtered=134/3219 threshold=165/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:18 s3 line: adc=128/3210 filtered=129/3212 threshold=163/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:18 s3 line: adc=145/3219 filtered=135/3219 threshold=164/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:19 s3 line: adc=145/3225 filtered=136/3219 threshold=167/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:19 [S2] scan 1 profile: ahead 558 mm, nearest 407 mm, left edge UNSEEN 0 mm, right edge UNSEEN 0 mm
+15:14:19 [S2] scan 1: FAILED (S5 result 3); STOP
+15:14:19 s3 line: adc=146/3226 filtered=141/3222 threshold=166/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:20 s3 line: adc=138/3212 filtered=130/3212 threshold=164/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:21 s3 line: adc=121/3210 filtered=128/3215 threshold=165/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:21 s3 line: adc=144/3219 filtered=143/3218 threshold=168/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:22 s3 line: adc=136/3225 filtered=134/3222 threshold=167/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:22 s3 line: adc=126/3210 filtered=132/3215 threshold=169/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:23 s3 line: adc=141/3219 filtered=135/3217 threshold=166/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:23 s3 line: adc=146/3221 filtered=137/3217 threshold=167/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:24 s3 line: adc=141/3225 filtered=137/3224 threshold=170/701 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+15:14:24 s3 line: adc=138/3211 filtered=138/3217 threshold=169/701 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:25 s3 line: adc=138/3226 filtered=136/3225 threshold=167/701 left=WHITE right=BLACK mask=2 strength=98 command=RIGHT
+15:14:25 [S2] GP20: RESET requested before restart
+15:14:25 [S2] GP20: START requested
+15:14:25 s4: new run 4; hump maximum cleared
+15:14:25 s3 line: adc=145/3259 filtered=140/3256 threshold=165/701 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+15:14:25 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:26 s3 line: adc=124/3076 filtered=132/3081 threshold=166/701 left=WHITE right=BLACK mask=2 strength=93 command=RIGHT
+15:14:26 s3 line: adc=146/2875 filtered=138/2827 threshold=162/701 left=WHITE right=BLACK mask=2 strength=85 command=RIGHT
+15:14:27 s3 line: adc=131/2760 filtered=127/2801 threshold=162/701 left=WHITE right=BLACK mask=2 strength=84 command=RIGHT
+15:14:27 s3 line: adc=166/230 filtered=156/308 threshold=162/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:27 s3 line: adc=189/205 filtered=180/225 threshold=162/701 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+15:14:27 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:14:27 s3 line: adc=153/2257 filtered=154/1845 threshold=162/702 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:27 [S2] line: BOTH BLACK; confirming junction
+15:14:27 s3 line: adc=155/2961 filtered=150/2733 threshold=162/702 left=WHITE right=BLACK mask=2 strength=82 command=RIGHT
+15:14:27 [S2] line: normal following resumed
+15:14:28 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:28 s3 line: adc=124/3315 filtered=130/3315 threshold=165/702 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:14:28 s3 line: adc=132/3369 filtered=139/3364 threshold=166/702 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:14:29 s3 line: adc=129/3329 filtered=130/3331 threshold=166/702 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:14:29 s3 line: adc=152/3073 filtered=151/3109 threshold=167/702 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+15:14:30 s3 line: adc=166/2498 filtered=155/2572 threshold=170/702 left=WHITE right=BLACK mask=2 strength=77 command=RIGHT
+15:14:30 s3 line: adc=185/950 filtered=182/1121 threshold=171/702 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:30 [S2] line: BOTH BLACK; confirming junction
+15:14:30 [S2] line: junction confirmed; crossing straight
+15:14:30 s3 line: adc=154/2865 filtered=152/2483 threshold=171/702 left=WHITE right=BLACK mask=2 strength=74 command=RIGHT
+15:14:30 [S2] line: junction cleared; holding straight exit
+15:14:31 s3 line: adc=138/196 filtered=140/278 threshold=170/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:31 [S2] line: normal following resumed
+15:14:31 s3 line: adc=128/181 filtered=127/184 threshold=169/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:32 s3 line: adc=124/185 filtered=124/186 threshold=171/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:32 s3 line: adc=125/190 filtered=127/186 threshold=171/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:33 s3 line: adc=129/185 filtered=127/186 threshold=168/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:33 s3 line: adc=126/189 filtered=128/185 threshold=167/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:34 s3 line: adc=158/180 filtered=152/182 threshold=168/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:34 s3 line: adc=150/191 filtered=161/191 threshold=169/687 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:14:34 s3 line: adc=146/184 filtered=150/188 threshold=169/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:35 s3 line: adc=223/1535 filtered=212/1300 threshold=171/689 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:35 [S2] line: BOTH BLACK; confirming junction
+15:14:35 [S2] line: junction confirmed; crossing straight
+15:14:35 s3 line: adc=252/1281 filtered=256/1397 threshold=171/689 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:35 s4: candidate impact detected
+15:14:35 s3 line: adc=264/245 filtered=327/328 threshold=171/689 left=BLACK right=WHITE mask=1 strength=14 command=LEFT
+15:14:35 [S2] line: junction cleared; holding straight exit
+15:14:36 s3 line: adc=199/212 filtered=200/202 threshold=171/690 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+15:14:36 s3 line: adc=195/478 filtered=196/694 threshold=171/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:36 s3 line: adc=180/221 filtered=186/288 threshold=171/690 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:14:36 s3 line: adc=142/248 filtered=140/224 threshold=171/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:36 [S2] line: normal following resumed
+15:14:36 s4: candidate impact detected
+15:14:37 s3 line: adc=221/1981 filtered=212/1659 threshold=172/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:37 [S2] line: BOTH BLACK; confirming junction
+15:14:37 [S2] line: junction confirmed; crossing straight
+15:14:37 s3 line: adc=2861/3309 filtered=2715/3336 threshold=172/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:38 s3 line: adc=209/3341 filtered=209/3289 threshold=172/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:38 s3 line: adc=155/3246 filtered=153/3011 threshold=172/690 left=WHITE right=BLACK mask=2 strength=91 command=RIGHT
+15:14:38 [S2] line: junction cleared; holding straight exit
+15:14:38 s3 line: adc=185/171 filtered=162/232 threshold=172/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:38 s3 line: adc=206/196 filtered=213/194 threshold=172/690 left=BLACK right=WHITE mask=1 strength=5 command=LEFT
+15:14:38 s4: hump 41 mm under the right wheel (run maximum 41 mm)
+15:14:38 s3 line: adc=129/182 filtered=139/180 threshold=172/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:39 [S2] line: normal following resumed
+15:14:39 s3 line: adc=297/182 filtered=255/184 threshold=174/687 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+15:14:39 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:14:39 s3 line: adc=128/182 filtered=135/184 threshold=174/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:40 s3 line: adc=138/1176 filtered=140/1025 threshold=174/687 left=WHITE right=BLACK mask=2 strength=27 command=RIGHT
+15:14:40 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:40 s3 line: adc=209/2265 filtered=200/2361 threshold=174/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:14:40 [S2] line: BOTH BLACK; confirming junction
+15:14:40 [S2] line: junction confirmed; crossing straight
+15:14:41 s3 line: adc=130/205 filtered=138/266 threshold=174/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:41 [S2] line: junction cleared; holding straight exit
+15:14:41 s3 line: adc=120/185 filtered=128/185 threshold=171/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:41 [S2] line: normal following resumed
+15:14:42 s3 line: adc=125/189 filtered=129/190 threshold=170/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:42 s3 line: adc=136/190 filtered=141/187 threshold=170/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:43 s3 line: adc=126/177 filtered=130/179 threshold=167/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:43 s3 line: adc=139/189 filtered=148/184 threshold=168/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:44 s3 line: adc=178/181 filtered=174/182 threshold=170/685 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:14:44 s3 line: adc=171/190 filtered=164/190 threshold=170/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:44 s3 line: adc=154/194 filtered=159/192 threshold=173/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:45 s3 line: adc=170/182 filtered=165/181 threshold=176/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:45 s3 line: adc=125/193 filtered=128/190 threshold=178/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:46 s3 line: adc=146/1820 filtered=139/1471 threshold=175/688 left=WHITE right=BLACK mask=2 strength=41 command=RIGHT
+15:14:46 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:46 s3 line: adc=128/213 filtered=128/291 threshold=173/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:47 s3 line: adc=128/307 filtered=128/276 threshold=172/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:47 s3 line: adc=130/2304 filtered=129/1889 threshold=172/689 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+15:14:47 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:48 s3 line: adc=138/1374 filtered=131/1785 threshold=168/689 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+15:14:48 s3 line: adc=138/246 filtered=136/313 threshold=168/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:48 s3 line: adc=137/2109 filtered=138/1689 threshold=168/691 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+15:14:48 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:48 s3 line: adc=124/2830 filtered=125/2926 threshold=166/691 left=WHITE right=BLACK mask=2 strength=88 command=RIGHT
+15:14:49 s3 line: adc=124/213 filtered=131/292 threshold=165/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:49 s3 line: adc=124/2384 filtered=123/1898 threshold=165/693 left=WHITE right=BLACK mask=2 strength=55 command=RIGHT
+15:14:49 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:50 s3 line: adc=149/3257 filtered=139/3278 threshold=167/693 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+15:14:50 s3 line: adc=144/491 filtered=141/623 threshold=169/693 left=WHITE right=BLACK mask=2 strength=14 command=RIGHT
+15:14:50 s3 line: adc=141/243 filtered=140/291 threshold=169/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:51 s3 line: adc=137/2129 filtered=136/1682 threshold=169/695 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+15:14:51 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:51 s3 line: adc=130/2248 filtered=139/2361 threshold=169/695 left=WHITE right=BLACK mask=2 strength=70 command=RIGHT
+15:14:51 s3 line: adc=158/235 filtered=154/295 threshold=171/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:52 s3 line: adc=143/2166 filtered=144/1746 threshold=172/697 left=WHITE right=BLACK mask=2 strength=50 command=RIGHT
+15:14:52 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:52 s3 line: adc=150/3193 filtered=146/3218 threshold=171/697 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:14:53 s3 line: adc=146/592 filtered=137/533 threshold=172/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:53 s3 line: adc=126/2355 filtered=134/1939 threshold=170/698 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+15:14:53 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:54 s3 line: adc=145/2938 filtered=145/2955 threshold=169/698 left=WHITE right=BLACK mask=2 strength=89 command=RIGHT
+15:14:54 s3 line: adc=126/1477 filtered=127/1690 threshold=169/698 left=WHITE right=BLACK mask=2 strength=48 command=RIGHT
+15:14:54 s3 line: adc=136/255 filtered=140/312 threshold=170/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:14:55 s3 line: adc=126/2180 filtered=131/1786 threshold=172/699 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+15:14:55 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:55 s3 line: adc=126/2788 filtered=134/2794 threshold=171/699 left=WHITE right=BLACK mask=2 strength=84 command=RIGHT
+15:14:56 s3 line: adc=152/2882 filtered=141/2894 threshold=173/699 left=WHITE right=BLACK mask=2 strength=87 command=RIGHT
+15:14:56 s3 line: adc=139/2433 filtered=144/2451 threshold=172/699 left=WHITE right=BLACK mask=2 strength=73 command=RIGHT
+15:14:57 s3 line: adc=169/1243 filtered=160/1389 threshold=175/699 left=WHITE right=BLACK mask=2 strength=38 command=RIGHT
+15:14:57 s3 line: adc=181/236 filtered=182/270 threshold=177/699 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:14:57 s3 line: adc=138/2209 filtered=151/1779 threshold=177/699 left=WHITE right=BLACK mask=2 strength=51 command=RIGHT
+15:14:58 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:14:58 s3 line: adc=121/3139 filtered=127/3165 threshold=176/699 left=WHITE right=BLACK mask=2 strength=96 command=RIGHT
+15:14:58 s3 line: adc=133/2439 filtered=126/2487 threshold=172/699 left=WHITE right=BLACK mask=2 strength=74 command=RIGHT
+15:14:59 s3 line: adc=132/3124 filtered=126/3131 threshold=169/699 left=WHITE right=BLACK mask=2 strength=95 command=RIGHT
+15:15:00 s3 line: adc=182/232 filtered=179/245 threshold=168/699 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:15:00 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:15:00 s3 line: adc=153/2458 filtered=152/2019 threshold=168/700 left=WHITE right=BLACK mask=2 strength=59 command=RIGHT
+15:15:00 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:00 s3 line: adc=145/3299 filtered=144/3299 threshold=169/700 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:15:01 s3 line: adc=152/3107 filtered=152/3113 threshold=171/700 left=WHITE right=BLACK mask=2 strength=94 command=RIGHT
+15:15:01 s3 line: adc=146/2206 filtered=152/2309 threshold=172/700 left=WHITE right=BLACK mask=2 strength=68 command=RIGHT
+15:15:02 s3 line: adc=163/2731 filtered=150/2793 threshold=173/700 left=WHITE right=BLACK mask=2 strength=84 command=RIGHT
+15:15:02 s3 line: adc=179/1888 filtered=170/1745 threshold=176/700 left=WHITE right=BLACK mask=2 strength=50 command=RIGHT
+15:15:03 s3 line: adc=189/260 filtered=191/327 threshold=178/700 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:15:03 s3 line: adc=171/2524 filtered=175/1958 threshold=178/700 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:15:03 [S2] line: BOTH BLACK; confirming junction
+15:15:03 s3 line: adc=139/3213 filtered=146/2972 threshold=178/700 left=WHITE right=BLACK mask=2 strength=89 command=RIGHT
+15:15:03 [S2] line: normal following resumed
+15:15:03 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:03 s3 line: adc=137/3388 filtered=135/3387 threshold=177/700 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:15:04 s3 line: adc=121/3242 filtered=128/3219 threshold=174/700 left=WHITE right=BLACK mask=2 strength=97 command=RIGHT
+15:15:04 s3 line: adc=155/3288 filtered=147/3293 threshold=171/700 left=WHITE right=BLACK mask=2 strength=100 command=RIGHT
+15:15:05 s3 line: adc=152/3256 filtered=142/3268 threshold=168/700 left=WHITE right=BLACK mask=2 strength=99 command=RIGHT
+15:15:05 s3 line: adc=118/264 filtered=127/323 threshold=167/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:06 s3 line: adc=129/2566 filtered=132/2086 threshold=168/701 left=WHITE right=BLACK mask=2 strength=61 command=RIGHT
+15:15:06 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:06 s3 line: adc=124/3075 filtered=127/3143 threshold=167/701 left=WHITE right=BLACK mask=2 strength=95 command=RIGHT
+15:15:07 s3 line: adc=123/228 filtered=127/288 threshold=167/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:07 s3 line: adc=116/204 filtered=125/202 threshold=167/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:07 s3 line: adc=123/1966 filtered=132/1620 threshold=168/699 left=WHITE right=BLACK mask=2 strength=46 command=RIGHT
+15:15:08 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:08 s3 line: adc=129/208 filtered=129/282 threshold=168/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:08 s3 line: adc=124/2487 filtered=125/1927 threshold=167/697 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+15:15:09 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:09 s3 line: adc=250/3195 filtered=222/3236 threshold=168/697 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:15:09 [S2] line: BOTH BLACK; confirming junction
+15:15:09 [S2] line: junction confirmed; crossing straight
+15:15:09 s3 line: adc=1345/202 filtered=1384/264 threshold=168/697 left=BLACK right=WHITE mask=1 strength=91 command=LEFT
+15:15:09 [S2] line: junction cleared; holding straight exit
+15:15:09 s3 line: adc=141/190 filtered=141/190 threshold=168/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:09 s3 line: adc=150/1672 filtered=144/1438 threshold=168/696 left=WHITE right=BLACK mask=2 strength=40 command=RIGHT
+15:15:10 [S2] line: normal following resumed
+15:15:10 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:10 s3 line: adc=126/2419 filtered=134/2610 threshold=167/696 left=WHITE right=BLACK mask=2 strength=78 command=RIGHT
+15:15:10 s3 line: adc=150/193 filtered=150/247 threshold=168/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:11 s3 line: adc=126/179 filtered=136/179 threshold=167/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:11 s3 line: adc=122/182 filtered=127/185 threshold=168/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:12 s3 line: adc=123/220 filtered=127/218 threshold=166/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:12 s3 line: adc=147/1090 filtered=147/956 threshold=168/693 left=WHITE right=BLACK mask=2 strength=25 command=RIGHT
+15:15:12 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:12 s3 line: adc=147/224 filtered=143/289 threshold=167/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:13 s3 line: adc=134/194 filtered=132/189 threshold=168/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:13 s3 line: adc=153/180 filtered=152/180 threshold=168/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:14 s3 line: adc=138/174 filtered=137/179 threshold=167/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:14 s3 line: adc=118/189 filtered=125/184 threshold=170/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:15 s3 line: adc=140/182 filtered=139/184 threshold=169/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:15 s3 line: adc=150/202 filtered=146/201 threshold=171/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:16 s3 line: adc=122/202 filtered=128/205 threshold=168/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:17 s3 line: adc=123/228 filtered=127/225 threshold=170/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:17 s3 line: adc=132/1057 filtered=137/954 threshold=168/697 left=WHITE right=BLACK mask=2 strength=24 command=RIGHT
+15:15:17 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+15:15:17 s3 line: adc=137/203 filtered=139/256 threshold=167/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:18 s3 line: adc=147/183 filtered=138/186 threshold=166/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:18 s3 line: adc=154/192 filtered=160/191 threshold=168/693 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+15:15:18 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+15:15:19 s3 line: adc=161/190 filtered=160/188 threshold=168/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:19 [S2] GP20: STOP requested
+15:15:19 [S2] run summary: distance 1675 mm, highest hump 41 mm
+15:15:19 s3 line: adc=147/182 filtered=147/181 threshold=171/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:19 s3 line: adc=1442/179 filtered=1040/182 threshold=173/689 left=BLACK right=WHITE mask=1 strength=66 command=LEFT
+15:15:20 s3 line: adc=150/3294 filtered=177/2726 threshold=173/689 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:15:20 s3 line: adc=169/1694 filtered=165/1446 threshold=173/689 left=WHITE right=BLACK mask=2 strength=40 command=RIGHT
+15:15:20 s3 line: adc=297/2646 filtered=252/2429 threshold=173/689 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:15:20 s3 line: adc=172/403 filtered=181/400 threshold=173/689 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+15:15:20 s3 line: adc=130/188 filtered=139/203 threshold=173/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:21 s3 line: adc=240/2008 filtered=228/1949 threshold=173/690 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+15:15:21 s3 line: adc=131/194 filtered=135/211 threshold=173/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:21 s3 line: adc=149/188 filtered=144/188 threshold=174/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:22 s3 line: adc=136/173 filtered=137/179 threshold=171/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:22 s3 line: adc=150/181 filtered=146/180 threshold=171/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:23 s3 line: adc=122/189 filtered=126/186 threshold=171/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:23 s3 line: adc=132/185 filtered=130/181 threshold=170/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:24 s3 line: adc=146/186 filtered=137/184 threshold=169/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:24 s3 line: adc=147/185 filtered=140/185 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:25 s3 line: adc=150/178 filtered=143/179 threshold=168/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:25 s3 line: adc=138/189 filtered=133/186 threshold=171/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:26 s3 line: adc=139/190 filtered=137/188 threshold=171/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:26 s3 line: adc=134/177 filtered=130/182 threshold=170/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:27 s3 line: adc=146/176 filtered=138/179 threshold=167/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:27 s3 line: adc=123/191 filtered=133/183 threshold=168/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:28 s3 line: adc=133/189 filtered=135/189 threshold=171/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:29 s3 line: adc=141/185 filtered=138/181 threshold=171/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+15:15:29 s3 line: adc=124/180 filtered=129/179 threshold=170/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT

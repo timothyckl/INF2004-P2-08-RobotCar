@@ -294,6 +294,15 @@ void cyw43_utk_task(int32_t stacd, void *exinf)
                 tm_printf((UB*)"wifi: link up, ip=%d.%d.%d.%d\n",
                           (int)(ip & 0xff), (int)((ip >> 8) & 0xff),
                           (int)((ip >> 16) & 0xff), (int)((ip >> 24) & 0xff));
+                /* Radio power save off (S1 decision 4): the SDK default
+                 * PM2 sleeps between beacons, which delayed MQTT ACKs and
+                 * telemetry by seconds on the car. Re-applied on each
+                 * join because a new association restores the default. */
+                {
+                    int pm_err = cyw43_wifi_pm(&cyw43_state, CYW43_NONE_PM);
+                    tm_printf((UB*)"wifi: power save off%s (%d)\n",
+                              (pm_err == 0) ? "" : " FAILED", pm_err);
+                }
             } else {
                 tm_printf((UB*)"wifi: link status -> %s (%d)\n",
                           link_status_str(radio_status.link_status),

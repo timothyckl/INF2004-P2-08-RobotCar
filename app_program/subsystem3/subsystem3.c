@@ -1,42 +1,25 @@
-/*
- *	subsystem3.c
- *	Subsystem 3 -- Consumer: creates its objects and starts its task.
+/**
+ * @file subsystem3.c
+ * @brief Initialise the subsystem 3 sensor inputs.
  *
- *	APIs shown: tk_cre_mbx, tk_cre_mtx
+ * Subsystem 3 has no task of its own: the mission runs s3_follow_run()
+ * in the initial task (s3_follow.h).
  */
 
 #include "subsystem3.h"
+#include "s3_ir_gpio.h"
 
-EXPORT ID		mbx_samples;	/* IF-01 */
-EXPORT ID		mtx_stats;	/* IF-04 */
-EXPORT APP_STATS	app_stats;
-
-EXPORT ER subsystem3_init(void)
+EXPORT ER
+subsystem3_init (void)
 {
-	T_CMBX	cmbx = {0};
-	T_CMTX	cmtx = {0};
-
-	/* Mailbox: passes a POINTER to a message (zero copy).  The message
-	   memory must stay valid until the receiver is done with it, which
-	   is why subsystem 2 takes it from its memory pool. */
-	cmbx.mbxatr = TA_TFIFO | TA_MFIFO;	/* FIFO waiters, FIFO messages */
-	mbx_samples = tk_cre_mbx(&cmbx);
-	if (mbx_samples < E_OK) {
-		return mbx_samples;
-	}
-
-	/* Mutex: only one task at a time may touch app_stats.  TA_INHERIT
-	   (priority inheritance) avoids priority inversion: a low-priority
-	   holder is temporarily raised to the waiter's priority. */
-	cmtx.mtxatr = TA_INHERIT;
-	mtx_stats = tk_cre_mtx(&cmtx);
-	return (mtx_stats < E_OK) ? mtx_stats : E_OK;
+    /* Inputs only: subsystem 3 never commands either motor. */
+    return (s3_ir_gpio_init());
 }
 
-EXPORT ER subsystem3_start(void)
+EXPORT ER
+subsystem3_start (void)
 {
-	/* Pinned to core 0 (TP_PRC1): opposite core to the producer */
-	ID tid = app_start_task(consumer_task, S3_PRI_CONSUMER, TP_PRC1,
-				"consumer_task");
-	return (tid < E_OK) ? tid : E_OK;
+    return (E_OK);
 }
+
+/* End of file. */

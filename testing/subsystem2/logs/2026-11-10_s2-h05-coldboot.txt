@@ -1,0 +1,1422 @@
+=== port up 21:03:39
+E stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771206 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:03:44
+=== port up 21:03:44
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:03:56
+=== port up 21:03:56
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:04:07
+=== port up 21:04:07
+=== port down 21:04:08
+=== port up 21:04:15
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:04:26
+=== port up 21:04:27
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:04:38
+=== port up 21:04:38
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:04:50
+=== port up 21:04:50
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:05:01
+=== port up 21:05:02
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:05:13
+=== port up 21:05:13
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:05:25
+=== port up 21:05:25
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick
+=== port down 21:05:36
+=== port up 21:05:37
+[TEST] S1-U02 PASS  LED task sleeps between ticks
+[TEST] subsystem1 SUMMARY 2 passed, 0 failed
+[TEST] S2-U01 PASS  sample values stay within 0..100
+[TEST] S2-U02 PASS  free slots and free blocks within pool size
+[TEST] S2-U03 PASS  PID proportional term is kp * error
+[TEST] S2-U04 PASS  PID output stays within its limits
+[TEST] S2-U05 PASS  PID integral adds ki * error per sample
+[TEST] S2-U06 PASS  PID integral does not wind up while saturated
+[TEST] S2-U07 PASS  PID derivative ignores setpoint steps
+[TEST] S2-U08 PASS  PID rejects invalid tuning and inputs
+[TEST] S2-U09 PASS  PID reset clears history
+[TEST] S2-U10 PASS  counts convert to millimetres
+[TEST] S2-U11 PASS  count delta survives counter wraparound
+[TEST] S2-U12 PASS  speed from counts over an interval
+[TEST] S2-U13 PASS  turn angle sign and magnitude
+[TEST] S2-U14 PASS  odometry rejects invalid geometry and overflow
+[TEST] S2-U15 PASS  motor duty maps to A/B outputs
+[TEST] S2-U16 PASS  motor rejects out-of-range duty
+[TEST] S2-U17 PASS  GPIO IRQ registration rejects invalid requests
+[TEST] S2-U18 PASS  quadrature x2 decode
+[TEST] S2-U19 PASS  encoder snapshot rejects NULL, stable when idle
+[TEST] S2-U20 PASS  motion start: Idle + READY, or Fault(INIT)
+[TEST] S2-U21 FAIL  Speed state reaches the wheel targets   (../app_program/subsystem2/subsystem2_test.c:678)
+[TEST] S2-U22 PASS  MOVE stops at target, DONE after stop confirmed
+[TEST] S2-U23 PASS  TURN sign and angle (left positive)
+[TEST] S2-U24 PASS  straight PID recovers lost wheel distance
+[TEST] S2-U25 PASS  latched STOP in every state
+[TEST] S2-U26 PASS  motion commands rejected while STOP latched
+[TEST] S2-U27 PASS  replace only while STOP clear; stale IDs rejected
+[TEST] S2-U28 PASS  stop confirmation timing, query and 2 s limit
+[TEST] S2-U29 PASS  stalled wheel gives Fault(STALL)
+[TEST] S2-U30 PASS  slow MOVE gives Fault(TIMEOUT)
+[TEST] S2-U31 PASS  bad snapshots or decode errors give Fault(ENCODER)
+[TEST] S2-U32 PASS  Fault cleared only by RESET with wheels still
+[TEST] S2-U33 PASS  invalid motion parameters rejected
+[TEST] S2-U34 PASS  odometry travel, pose and NEW_RUN
+[TEST] S2-U35 PASS  motion API builds and range-checks commands
+[TEST] S2-U36 PASS  remote_q record for START/RESET only
+[TEST] S2-U37 PASS  telemetry snapshot clamps and flags
+[TEST] S2-U38 PASS  S4 distance delta rules
+[TEST] S2-U39 PASS  interface record sizes
+[TEST] S2-U40 PASS  flag bits distinct; codes match subsystem 1
+[TEST] S2-U41 PASS  boot: Initialising, then Ready, STOP latched
+[TEST] S2-U42 PASS  Initialising times out to Fault(INIT)
+[TEST] S2-U43 PASS  START only in Ready with healthy motion
+[TEST] S2-U44 PASS  demo script steps wait for DONE
+[TEST] S2-U45 PASS  STOP bits in Running go to Stopped
+[TEST] S2-U46 PASS  STOP in other states re-latches only
+[TEST] S2-U47 PASS  fault paths latch STOP with the right code
+[TEST] S2-U48 PASS  RESET from Stopped needs wheels stopped
+[TEST] S2-U49 PASS  RESET from Fault re-initialises
+[TEST] S2-U50 PASS  remote expiry, duplicate and result
+[TEST] S2-U51 PASS  STOP while remote_q is full
+[TEST] S2-U52 PASS  only START in Ready clears STOP
+[TEST] S2-U53 PASS  robot_state snapshot fields
+[TEST] S2-U54 PASS  watchdog load value (E1 x2, range)
+[TEST] S2-U55 PASS  duty ramp limits increases only
+[TEST] S2-U56 PASS  ramp cannot cause a false stall
+[TEST] S2-U57 PASS  line report accepts only agreed positions
+[TEST] S2-U58 PASS  black-black junction and exit are bounded
+[TEST] S2-U59 PASS  persistent correction becomes a curve without pivoting
+[HW] S2-H05 starts in 5 s: wheels OFF THE GROUND
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=5 last=40 from core 1
+monitor: t=3355771216 ms  samples=5  min=0 max=40 avg=20  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=10 last=90 from core 1
+monitor: t=3355772646 ms  samples=10  min=0 max=90 avg=45  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=15 last=60 from core 1
+monitor: t=3355774196 ms  samples=15  min=0 max=100 avg=56  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=20 last=10 from core 1
+monitor: t=3355775746 ms  samples=20  min=0 max=100 avg=50  free slots=4  free blocks=4
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+[HW] S2-H05 wait enc1 0 (err 0)  enc2 0 (err 0)
+monitor: batch  n=25 last=40 from core 1
+monitor: t=3355777296 ms  samples=25  min=0 max=100 avg=44  free slots=4  free blocks=4
+monitor: batch  n=30 last=90 from core 1
+monitor: t=3355778846 ms  samples=30  min=0 max=100 avg=48  free slots=4  free blocks=4
+monitor: LED task paused, state=WAIT+SUSPEND, pri=13
+monitor: batch  n=35 last=60 from core 1
+monitor: t=3355780396 ms  samples=35  min=0 max=100 avg=52  free slots=4  free blocks=4
+[HW] S2-H05 stopped kicking: reset expected within 200 ms
+[HW] S2-H05 0 ms since last kick
+[HW] S2-H05 20 ms since last kick
+[HW] S2-H05 40 ms since last kick
+[HW] S2-H05 60 ms since last kick
+[HW] S2-H05 80 ms since last kick
+[HW] S2-H05 100 ms since last kick

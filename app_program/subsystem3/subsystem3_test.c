@@ -1,46 +1,85 @@
-/*
- *	subsystem3_test.c
- *	On-target tests for subsystem 3.  Built only with: make TEST=1
- *	Record unit results in testing/subsystem3/TEST_LOG.md and the
- *	INT- result in testing/integration/TEST_LOG.md.
+/**
+ * @file subsystem3_test.c
+ * @brief On-target monitors and tests for subsystem 3.
  */
-
 #include "subsystem3.h"
+
+#include "s3_ir.h"
+#include "s3_ir_gpio.h"
 #include "../test_report.h"
+
+#ifndef S3_HARDWARE_TEST
+#define S3_HARDWARE_TEST 0
+#endif
 
 #if APP_TEST
 
-LOCAL APP_STATS read_stats(void)
-{
-	APP_STATS	s;
+#if S3_HARDWARE_TEST
+#define S3_RAW_SAMPLE_MS  100u
 
-	tk_loc_mtx(mtx_stats, TMO_FEVR);
-	s = app_stats;
-	tk_unl_mtx(mtx_stats);
-	return s;
+static UB const g_s3_raw_heading[] =
+    "s3: raw AO monitor: left=GP26 right=GP27 barcode=GP28\n";
+static UB const g_s3_raw_result[] =
+    "s3 raw: left_adc=%u right_adc=%u barcode_adc=%u\n";
+static UB const g_s3_raw_error[] =
+    "s3 raw: ADC read failed, error=%d\n";
+
+static void s3_test_raw_monitor(void);
+#else
+static UB const g_s3_blocked[] =
+    "[TEST] S3-H01..H03 BLOCKED  use S3_HW_TEST=1 for raw input "
+    "or the mission image for line following\n";
+#endif
+
+void
+subsystem3_test (void)
+{
+#if S3_HARDWARE_TEST
+    s3_test_raw_monitor();
+#else
+    /* INT-01 and S3-U01 tested the starter consumer, removed by S2
+       decision 29. The S3 logic cases run on the host
+       (testing/subsystem3). */
+    TEST_INIT();
+
+    tm_printf(g_s3_blocked);
+    TEST_SUMMARY("subsystem3");
+#endif
 }
 
-EXPORT void subsystem3_test(void)
+#if S3_HARDWARE_TEST
+static void
+s3_test_raw_monitor (void)
 {
-	APP_STATS	before, after;
+    tm_printf(g_s3_raw_heading);
 
-	TEST_INIT();
+    for (;;)
+    {
+        s3_ir_adc_sample_t sample = {0u, 0u};
+        uint16_t barcode = 0u;
+        ER error = s3_ir_gpio_read_analog(&sample);
 
-	/* INT-01 (integration, IF-01): samples from subsystem 2 arrive.
-	   At one sample per 300 ms, 2 s should bring at least 5. */
-	before = read_stats();
-	tk_dly_tsk(2000);
-	after = read_stats();
-	TEST_CHECK("INT-01", after.received >= before.received + 5,
-		   "samples flow from subsystem 2 to subsystem 3");
+        if (E_OK == error)
+        {
+            error = s3_ir_gpio_read_barcode(&barcode);
+        }
 
-	/* S3-U01: the statistics are self-consistent */
-	TEST_CHECK("S3-U01",
-		   after.received > 0 && after.min <= after.max &&
-		   after.min >= 0 && after.max <= 100,
-		   "min <= max, both within 0..100");
-
-	TEST_SUMMARY("subsystem3");
+        if (E_OK == error)
+        {
+            tm_printf(g_s3_raw_result,
+                      (UINT)sample.left,
+                      (UINT)sample.right,
+                      (UINT)barcode);
+        }
+        else
+        {
+            tm_printf(g_s3_raw_error, error);
+        }
+        (void) tk_dly_tsk(S3_RAW_SAMPLE_MS);
+    }
 }
+#endif
 
 #endif /* APP_TEST */
+
+/* End of file. */

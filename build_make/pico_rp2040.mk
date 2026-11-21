@@ -91,6 +91,157 @@ ifeq ($(TEST),1)
 TEST_SUFFIX := _test
 endif
 
+# S3_HW_TEST=1 adds the raw front-IR monitor to a TEST=1 image.
+S3_HW_TEST ?= 0
+ifneq ($(filter $(S3_HW_TEST),0 1),$(S3_HW_TEST))
+$(error Unknown S3_HW_TEST '$(S3_HW_TEST)'; use 0 or 1)
+endif
+ifeq ($(S3_HW_TEST),1)
+ifneq ($(TEST),1)
+$(error S3_HW_TEST=1 requires TEST=1)
+endif
+S3_HW_TEST_SUFFIX := _s3hw
+endif
+
+# The front line sensors have analogue outputs only (AGENTS.md), so the
+# former digital-output calibration profile cannot run on this robot.
+ifneq ($(S3_CAL_TEST),)
+$(error S3_CAL_TEST was removed: the front sensors have no digital outputs; use S3_HW_TEST=1)
+endif
+
+# S3_LINE_TEST=1 builds the mission into a TEST=1 image (see APP_MISSION).
+S3_LINE_TEST ?= 0
+ifneq ($(filter $(S3_LINE_TEST),0 1),$(S3_LINE_TEST))
+$(error Unknown S3_LINE_TEST '$(S3_LINE_TEST)'; use 0 or 1)
+endif
+ifeq ($(S3_LINE_TEST),1)
+ifneq ($(TEST),1)
+$(error S3_LINE_TEST=1 requires TEST=1)
+endif
+S3_LINE_TEST_SUFFIX := _s3line
+endif
+S3_TEST_MODE_COUNT := $(words $(filter 1,$(S3_HW_TEST) \
+                                      $(S3_LINE_TEST)))
+ifneq ($(filter 0 1,$(S3_TEST_MODE_COUNT)),$(S3_TEST_MODE_COUNT))
+$(error Choose either S3_HW_TEST or S3_LINE_TEST, not both)
+endif
+
+# APP_MISSION: the robot's mission (line following, barcode commands,
+# humps, Scan & Plan, bypass) runs in the normal image (TEST=0) and in the
+# TEST=1 S3_LINE_TEST=1 image, which is the same mission with a _test name
+# kept so earlier test-log commands still build. Other TEST=1 images run
+# the self-tests or a bench profile instead.
+ifeq ($(TEST)$(S3_LINE_TEST),10)
+APP_MISSION := 0
+else
+APP_MISSION := 1
+endif
+
+# S3_NAV_F selects the command for the test barcode letter F (S2 decision
+# 26): 0 none, 1 left, 2 right, 3 straight, 4 U-turn. The course letters
+# are announced on the day.
+S3_NAV_F ?= 0
+ifneq ($(filter $(S3_NAV_F),0 1 2 3 4),$(S3_NAV_F))
+$(error Unknown S3_NAV_F '$(S3_NAV_F)'; use 0 (none), 1 (left), 2 (right), 3 (straight) or 4 (U-turn))
+endif
+ifneq ($(S3_NAV_F),0)
+S3_NAV_F_SUFFIX := _navF$(S3_NAV_F)
+endif
+
+# S2_CAL_TEST runs a GP20-started subsystem 2 calibration manoeuvre:
+# 1 = forward 1000 mm (distance scale), 2 = left 360 degrees (track width),
+# 3 = forward 450 mm per press (hump passes for subsystem 4, S4-H08);
+# accuracy runs (S2-H10): 4 = forward 500 mm, 5 = left 90 degrees,
+# 6 = right 90 degrees, 7 = U-turn (left 180 degrees). Every mode prints
+# the latency of each STOP latch (S2-H11: press GP20 during mode 1).
+S2_CAL_TEST ?= 0
+ifneq ($(filter $(S2_CAL_TEST),0 1 2 3 4 5 6 7),$(S2_CAL_TEST))
+$(error Unknown S2_CAL_TEST '$(S2_CAL_TEST)'; use 0 to 7)
+endif
+ifneq ($(S2_CAL_TEST),0)
+ifneq ($(TEST),1)
+$(error S2_CAL_TEST requires TEST=1)
+endif
+ifneq ($(S3_TEST_MODE_COUNT),0)
+$(error S2_CAL_TEST cannot be combined with an S3 test profile)
+endif
+S2_CAL_TEST_SUFFIX := _s2cal$(S2_CAL_TEST)
+endif
+
+# S2_HW_TEST selects a subsystem 2 bench sequence in a TEST=1 image; the
+# motion and controller tasks are not started (subsystem2_test.c):
+# 1 encoder counts, motors off (S2-H03); 2 also spins the motors (S2-H01,
+# H02, H04); 3 only the full-speed check (S2-H04); 4 only the watchdog
+# check (S2-H05). 2..4 SPIN THE MOTORS: wheels off the ground.
+S2_HW_TEST ?= 0
+ifneq ($(filter $(S2_HW_TEST),0 1 2 3 4),$(S2_HW_TEST))
+$(error Unknown S2_HW_TEST '$(S2_HW_TEST)'; use 0 to 4)
+endif
+ifneq ($(S2_HW_TEST),0)
+ifneq ($(TEST),1)
+$(error S2_HW_TEST requires TEST=1)
+endif
+ifneq ($(S2_CAL_TEST)$(S3_TEST_MODE_COUNT),00)
+$(error S2_HW_TEST cannot be combined with S2_CAL_TEST or an S3 test profile)
+endif
+S2_HW_TEST_SUFFIX := _s2hw$(S2_HW_TEST)
+endif
+
+# S2_MOTION_LOG=1 prints Motion Control's speed loop (target, measured
+# speed, duty per wheel) every 50 ms while moving, for PID tuning. Opt-in
+# because console formatting runs in the motion task.
+S2_MOTION_LOG ?= 0
+ifneq ($(filter $(S2_MOTION_LOG),0 1),$(S2_MOTION_LOG))
+$(error Unknown S2_MOTION_LOG '$(S2_MOTION_LOG)'; use 0 or 1)
+endif
+ifeq ($(S2_MOTION_LOG),1)
+S2_MOTION_LOG_SUFFIX := _mclog
+endif
+
+# S5_RANGE_DIAG=1 prints every forward HC-SR04 attempt (echo duration,
+# validity, distance) for S5-U48. Opt-in because console formatting runs in
+# the Obstacle Scan task.
+S5_RANGE_DIAG ?= 0
+ifneq ($(filter $(S5_RANGE_DIAG),0 1),$(S5_RANGE_DIAG))
+$(error Unknown S5_RANGE_DIAG '$(S5_RANGE_DIAG)'; use 0 or 1)
+endif
+ifeq ($(S5_RANGE_DIAG),1)
+S5_RANGE_DIAG_SUFFIX := _s5range
+endif
+
+# S4_RAW_LOG=1 prints every IMU sample (vehicle axes, filtered tilts,
+# pitch gate, state) for S4-H02 and S4-H08. Opt-in because console
+# formatting runs in the IMU task.
+S4_RAW_LOG ?= 0
+ifneq ($(filter $(S4_RAW_LOG),0 1),$(S4_RAW_LOG))
+$(error Unknown S4_RAW_LOG '$(S4_RAW_LOG)'; use 0 or 1)
+endif
+ifeq ($(S4_RAW_LOG),1)
+S4_RAW_LOG_SUFFIX := _s4raw
+endif
+
+# S4_HW_TEST=1 adds the live IMU startup check to a TEST=1 image.
+S4_HW_TEST ?= 0
+ifneq ($(filter $(S4_HW_TEST),0 1),$(S4_HW_TEST))
+$(error Unknown S4_HW_TEST '$(S4_HW_TEST)'; use 0 or 1)
+endif
+ifeq ($(S4_HW_TEST),1)
+ifneq ($(TEST),1)
+$(error S4_HW_TEST=1 requires TEST=1)
+endif
+S4_HW_TEST_SUFFIX := _s4hw
+endif
+ifneq ($(S3_TEST_MODE_COUNT),0)
+ifeq ($(S4_HW_TEST),1)
+$(error S3 and S4 dedicated hardware-test profiles cannot be combined)
+endif
+endif
+ifneq ($(S2_CAL_TEST),0)
+ifeq ($(S4_HW_TEST),1)
+$(error S2_CAL_TEST cannot be combined with S4_HW_TEST)
+endif
+endif
+
 # CRASH_REPORT=1 also copies every console line to UART0 on GP0 (TX) /
 # GP1 (RX), 115200 8N1.  UART output is sent immediately, so it still shows
 # the last messages and the kernel's crash report after a crash, when the
@@ -106,6 +257,9 @@ endif
 ifeq ($(CONSOLE),uart)
 override CRASH_REPORT := 1
 endif
+ifneq ($(CRASH_REPORT),0)
+$(error CRASH_REPORT=1 and CONSOLE=uart are prohibited: GP0/GP1 carry the right wheel encoder (AGENTS.md))
+endif
 ifeq ($(CONSOLE)$(CRASH_REPORT),usb_cdc1)
 CRASH_SUFFIX := _crash
 endif
@@ -116,7 +270,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S3_HW_TEST_SUFFIX)$(S3_LINE_TEST_SUFFIX)$(S3_NAV_F_SUFFIX)$(S2_CAL_TEST_SUFFIX)$(S2_HW_TEST_SUFFIX)$(S2_MOTION_LOG_SUFFIX)$(S5_RANGE_DIAG_SUFFIX)$(S4_HW_TEST_SUFFIX)$(S4_RAW_LOG_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -177,6 +331,15 @@ CFLAGS  += -DCNF_SMP=1
 ASFLAGS += -DCNF_SMP=1
 endif
 CFLAGS  += -DAPP_TEST=$(TEST)
+CFLAGS  += -DS3_HARDWARE_TEST=$(S3_HW_TEST)
+CFLAGS  += -DAPP_MISSION=$(APP_MISSION)
+CFLAGS  += -DS3_NAV_F=$(S3_NAV_F)
+CFLAGS  += -DS2_CAL_TEST=$(S2_CAL_TEST)
+CFLAGS  += -DS2_MOTION_LOG=$(S2_MOTION_LOG)
+CFLAGS  += -DS2_HW_TEST=$(S2_HW_TEST)
+CFLAGS  += -DS5_RANGE_DIAGNOSTIC=$(S5_RANGE_DIAG)
+CFLAGS  += -DS4_RAW_LOG=$(S4_RAW_LOG)
+CFLAGS  += -DS4_HARDWARE_TEST=$(S4_HW_TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
 ifeq ($(CRASH_REPORT),0)
 CFLAGS  += -DBOARD_UART0_FREE=1
@@ -209,7 +372,7 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s3hw$(S3_HW_TEST)-s3line$(S3_LINE_TEST)-navf$(S3_NAV_F)-s2cal$(S2_CAL_TEST)-mclog$(S2_MOTION_LOG)-s2hw$(S2_HW_TEST)-s5range$(S5_RANGE_DIAG)-s4hw$(S4_HW_TEST)-s4raw$(S4_RAW_LOG)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))

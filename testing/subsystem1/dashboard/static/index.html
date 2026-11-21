@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P2-08 Robot Car</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <div class="title">
+    <h1>P2-08 Robot Car</h1>
+    <span id="link" class="pill off">broker: connecting…</span>
+    <span id="age" class="muted"></span>
+  </div>
+  <div class="status">
+    <div><span class="label">State</span><span id="state" class="big">—</span></div>
+    <div><span class="label">Mode</span><span id="mode" class="big">—</span></div>
+    <div><span class="label">Fault</span><span id="fault" class="big">—</span></div>
+    <div><span class="label">STOP</span><span id="latched" class="big">—</span><span id="cause" class="muted"></span></div>
+  </div>
+  <div class="buttons">
+    <button data-cmd="START" class="go">START</button>
+    <button data-cmd="STOP" class="stop">STOP</button>
+    <button data-cmd="RESET">RESET</button>
+    <span id="cmdmsg" class="muted"></span>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>Motion <small>S2</small></h2>
+    <dl>
+      <dt>Left wheel</dt><dd id="left">—</dd>
+      <dt>Right wheel</dt><dd id="right">—</dd>
+      <dt>Distance</dt><dd id="dist">—</dd>
+      <dt>Heading</dt><dd id="heading">—</dd>
+    </dl>
+    <canvas id="speeds" height="110" aria-label="Wheel speeds, last 60 s"></canvas>
+    <p class="legend"><span class="sw l"></span>left <span class="sw r"></span>right (mm/s, last 60 s)</p>
+  </section>
+
+  <section>
+    <h2>Line &amp; barcode <small>S3</small></h2>
+    <div class="line" id="line">
+      <span class="sensor" id="sl"></span><span class="sensor" id="sr"></span>
+    </div>
+    <p class="center" id="linetext">—</p>
+    <dl>
+      <dt>Last barcode</dt><dd id="barcode" class="big">—</dd>
+      <dt>Command</dt><dd id="command">—</dd>
+      <dt>Letters read</dt><dd id="barcount">—</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Terrain <small>S4</small></h2>
+    <dl>
+      <dt>Highest hump</dt><dd id="hump" class="big">—</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Obstacle <small>S5</small></h2>
+    <dl>
+      <dt>Forward range</dt><dd id="fwd">—</dd>
+      <dt>Last scan</dt><dd id="scan">—</dd>
+      <dt>Nearest point</dt><dd id="near">—</dd>
+      <dt>Width</dt><dd id="width">—</dd>
+      <dt>Centre offset</dt><dd id="centre">—</dd>
+    </dl>
+  </section>
+
+  <section class="wide">
+    <h2>Events</h2>
+    <ol id="events" reversed></ol>
+  </section>
+
+  <section>
+    <h2>Link</h2>
+    <dl>
+      <dt>Frames</dt><dd id="frames">—</dd>
+      <dt>Heartbeat</dt><dd id="hb">—</dd>
+      <dt>Car counters</dt><dd id="stats" class="small">—</dd>
+      <dt>Session log</dt><dd id="log" class="small">—</dd>
+    </dl>
+  </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

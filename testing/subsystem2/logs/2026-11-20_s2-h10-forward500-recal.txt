@@ -1,0 +1,60 @@
+# serial log started 2026-11-20 19:46:29
+# connected /dev/cu.usbmodemMTK3PICO1 19:46:29
+# disconnected 19:47:17
+# connected /dev/cu.usbmodemMTK3PICO1 19:47:48
+19:47:48 
+19:47:48 
+19:47:48 microT-Kernel Version 3.00
+19:47:48 
+19:47:48 
+19:47:48 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+19:47:48 dual-core (SMP) build, usermain on core 0
+19:47:48 S2 calibration test mode 4
+19:47:48 [S2] GP20 button ready: press to START or STOP
+19:47:48 wifi: cyw43_utk_task starting (proc 1)
+19:47:48 wifi: cyw43_init() ...
+19:47:48 wifi: cyw43_init() returned, bringing interface up ...
+19:47:48 s4: LSM303DLHC ready; calibrating
+19:47:49 s4: calibration failed, car moved (span fwd 9 left 12 up 125 mg); keep still
+19:47:51 s4: stationary calibration complete (50 samples in 1940 ms)
+19:48:04 [S2] GP20: START requested
+19:48:04 s4: new run 1; hump maximum cleared
+19:48:07 [S2] CAL forward 500 mm finished
+19:48:07 [S2] CAL odometry: x=503 mm y=0 mm heading=-502 mdeg; result=2 reason=0 state=4 fault=0
+19:48:07 [S2] CAL timer: 19402937 us in 19280 ms of kernel time (expect 1000 us per ms)
+19:48:07 [S2] CAL STOP latency: latch to motor off 1080 us
+19:48:27 [S2] GP20: RESET requested before restart
+19:48:27 [S2] GP20: START requested
+19:48:27 s4: new run 2; hump maximum cleared
+19:48:29 [S2] CAL forward 500 mm finished
+19:48:29 [S2] CAL odometry: x=504 mm y=0 mm heading=-502 mdeg; result=2 reason=0 state=4 fault=0
+19:48:29 [S2] CAL timer: 42202923 us in 42080 ms of kernel time (expect 1000 us per ms)
+19:48:29 [S2] CAL STOP latency: latch to motor off 1073 us
+19:48:41 [S2] GP20: RESET requested before restart
+19:48:41 [S2] GP20: START requested
+19:48:41 s4: new run 3; hump maximum cleared
+19:48:44 [S2] CAL forward 500 mm finished
+19:48:44 [S2] CAL odometry: x=502 mm y=1 mm heading=2010 mdeg; result=2 reason=0 state=4 fault=0
+19:48:44 [S2] CAL timer: 57002905 us in 56880 ms of kernel time (expect 1000 us per ms)
+19:48:44 [S2] CAL STOP latency: latch to motor off 1048 us
+19:48:49 [S2] GP20: RESET requested before restart
+19:48:49 [S2] GP20: START requested
+19:48:49 s4: new run 4; hump maximum cleared
+19:48:52 [S2] CAL forward 500 mm finished
+19:48:52 [S2] CAL odometry: x=504 mm y=0 mm heading=0 mdeg; result=2 reason=0 state=4 fault=0
+19:48:52 [S2] CAL timer: 64522900 us in 64400 ms of kernel time (expect 1000 us per ms)
+19:48:52 [S2] CAL STOP latency: latch to motor off 1045 us
+19:49:11 [S2] GP20: RESET requested before restart
+19:49:11 [S2] GP20: START requested
+19:49:11 s4: new run 5; hump maximum cleared
+19:49:14 [S2] CAL forward 500 mm finished
+19:49:14 [S2] CAL odometry: x=502 mm y=0 mm heading=-502 mdeg; result=2 reason=0 state=4 fault=0
+19:49:14 [S2] CAL timer: 86282913 us in 86160 ms of kernel time (expect 1000 us per ms)
+19:49:14 [S2] CAL STOP latency: latch to motor off 1056 us
+19:49:20 [S2] GP20: RESET requested before restart
+19:49:20 [S2] GP20: START requested
+19:49:20 s4: new run 6; hump maximum cleared
+19:49:22 [S2] CAL forward 500 mm finished
+19:49:22 [S2] CAL odometry: x=504 mm y=0 mm heading=-502 mdeg; result=2 reason=0 state=4 fault=0
+19:49:22 [S2] CAL timer: 95163096 us in 95040 ms of kernel time (expect 1000 us per ms)
+19:49:22 [S2] CAL STOP latency: latch to motor off 1225 us

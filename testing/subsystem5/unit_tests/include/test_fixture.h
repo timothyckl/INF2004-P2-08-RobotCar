@@ -39,6 +39,15 @@ void test_fixture_send (test_interface_api_t const * p_api,
 /** Set whether queued distance/plan results can be delivered. */
 void test_fixture_result_queue (bool b_accept);
 
+/**
+ * @brief Reject upcoming matching outputs from the production adapter.
+ *
+ * @param kind Output kind to reject.
+ * @param attempts Number of matching attempts to reject.
+ */
+void test_fixture_reject_output (test_interface_output_kind_t kind,
+                                 uint32_t attempts);
+
 /** Count observations of a particular output kind. */
 uint32_t test_fixture_count (test_interface_output_kind_t kind);
 

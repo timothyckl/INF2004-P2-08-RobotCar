@@ -1,0 +1,50 @@
+s4: calibration failed, car moved (span fwd 14 left 14 up 113 mg); keep still
+s4: stationary calibration complete (50 samples in 1610 ms)
+s4: hump 68 mm under the right wheel (run maximum 68 mm)
+[S2] GP20: START requested
+s4: new run 1; hump maximum cleared
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=449 mm y=0 mm heading=-3370 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 40882744 us in 40760 ms of kernel time (expect 1000 us per ms)
+s4: hump 37 mm under the left wheel (run maximum 37 mm)
+s4: hump 5 mm under the caster (run maximum 37 mm)
+s4: hump 17 mm under the both wheels (run maximum 37 mm)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 2; hump maximum cleared
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+s4: candidate impact detected
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=449 mm y=-1 mm heading=-2888 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 67082743 us in 66960 ms of kernel time (expect 1000 us per ms)
+s4: candidate impact detected
+s4: candidate impact detected
+s4: hump 67 mm under the left wheel (run maximum 67 mm)
+s4: hump 15 mm under the both wheels (run maximum 67 mm)
+s4: hump 16 mm under the caster (run maximum 67 mm)
+s4: hump 8 mm under the right wheel (run maximum 67 mm)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 3; hump maximum cleared
+s4: candidate impact detected
+s4: hump 35 mm under the right wheel (run maximum 35 mm)
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=452 mm y=0 mm heading=0 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 81742972 us in 81620 ms of kernel time (expect 1000 us per ms)
+s4: candidate impact detected
+s4: hump 70 mm under the right wheel (run maximum 70 mm)
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 4; hump maximum cleared
+s4: candidate impact detected
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=452 mm y=0 mm heading=-962 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 90982719 us in 90860 ms of kernel time (expect 1000 us per ms)
+s4: hump 44 mm under the caster (run maximum 44 mm)

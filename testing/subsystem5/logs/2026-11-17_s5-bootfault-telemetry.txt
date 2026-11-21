@@ -1,0 +1,906 @@
+1794890507.756037000 t=3356446696 [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890507.798515000 p2-08/p2-08-car-01/stats b'periods 670 sent 390 refused 2 err -1 nosnap 3 nolink 275'
+1794890508.778277000 t=3356447696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890509.802479000 t=3356448696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890510.826512000 t=3356449696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890511.850226000 mtk3smp-pico/heartbeat b'hb 78'
+1794890511.936264000 t=3356450696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890512.874187000 t=3356451696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890513.795841000 t=3356452696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890514.761185000 t=3356453696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890515.746242000 t=3356454696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890516.751684000 mtk3smp-pico/heartbeat b'hb 79'
+1794890516.767401000 t=3356455696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890517.749216000 t=3356456696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890517.791248000 p2-08/p2-08-car-01/stats b'periods 680 sent 400 refused 2 err -1 nosnap 3 nolink 275'
+1794890518.813613000 t=3356457696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890519.746827000 t=3356458696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890520.864587000 t=3356459696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890521.769547000 mtk3smp-pico/heartbeat b'hb 80'
+1794890521.786749000 t=3356460696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890522.807576000 t=3356461696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890523.754988000 t=3356462696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890524.909720000 t=3356463696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890525.953243000 t=3356464696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890526.800915000 mtk3smp-pico/heartbeat b'hb 81'
+1794890526.824361000 t=3356465696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890527.814293000 t=3356466696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890527.846631000 p2-08/p2-08-car-01/stats b'periods 690 sent 410 refused 2 err -1 nosnap 3 nolink 275'
+1794890528.848163000 t=3356467696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890529.872072000 t=3356468696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890530.998870000 t=3356469696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890531.818229000 mtk3smp-pico/heartbeat b'hb 82'
+1794890531.865164000 t=3356470696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890532.790465000 t=3356471696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890533.865772000 t=3356472696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890534.889830000 t=3356473696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890535.753323000 t=3356474696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890536.750499000 mtk3smp-pico/heartbeat b'hb 83'
+1794890536.789655000 t=3356475696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890537.755696000 t=3356476696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890537.786782000 p2-08/p2-08-car-01/stats b'periods 700 sent 420 refused 2 err -1 nosnap 3 nolink 275'
+1794890538.781577000 t=3356477696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890540.009974000 t=3356478696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890540.829025000 t=3356479696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890542.859816000 mtk3smp-pico/heartbeat b'hb 84'
+1794890542.979666000 t=3356480696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890542.979689000 t=3356481696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890544.910381000 t=3356482696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890545.033251000 t=3356483696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890545.757703000 t=3356484696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890546.973389000 mtk3smp-pico/heartbeat b'hb 85'
+1794890547.027734000 t=3356485696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890547.749061000 t=3356486696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890547.973104000 p2-08/p2-08-car-01/stats b'periods 710 sent 430 refused 2 err -1 nosnap 3 nolink 275'
+1794890548.892506000 t=3356487696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890549.803405000 t=3356488696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890550.745868000 t=3356489696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890551.786274000 mtk3smp-pico/heartbeat b'hb 86'
+1794890551.806525000 t=3356490696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890552.752673000 t=3356491696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890553.746348000 t=3356492696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890554.858280000 t=3356493696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890555.841057000 t=3356494696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890556.747557000 mtk3smp-pico/heartbeat b'hb 87'
+1794890556.788623000 t=3356495696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890557.757027000 t=3356496696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890557.786959000 p2-08/p2-08-car-01/stats b'periods 720 sent 440 refused 2 err -1 nosnap 3 nolink 275'
+1794890558.795682000 t=3356497696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=698 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890559.874945000 t=3356498696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=697 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890560.746230000 t=3356499696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890561.821365000 mtk3smp-pico/heartbeat b'hb 88'
+1794890561.866233000 t=3356500696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890562.751469000 t=3356501696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890563.750124000 t=3356502696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890564.753848000 t=3356503696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890565.798763000 t=3356504696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890566.848254000 mtk3smp-pico/heartbeat b'hb 89'
+1794890566.866241000 t=3356505696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890567.746058000 t=3356506696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890567.766283000 p2-08/p2-08-car-01/stats b'periods 730 sent 450 refused 2 err -1 nosnap 3 nolink 275'
+1794890568.783916000 t=3356507696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890569.807999000 t=3356508696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890570.832072000 t=3356509696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890571.747996000 mtk3smp-pico/heartbeat b'hb 90'
+1794890571.765821000 t=3356510696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890572.762104000 t=3356511696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890573.765001000 t=3356512696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890574.825031000 t=3356513696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890575.755371000 t=3356514696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890576.874006000 mtk3smp-pico/heartbeat b'hb 91'
+1794890576.910808000 t=3356515696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890577.897685000 t=3356516696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890577.926194000 p2-08/p2-08-car-01/stats b'periods 740 sent 460 refused 2 err -1 nosnap 3 nolink 275'
+1794890578.745432000 t=3356517696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890579.743605000 t=3356518696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=693 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890580.751217000 t=3356519696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890581.866160000 mtk3smp-pico/heartbeat b'hb 92'
+1794890581.889265000 t=3356520696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890582.806733000 t=3356521696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890583.837257000 t=3356522696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890584.861148000 t=3356523696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890585.768216000 t=3356524696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890586.770886000 mtk3smp-pico/heartbeat b'hb 93'
+1794890586.823899000 t=3356525696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890587.905404000 t=3356526696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890587.944816000 p2-08/p2-08-car-01/stats b'periods 750 sent 470 refused 2 err -1 nosnap 3 nolink 275'
+1794890588.746488000 t=3356527696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890589.981167000 t=3356528696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890590.746606000 t=3356529696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890591.767245000 mtk3smp-pico/heartbeat b'hb 94'
+1794890591.804702000 t=3356530696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890592.839145000 t=3356531696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890593.769875000 t=3356532696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890594.746915000 t=3356533696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890595.760880000 t=3356534696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890596.746349000 mtk3smp-pico/heartbeat b'hb 95'
+1794890596.795823000 t=3356535696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890597.791457000 t=3356536696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890597.845071000 p2-08/p2-08-car-01/stats b'periods 760 sent 480 refused 2 err -1 nosnap 3 nolink 275'
+1794890598.823516000 t=3356537696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890599.917590000 t=3356538696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890600.834742000 t=3356539696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890601.859287000 mtk3smp-pico/heartbeat b'hb 96'
+1794890601.969327000 t=3356540696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890602.882648000 t=3356541696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890603.748278000 t=3356542696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890604.828968000 t=3356543696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890605.852965000 t=3356544696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890606.750709000 mtk3smp-pico/heartbeat b'hb 97'
+1794890606.790187000 t=3356545696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890607.745531000 t=3356546696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890607.783398000 p2-08/p2-08-car-01/stats b'periods 770 sent 490 refused 2 err -1 nosnap 3 nolink 275'
+1794890608.801514000 t=3356547696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890609.846604000 t=3356548696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890610.748254000 t=3356549696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890611.791760000 mtk3smp-pico/heartbeat b'hb 98'
+1794890611.806103000 t=3356550696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=698 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890612.759475000 t=3356551696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890613.787538000 t=3356552696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890614.863652000 t=3356553696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890615.748874000 t=3356554696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890616.845186000 mtk3smp-pico/heartbeat b'hb 99'
+1794890616.893289000 t=3356555696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890617.833622000 t=3356556696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890617.872183000 p2-08/p2-08-car-01/stats b'periods 780 sent 500 refused 2 err -1 nosnap 3 nolink 275'
+1794890618.753300000 t=3356557696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890619.795129000 t=3356558696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890620.750987000 t=3356559696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890621.894030000 mtk3smp-pico/heartbeat b'hb 100'
+1794890621.927461000 t=3356560696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890622.851203000 t=3356561696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890623.874790000 t=3356562696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=702 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890624.898442000 t=3356563696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890625.820831000 t=3356564696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=689 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890626.748629000 mtk3smp-pico/heartbeat b'hb 101'
+1794890626.788242000 t=3356565696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=702 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890627.794984000 t=3356566696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890627.827824000 p2-08/p2-08-car-01/stats b'periods 790 sent 510 refused 2 err -1 nosnap 3 nolink 275'
+1794890628.748112000 t=3356567696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890629.761758000 t=3356568696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890630.838448000 t=3356569696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890631.862363000 mtk3smp-pico/heartbeat b'hb 102'
+1794890631.885933000 t=3356570696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890632.783664000 t=3356571696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890633.751979000 t=3356572696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890634.878002000 t=3356573696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=690 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890635.855573000 t=3356574696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=694 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890636.777508000 mtk3smp-pico/heartbeat b'hb 103'
+1794890636.826595000 t=3356575696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=795 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890637.758242000 t=3356576696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.92 fwd=421 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890637.799886000 p2-08/p2-08-car-01/stats b'periods 800 sent 520 refused 2 err -1 nosnap 3 nolink 275'
+1794890638.754071000 t=3356577696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.44 fwd=1158 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890639.747716000 t=3356578696 dt=1000ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.44 fwd=1163 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890640.766022000 t=3356579676 dt=980ms [DSLXM..|FP.] STOPPED/- fault=none line=- dist=1032 L=0 R=0 hdg=114.44 fwd=1196 scan=no-route/- near=253 w=0 c=0 hump=-
+1794890676.290606000 t=3355775696 dt=4294163316ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=973 scan=none/- near=0 w=0 c=0 hump=-
+1794890677.327043000 t=3355776696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=958 scan=none/- near=0 w=0 c=0 hump=-
+1794890678.288554000 t=3355777696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=958 scan=none/- near=0 w=0 c=0 hump=-
+1794890679.287674000 t=3355778696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=983 scan=none/- near=0 w=0 c=0 hump=-
+1794890680.298833000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794890680.336862000 t=3355779696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=975 scan=none/- near=0 w=0 c=0 hump=-
+1794890681.460446000 t=3355780696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=1102 scan=none/- near=0 w=0 c=0 hump=-
+1794890682.345235000 t=3355781696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=941 scan=none/- near=0 w=0 c=0 hump=-
+1794890683.286816000 t=3355782696 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=617 scan=none/- near=0 w=0 c=0 hump=-
+1794890712.601560000 t=3355775936 dt=4294960536ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=916 scan=fault/- near=0 w=0 c=0 hump=-
+1794890713.647104000 t=3355776936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=911 scan=fault/- near=0 w=0 c=0 hump=-
+1794890714.600445000 t=3355777936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=fault/- near=0 w=0 c=0 hump=-
+1794890715.603487000 t=3355778936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=916 scan=fault/- near=0 w=0 c=0 hump=-
+1794890716.593801000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794890716.624290000 t=3355779936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=fault/- near=0 w=0 c=0 hump=-
+1794890717.671596000 t=3355780936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=785 scan=fault/- near=0 w=0 c=0 hump=-
+1794890718.593076000 t=3355781936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=555 scan=fault/- near=0 w=0 c=0 hump=-
+1794890719.597444000 t=3355782936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=557 scan=fault/- near=0 w=0 c=0 hump=-
+1794890720.592106000 t=3355783936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=557 scan=fault/- near=0 w=0 c=0 hump=-
+1794890721.667167000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794890721.702473000 t=3355784936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=613 scan=fault/- near=0 w=0 c=0 hump=-
+1794890721.702490000 p2-08/p2-08-car-01/stats b'periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0'
+1794890722.613263000 t=3355785936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=636 scan=fault/- near=0 w=0 c=0 hump=-
+1794890723.603514000 t=3355786936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.96 fwd=556 scan=fault/- near=0 w=0 c=0 hump=-
+1794890724.652542000 t=3355787936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.96 fwd=558 scan=fault/- near=0 w=0 c=0 hump=-
+1794890725.762149000 t=3355788936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.96 fwd=557 scan=fault/- near=0 w=0 c=0 hump=-
+1794890726.590623000 p2-08/p2-08-car-01/heartbeat b'hb 2'
+1794890726.629208000 t=3355789936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.96 fwd=669 scan=fault/- near=0 w=0 c=0 hump=-
+1794890727.609217000 t=3355790936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.96 fwd=884 scan=fault/- near=0 w=0 c=0 hump=-
+1794890728.604645000 t=3355791936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.96 fwd=883 scan=fault/- near=0 w=0 c=0 hump=-
+1794890729.607999000 t=3355792936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=-1.92 fwd=835 scan=fault/- near=0 w=0 c=0 hump=-
+1794890730.591691000 t=3355793936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=-1.92 fwd=692 scan=fault/- near=0 w=0 c=0 hump=-
+1794890731.595063000 p2-08/p2-08-car-01/heartbeat b'hb 3'
+1794890731.612032000 t=3355794936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=-1.92 fwd=1471 scan=fault/- near=0 w=0 c=0 hump=-
+1794890731.612099000 p2-08/p2-08-car-01/stats b'periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0'
+1794890732.637549000 t=3355795936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=-1.92 fwd=290 scan=fault/- near=0 w=0 c=0 hump=-
+1794890733.647169000 t=3355796936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=-1.92 fwd=282 scan=fault/- near=0 w=0 c=0 hump=-
+1794890734.618468000 t=3355797936 dt=1000ms [..LXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=29 hdg=-1.44 fwd=366 scan=fault/- near=0 w=0 c=0 hump=-
+1794890735.666974000 t=3355798936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890736.604237000 p2-08/p2-08-car-01/heartbeat b'hb 4'
+1794890736.718426000 t=3355799936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=920 scan=fault/- near=0 w=0 c=0 hump=-
+1794890737.595705000 t=3355800936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890738.592062000 t=3355801936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=929 scan=fault/- near=0 w=0 c=0 hump=-
+1794890739.594477000 t=3355802936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890740.610239000 t=3355803936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=925 scan=fault/- near=0 w=0 c=0 hump=-
+1794890741.635869000 p2-08/p2-08-car-01/heartbeat b'hb 5'
+1794890741.674729000 t=3355804936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=925 scan=fault/- near=0 w=0 c=0 hump=-
+1794890741.674785000 p2-08/p2-08-car-01/stats b'periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0'
+1794890742.596225000 t=3355805936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890743.592202000 t=3355806936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890744.603817000 t=3355807936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890745.627396000 t=3355808936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794890746.671987000 p2-08/p2-08-car-01/heartbeat b'hb 6'
+1794890746.711730000 t=3355809936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=907 scan=fault/- near=0 w=0 c=0 hump=-
+1794890747.743785000 t=3355810936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890748.598066000 t=3355811936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=557 scan=fault/- near=0 w=0 c=0 hump=-
+1794890749.596748000 t=3355812936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=559 scan=fault/- near=0 w=0 c=0 hump=-
+1794890750.591658000 t=3355813936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=527 scan=fault/- near=0 w=0 c=0 hump=-
+1794890751.591310000 p2-08/p2-08-car-01/heartbeat b'hb 7'
+1794890751.615040000 t=3355814936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=499 scan=fault/- near=0 w=0 c=0 hump=-
+1794890751.615062000 p2-08/p2-08-car-01/stats b'periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0'
+1794890752.590777000 t=3355815936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=503 scan=fault/- near=0 w=0 c=0 hump=-
+1794890753.594406000 t=3355816936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=503 scan=fault/- near=0 w=0 c=0 hump=-
+1794890754.590644000 t=3355817936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=503 scan=fault/- near=0 w=0 c=0 hump=-
+1794890755.589932000 t=3355818936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=491 scan=fault/- near=0 w=0 c=0 hump=-
+1794890756.638190000 p2-08/p2-08-car-01/heartbeat b'hb 8'
+1794890756.672788000 t=3355819936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=550 scan=fault/- near=0 w=0 c=0 hump=-
+1794890757.710887000 t=3355820936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=544 scan=fault/- near=0 w=0 c=0 hump=-
+1794890758.591662000 t=3355821936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=650 scan=fault/- near=0 w=0 c=0 hump=-
+1794890759.591643000 t=3355822936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794890760.591769000 t=3355823936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=933 scan=fault/- near=0 w=0 c=0 hump=-
+1794890761.608834000 p2-08/p2-08-car-01/heartbeat b'hb 9'
+1794890761.650447000 t=3355824936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=851 scan=fault/- near=0 w=0 c=0 hump=-
+1794890761.650478000 p2-08/p2-08-car-01/stats b'periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0'
+1794890762.627578000 t=3355825936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=560 scan=fault/- near=0 w=0 c=0 hump=-
+1794890763.650122000 t=3355826936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=719 scan=fault/- near=0 w=0 c=0 hump=-
+1794890769.263442000 t=3355827936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=560 scan=fault/- near=0 w=0 c=0 hump=-
+1794890769.292344000 t=3355828936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=557 scan=fault/- near=0 w=0 c=0 hump=-
+1794890769.292388000 p2-08/p2-08-car-01/heartbeat b'hb 10'
+1794890769.292395000 t=3355829936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=488 scan=fault/- near=0 w=0 c=0 hump=-
+1794890769.595147000 t=3355832936 dt=3000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=446 scan=fault/- near=0 w=0 c=0 hump=-
+1794890770.600029000 t=3355833936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=462 scan=fault/- near=0 w=0 c=0 hump=-
+1794890771.591356000 p2-08/p2-08-car-01/heartbeat b'hb 11'
+1794890771.611403000 t=3355834936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=462 scan=fault/- near=0 w=0 c=0 hump=-
+1794890771.611429000 p2-08/p2-08-car-01/stats b'periods 60 sent 58 refused 2 err -1 nosnap 0 nolink 0'
+1794890772.592196000 t=3355835936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=558 scan=fault/- near=0 w=0 c=0 hump=-
+1794890773.592277000 t=3355836936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=498 scan=fault/- near=0 w=0 c=0 hump=-
+1794890774.592893000 t=3355837936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=492 scan=fault/- near=0 w=0 c=0 hump=-
+1794890775.592412000 t=3355838936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=632 scan=fault/- near=0 w=0 c=0 hump=-
+1794890776.654820000 p2-08/p2-08-car-01/heartbeat b'hb 12'
+1794890776.672030000 t=3355839936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=768 scan=fault/- near=0 w=0 c=0 hump=-
+1794890777.678530000 t=3355840936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=757 scan=fault/- near=0 w=0 c=0 hump=-
+1794890778.702725000 t=3355841936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=759 scan=fault/- near=0 w=0 c=0 hump=-
+1794890779.594143000 t=3355842936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=772 scan=fault/- near=0 w=0 c=0 hump=-
+1794890780.594761000 t=3355843936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=763 scan=fault/- near=0 w=0 c=0 hump=-
+1794890781.592029000 p2-08/p2-08-car-01/heartbeat b'hb 13'
+1794890781.618408000 t=3355844936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=758 scan=fault/- near=0 w=0 c=0 hump=-
+1794890781.618483000 p2-08/p2-08-car-01/stats b'periods 70 sent 68 refused 2 err -1 nosnap 0 nolink 0'
+1794890782.599871000 t=3355845936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=767 scan=fault/- near=0 w=0 c=0 hump=-
+1794890783.720040000 t=3355846936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=785 scan=fault/- near=0 w=0 c=0 hump=-
+1794890784.642447000 t=3355847936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=823 scan=fault/- near=0 w=0 c=0 hump=-
+1794890785.659920000 t=3355848936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=570 scan=fault/- near=0 w=0 c=0 hump=-
+1794890786.594201000 p2-08/p2-08-car-01/heartbeat b'hb 14'
+1794890786.612097000 t=3355849936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=555 scan=fault/- near=0 w=0 c=0 hump=-
+1794890788.948371000 t=3355850936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=558 scan=fault/- near=0 w=0 c=0 hump=-
+1794890788.972767000 t=3355851936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=558 scan=fault/- near=0 w=0 c=0 hump=-
+1794890789.663526000 t=3355852936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=561 scan=fault/- near=0 w=0 c=0 hump=-
+1794890790.591264000 t=3355853936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=556 scan=fault/- near=0 w=0 c=0 hump=-
+1794890791.762571000 p2-08/p2-08-car-01/heartbeat b'hb 15'
+1794890791.790719000 t=3355854936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=558 scan=fault/- near=0 w=0 c=0 hump=-
+1794890791.790791000 p2-08/p2-08-car-01/stats b'periods 80 sent 78 refused 2 err -1 nosnap 0 nolink 0'
+1794890792.628203000 t=3355855936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=565 scan=fault/- near=0 w=0 c=0 hump=-
+1794890793.652672000 t=3355856936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=587 scan=fault/- near=0 w=0 c=0 hump=-
+1794890794.623461000 t=3355857936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=303 scan=fault/- near=0 w=0 c=0 hump=-
+1794890795.622410000 t=3355858936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=290 scan=fault/- near=0 w=0 c=0 hump=-
+1794890796.599505000 p2-08/p2-08-car-01/heartbeat b'hb 16'
+1794890796.631067000 t=3355859936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=287 scan=fault/- near=0 w=0 c=0 hump=-
+1794890797.593064000 t=3355860936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=614 scan=fault/- near=0 w=0 c=0 hump=-
+1794890798.597074000 t=3355861936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=651 scan=fault/- near=0 w=0 c=0 hump=-
+1794890799.695024000 t=3355862936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=652 scan=fault/- near=0 w=0 c=0 hump=-
+1794890800.678425000 t=3355863936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=651 scan=fault/- near=0 w=0 c=0 hump=-
+1794890801.594018000 p2-08/p2-08-car-01/heartbeat b'hb 17'
+1794890801.726719000 t=3355864936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=647 scan=fault/- near=0 w=0 c=0 hump=-
+1794890801.726749000 p2-08/p2-08-car-01/stats b'periods 90 sent 88 refused 2 err -1 nosnap 0 nolink 0'
+1794890802.592040000 t=3355865936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=655 scan=fault/- near=0 w=0 c=0 hump=-
+1794890803.690619000 t=3355866936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=656 scan=fault/- near=0 w=0 c=0 hump=-
+1794890804.711871000 t=3355867936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=655 scan=fault/- near=0 w=0 c=0 hump=-
+1794890807.271851000 t=3355868936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=656 scan=fault/- near=0 w=0 c=0 hump=-
+1794890808.827443000 p2-08/p2-08-car-01/heartbeat b'hb 18'
+1794890808.827470000 t=3355869936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=647 scan=fault/- near=0 w=0 c=0 hump=-
+1794890808.889273000 t=3355870936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890808.889301000 t=3355871936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890809.627088000 t=3355872936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890810.635643000 t=3355873936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890811.592808000 p2-08/p2-08-car-01/heartbeat b'hb 19'
+1794890811.834302000 t=3355874936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890811.834326000 p2-08/p2-08-car-01/stats b'periods 100 sent 98 refused 2 err -1 nosnap 0 nolink 0'
+1794890812.613748000 t=3355875936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890813.641102000 t=3355876936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890814.644232000 t=3355877936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890815.724183000 t=3355878936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890816.601909000 p2-08/p2-08-car-01/heartbeat b'hb 20'
+1794890816.630568000 t=3355879936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890817.591649000 t=3355880936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890818.592283000 t=3355881936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890819.629846000 t=3355882936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890820.686640000 t=3355883936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890821.710118000 p2-08/p2-08-car-01/heartbeat b'hb 21'
+1794890821.731460000 t=3355884936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890821.731510000 p2-08/p2-08-car-01/stats b'periods 110 sent 108 refused 2 err -1 nosnap 0 nolink 0'
+1794890822.593410000 t=3355885936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890823.655649000 t=3355886936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890824.592148000 t=3355887936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890825.844048000 t=3355888936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890826.596032000 p2-08/p2-08-car-01/heartbeat b'hb 22'
+1794890826.630673000 t=3355889936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890827.649706000 t=3355890936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890828.674142000 t=3355891936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890829.595742000 t=3355892936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890830.619010000 t=3355893936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890831.643304000 p2-08/p2-08-car-01/heartbeat b'hb 23'
+1794890831.671368000 t=3355894936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890831.671398000 p2-08/p2-08-car-01/stats b'periods 120 sent 118 refused 2 err -1 nosnap 0 nolink 0'
+1794890832.667096000 t=3355895936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890833.793742000 t=3355896936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890834.612730000 t=3355897936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890835.590473000 t=3355898936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890836.599746000 p2-08/p2-08-car-01/heartbeat b'hb 24'
+1794890836.635235000 t=3355899936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890837.593965000 t=3355900936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890838.592107000 t=3355901936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890839.592214000 t=3355902936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890840.590810000 t=3355903936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890841.591092000 p2-08/p2-08-car-01/heartbeat b'hb 25'
+1794890841.632057000 t=3355904936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890841.632088000 p2-08/p2-08-car-01/stats b'periods 130 sent 128 refused 2 err -1 nosnap 0 nolink 0'
+1794890842.620921000 t=3355905936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890843.674699000 t=3355906936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890844.750884000 t=3355907936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890845.671958000 t=3355908936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890846.596491000 p2-08/p2-08-car-01/heartbeat b'hb 26'
+1794890846.611667000 t=3355909936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890847.601066000 t=3355910936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890848.595108000 t=3355911936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890849.665823000 t=3355912936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890850.616413000 t=3355913936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890851.590799000 p2-08/p2-08-car-01/heartbeat b'hb 27'
+1794890851.634238000 t=3355914936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890851.634307000 p2-08/p2-08-car-01/stats b'periods 140 sent 138 refused 2 err -1 nosnap 0 nolink 0'
+1794890852.635183000 t=3355915936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890853.762146000 t=3355916936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890854.590256000 t=3355917936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890855.610918000 t=3355918936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890856.613089000 p2-08/p2-08-car-01/heartbeat b'hb 28'
+1794890856.650222000 t=3355919936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890857.652215000 t=3355920936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890858.676167000 t=3355921936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890859.603021000 t=3355922936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890860.624907000 t=3355923936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890861.595420000 p2-08/p2-08-car-01/heartbeat b'hb 29'
+1794890861.611995000 t=3355924936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890861.612013000 p2-08/p2-08-car-01/stats b'periods 150 sent 148 refused 2 err -1 nosnap 0 nolink 0'
+1794890862.590650000 t=3355925936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890863.602318000 t=3355926936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=900 scan=fault/- near=0 w=0 c=0 hump=-
+1794890864.718832000 t=3355927936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890865.592438000 t=3355928936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890866.617972000 p2-08/p2-08-car-01/heartbeat b'hb 30'
+1794890866.737499000 t=3355929936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890867.688067000 t=3355930936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890868.712242000 t=3355931936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=899 scan=fault/- near=0 w=0 c=0 hump=-
+1794890869.591648000 t=3355932936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890870.593305000 t=3355933936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890871.590494000 p2-08/p2-08-car-01/heartbeat b'hb 31'
+1794890871.660142000 t=3355934936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=4 hdg=0.48 fwd=904 scan=fault/- near=0 w=0 c=0 hump=-
+1794890871.660201000 p2-08/p2-08-car-01/stats b'periods 160 sent 158 refused 2 err -1 nosnap 0 nolink 0'
+1794890872.689454000 t=3355935936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=907 scan=fault/- near=0 w=0 c=0 hump=-
+1794890873.730236000 t=3355936936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=902 scan=fault/- near=0 w=0 c=0 hump=-
+1794890874.599609000 t=3355937936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=902 scan=fault/- near=0 w=0 c=0 hump=-
+1794890875.674903000 t=3355938936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=907 scan=fault/- near=0 w=0 c=0 hump=-
+1794890876.699375000 p2-08/p2-08-car-01/heartbeat b'hb 32'
+1794890876.760276000 t=3355939936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=903 scan=fault/- near=0 w=0 c=0 hump=-
+1794890877.603944000 t=3355940936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=906 scan=fault/- near=0 w=0 c=0 hump=-
+1794890878.592106000 t=3355941936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=906 scan=fault/- near=0 w=0 c=0 hump=-
+1794890879.634102000 t=3355942936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=907 scan=fault/- near=0 w=0 c=0 hump=-
+1794890880.693098000 t=3355943936 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=2.88 fwd=911 scan=fault/- near=0 w=0 c=0 hump=-
+1794890893.801868000 t=3355782056 dt=4294805416ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=none/- near=0 w=0 c=0 hump=-
+1794890897.180014000 t=3355783056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=907 scan=none/- near=0 w=0 c=0 hump=-
+1794890897.340743000 t=3355784056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=903 scan=none/- near=0 w=0 c=0 hump=-
+1794890897.340804000 t=3355785056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=907 scan=none/- near=0 w=0 c=0 hump=-
+1794890897.795953000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794890897.822627000 t=3355786056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794890898.804330000 t=3355787056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890899.795210000 t=3355788056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794890900.866393000 t=3355789056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890901.890009000 t=3355790056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890904.227303000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794890905.799308000 t=3355791056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890905.799370000 p2-08/p2-08-car-01/stats b'periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0'
+1794890905.799406000 t=3355792056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890905.910799000 t=3355793056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890905.910856000 t=3355794056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890906.805863000 t=3355795056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890907.833766000 p2-08/p2-08-car-01/heartbeat b'hb 2'
+1794890907.856339000 t=3355796056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890908.859129000 t=3355797056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890909.794096000 t=3355798056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890910.800132000 t=3355799056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890911.826417000 t=3355800056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890912.874790000 p2-08/p2-08-car-01/heartbeat b'hb 3'
+1794890914.227649000 t=3355801056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=none/- near=0 w=0 c=0 hump=-
+1794890914.227684000 p2-08/p2-08-car-01/stats b'periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0'
+1794890914.447521000 t=3355802056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890914.794566000 t=3355803056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890915.818630000 t=3355804056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890916.792596000 t=3355805056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890917.853314000 p2-08/p2-08-car-01/heartbeat b'hb 4'
+1794890917.913999000 t=3355806056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890918.794369000 t=3355807056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890919.808543000 t=3355808056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890920.799545000 t=3355809056 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890941.868725000 t=3355789656 dt=4294947896ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890942.859965000 t=3355790656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890943.876209000 t=3355791656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890944.898573000 t=3355792656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890945.922729000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794890945.971925000 t=3355793656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890946.858051000 t=3355794656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890947.888237000 t=3355795656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890949.096759000 t=3355796656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890949.915273000 t=3355797656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890950.859915000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794890950.897246000 t=3355798656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890950.897291000 p2-08/p2-08-car-01/stats b'periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0'
+1794890951.863746000 t=3355799656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890952.910062000 t=3355800656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890953.910042000 t=3355801656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890954.862874000 t=3355802656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890955.866364000 p2-08/p2-08-car-01/heartbeat b'hb 2'
+1794890955.904671000 t=3355803656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890956.981895000 t=3355804656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890957.965147000 t=3355805656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890960.580232000 t=3355806656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=none/- near=0 w=0 c=0 hump=-
+1794890960.615180000 t=3355807656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890960.873635000 p2-08/p2-08-car-01/heartbeat b'hb 3'
+1794890960.898525000 t=3355808656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890960.898574000 p2-08/p2-08-car-01/stats b'periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0'
+1794890961.896695000 t=3355809656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890962.869567000 t=3355810656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890963.869174000 t=3355811656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890964.870496000 t=3355812656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890965.876330000 p2-08/p2-08-car-01/heartbeat b'hb 4'
+1794890965.899243000 t=3355813656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890966.916003000 t=3355814656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890967.920195000 t=3355815656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=none/- near=0 w=0 c=0 hump=-
+1794890968.858736000 t=3355816656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890969.883988000 t=3355817656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890970.862194000 p2-08/p2-08-car-01/heartbeat b'hb 5'
+1794890970.918032000 t=3355818656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890970.918080000 p2-08/p2-08-car-01/stats b'periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0'
+1794890971.932437000 t=3355819656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890972.956777000 t=3355820656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890973.953462000 t=3355821656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890974.902243000 t=3355822656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=none/- near=0 w=0 c=0 hump=-
+1794890975.873429000 p2-08/p2-08-car-01/heartbeat b'hb 6'
+1794890976.052599000 t=3355823656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890978.498150000 t=3355824656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890978.498183000 t=3355825656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890978.998171000 t=3355826656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=none/- near=0 w=0 c=0 hump=-
+1794890980.901772000 t=3355827656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890980.901834000 p2-08/p2-08-car-01/heartbeat b'hb 7'
+1794890980.901866000 t=3355828656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890981.873636000 t=3355829656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890982.916234000 t=3355830656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890983.868274000 t=3355831656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890984.858273000 t=3355832656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890985.900243000 p2-08/p2-08-car-01/heartbeat b'hb 8'
+1794890985.978170000 t=3355833656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890986.868301000 t=3355834656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794890987.857579000 t=3355835656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890988.891337000 t=3355836656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890989.986726000 t=3355837656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=913 scan=none/- near=0 w=0 c=0 hump=-
+1794890990.879182000 p2-08/p2-08-car-01/heartbeat b'hb 9'
+1794890990.990825000 t=3355838656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890990.990880000 p2-08/p2-08-car-01/stats b'periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0'
+1794890991.923893000 t=3355839656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890992.863036000 t=3355840656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794890993.859096000 t=3355841656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794890994.858274000 t=3355842656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890995.877784000 p2-08/p2-08-car-01/heartbeat b'hb 10'
+1794890996.007251000 t=3355843656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890996.858036000 t=3355844656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794890997.860996000 t=3355845656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794891000.425829000 t=3355846656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891000.425861000 t=3355847656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794891000.858895000 p2-08/p2-08-car-01/heartbeat b'hb 11'
+1794891000.956639000 t=3355848656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891000.956701000 p2-08/p2-08-car-01/stats b'periods 60 sent 60 refused 0 err 0 nosnap 0 nolink 0'
+1794891001.883589000 t=3355849656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794891002.859233000 t=3355850656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=none/- near=0 w=0 c=0 hump=-
+1794891003.941067000 t=3355851656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794891004.858249000 t=3355852656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=910 scan=none/- near=0 w=0 c=0 hump=-
+1794891005.867417000 p2-08/p2-08-car-01/heartbeat b'hb 12'
+1794891005.953251000 t=3355853656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891006.910822000 t=3355854656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=none/- near=0 w=0 c=0 hump=-
+1794891007.857494000 t=3355855656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=998 scan=none/- near=0 w=0 c=0 hump=-
+1794891008.860883000 t=3355856656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=828 scan=none/- near=0 w=0 c=0 hump=-
+1794891009.979421000 t=3355857656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=774 scan=none/- near=0 w=0 c=0 hump=-
+1794891010.985518000 p2-08/p2-08-car-01/heartbeat b'hb 13'
+1794891011.018468000 t=3355858656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=556 scan=none/- near=0 w=0 c=0 hump=-
+1794891011.018525000 p2-08/p2-08-car-01/stats b'periods 70 sent 70 refused 0 err 0 nosnap 0 nolink 0'
+1794891011.962813000 t=3355859656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=400 scan=none/- near=0 w=0 c=0 hump=-
+1794891012.856875000 t=3355860656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=400 scan=none/- near=0 w=0 c=0 hump=-
+1794891013.862884000 t=3355861656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=404 scan=none/- near=0 w=0 c=0 hump=-
+1794891014.857877000 t=3355862656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891015.962949000 p2-08/p2-08-car-01/heartbeat b'hb 14'
+1794891015.977428000 t=3355863656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891016.858557000 t=3355864656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891017.857914000 t=3355865656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=420 scan=none/- near=0 w=0 c=0 hump=-
+1794891018.857538000 t=3355866656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=493 scan=none/- near=0 w=0 c=0 hump=-
+1794891019.957062000 t=3355867656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=493 scan=none/- near=0 w=0 c=0 hump=-
+1794891020.878852000 p2-08/p2-08-car-01/heartbeat b'hb 15'
+1794891020.897801000 t=3355868656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=430 scan=none/- near=0 w=0 c=0 hump=-
+1794891020.897857000 p2-08/p2-08-car-01/stats b'periods 80 sent 80 refused 0 err 0 nosnap 0 nolink 0'
+1794891021.926806000 t=3355869656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=426 scan=none/- near=0 w=0 c=0 hump=-
+1794891022.857823000 t=3355870656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891023.857524000 t=3355871656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=420 scan=none/- near=0 w=0 c=0 hump=-
+1794891024.884531000 t=3355872656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=430 scan=none/- near=0 w=0 c=0 hump=-
+1794891025.858460000 p2-08/p2-08-car-01/heartbeat b'hb 16'
+1794891025.878107000 t=3355873656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=404 scan=none/- near=0 w=0 c=0 hump=-
+1794891026.856444000 t=3355874656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891027.856423000 t=3355875656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891028.858681000 t=3355876656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891029.856833000 t=3355877656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891030.862208000 p2-08/p2-08-car-01/heartbeat b'hb 17'
+1794891030.877731000 t=3355878656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891030.877798000 p2-08/p2-08-car-01/stats b'periods 90 sent 90 refused 0 err 0 nosnap 0 nolink 0'
+1794891031.887490000 t=3355879656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891032.932323000 t=3355880656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=416 scan=none/- near=0 w=0 c=0 hump=-
+1794891033.857881000 t=3355881656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=405 scan=none/- near=0 w=0 c=0 hump=-
+1794891034.857872000 t=3355882656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=431 scan=none/- near=0 w=0 c=0 hump=-
+1794891035.857152000 p2-08/p2-08-car-01/heartbeat b'hb 18'
+1794891035.914388000 t=3355883656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=402 scan=none/- near=0 w=0 c=0 hump=-
+1794891036.857172000 t=3355884656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=411 scan=none/- near=0 w=0 c=0 hump=-
+1794891037.858227000 t=3355885656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=404 scan=none/- near=0 w=0 c=0 hump=-
+1794891038.857869000 t=3355886656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=411 scan=none/- near=0 w=0 c=0 hump=-
+1794891039.857793000 t=3355887656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=416 scan=none/- near=0 w=0 c=0 hump=-
+1794891040.857019000 p2-08/p2-08-car-01/heartbeat b'hb 19'
+1794891040.897605000 t=3355888656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=416 scan=none/- near=0 w=0 c=0 hump=-
+1794891040.897651000 p2-08/p2-08-car-01/stats b'periods 100 sent 100 refused 0 err 0 nosnap 0 nolink 0'
+1794891041.856762000 t=3355889656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=421 scan=none/- near=0 w=0 c=0 hump=-
+1794891042.897525000 t=3355890656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=434 scan=none/- near=0 w=0 c=0 hump=-
+1794891043.948259000 t=3355891656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=420 scan=none/- near=0 w=0 c=0 hump=-
+1794891044.857280000 t=3355892656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=420 scan=none/- near=0 w=0 c=0 hump=-
+1794891045.885497000 p2-08/p2-08-car-01/heartbeat b'hb 20'
+1794891045.950378000 t=3355893656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=430 scan=none/- near=0 w=0 c=0 hump=-
+1794891046.887467000 t=3355894656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=421 scan=none/- near=0 w=0 c=0 hump=-
+1794891047.861071000 t=3355895656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=421 scan=none/- near=0 w=0 c=0 hump=-
+1794891048.857582000 t=3355896656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=431 scan=none/- near=0 w=0 c=0 hump=-
+1794891049.858885000 t=3355897656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=409 scan=none/- near=0 w=0 c=0 hump=-
+1794891050.857764000 p2-08/p2-08-car-01/heartbeat b'hb 21'
+1794891050.906533000 t=3355898656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=421 scan=none/- near=0 w=0 c=0 hump=-
+1794891050.906579000 p2-08/p2-08-car-01/stats b'periods 110 sent 110 refused 0 err 0 nosnap 0 nolink 0'
+1794891051.859725000 t=3355899656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=404 scan=none/- near=0 w=0 c=0 hump=-
+1794891052.856895000 t=3355900656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=430 scan=none/- near=0 w=0 c=0 hump=-
+1794891053.903413000 t=3355901656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=421 scan=none/- near=0 w=0 c=0 hump=-
+1794891054.855944000 t=3355902656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=421 scan=none/- near=0 w=0 c=0 hump=-
+1794891055.856778000 p2-08/p2-08-car-01/heartbeat b'hb 22'
+1794891055.877741000 t=3355903656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=405 scan=none/- near=0 w=0 c=0 hump=-
+1794891056.856528000 t=3355904656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=431 scan=none/- near=0 w=0 c=0 hump=-
+1794891057.857637000 t=3355905656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=404 scan=none/- near=0 w=0 c=0 hump=-
+1794891058.856763000 t=3355906656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=404 scan=none/- near=0 w=0 c=0 hump=-
+1794891059.859139000 t=3355907656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=377 scan=none/- near=0 w=0 c=0 hump=-
+1794891060.895689000 p2-08/p2-08-car-01/heartbeat b'hb 23'
+1794891060.917536000 t=3355908656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=446 scan=none/- near=0 w=0 c=0 hump=-
+1794891060.917596000 p2-08/p2-08-car-01/stats b'periods 120 sent 120 refused 0 err 0 nosnap 0 nolink 0'
+1794891061.939213000 t=3355909656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=428 scan=none/- near=0 w=0 c=0 hump=-
+1794891062.863128000 t=3355910656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=429 scan=none/- near=0 w=0 c=0 hump=-
+1794891063.989562000 t=3355911656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=428 scan=none/- near=0 w=0 c=0 hump=-
+1794891064.994112000 t=3355912656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=424 scan=none/- near=0 w=0 c=0 hump=-
+1794891065.858326000 p2-08/p2-08-car-01/heartbeat b'hb 24'
+1794891065.965723000 t=3355913656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=443 scan=none/- near=0 w=0 c=0 hump=-
+1794891066.896513000 t=3355914656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=443 scan=none/- near=0 w=0 c=0 hump=-
+1794891067.899135000 t=3355915656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=443 scan=none/- near=0 w=0 c=0 hump=-
+1794891068.880588000 t=3355916656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=439 scan=none/- near=0 w=0 c=0 hump=-
+1794891069.859667000 t=3355917656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=423 scan=none/- near=0 w=0 c=0 hump=-
+1794891070.879059000 p2-08/p2-08-car-01/heartbeat b'hb 25'
+1794891071.003619000 t=3355918656 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=427 scan=none/- near=0 w=0 c=0 hump=-
+1794891071.003677000 p2-08/p2-08-car-01/stats b'periods 130 sent 130 refused 0 err 0 nosnap 0 nolink 0'
+1794891091.213553000 t=3355775796 dt=4294824436ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=368 scan=none/- near=0 w=0 c=0 hump=-
+1794891092.227239000 t=3355776796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=380 scan=none/- near=0 w=0 c=0 hump=-
+1794891093.275078000 t=3355777796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=432 scan=none/- near=0 w=0 c=0 hump=-
+1794891094.278393000 t=3355778796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891095.426421000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794891095.451745000 t=3355779796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=377 scan=none/- near=0 w=0 c=0 hump=-
+1794891096.242261000 t=3355780796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891098.292742000 t=3355782796 dt=2000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=380 scan=none/- near=0 w=0 c=0 hump=-
+1794891099.317040000 t=3355783796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891100.340824000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794891100.392701000 t=3355784796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891100.392765000 p2-08/p2-08-car-01/diag b'first 30 ms fault - at #0 0 ms: E2264 E2262 E2264 E2260 E2261 E2264 E2261 E2265 E2260 E2261 E2262 E2260 E2236 E2233 E2237 E2261'
+1794891100.392812000 p2-08/p2-08-car-01/stats b'periods 10 sent 9 refused 0 err 0 nosnap 1 nolink 0'
+1794891101.262453000 t=3355785796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=379 scan=none/- near=0 w=0 c=0 hump=-
+1794891102.210703000 t=3355786796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=379 scan=none/- near=0 w=0 c=0 hump=-
+1794891103.211600000 t=3355787796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=370 scan=none/- near=0 w=0 c=0 hump=-
+1794891104.334387000 t=3355788796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=382 scan=none/- near=0 w=0 c=0 hump=-
+1794891105.358221000 p2-08/p2-08-car-01/heartbeat b'hb 2'
+1794891105.391592000 t=3355789796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=371 scan=none/- near=0 w=0 c=0 hump=-
+1794891106.210967000 t=3355790796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=371 scan=none/- near=0 w=0 c=0 hump=-
+1794891107.211329000 t=3355791796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=371 scan=none/- near=0 w=0 c=0 hump=-
+1794891108.224218000 t=3355792796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891109.295247000 t=3355793796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891110.278038000 p2-08/p2-08-car-01/heartbeat b'hb 3'
+1794891110.296185000 t=3355794796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=370 scan=none/- near=0 w=0 c=0 hump=-
+1794891110.296227000 p2-08/p2-08-car-01/diag b'first 30 ms fault - at #0 0 ms: E2264 E2262 E2264 E2260 E2261 E2264 E2261 E2265 E2260 E2261 E2262 E2260 E2236 E2233 E2237 E2261'
+1794891110.296271000 p2-08/p2-08-car-01/stats b'periods 20 sent 19 refused 0 err 0 nosnap 1 nolink 0'
+1794891111.626531000 t=3355795796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=375 scan=none/- near=0 w=0 c=0 hump=-
+1794891112.225238000 t=3355796796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=373 scan=none/- near=0 w=0 c=0 hump=-
+1794891113.220125000 t=3355797796 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=290 scan=none/- near=0 w=0 c=0 hump=-
+1794891145.984027000 t=3355775916 dt=4294945416ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891146.803931000 t=3355776916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891147.781834000 t=3355777916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891148.825138000 t=3355778916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891149.782397000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794891152.276660000 t=3355779916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891152.276683000 t=3355780916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=926 scan=fault/- near=0 w=0 c=0 hump=-
+1794891152.276690000 t=3355781916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891152.808255000 t=3355782916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891155.208058000 t=3355783916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891164.603866000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794891164.603918000 t=3355784916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891164.603925000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891164.782622000 p2-08/p2-08-car-01/heartbeat b'hb 3'
+1794891164.805308000 t=3355794916 dt=10000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891164.805355000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891164.805361000 p2-08/p2-08-car-01/stats b'periods 20 sent 11 refused 9 err -1 nosnap 0 nolink 0'
+1794891165.797480000 t=3355795916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891166.781272000 t=3355796916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891167.781479000 t=3355797916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891168.831281000 t=3355798916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891169.789191000 p2-08/p2-08-car-01/heartbeat b'hb 4'
+1794891169.823321000 t=3355799916 dt=1000ms [.SLXM..|...] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=0 scan=none/- near=0 w=0 c=0 hump=-
+1794891171.121523000 t=3355800916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891171.786089000 t=3355801916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891172.780707000 t=3355802916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891173.884164000 t=3355803916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891174.781458000 p2-08/p2-08-car-01/heartbeat b'hb 5'
+1794891174.802673000 t=3355804916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=924 scan=fault/- near=0 w=0 c=0 hump=-
+1794891174.802724000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891174.802735000 p2-08/p2-08-car-01/stats b'periods 30 sent 21 refused 9 err -1 nosnap 0 nolink 0'
+1794891175.932080000 t=3355805916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891176.955927000 t=3355806916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891177.787118000 t=3355807916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891178.783959000 t=3355808916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891179.784694000 p2-08/p2-08-car-01/heartbeat b'hb 6'
+1794891179.803737000 t=3355809916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=926 scan=fault/- near=0 w=0 c=0 hump=-
+1794891180.811428000 t=3355810916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891181.856555000 t=3355811916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891182.781435000 t=3355812916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891183.795663000 t=3355813916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891184.784858000 p2-08/p2-08-car-01/heartbeat b'hb 7'
+1794891184.853303000 t=3355814916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891184.853358000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891184.853367000 p2-08/p2-08-car-01/stats b'periods 40 sent 31 refused 9 err -1 nosnap 0 nolink 0'
+1794891186.897562000 t=3355815916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891186.922160000 t=3355816916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891187.813213000 t=3355817916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891188.842392000 t=3355818916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794891189.835462000 p2-08/p2-08-car-01/heartbeat b'hb 8'
+1794891189.943021000 t=3355819916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891190.886687000 t=3355820916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891191.818328000 t=3355821916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891192.867177000 t=3355822916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891193.781255000 t=3355823916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891194.782816000 p2-08/p2-08-car-01/heartbeat b'hb 9'
+1794891194.802665000 t=3355824916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891194.802722000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891194.802731000 p2-08/p2-08-car-01/stats b'periods 50 sent 41 refused 9 err -1 nosnap 0 nolink 0'
+1794891195.782601000 t=3355825916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891196.780626000 t=3355826916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891198.842168000 t=3355827916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891198.862371000 t=3355828916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891199.782234000 p2-08/p2-08-car-01/heartbeat b'hb 10'
+1794891199.801366000 t=3355829916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891200.780992000 t=3355830916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891201.785745000 t=3355831916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891202.828539000 t=3355832916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=fault/- near=0 w=0 c=0 hump=-
+1794891205.082144000 t=3355833916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891205.145792000 p2-08/p2-08-car-01/heartbeat b'hb 11'
+1794891205.145865000 t=3355834916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891205.145876000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891205.789213000 t=3355835916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891206.900195000 t=3355836916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891207.880485000 t=3355837916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891208.783791000 t=3355838916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891209.840736000 p2-08/p2-08-car-01/heartbeat b'hb 12'
+1794891209.861054000 t=3355839916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891210.781680000 t=3355840916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891211.781882000 t=3355841916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794891212.790940000 t=3355842916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891213.838314000 t=3355843916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891214.789962000 p2-08/p2-08-car-01/heartbeat b'hb 13'
+1794891214.886991000 t=3355844916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891214.887042000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891214.887053000 p2-08/p2-08-car-01/stats b'periods 70 sent 61 refused 9 err -1 nosnap 0 nolink 0'
+1794891215.783373000 t=3355845916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891216.783686000 t=3355846916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891217.783004000 t=3355847916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891218.837349000 t=3355848916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891219.782784000 p2-08/p2-08-car-01/heartbeat b'hb 14'
+1794891219.802075000 t=3355849916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891220.787566000 t=3355850916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891221.782646000 t=3355851916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891222.786501000 t=3355852916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891223.809399000 t=3355853916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891224.848700000 p2-08/p2-08-car-01/heartbeat b'hb 15'
+1794891224.862800000 t=3355854916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794891224.862848000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891224.862857000 p2-08/p2-08-car-01/stats b'periods 80 sent 71 refused 9 err -1 nosnap 0 nolink 0'
+1794891225.782352000 t=3355855916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=931 scan=fault/- near=0 w=0 c=0 hump=-
+1794891226.781721000 t=3355856916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794891227.782323000 t=3355857916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891228.842602000 t=3355858916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891229.861903000 p2-08/p2-08-car-01/heartbeat b'hb 16'
+1794891229.884903000 t=3355859916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=926 scan=fault/- near=0 w=0 c=0 hump=-
+1794891231.025137000 t=3355860916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=915 scan=fault/- near=0 w=0 c=0 hump=-
+1794891231.783117000 t=3355861916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891232.787278000 t=3355862916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891233.783196000 t=3355863916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891234.809109000 p2-08/p2-08-car-01/heartbeat b'hb 17'
+1794891234.823147000 t=3355864916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891234.823202000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891234.823216000 p2-08/p2-08-car-01/stats b'periods 90 sent 81 refused 9 err -1 nosnap 0 nolink 0'
+1794891235.857915000 t=3355865916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891236.787691000 t=3355866916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891237.789093000 t=3355867916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891238.781740000 t=3355868916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794891239.803078000 p2-08/p2-08-car-01/heartbeat b'hb 18'
+1794891239.823219000 t=3355869916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891240.839313000 t=3355870916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891241.878158000 t=3355871916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891242.782782000 t=3355872916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891243.783878000 t=3355873916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891244.858529000 p2-08/p2-08-car-01/heartbeat b'hb 19'
+1794891244.881326000 t=3355874916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891244.881350000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891244.881366000 p2-08/p2-08-car-01/stats b'periods 100 sent 91 refused 9 err -1 nosnap 0 nolink 0'
+1794891245.814793000 t=3355875916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891246.897361000 t=3355876916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891247.782524000 t=3355877916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891248.840871000 t=3355878916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891249.864205000 p2-08/p2-08-car-01/heartbeat b'hb 20'
+1794891249.882723000 t=3355879916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891250.781865000 t=3355880916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891251.810929000 t=3355881916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891252.788955000 t=3355882916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891253.785045000 t=3355883916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891254.786105000 p2-08/p2-08-car-01/heartbeat b'hb 21'
+1794891254.823907000 t=3355884916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891254.823945000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891254.823964000 p2-08/p2-08-car-01/stats b'periods 110 sent 101 refused 9 err -1 nosnap 0 nolink 0'
+1794891255.816728000 t=3355885916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=918 scan=fault/- near=0 w=0 c=0 hump=-
+1794891256.829439000 t=3355886916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891257.933992000 t=3355887916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891258.787602000 t=3355888916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891259.787304000 p2-08/p2-08-car-01/heartbeat b'hb 22'
+1794891261.333514000 t=3355889916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=655 scan=fault/- near=0 w=0 c=0 hump=-
+1794891261.402354000 t=3355890916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=914 scan=fault/- near=0 w=0 c=0 hump=-
+1794891263.688696000 t=3355891916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891263.701673000 t=3355892916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891263.784347000 t=3355893916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891264.907006000 p2-08/p2-08-car-01/heartbeat b'hb 23'
+1794891264.922983000 t=3355894916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891264.923057000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891264.923089000 p2-08/p2-08-car-01/stats b'periods 120 sent 111 refused 9 err -1 nosnap 0 nolink 0'
+1794891267.482636000 t=3355895916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891267.501369000 t=3355896916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891267.887022000 t=3355897916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891268.911121000 t=3355898916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=927 scan=fault/- near=0 w=0 c=0 hump=-
+1794891269.791124000 p2-08/p2-08-car-01/heartbeat b'hb 24'
+1794891269.824227000 t=3355899916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=922 scan=fault/- near=0 w=0 c=0 hump=-
+1794891270.783603000 t=3355900916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891273.220611000 t=3355901916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891273.243632000 t=3355902916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891273.826639000 t=3355903916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891274.850884000 p2-08/p2-08-car-01/heartbeat b'hb 25'
+1794891274.937386000 t=3355904916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891274.937450000 p2-08/p2-08-car-01/diag b'first 60 ms fault I at #3 200 ms: n0 n0 n0 n0 n0 n0 E5434 E5433 E5427 E5405 E5429 E5428 E5406 E5402 E5428 E5431'
+1794891274.937470000 p2-08/p2-08-car-01/stats b'periods 130 sent 121 refused 9 err -1 nosnap 0 nolink 0'
+1794891275.860628000 t=3355905916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=923 scan=fault/- near=0 w=0 c=0 hump=-
+1794891276.857537000 t=3355906916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891278.234947000 t=3355907916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891279.049484000 t=3355908916 dt=1000ms [.SLXM..|F..] FAULT/- fault=scan line=- dist=0 L=0 R=0 hdg=0.00 fwd=919 scan=fault/- near=0 w=0 c=0 hump=-
+1794891303.051080000 t=3355775756 dt=4294834136ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794891304.039350000 t=3355776756 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=905 scan=none/- near=0 w=0 c=0 hump=-
+1794891305.117984000 t=3355777756 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794891306.113453000 t=3355778756 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=905 scan=none/- near=0 w=0 c=0 hump=-
+1794891307.038936000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794891307.165872000 t=3355779776 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=905 scan=none/- near=0 w=0 c=0 hump=-
+1794891308.034452000 t=3355780776 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794891310.371467000 t=3355781756 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=909 scan=none/- near=0 w=0 c=0 hump=-
+1794891310.396516000 t=3355782756 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=905 scan=none/- near=0 w=0 c=0 hump=-
+1794891312.533969000 t=3355783756 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=0.00 fwd=905 scan=none/- near=0 w=0 c=0 hump=-
+1794891312.557507000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794891312.557548000 p2-08/p2-08-car-01/stats b'periods 10 sent 9 refused 0 err 0 nosnap 1 nolink 0'
+1794891337.295723000 t=3355785036 dt=1280ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891337.295746000 t=3355786036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891337.889205000 t=3355787036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891338.896111000 t=3355788016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891339.988811000 p2-08/p2-08-car-01/heartbeat b'hb 0'
+1794891341.306584000 t=3355789036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891341.327268000 t=3355790036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891341.941946000 t=3355791036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891342.943997000 t=3355792016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891343.886767000 t=3355793036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891344.994510000 p2-08/p2-08-car-01/heartbeat b'hb 1'
+1794891346.487059000 t=3355794036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891346.487111000 p2-08/p2-08-car-01/stats b'periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0'
+1794891346.565682000 t=3355795036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891346.886512000 t=3355796036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891348.476108000 t=3355797016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891348.988176000 t=3355798036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891349.909809000 p2-08/p2-08-car-01/heartbeat b'hb 2'
+1794891349.930472000 t=3355799036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891350.889676000 t=3355800036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891351.930805000 t=3355801036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891352.981766000 t=3355802036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891353.896753000 t=3355803016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891354.887723000 p2-08/p2-08-car-01/heartbeat b'hb 3'
+1794891354.907654000 t=3355804036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891354.907723000 p2-08/p2-08-car-01/stats b'periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0'
+1794891355.917523000 t=3355805036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891356.964048000 t=3355806036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891358.014210000 t=3355807036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891358.920241000 t=3355808016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891359.944200000 p2-08/p2-08-car-01/heartbeat b'hb 4'
+1794891359.981841000 t=3355809036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891360.968040000 t=3355810036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891361.992465000 t=3355811016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891362.887778000 t=3355812036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891363.894953000 t=3355813036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891364.962447000 p2-08/p2-08-car-01/heartbeat b'hb 5'
+1794891365.007281000 t=3355814036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891365.007345000 p2-08/p2-08-car-01/stats b'periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0'
+1794891365.892578000 t=3355815036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891367.010226000 t=3355816036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891368.034507000 t=3355817016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891368.889207000 t=3355818016 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=921 scan=none/- near=0 w=0 c=0 hump=-
+1794891369.887855000 p2-08/p2-08-car-01/heartbeat b'hb 6'
+1794891369.927324000 t=3355819036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891370.893155000 t=3355820036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891371.887630000 t=3355821036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891372.887520000 t=3355822016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891373.887838000 t=3355823036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891374.888037000 p2-08/p2-08-car-01/heartbeat b'hb 7'
+1794891374.907469000 t=3355824036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891374.907537000 p2-08/p2-08-car-01/stats b'periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0'
+1794891375.900230000 t=3355825036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891376.942959000 t=3355826036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891377.937478000 t=3355827016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891378.990867000 t=3355828036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891379.887280000 p2-08/p2-08-car-01/heartbeat b'hb 8'
+1794891379.931195000 t=3355829036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891380.892629000 t=3355830036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891381.892886000 t=3355831036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891382.889346000 t=3355832016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891383.887235000 t=3355833036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891384.930866000 p2-08/p2-08-car-01/heartbeat b'hb 9'
+1794891384.950578000 t=3355834036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891384.950631000 p2-08/p2-08-car-01/stats b'periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0'
+1794891385.954860000 t=3355835036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891386.978498000 t=3355836036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891387.901312000 t=3355837016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891390.592517000 t=3355838036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891390.631719000 p2-08/p2-08-car-01/heartbeat b'hb 10'
+1794891390.631755000 t=3355839036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891390.887684000 t=3355840016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891391.904204000 t=3355841036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891392.890206000 t=3355842036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891393.886845000 t=3355843016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891394.887435000 p2-08/p2-08-car-01/heartbeat b'hb 11'
+1794891394.926712000 t=3355844036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891394.926769000 p2-08/p2-08-car-01/stats b'periods 60 sent 60 refused 0 err 0 nosnap 0 nolink 0'
+1794891395.895413000 t=3355845036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891396.890991000 t=3355846016 dt=980ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=922 scan=none/- near=0 w=0 c=0 hump=-
+1794891397.891374000 t=3355847036 dt=1020ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891398.917825000 t=3355848036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891399.956769000 p2-08/p2-08-car-01/heartbeat b'hb 12'
+1794891399.985380000 t=3355849036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=926 scan=none/- near=0 w=0 c=0 hump=-
+1794891400.895923000 t=3355850036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891401.887877000 t=3355851036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-
+1794891402.938498000 t=3355852036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=923 scan=none/- near=0 w=0 c=0 hump=-
+1794891403.937412000 t=3355853036 dt=1000ms [.SLXM..|F..] READY/- fault=none line=- dist=0 L=0 R=0 hdg=5.29 fwd=918 scan=none/- near=0 w=0 c=0 hump=-

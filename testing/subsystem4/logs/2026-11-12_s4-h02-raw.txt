@@ -1,0 +1,132 @@
+s4 raw: sensor x=-22 y=27 z=901 mg | vehicle fwd=-27 left=-22 up=901 mg
+s3 line: adc=156/260 filtered=169/263 threshold=168/683 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-20 y=30 z=901 mg | vehicle fwd=-30 left=-20 up=901 mg
+s3 line: adc=158/261 filtered=167/262 threshold=168/687 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-18 y=26 z=899 mg | vehicle fwd=-26 left=-18 up=899 mg
+s3 line: adc=153/291 filtered=153/275 threshold=168/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+s3 line: adc=151/275 filtered=159/272 threshold=168/689 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-26 y=26 z=900 mg | vehicle fwd=-26 left=-26 up=900 mg
+s3 line: adc=184/275 filtered=175/272 threshold=168/692 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-23 y=31 z=896 mg | vehicle fwd=-31 left=-23 up=896 mg
+s3 line: adc=157/261 filtered=159/262 threshold=168/695 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-20 y=27 z=892 mg | vehicle fwd=-27 left=-20 up=892 mg
+s3 line: adc=162/274 filtered=164/267 threshold=168/699 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-19 y=30 z=901 mg | vehicle fwd=-30 left=-19 up=901 mg
+s3 line: adc=152/244 filtered=163/249 threshold=168/702 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-21 y=27 z=899 mg | vehicle fwd=-27 left=-21 up=899 mg
+s3 line: adc=184/260 filtered=177/264 threshold=168/705 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-19 y=28 z=898 mg | vehicle fwd=-28 left=-19 up=898 mg
+s3 line: adc=181/259 filtered=174/259 threshold=168/708 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s3 line: adc=172/259 filtered=176/261 threshold=168/712 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-19 y=28 z=898 mg | vehicle fwd=-28 left=-19 up=898 mg
+s3 line: adc=163/267 filtered=168/263 threshold=168/715 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-19 y=29 z=895 mg | vehicle fwd=-29 left=-19 up=895 mg
+s3 line: adc=177/262 filtered=172/259 threshold=168/718 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-18 y=25 z=902 mg | vehicle fwd=-25 left=-18 up=902 mg
+s4: stationary calibration complete (200 samples in 6750 ms)
+s3 line: adc=171/243 filtered=172/250 threshold=168/721 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-22 y=23 z=894 mg | vehicle fwd=-23 left=-22 up=894 mg
+s3 line: adc=160/256 filtered=165/260 threshold=168/725 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-22 y=26 z=893 mg | vehicle fwd=-26 left=-22 up=893 mg
+s3 line: adc=180/257 filtered=173/256 threshold=168/728 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-20 y=27 z=900 mg | vehicle fwd=-27 left=-20 up=900 mg
+s3 line: adc=170/262 filtered=170/260 threshold=168/731 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-20 y=28 z=901 mg | vehicle fwd=-28 left=-20 up=901 mg
+s3 line: adc=169/257 filtered=169/254 threshold=168/734 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s3 line: adc=163/267 filtered=163/266 threshold=168/738 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-20 y=27 z=897 mg | vehicle fwd=-27 left=-20 up=897 mg
+s3 line: adc=178/268 filtered=172/261 threshold=168/741 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-22 y=29 z=896 mg | vehicle fwd=-29 left=-22 up=896 mg
+s3 line: adc=183/246 filtered=176/251 threshold=168/744 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-19 y=25 z=905 mg | vehicle fwd=-25 left=-19 up=905 mg
+s3 line: adc=163/265 filtered=163/266 threshold=168/747 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-20 y=27 z=900 mg | vehicle fwd=-27 left=-20 up=900 mg
+s3 line: adc=181/256 filtered=177/258 threshold=168/751 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-19 y=27 z=901 mg | vehicle fwd=-27 left=-19 up=901 mg
+s3 line: adc=178/259 filtered=178/260 threshold=168/754 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-21 y=32 z=899 mg | vehicle fwd=-32 left=-21 up=899 mg
+s3 line: adc=178/258 filtered=176/254 threshold=168/757 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-17 y=26 z=900 mg | vehicle fwd=-26 left=-17 up=900 mg
+s3 line: adc=174/255 filtered=177/254 threshold=168/758 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s3 line: adc=160/259 filtered=162/260 threshold=168/760 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-21 y=26 z=899 mg | vehicle fwd=-26 left=-21 up=899 mg
+s3 line: adc=162/260 filtered=168/257 threshold=168/758 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-21 y=26 z=902 mg | vehicle fwd=-26 left=-21 up=902 mg
+s3 line: adc=179/254 filtered=177/257 threshold=168/761 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-45 y=23 z=891 mg | vehicle fwd=-23 left=-45 up=891 mg
+s3 line: adc=154/248 filtered=163/256 threshold=168/763 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-17 y=26 z=900 mg | vehicle fwd=-26 left=-17 up=900 mg
+s3 line: adc=173/261 filtered=173/261 threshold=168/762 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s3 line: adc=242/2392 filtered=227/1988 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-26 y=50 z=874 mg | vehicle fwd=-50 left=-26 up=874 mg
+s3 line: adc=2854/3464 filtered=2874/3470 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-18 y=-195 z=870 mg | vehicle fwd=195 left=-18 up=870 mg
+s3 line: adc=2721/3438 filtered=2736/3437 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-17 y=-186 z=876 mg | vehicle fwd=186 left=-17 up=876 mg
+s3 line: adc=2613/3409 filtered=2608/3405 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-17 y=-235 z=878 mg | vehicle fwd=235 left=-17 up=878 mg
+s3 line: adc=2416/3358 filtered=2424/3360 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-18 y=-193 z=881 mg | vehicle fwd=193 left=-18 up=881 mg
+s3 line: adc=2437/3371 filtered=2429/3367 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-20 y=-170 z=883 mg | vehicle fwd=170 left=-20 up=883 mg
+s3 line: adc=2452/3379 filtered=2469/3376 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-15 y=-185 z=885 mg | vehicle fwd=185 left=-15 up=885 mg
+s3 line: adc=2364/3363 filtered=2365/3362 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-19 y=-150 z=879 mg | vehicle fwd=150 left=-19 up=879 mg
+s3 line: adc=2340/3346 filtered=2326/3346 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=2253/3334 filtered=2261/3336 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-18 y=-157 z=875 mg | vehicle fwd=157 left=-18 up=875 mg
+s3 line: adc=1405/3220 filtered=1560/3241 threshold=168/763 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=-10 y=-81 z=893 mg | vehicle fwd=81 left=-10 up=893 mg
+s3 line: adc=181/263 filtered=179/347 threshold=168/763 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=8 y=31 z=895 mg | vehicle fwd=-31 left=8 up=895 mg
+s3 line: adc=184/257 filtered=184/257 threshold=168/764 left=BLACK right=WHITE mask=1 strength=4 command=LEFT
+s4 raw: sensor x=-20 y=27 z=894 mg | vehicle fwd=-27 left=-20 up=894 mg
+s3 line: adc=189/266 filtered=179/263 threshold=168/763 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s3 line: adc=186/265 filtered=177/264 threshold=168/763 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-18 y=26 z=903 mg | vehicle fwd=-26 left=-18 up=903 mg
+s3 line: adc=163/269 filtered=168/264 threshold=168/762 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-21 y=25 z=903 mg | vehicle fwd=-25 left=-21 up=903 mg
+s3 line: adc=161/265 filtered=167/261 threshold=168/762 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-24 y=32 z=898 mg | vehicle fwd=-32 left=-24 up=898 mg
+s3 line: adc=163/259 filtered=166/259 threshold=168/763 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-17 y=30 z=896 mg | vehicle fwd=-30 left=-17 up=896 mg
+s3 line: adc=167/266 filtered=170/267 threshold=168/765 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-24 y=42 z=896 mg | vehicle fwd=-42 left=-24 up=896 mg
+s3 line: adc=172/255 filtered=170/251 threshold=168/764 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s3 line: adc=233/1749 filtered=220/1491 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=68 y=96 z=877 mg | vehicle fwd=-96 left=68 up=877 mg
+s3 line: adc=1504/3036 filtered=1433/3004 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=143 y=0 z=876 mg | vehicle fwd=0 left=143 up=876 mg
+s3 line: adc=1488/2996 filtered=1507/3006 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=148 y=26 z=876 mg | vehicle fwd=-26 left=148 up=876 mg
+s3 line: adc=1376/2977 filtered=1393/2986 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=162 y=-24 z=880 mg | vehicle fwd=24 left=162 up=880 mg
+s3 line: adc=1568/3082 filtered=1568/3076 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=152 y=-10 z=882 mg | vehicle fwd=10 left=152 up=882 mg
+s3 line: adc=1811/3173 filtered=1776/3159 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s3 line: adc=1921/3219 filtered=1888/3209 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=131 y=-48 z=881 mg | vehicle fwd=48 left=131 up=881 mg
+s3 line: adc=1858/3208 filtered=1849/3206 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=135 y=-61 z=881 mg | vehicle fwd=61 left=135 up=881 mg
+s3 line: adc=2011/3242 filtered=2008/3245 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=106 y=-74 z=877 mg | vehicle fwd=74 left=106 up=877 mg
+s3 line: adc=2168/3325 filtered=2189/3324 threshold=168/765 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+s4 raw: sensor x=36 y=-158 z=879 mg | vehicle fwd=158 left=36 up=879 mg
+s4: candidate impact detected
+s3 line: adc=164/274 filtered=173/318 threshold=168/765 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-18 y=30 z=897 mg | vehicle fwd=-30 left=-18 up=897 mg
+s3 line: adc=180/251 filtered=173/252 threshold=168/763 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s3 line: adc=160/269 filtered=165/265 threshold=168/760 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-22 y=31 z=901 mg | vehicle fwd=-31 left=-22 up=901 mg
+s3 line: adc=171/260 filtered=170/263 threshold=168/764 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-20 y=25 z=902 mg | vehicle fwd=-25 left=-20 up=902 mg
+s3 line: adc=184/246 filtered=177/255 threshold=168/763 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-32 y=20 z=896 mg | vehicle fwd=-20 left=-32 up=896 mg
+s3 line: adc=187/269 filtered=178/264 threshold=168/764 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-19 y=33 z=900 mg | vehicle fwd=-33 left=-19 up=900 mg
+s3 line: adc=189/258 filtered=183/259 threshold=168/765 left=BLACK right=WHITE mask=1 strength=3 command=LEFT
+s4 raw: sensor x=-20 y=24 z=898 mg | vehicle fwd=-24 left=-20 up=898 mg
+s3 line: adc=157/270 filtered=167/267 threshold=168/765 left=BLACK right=WHITE mask=1 strength=2 command=LEFT
+s4 raw: sensor x=-33 y=6 z=908 mg | vehicle fwd=-6 left=-33 up=908 mg
+s3 line: adc=163/228 filtered=166/233 threshold=168/763 left=BLACK right=WHITE mask=1 strength=2 command=LEFT

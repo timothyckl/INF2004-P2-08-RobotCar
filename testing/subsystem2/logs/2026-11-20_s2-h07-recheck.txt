@@ -1,0 +1,39 @@
+# serial log started 2026-11-20 19:39:53
+# connected /dev/cu.usbmodemMTK3PICO1 19:39:53
+# disconnected 19:40:16
+# connected /dev/cu.usbmodemMTK3PICO1 19:40:33
+19:40:33 
+19:40:33 
+19:40:33 microT-Kernel Version 3.00
+19:40:33 
+19:40:33 
+19:40:33 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+19:40:33 dual-core (SMP) build, usermain on core 0
+19:40:33 S2 calibration test mode 1
+19:40:33 [S2] GP20 button ready: press to START or STOP
+19:40:33 wifi: cyw43_utk_task starting (proc 1)
+19:40:33 wifi: cyw43_init() ...
+19:40:33 wifi: cyw43_init() returned, bringing interface up ...
+19:40:33 s4: LSM303DLHC ready; calibrating
+19:40:34 s4: calibration failed, car moved (span fwd 9 left 19 up 123 mg); keep still
+19:40:36 s4: stationary calibration complete (50 samples in 1480 ms)
+19:40:50 [S2] GP20: START requested
+19:40:50 s4: new run 1; hump maximum cleared
+19:40:56 [S2] CAL forward 1000 mm finished
+19:40:56 [S2] CAL odometry: x=1003 mm y=0 mm heading=-481 mdeg; result=2 reason=0 state=4 fault=0
+19:40:56 [S2] CAL timer: 23383016 us in 23260 ms of kernel time (expect 1000 us per ms)
+19:40:56 [S2] CAL STOP latency: latch to motor off 1147 us
+19:42:14 [S2] GP20: RESET requested before restart
+19:42:14 [S2] GP20: START requested
+19:42:14 s4: new run 2; hump maximum cleared
+19:42:19 [S2] CAL forward 1000 mm finished
+19:42:19 [S2] CAL odometry: x=1002 mm y=0 mm heading=0 mdeg; result=2 reason=0 state=4 fault=0
+19:42:19 [S2] CAL timer: 106982998 us in 106860 ms of kernel time (expect 1000 us per ms)
+19:42:19 [S2] CAL STOP latency: latch to motor off 1127 us
+19:42:33 [S2] GP20: RESET requested before restart
+19:42:33 [S2] GP20: START requested
+19:42:33 s4: new run 3; hump maximum cleared
+19:42:39 [S2] CAL forward 1000 mm finished
+19:42:39 [S2] CAL odometry: x=1002 mm y=0 mm heading=481 mdeg; result=2 reason=0 state=4 fault=0
+19:42:39 [S2] CAL timer: 126262848 us in 126140 ms of kernel time (expect 1000 us per ms)
+19:42:39 [S2] CAL STOP latency: latch to motor off 982 us

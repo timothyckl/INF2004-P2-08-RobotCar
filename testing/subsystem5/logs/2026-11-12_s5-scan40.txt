@@ -1,0 +1,943 @@
+1048 us valid 1 178 mm invalid 0
+[S5] range t 3355771006 ms echo 956 us valid 1 162 mm invalid 0
+[S5] range t 3355771076 ms echo 974 us valid 1 165 mm invalid 0
+s3 line: adc=174/228 filtered=164/215 threshold=172/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355771146 ms echo 992 us valid 1 168 mm invalid 0
+s3 line: adc=241/2466 filtered=218/1932 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355771216 ms echo 2369 us valid 1 402 mm invalid 0
+[S5] range t 3355771286 ms echo 2302 us valid 1 391 mm invalid 0
+[S5] range t 3355771356 ms echo 2500 us valid 1 425 mm invalid 0
+[S5] range t 3355771446 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355771526 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355771566 ms echo 3287 us valid 1 558 mm invalid 0
+[S5] range t 3355771636 ms echo 3645 us valid 1 619 mm invalid 0
+s3 line: adc=3552/3716 filtered=3496/3670 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355771706 ms echo 3278 us valid 1 557 mm invalid 0
+[S5] range t 3355771776 ms echo 3277 us valid 1 557 mm invalid 0
+[S5] range t 3355771846 ms echo 3112 us valid 1 529 mm invalid 0
+[S5] range t 3355771916 ms echo 3031 us valid 1 515 mm invalid 0
+[S5] range t 3355771986 ms echo 3032 us valid 1 515 mm invalid 0
+[S5] range t 3355772056 ms echo 2992 us valid 1 508 mm invalid 0
+[S5] range t 3355772126 ms echo 2963 us valid 1 503 mm invalid 0
+[S5] range t 3355772196 ms echo 2973 us valid 1 505 mm invalid 0
+s3 line: adc=3917/4002 filtered=3919/3993 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355772266 ms echo 2983 us valid 1 507 mm invalid 0
+[S5] range t 3355772336 ms echo 3062 us valid 1 520 mm invalid 0
+[S5] range t 3355772406 ms echo 3052 us valid 1 518 mm invalid 0
+[S5] range t 3355772476 ms echo 3042 us valid 1 517 mm invalid 0
+[S5] range t 3355772546 ms echo 3062 us valid 1 520 mm invalid 0
+[S5] range t 3355772616 ms echo 3102 us valid 1 527 mm invalid 0
+[S5] range t 3355772686 ms echo 3082 us valid 1 523 mm invalid 0
+s3 line: adc=3926/4011 filtered=3943/4013 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355772756 ms echo 3132 us valid 1 532 mm invalid 0
+[S5] range t 3355772826 ms echo 3211 us valid 1 545 mm invalid 0
+[S5] range t 3355772896 ms echo 3181 us valid 1 540 mm invalid 0
+[S5] range t 3355772966 ms echo 3152 us valid 1 535 mm invalid 0
+[S5] range t 3355773036 ms echo 3279 us valid 1 557 mm invalid 0
+[S5] range t 3355773106 ms [S5] range t 3355776116 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355776186 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355776256 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355776326 ms echo 2913 us valid 1 495 mm invalid 0
+s3 line: adc=3937/3973 filtered=3935/3982 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355776396 ms echo 2912 us valid 1 495 mm invalid 0
+[S5] range t 3355776466 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355776536 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355776606 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355776676 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355776746 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355776816 ms echo 2913 us valid 1 495 mm invalid 0
+s3 line: adc=3929/3985 filtered=3930/3984 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355776886 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355776956 ms echo 2932 us valid 1 498 mm invalid 0
+[S5] range t 3355777026 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777096 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777166 ms echo 2932 us valid 1 498 mm invalid 0
+[S5] range t 3355777236 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777306 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777376 ms echo 2933 us valid 1 498 mm invalid 0
+s3 line: adc=3916/3990 filtered=3923/3988 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355777446 ms echo 2932 us valid 1 498 mm invalid 0
+[S5] range t 3355777516 ms echo 2932 us valid 1 498 mm invalid 0
+[S5] range t 3355777586 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777656 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777726 ms echo 2933 us valid 1 498 mm invalid 0
+[S5] range t 3355777796 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355777866 ms echo 2904 us valid 1 493 mm invalid 0
+s3 line: adc=3918/3986 filtered=3924/3988 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355777936 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355778006 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355778076 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355778146 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355778216 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355778286 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355778356 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355778426 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3925/3982 filtered=3928/3987 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355778496 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355778566 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355778636 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355778706 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355778776 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355778846 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355778916 ms echo 2893 us valid 1 491 mm invalid 0
+s3 line: adc=3921/3994 filtered=3922/3991 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355778986 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355779056 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355779126 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355779196 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355779266 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355779336 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355779406 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355779476 ms echo 2904 us valid 1 493 mm invalid 0
+s3 line: adc=3923/3981 filtered=3923/3986 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355779546 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355779616 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355779686 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355779756 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355779826 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355779896 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355779966 ms echo 2923 us valid 1 496 mm invalid 0
+s3 line: adc=3940/3995 filtered=3936/3992 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355780036 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355780106 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355780176 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355780246 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355780316 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355780386 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355780456 ms echo 2904 us valid 1 493 mm invalid 0
+s3 line: adc=3939/3996 filtered=3935/3991 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355780526 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355780596 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355780666 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355780736 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355780806 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355780876 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355780946 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355781016 ms echo 2903 us valid 1 493 mm invalid 0
+s3 line: adc=3917/3994 filtered=3926/3994 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355781086 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355781156 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355781226 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355781296 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355781366 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355781436 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355781506 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3946/3997 filtered=3942/3996 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355781576 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355781646 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355781716 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355781786 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355781856 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355781926 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355781996 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355782066 ms echo 2913 us valid 1 495 mm invalid 0
+s3 line: adc=3948/3995 filtered=3943/3995 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355782136 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355782206 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355782276 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355782346 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355782416 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355782486 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355782556 ms echo 2903 us valid 1 493 mm invalid 0
+s3 line: adc=3925/3997 filtered=3932/3993 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355782626 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355782696 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355782766 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355782836 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355782906 ms echo 2922 us valid 1 496 mm invalid 0
+[S5] range t 3355782976 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355783046 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355783116 ms echo 2893 us valid 1 491 mm invalid 0
+s3 line: adc=3944/3990 filtered=3941/3990 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355783186 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355783256 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355783326 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355783396 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355783466 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355783536 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355783606 ms echo 2903 us valid 1 493 mm invalid 0
+s3 line: adc=3942/3996 filtered=3939/3993 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355783676 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355783746 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355783816 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355783886 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355783956 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355784026 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355784096 ms echo 2894 us valid 1 491 mm invalid 0
+s3 line: adc=3938/3992 filtered=3936/3992 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355784166 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355784236 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355784306 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355784376 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355784446 ms echo 2862 us valid 1 486 mm invalid 0
+[S5] range t 3355784516 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355784586 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355784656 ms echo 2862 us valid 1 486 mm invalid 0
+s3 line: adc=3937/3993 filtered=3935/3992 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355784726 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355784796 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355784866 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355784936 ms echo 2184 us valid 1 371 mm invalid 0
+[S5] range t 3355785006 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355785076 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355785146 ms echo 2893 us valid 1 491 mm invalid 0
+s3 line: adc=3942/3985 filtered=3936/3986 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355785216 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355785286 ms echo 2664 us valid 1 452 mm invalid 0
+[S5] range t 3355785356 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355785426 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355785496 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355785566 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355785636 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355785706 ms echo 2874 us valid 1 488 mm invalid 0
+s3 line: adc=3941/4002 filtered=3934/3996 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355785776 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355785846 ms echo 2875 us valid 1 488 mm invalid 0
+[S5] range t 3355785916 ms echo 2875 us valid 1 488 mm invalid 0
+[S5] range t 3355785986 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355786056 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355786126 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355786196 ms echo 2873 us valid 1 488 mm invalid 0
+s3 line: adc=3939/3991 filtered=3935/3991 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355786266 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355786336 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355786406 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355786476 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355786546 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355786616 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355786686 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355786756 ms echo 2893 us valid 1 491 mm invalid 0
+s3 line: adc=3928/3995 filtered=3928/3994 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355786826 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355786896 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355786966 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355787036 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355787106 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355787176 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355787246 ms echo 2894 us valid 1 491 mm invalid 0
+s3 line: adc=3944/3992 filtered=3938/3990 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355787316 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355787386 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355787456 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355787526 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355787596 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355787666 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355787736 ms echo 2893 us valid 1 491 mm invalid 0
+s3 line: adc=3932/3989 filtered=3931/3986 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355787806 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355787876 ms echo 2862 us valid 1 486 mm invalid 0
+[S5] range t 3355787946 ms echo 2536 us valid 1 431 mm invalid 0
+[S5] range t 3355788016 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355788086 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355788156 ms echo 2489 us valid 1 423 mm invalid 0
+[S5] range t 3355788226 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355788296 ms echo 2894 us valid 1 491 mm invalid 0
+s3 line: adc=3925/3992 filtered=3928/3991 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355788366 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355788436 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355788506 ms echo 2894 us valid 1 491 mm invalid 0
+[S5] range t 3355788576 ms echo 2839 us valid 1 482 mm invalid 0
+[S5] range t 3355788646 ms echo 2862 us valid 1 486 mm invalid 0
+[S5] range t 3355788716 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355788786 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3917/3992 filtered=3923/3987 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355788856 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355788926 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355788996 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355789066 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355789136 ms echo 2873 us valid 1 488 mm invalid 0
+[S5] range t 3355789206 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355789276 ms echo 2594 us valid 1 440 mm invalid 0
+[S5] range t 3355789346 ms echo 2894 us valid 1 491 mm invalid 0
+s3 line: adc=3925/3988 filtered=3925/3986 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355789416 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355789486 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355789556 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355789626 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355789696 ms echo 2143 us valid 1 364 mm invalid 0
+[S5] range t 3355789766 ms echo 2143 us valid 1 364 mm invalid 0
+[S5] range t 3355789836 ms echo 2904 us valid 1 493 mm invalid 0
+s3 line: adc=3914/3981 filtered=3916/3983 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355789906 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355789976 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790046 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790116 ms echo 2116 us valid 1 359 mm invalid 0
+[S5] range t 3355790186 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790256 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790326 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355790396 ms echo 2903 us valid 1 493 mm invalid 0
+s3 line: adc=3930/3974 filtered=3921/3977 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355790466 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355790536 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790606 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790676 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355790746 ms echo 2923 us valid 1 496 mm invalid 0
+[S5] range t 3355790816 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355790886 ms echo 2923 us valid 1 496 mm invalid 0
+s3 line: adc=3924/3970 filtered=3921/3972 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355790956 ms echo 2156 us valid 1 366 mm invalid 0
+[S5] range t 3355791026 ms echo 2103 us valid 1 357 mm invalid 0
+[S5] range t 3355791096 ms echo 2103 us valid 1 357 mm invalid 0
+[S5] range t 3355791166 ms echo 2102 us valid 1 357 mm invalid 0
+[S5] range t 3355791236 ms echo 2103 us valid 1 357 mm invalid 0
+[S5] range t 3355791306 ms echo 2102 us valid 1 357 mm invalid 0
+[S5] range t 3355791376 ms echo 2103 us valid 1 357 mm invalid 0
+s3 line: adc=3925/3980 filtered=3919/3982 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355791446 ms echo 2103 us valid 1 357 mm invalid 0
+[S5] range t 3355791516 ms echo 2103 us valid 1 357 mm invalid 0
+[S5] range t 3355791586 ms echo 2102 us valid 1 357 mm invalid 0
+[S5] range t 3355791656 ms echo 2224 us valid 1 378 mm invalid 0
+[S5] range t 3355791726 ms echo 2169 us valid 1 368 mm invalid 0
+[S5] range t 3355791796 ms echo 2117 us valid 1 359 mm invalid 0
+[S5] range t 3355791866 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355791936 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3897/3980 filtered=3901/3977 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355792006 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355792076 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355792146 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355792216 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355792286 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355792356 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355792426 ms echo 2883 us valid 1 490 mm invalid 0
+s3 line: adc=3897/3960 filtered=3902/3964 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355792496 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355792566 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355792636 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355792706 ms echo 2882 us valid 1 489 mm invalid 0
+[S5] range t 3355792776 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355792846 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355792916 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355792986 ms echo 2873 us valid 1 488 mm invalid 0
+s3 line: adc=3888/3968 filtered=3888/3968 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355793056 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355793126 ms echo 2873 us valid 1 488 mm invalid 0
+[S5] range t 3355793196 ms echo 2873 us valid 1 488 mm invalid 0
+[S5] range t 3355793266 ms echo 2873 us valid 1 488 mm invalid 0
+[S5] range t 3355793336 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355793406 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355793476 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3886/3954 filtered=3894/3961 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355793546 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355793616 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355793686 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355793756 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355793826 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355793896 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355793966 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355794036 ms echo 2883 us valid 1 490 mm invalid 0
+s3 line: adc=3893/3962 filtered=3898/3963 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355794106 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355794176 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355794246 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355794316 ms echo 2862 us valid 1 486 mm invalid 0
+[S5] range t 3355794386 ms echo 2862 us valid 1 486 mm invalid 0
+[S5] range t 3355794456 ms echo 2862 us valid 1 486 mm invalid 0
+[S5] range t 3355794526 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3905/3972 filtered=3903/3970 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355794596 ms echo 2115 us valid 1 359 mm invalid 0
+[S5] range t 3355794666 ms echo 2116 us valid 1 359 mm invalid 0
+[S5] range t 3355794736 ms echo 2210 us valid 1 375 mm invalid 0
+[S5] range t 3355794806 ms echo 2210 us valid 1 375 mm invalid 0
+[S5] range t 3355794876 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355794946 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355795016 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3891/3954 filtered=3885/3960 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355795086 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355795156 ms echo 2884 us valid 1 490 mm invalid 0
+[S5] range t 3355795226 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355795296 ms echo 2263 us valid 1 384 mm invalid 0
+[S5] range t 3355795366 ms echo 2236 us valid 1 380 mm invalid 0
+[S5] range t 3355795436 ms echo 2489 us valid 1 423 mm invalid 0
+[S5] range t 3355795506 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355795576 ms echo 2850 us valid 1 484 mm invalid 0
+s3 line: adc=3892/3966 filtered=3889/3962 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355795646 ms echo 2535 us valid 1 430 mm invalid 0
+[S5] range t 3355795716 ms echo 2513 us valid 1 427 mm invalid 0
+[S5] range t 3355795786 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355795856 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355795926 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355795996 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355796066 ms echo 2884 us valid 1 490 mm invalid 0
+s3 line: adc=3901/3958 filtered=3896/3959 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355796136 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355796206 ms echo 2103 us valid 1 357 mm invalid 0
+[S5] range t 3355796276 ms echo 2873 us valid 1 488 mm invalid 0
+[S5] range t 3355796346 ms echo 2850 us valid 1 484 mm invalid 0
+[S5] range t 3355796416 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355796486 ms echo 2827 us valid 1 480 mm invalid 0
+[S5] range t 3355796556 ms echo 2501 us valid 1 425 mm invalid 0
+[S5] range t 3355796626 ms echo 2827 us valid 1 480 mm invalid 0
+s3 line: adc=3896/3966 filtered=3890/3963 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355796696 ms echo 2827 us valid 1 480 mm invalid 0
+[S5] range t 3355796766 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355796836 ms echo 2850 us valid 1 484 mm invalid 0
+[S5] range t 3355796906 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355796976 ms echo 2850 us valid 1 484 mm invalid 0
+[S5] range t 3355797046 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355797116 ms echo 2873 us valid 1 488 mm invalid 0
+s3 line: adc=3897/3964 filtered=3891/3959 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355797186 ms echo 2874 us valid 1 488 mm invalid 0
+[S5] range t 3355797256 ms echo 2873 us valid 1 488 mm invalid 0
+[S5] range t 3355797326 ms echo 2850 us valid 1 484 mm invalid 0
+[S5] range t 3355797396 ms echo 2850 us valid 1 484 mm invalid 0
+[S5] range t 3355797466 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355797536 ms echo 2851 us valid 1 484 mm invalid 0
+[S5] range t 3355797606 ms echo 2501 us valid 1 425 mm invalid 0
+[S5] range t 3355797676 ms echo 2501 us valid 1 425 mm invalid 0
+s3 line: adc=3873/3961 filtered=3878/3960 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355797746 ms echo 2501 us valid 1 425 mm invalid 0
+[S5] range t 3355797816 ms echo 2500 us valid 1 425 mm invalid 0
+[S5] range t 3355797886 ms echo 2478 us valid 1 421 mm invalid 0
+[S5] range t 3355797956 ms echo 2478 us valid 1 421 mm invalid 0
+[S5] range t 3355798026 ms echo 2129 us valid 1 361 mm invalid 0
+[S5] range t 3355798096 ms echo 2129 us valid 1 361 mm invalid 0
+[S5] range t 3355798166 ms echo 2130 us valid 1 362 mm invalid 0
+s3 line: adc=3888/3956 filtered=3886/3951 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355798236 ms echo 2102 us valid 1 357 mm invalid 0
+[S5] range t 3355798306 ms echo 2223 us valid 1 377 mm invalid 0
+[S5] range t 3355798376 ms echo 2224 us valid 1 378 mm invalid 0
+[S5] range t 3355798446 ms echo 2371 us valid 1 403 mm invalid 0
+[S5] range t 3355798516 ms echo 2223 us valid 1 377 mm invalid 0
+[S5] range t 3355798586 ms echo 2223 us valid 1 377 mm invalid 0
+[S5] range t 3355798656 ms echo 2102 us valid 1 357 mm invalid 0
+s3 line: adc=3862/3949 filtered=3867/3950 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355798726 ms echo 2129 us valid 1 361 mm invalid 0
+[S5] range t 3355798796 ms echo 2411 us valid 1 409 mm invalid 0
+[S5] range t 3355798866 ms echo 2223 us valid 1 377 mm invalid 0
+[S5] range t 3355798936 ms echo 2536 us valid 1 431 mm invalid 0
+[S5] range t 3355799006 ms echo 2595 us valid 1 441 mm invalid 0
+[S5] range t 3355799076 ms echo 2924 us valid 1 497 mm invalid 0
+[S5] range t 3355799146 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355799216 ms echo 2913 us valid 1 495 mm invalid 0
+s3 line: adc=3877/3937 filtered=3875/3941 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355799286 ms echo 2914 us valid 1 495 mm invalid 0
+[S5] range t 3355799356 ms echo 2913 us valid 1 495 mm invalid 0
+[S5] range t 3355799426 ms echo 2943 us valid 1 500 mm invalid 0
+[S5] range t 3355799496 ms echo 2953 us valid 1 502 mm invalid 0
+[S5] range t 3355799566 ms echo 2954 us valid 1 502 mm invalid 0
+[S5] range t 3355799636 ms echo 2983 us valid 1 507 mm invalid 0
+[S5] range t 3355799706 ms echo 2953 us valid 1 502 mm invalid 0
+s3 line: adc=3853/3921 filtered=3853/3926 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355799776 ms echo 3003 us valid 1 510 mm invalid 0
+[S5] range t 3355799846 ms echo 2962 us valid 1 503 mm invalid 0
+[S5] range t 3355799916 ms echo 2893 us valid 1 491 mm invalid 0
+[S5] range t 3355799986 ms echo 3062 us valid 1 520 mm invalid 0
+[S5] range t 3355800056 ms echo 3062 us valid 1 520 mm invalid 0
+[S5] range t 3355800146 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355800226 ms late 0 us valid 1 4000 mm invalid 0
+s3 line: adc=3626/3774 filtered=3643/3786 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355800286 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355800336 ms echo 3279 us valid 1 557 mm invalid 0
+[S5] range t 3355800426 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355800476 ms echo 2883 us valid 1 490 mm invalid 0
+[S5] range t 3355800546 ms echo 2250 us valid 1 382 mm invalid 0
+[S5] range t 3355800616 ms echo 2102 us valid 1 357 mm invalid 0
+[S5] range t 3355800686 ms echo 2290 us valid 1 389 mm invalid 0
+[S5] range t 3355800756 ms echo 2196 us valid 1 373 mm invalid 0
+s3 line: adc=168/545 filtered=178/1041 threshold=172/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355800826 ms echo 2236 us valid 1 380 mm invalid 0
+[S5] range t 3355800896 ms echo 2318 us valid 1 394 mm invalid 0
+s3 line: adc=1120/214 filtered=825/221 threshold=172/687 left=BLACK right=WHITE mask=1 strength=50 command=LEFT
+[S5] range t 3355800966 ms echo 1756 us valid 1 298 mm invalid 0
+[S5] range t 3355801036 ms echo 1757 us valid 1 298 mm invalid 0
+[S5] range t 3355801106 ms echo 1757 us valid 1 298 mm invalid 0
+[S5] range t 3355801176 ms echo 1741 us valid 1 295 mm invalid 0
+[S5] range t 3355801246 ms echo 2330 us valid 1 396 mm invalid 0
+s3 line: adc=153/192 filtered=151/195 threshold=172/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355801316 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355801386 ms echo 2316 us valid 1 393 mm invalid 0
+[S5] range t 3355801456 ms echo 2316 us valid 1 393 mm invalid 0
+[S5] range t 3355801526 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355801596 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355801666 ms echo 2318 us valid 1 394 mm invalid 0
+[S5] range t 3355801736 ms echo 2316 us valid 1 393 mm invalid 0
+s3 line: adc=156/195 filtered=152/197 threshold=173/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355801806 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355801876 ms echo 2316 us valid 1 393 mm invalid 0
+[S5] range t 3355801946 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802016 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802086 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802156 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802226 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802296 ms echo 2317 us valid 1 393 mm invalid 0
+s3 line: adc=133/190 filtered=137/194 threshold=175/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355802366 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802436 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802506 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802576 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802646 ms echo 2317 us valid 1 393 mm invalid 0
+[S5] range t 3355802716 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355802786 ms echo 2385 us valid 1 405 mm invalid 0
+s3 line: adc=150/203 filtered=145/201 threshold=175/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355802856 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355802926 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355802996 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803066 ms echo 2358 us valid 1 400 mm invalid 0
+[S5] range t 3355803136 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803206 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803276 ms echo 2357 us valid 1 400 mm invalid 0
+s3 line: adc=128/194 filtered=130/194 threshold=174/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355803346 ms echo 2358 us valid 1 400 mm invalid 0
+[S5] range t 3355803416 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803486 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803556 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803626 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803696 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803766 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803836 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=148/202 filtered=148/201 threshold=175/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355803906 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355803976 ms echo 2383 us valid 1 405 mm invalid 0
+[S5] range t 3355804046 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804116 ms echo 2358 us valid 1 400 mm invalid 0
+[S5] range t 3355804186 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804256 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804326 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=125/207 filtered=129/198 threshold=172/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355804396 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804466 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355804536 ms echo 2357 us valid 1 400 mm invalid 0
+[S5] range t 3355804606 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804676 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804746 ms echo 2358 us valid 1 400 mm invalid 0
+[S5] range t 3355804816 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355804886 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=135/201 filtered=133/202 threshold=172/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355804956 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805026 ms echo 2383 us valid 1 405 mm invalid 0
+[S5] range t 3355805096 ms echo 2357 us valid 1 400 mm invalid 0
+[S5] range t 3355805166 ms echo 2357 us valid 1 400 mm invalid 0
+[S5] range t 3355805236 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805306 ms echo 2357 us valid 1 400 mm invalid 0
+[S5] range t 3355805376 ms echo 2357 us valid 1 400 mm invalid 0
+s3 line: adc=148/207 filtered=146/202 threshold=174/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355805446 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805516 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805586 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355805656 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355805726 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805796 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805866 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355805936 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=132/201 filtered=140/193 threshold=177/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355806006 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806076 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806146 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806216 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806286 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806356 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806426 ms echo 2904 us valid 1 493 mm invalid 0
+s3 line: adc=153/189 filtered=148/196 threshold=177/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355806496 ms echo 2383 us valid 1 405 mm invalid 0
+[S5] range t 3355806566 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806636 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806706 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355806776 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806846 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355806916 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=132/190 filtered=134/194 threshold=177/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355806986 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807056 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807126 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355807196 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807266 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355807336 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355807406 ms echo 2411 us valid 1 409 mm invalid 0
+[S5] range t 3355807476 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=145/187 filtered=144/192 threshold=176/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355807546 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807616 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807686 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807756 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355807826 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355807896 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355807966 ms echo 2385 us valid 1 405 mm invalid 0
+s3 line: adc=156/193 filtered=148/195 threshold=175/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355808036 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355808106 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355808176 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355808246 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355808316 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355808386 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355808456 ms echo 2903 us valid 1 493 mm invalid 0
+[S5] range t 3355808526 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=134/196 filtered=134/198 threshold=174/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355808596 ms echo 2383 us valid 1 405 mm invalid 0
+[S5] range t 3355808666 ms echo 2904 us valid 1 493 mm invalid 0
+[S5] range t 3355808736 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355808806 ms echo 2383 us valid 1 405 mm invalid 0
+[S5] range t 3355808876 ms echo 2384 us valid 1 405 mm invalid 0
+[S5] range t 3355808946 ms echo 2385 us valid 1 405 mm invalid 0
+[S5] range t 3355809016 ms echo 2384 us valid 1 405 mm invalid 0
+s3 line: adc=130/191 filtered=136/193 threshold=173/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355809086 ms echo 1772 us valid 1 301 mm invalid 0
+[S5] range t 3355809156 ms echo 1772 us valid 1 301 mm invalid 0
+[S5] range t 3355809226 ms echo 2804 us valid 1 476 mm invalid 0
+[S5] range t 3355809296 ms echo 2357 us valid 1 400 mm invalid 0
+[S5] range t 3355809366 ms echo 2559 us valid 1 435 mm invalid 0
+[S5] range t 3355809436 ms echo 2089 us valid 1 355 mm invalid 0
+[S5] range t 3355809506 ms echo 556 us valid 1 94 mm invalid 0
+[S5] range t 3355809576 ms echo 711 us valid 1 120 mm invalid 0
+s3 line: adc=144/192 filtered=144/192 threshold=174/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355809646 ms echo 660 us valid 1 112 mm invalid 0
+[S5] range t 3355809716 ms echo 557 us valid 1 94 mm invalid 0
+[S5] range t 3355809786 ms echo 1863 us valid 1 316 mm invalid 0
+[S5] range t 3355809856 ms echo 2344 us valid 1 398 mm invalid 0
+s3 line: adc=1037/2821 filtered=652/2502 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355809926 ms echo 557 us valid 1 94 mm invalid 0
+[S5] range t 3355810026 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355810066 ms echo 624 us valid 1 106 mm invalid 0
+[S5] range t 3355810136 ms echo 556 us valid 1 94 mm invalid 0
+[S2] GP20: START requested
+[S2] S5 HAZARD: stopping to scan, request 1
+s3 line: adc=3315/3561 filtered=3326/3573 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle -40 230 mm
+s3 line: adc=3612/3763 filtered=3603/3756 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle -30 293 mm
+s3 line: adc=3619/3774 filtered=3619/3772 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle -20 4000 mm
+s3 line: adc=3583/3753 filtered=3592/3755 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle -10 4000 mm
+s3 line: adc=3602/3756 filtered=3597/3750 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle 0 82 mm
+[S5] scan angle 10 91 mm
+s3 line: adc=3611/3768 filtered=3604/3766 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle 20 120 mm
+s3 line: adc=3601/3762 filtered=3599/3760 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle 30 106 mm
+s3 line: adc=3612/3762 filtered=3609/3759 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle 40 100 mm
+s3 line: adc=3601/3755 filtered=3594/3755 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle -35 265 mm
+s3 line: adc=3602/3758 filtered=3599/3755 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan angle -5 103 mm
+s3 line: adc=3609/3755 filtered=3609/3757 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] scan result 3 82 mm
+[S2] scan 1 profile: ahead 82 mm, nearest 82 mm, left edge UNSEEN 0 mm, right edge UNSEEN 0 mm
+[S2] scan 1: FAILED (S5 result 3); STOP
+[S5] range t 3355815696 ms echo 506 us valid 1 86 mm invalid 0
+[S5] range t 3355815766 ms echo 505 us valid 1 85 mm invalid 0
+[S5] range t 3355815836 ms echo 505 us valid 1 85 mm invalid 0
+[S5] range t 3355815906 ms echo 556 us valid 1 94 mm invalid 0
+[S5] range t 3355815976 ms echo 608 us valid 1 103 mm invalid 0
+[S5] range t 3355816046 ms echo 608 us valid 1 103 mm invalid 0
+[S5] range t 3355816116 ms echo 608 us valid 1 103 mm invalid 0
+s3 line: adc=3610/3758 filtered=3602/3756 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355816186 ms echo 607 us valid 1 103 mm invalid 0
+[S5] range t 3355816256 ms echo 659 us valid 1 112 mm invalid 0
+[S5] range t 3355816326 ms echo 659 us valid 1 112 mm invalid 0
+[S5] range t 3355816396 ms echo 711 us valid 1 120 mm invalid 0
+[S5] range t 3355816466 ms echo 659 us valid 1 112 mm invalid 0
+[S5] range t 3355816536 ms echo 710 us valid 1 120 mm invalid 0
+[S5] range t 3355816606 ms echo 711 us valid 1 120 mm invalid 0
+s3 line: adc=3583/3748 filtered=3591/3748 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355816676 ms echo 659 us valid 1 112 mm invalid 0
+[S5] range t 3355816746 ms echo 607 us valid 1 103 mm invalid 0
+[S5] range t 3355816816 ms echo 608 us valid 1 103 mm invalid 0
+[S5] range t 3355816886 ms echo 608 us valid 1 103 mm invalid 0
+[S5] range t 3355816956 ms echo 608 us valid 1 103 mm invalid 0
+[S5] range t 3355817026 ms echo 607 us valid 1 103 mm invalid 0
+[S5] range t 3355817096 ms echo 659 us valid 1 112 mm invalid 0
+[S5] range t 3355817166 ms echo 659 us valid 1 112 mm invalid 0
+s3 line: adc=3558/3725 filtered=3561/3730 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355817236 ms echo 608 us valid 1 103 mm invalid 0
+[S5] range t 3355817306 ms echo 557 us valid 1 94 mm invalid 0
+[S5] range t 3355817376 ms echo 454 us valid 1 77 mm invalid 0
+[S5] range t 3355817446 ms echo 522 us valid 1 88 mm invalid 0
+[S5] range t 3355817516 ms echo 745 us valid 1 126 mm invalid 0
+[S5] range t 3355817586 ms echo 693 us valid 1 117 mm invalid 0
+[S5] range t 3355817656 ms echo 522 us valid 1 88 mm invalid 0
+s3 line: adc=3516/3706 filtered=3529/3709 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355817726 ms echo 745 us valid 1 126 mm invalid 0
+[S5] range t 3355817796 ms echo 642 us valid 1 109 mm invalid 0
+[S5] range t 3355817866 ms echo 693 us valid 1 117 mm invalid 0
+[S5] range t 3355817936 ms echo 3614 us valid 1 614 mm invalid 0
+[S5] range t 3355818006 ms echo 3613 us valid 1 614 mm invalid 0
+[S5] range t 3355818076 ms echo 523 us valid 1 88 mm invalid 0
+[S5] range t 3355818146 ms echo 522 us valid 1 88 mm invalid 0
+[S5] range t 3355818216 ms echo 3712 us valid 1 631 mm invalid 0
+s3 line: adc=3489/3696 filtered=3488/3688 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355818286 ms echo 3654 us valid 1 621 mm invalid 0
+[S5] range t 3355818356 ms echo 3597 us valid 1 611 mm invalid 0
+[S5] range t 3355818426 ms echo 3278 us valid 1 557 mm invalid 0
+[S5] range t 3355818526 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355818586 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355818636 ms echo 557 us valid 1 94 mm invalid 0
+[S5] range t 3355818706 ms echo 3499 us valid 1 594 mm invalid 0
+s3 line: adc=3503/3693 filtered=3495/3691 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355818776 ms echo 3474 us valid 1 590 mm invalid 0
+[S5] range t 3355818846 ms echo 3949 us valid 1 671 mm invalid 0
+[S5] range t 3355818916 ms echo 3655 us valid 1 621 mm invalid 0
+[S5] range t 3355818986 ms echo 3295 us valid 1 560 mm invalid 0
+[S5] range t 3355819086 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355819146 ms late 0 us valid 1 4000 mm invalid 0
+[S5] range t 3355819196 ms echo 3286 us valid 1 558 mm invalid 0
+s3 line: adc=3454/3640 filtered=3437/3637 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355819266 ms echo 3278 us valid 1 557 mm invalid 0
+[S5] range t 3355819336 ms echo 711 us valid 1 120 mm invalid 0
+[S5] range t 3355819406 ms echo 1757 us valid 1 298 mm invalid 0
+[S5] range t 3355819476 ms echo 1309 us valid 1 222 mm invalid 0
+[S5] range t 3355819546 ms echo 574 us valid 1 97 mm invalid 0
+[S5] range t 3355819616 ms echo 471 us valid 1 80 mm invalid 0
+[S5] range t 3355819686 ms echo 591 us valid 1 100 mm invalid 0
+[S5] range t 3355819756 ms echo 574 us valid 1 97 mm invalid 0
+s3 line: adc=3582/3740 filtered=3581/3737 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355819826 ms echo 335 us valid 1 56 mm invalid 0
+[S5] range t 3355819896 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355819966 ms echo 351 us valid 1 59 mm invalid 0
+[S5] range t 3355820036 ms echo 1461 us valid 1 248 mm invalid 0
+[S5] range t 3355820106 ms echo 420 us valid 1 71 mm invalid 0
+[S5] range t 3355820176 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355820246 ms echo 300 us valid 1 51 mm invalid 0
+s3 line: adc=3579/3739 filtered=3583/3739 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355820316 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355820386 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355820456 ms echo 299 us valid 1 50 mm invalid 0
+[S5] range t 3355820526 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355820596 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355820666 ms echo 351 us valid 1 59 mm invalid 0
+[S5] range t 3355820736 ms echo 352 us valid 1 59 mm invalid 0
+[S5] range t 3355820806 ms echo 300 us valid 1 51 mm invalid 0
+s3 line: adc=3568/3723 filtered=3561/3723 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355820876 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355820946 ms echo 300 us valid 1 51 mm invalid 0
+[S5] range t 3355821016 ms echo 471 us valid 1 80 mm invalid 0
+[S5] range t 3355821086 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355821156 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355821226 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355821296 ms echo 368 us valid 1 62 mm invalid 0
+s3 line: adc=3526/3686 filtered=3524/3683 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355821366 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355821436 ms echo 369 us valid 1 62 mm invalid 0
+[S5] range t 3355821506 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355821576 ms echo 419 us valid 1 71 mm invalid 0
+[S5] range t 3355821646 ms echo 693 us valid 1 117 mm invalid 0
+[S5] range t 3355821716 ms echo 642 us valid 1 109 mm invalid 0
+[S5] range t 3355821786 ms echo 694 us valid 1 117 mm invalid 0
+[S5] range t 3355821856 ms echo 317 us valid 1 53 mm invalid 0
+s3 line: adc=3509/3670 filtered=3509/3667 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355821926 ms echo 420 us valid 1 71 mm invalid 0
+[S5] range t 3355821996 ms echo 694 us valid 1 117 mm invalid 0
+[S5] range t 3355822066 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355822136 ms echo 403 us valid 1 68 mm invalid 0
+[S5] range t 3355822206 ms echo 436 us valid 1 74 mm invalid 0
+[S5] range t 3355822276 ms echo 540 us valid 1 91 mm invalid 0
+[S5] range t 3355822346 ms echo 351 us valid 1 59 mm invalid 0
+s3 line: adc=3516/3700 filtered=3530/3700 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355822416 ms echo 332 us valid 1 56 mm invalid 0
+[S5] range t 3355822486 ms echo 403 us valid 1 68 mm invalid 0
+[S5] range t 3355822556 ms echo 232 us valid 1 39 mm invalid 0
+[S5] range t 3355822626 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355822696 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355822766 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355822836 ms echo 334 us valid 1 56 mm invalid 0
+s3 line: adc=3504/3678 filtered=3500/3678 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355822906 ms echo 335 us valid 1 56 mm invalid 0
+[S5] range t 3355822976 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355823046 ms echo 625 us valid 1 106 mm invalid 0
+[S5] range t 3355823116 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355823186 ms echo 1742 us valid 1 296 mm invalid 0
+[S5] range t 3355823256 ms echo 848 us valid 1 144 mm invalid 0
+[S5] range t 3355823326 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355823396 ms echo 283 us valid 1 48 mm invalid 0
+s3 line: adc=1269/2892 filtered=1451/2931 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355823466 ms echo 316 us valid 1 53 mm invalid 0
+[S5] range t 3355823536 ms echo 369 us valid 1 62 mm invalid 0
+[S5] range t 3355823606 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355823676 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355823746 ms echo 369 us valid 1 62 mm invalid 0
+[S5] range t 3355823816 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355823886 ms echo 368 us valid 1 62 mm invalid 0
+s3 line: adc=283/2712 filtered=290/2712 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355823956 ms echo 369 us valid 1 62 mm invalid 0
+[S5] range t 3355824026 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355824096 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355824166 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355824236 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355824306 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355824376 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355824446 ms echo 283 us valid 1 48 mm invalid 0
+s3 line: adc=225/2264 filtered=218/2262 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355824516 ms echo 284 us valid 1 48 mm invalid 0
+[S5] range t 3355824586 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355824656 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355824726 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355824796 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355824866 ms echo 438 us valid 1 74 mm invalid 0
+[S5] range t 3355824936 ms echo 334 us valid 1 56 mm invalid 0
+s3 line: adc=238/2545 filtered=240/2538 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355825006 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355825076 ms echo 232 us valid 1 39 mm invalid 0
+[S5] range t 3355825146 ms echo 232 us valid 1 39 mm invalid 0
+[S5] range t 3355825216 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355825286 ms echo 232 us valid 1 39 mm invalid 0
+[S5] range t 3355825356 ms echo 231 us valid 1 39 mm invalid 0
+[S5] range t 3355825426 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355825496 ms echo 335 us valid 1 56 mm invalid 0
+s3 line: adc=273/2678 filtered=264/2670 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355825566 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355825636 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355825706 ms echo 351 us valid 1 59 mm invalid 0
+[S5] range t 3355825776 ms echo 351 us valid 1 59 mm invalid 0
+[S5] range t 3355825846 ms echo 454 us valid 1 77 mm invalid 0
+[S5] range t 3355825916 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355825986 ms echo 283 us valid 1 48 mm invalid 0
+s3 line: adc=688/2817 filtered=636/2807 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355826056 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355826126 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355826196 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355826266 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355826336 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355826406 ms echo 266 us valid 1 45 mm invalid 0
+[S5] range t 3355826476 ms echo 265 us valid 1 45 mm invalid 0
+s3 line: adc=1089/2874 filtered=1108/2874 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355826546 ms echo 267 us valid 1 45 mm invalid 0
+[S5] range t 3355826616 ms echo 214 us valid 1 36 mm invalid 0
+[S5] range t 3355826686 ms echo 214 us valid 1 36 mm invalid 0
+[S5] range t 3355826756 ms echo 214 us valid 1 36 mm invalid 0
+[S5] range t 3355826826 ms echo 215 us valid 1 36 mm invalid 0
+[S5] range t 3355826896 ms echo 214 us valid 1 36 mm invalid 0
+[S5] range t 3355826966 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355827036 ms echo 317 us valid 1 53 mm invalid 0
+s3 line: adc=188/1770 filtered=205/1987 threshold=176/695 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+[S5] range t 3355827106 ms echo 316 us valid 1 53 mm invalid 0
+[S5] range t 3355827176 ms echo 317 us valid 1 53 mm invalid 0
+s3 line: adc=165/218 filtered=160/283 threshold=176/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355827246 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355827316 ms echo 265 us valid 1 45 mm invalid 0
+[S5] range t 3355827386 ms echo 266 us valid 1 45 mm invalid 0
+[S5] range t 3355827456 ms echo 265 us valid 1 45 mm invalid 0
+[S5] range t 3355827526 ms echo 231 us valid 1 39 mm invalid 0
+[S5] range t 3355827596 ms echo 231 us valid 1 39 mm invalid 0
+[S5] range t 3355827666 ms echo 232 us valid 1 39 mm invalid 0
+s3 line: adc=149/186 filtered=146/191 threshold=178/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355827736 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355827806 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355827876 ms echo 265 us valid 1 45 mm invalid 0
+[S5] range t 3355827946 ms echo 266 us valid 1 45 mm invalid 0
+[S5] range t 3355828016 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355828086 ms echo 368 us valid 1 62 mm invalid 0
+[S5] range t 3355828156 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355828226 ms echo 300 us valid 1 51 mm invalid 0
+s3 line: adc=155/184 filtered=147/189 threshold=177/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355828296 ms echo 351 us valid 1 59 mm invalid 0
+[S5] range t 3355828366 ms echo 420 us valid 1 71 mm invalid 0
+[S5] range t 3355828436 ms echo 471 us valid 1 80 mm invalid 0
+[S5] range t 3355828506 ms echo 403 us valid 1 68 mm invalid 0
+[S5] range t 3355828576 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355828646 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355828716 ms echo 283 us valid 1 48 mm invalid 0
+s3 line: adc=134/192 filtered=134/192 threshold=175/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355828786 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355828856 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355828926 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355828996 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355829066 ms echo 420 us valid 1 71 mm invalid 0
+[S5] range t 3355829136 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355829206 ms echo 454 us valid 1 77 mm invalid 0
+[S5] range t 3355829276 ms echo 317 us valid 1 53 mm invalid 0
+s3 line: adc=131/198 filtered=132/197 threshold=174/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355829346 ms echo 317 us valid 1 53 mm invalid 0
+[S5] range t 3355829416 ms echo 385 us valid 1 65 mm invalid 0
+[S5] range t 3355829486 ms echo 283 us valid 1 48 mm invalid 0
+[S5] range t 3355829556 ms echo 334 us valid 1 56 mm invalid 0
+[S5] range t 3355829626 ms echo 369 us valid 1 62 mm invalid 0
+[S5] range t 3355829696 ms echo 402 us valid 1 68 mm invalid 0
+[S5] range t 3355829766 ms echo 711 us valid 1 120 mm invalid 0
+s3 line: adc=140/195 filtered=144/195 threshold=171/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355829836 ms echo 709 us valid 1 120 mm invalid 0
+[S5] range t 3355829906 ms echo 830 us valid 1 141 mm invalid 0
+[S5] range t 3355829976 ms echo 660 us valid 1 112 mm invalid 0
+[S5] range t 3355830046 ms echo 1741 us valid 1 295 mm invalid 0
+[S5] range t 3355830116 ms echo 2304 us valid 1 391 mm invalid 0
+[S5] range t 3355830186 ms echo 1787 us valid 1 303 mm invalid 0
+[S5] range t 3355830256 ms echo 2304 us valid 1 391 mm invalid 0
+s3 line: adc=150/196 filtered=145/195 threshold=174/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355830326 ms echo 2330 us valid 1 396 mm invalid 0
+[S5] range t 3355830396 ms echo 2331 us valid 1 396 mm invalid 0
+[S5] range t 3355830466 ms echo 2330 us valid 1 396 mm invalid 0
+[S5] range t 3355830536 ms echo 1817 us valid 1 308 mm invalid 0
+[S5] range t 3355830606 ms echo 2331 us valid 1 396 mm invalid 0
+[S5] range t 3355830676 ms echo 1727 us valid 1 293 mm invalid 0
+[S5] range t 3355830746 ms echo 1742 us valid 1 296 mm invalid 0
+[S5] range t 3355830816 ms echo 1069 us valid 1 181 mm invalid 0
+s3 line: adc=144/188 filtered=141/192 threshold=173/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355830886 ms echo 1069 us valid 1 181 mm invalid 0
+[S5] range t 3355830956 ms echo 976 us valid 1 165 mm invalid 0
+[S5] range t 3355831026 ms echo 1069 us valid 1 181 mm invalid 0
+[S5] range t 3355831096 ms echo 958 us valid 1 162 mm invalid 0
+[S5] range t 3355831166 ms echo 976 us valid 1 165 mm invalid 0
+[S5] range t 3355831236 ms echo 920 us valid 1 156 mm invalid 0
+[S5] range t 3355831306 ms echo 920 us valid 1 156 mm invalid 0
+[S2] GP20: RESET requested before restart
+s3 line: adc=128/204 filtered=133/200 threshold=173/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355831376 ms echo 919 us valid 1 156 mm invalid 0
+[S2] GP20: START requested
+[S2] S5 HAZARD: stopping to scan, request 2
+s3 line: adc=147/180 filtered=145/188 threshold=174/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle -40 306 mm
+[S5] scan angle -30 153 mm
+s3 line: adc=150/201 filtered=151/195 threshold=177/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle -20 115 mm
+s3 line: adc=156/189 filtered=144/196 threshold=177/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle -10 114 mm
+s3 line: adc=137/179 filtered=141/188 threshold=178/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle 0 126 mm
+s3 line: adc=132/188 filtered=134/191 threshold=175/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle 10 126 mm
+s3 line: adc=132/192 filtered=134/192 threshold=176/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle 20 132 mm
+s3 line: adc=150/201 filtered=147/197 threshold=175/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle 30 123 mm
+s3 line: adc=156/184 filtered=144/190 threshold=173/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] scan angle 40 132 mm
+[S5] scan result 3 126 mm
+[S2] scan 2 profile: ahead 126 mm, nearest 114 mm, left edge UNSEEN 0 mm, right edge UNSEEN 0 mm
+[S2] scan 2: FAILED (S5 result 3); STOP
+[S5] range t 3355835966 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355836036 ms echo 676 us valid 1 114 mm invalid 0
+s3 line: adc=137/196 filtered=141/196 threshold=172/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355836106 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355836176 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355836246 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355836316 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355836386 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355836456 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355836526 ms echo 676 us valid 1 114 mm invalid 0
+s3 line: adc=134/205 filtered=138/200 threshold=175/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355836596 ms echo 727 us valid 1 123 mm invalid 0
+[S5] range t 3355836666 ms echo 745 us valid 1 126 mm invalid 0
+[S5] range t 3355836736 ms echo 779 us valid 1 132 mm invalid 0
+[S5] range t 3355836806 ms echo 727 us valid 1 123 mm invalid 0
+[S5] range t 3355836876 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355836946 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355837016 ms echo 676 us valid 1 114 mm invalid 0
+s3 line: adc=149/210 filtered=147/206 threshold=173/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355837086 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355837156 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837226 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837296 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837366 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355837436 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837506 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837576 ms echo 676 us valid 1 114 mm invalid 0
+s3 line: adc=132/194 filtered=141/196 threshold=174/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355837646 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837716 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355837786 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355837856 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355837926 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355837996 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838066 ms echo 676 us valid 1 114 mm invalid 0
+s3 line: adc=134/199 filtered=142/199 threshold=174/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355838136 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838206 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838276 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838346 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355838416 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838486 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838556 ms echo 677 us valid 1 115 mm invalid 0
+[S5] range t 3355838626 ms echo 676 us valid 1 114 mm invalid 0
+s3 line: adc=132/198 filtered=141/197 threshold=172/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+[S5] range t 3355838696 ms echo 676 us valid 1 114 mm invalid 0
+[S5] range t 3355838766 ms echo 677 us valid 1 115 mm invalid 0

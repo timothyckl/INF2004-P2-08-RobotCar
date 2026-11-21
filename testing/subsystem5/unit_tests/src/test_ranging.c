@@ -9,13 +9,25 @@
 #include <stddef.h>
 
 #define TEST_RANGING_FIXTURES 3u
-#define TEST_RANGING_SENTINEL 1234u
 
+static uint16_t const g_test_ranging_sentinel = 1234u;
+
+/** Verify exact integral pulse-to-distance conversions. */
 static bool test_ranging_exact (test_interface_api_t const * p_api);
+
+/** Verify the minimum supported pulse boundary. */
 static bool test_ranging_minimum (test_interface_api_t const * p_api);
+
+/** Verify the maximum supported pulse boundary. */
 static bool test_ranging_maximum (test_interface_api_t const * p_api);
+
+/** Verify that an invalid pulse preserves the previous output. */
 static bool test_ranging_unchanged (test_interface_api_t const * p_api);
+
+/** Verify that a null output pointer is rejected. */
 static bool test_ranging_null (test_interface_api_t const * p_api);
+
+/** Verify that oversized pulses cannot become valid through overflow. */
 static bool test_ranging_overflow (test_interface_api_t const * p_api);
 
 void
@@ -46,8 +58,9 @@ test_ranging_exact (test_interface_api_t const * p_api)
 
     for (uint32_t index = 0u; index < TEST_RANGING_FIXTURES; index++)
     {
-        uint16_t distance_mm = 0u;
-        bool b_valid = p_api->p_pulse_mm(widths_us[index], &distance_mm);
+        uint16_t   distance_mm = 0u;
+        bool const b_valid     =
+            p_api->p_pulse_mm(widths_us[index], &distance_mm);
 
         b_passed = b_valid && (distances[index] == distance_mm) && b_passed;
     }
@@ -58,9 +71,9 @@ test_ranging_exact (test_interface_api_t const * p_api)
 static bool
 test_ranging_minimum (test_interface_api_t const * p_api)
 {
-    uint16_t distance_mm = TEST_RANGING_SENTINEL;
-    bool b_below = p_api->p_pulse_mm(117u, &distance_mm);
-    bool b_above = p_api->p_pulse_mm(118u, &distance_mm);
+    uint16_t   distance_mm = g_test_ranging_sentinel;
+    bool const b_below     = p_api->p_pulse_mm(117u, &distance_mm);
+    bool const b_above     = p_api->p_pulse_mm(118u, &distance_mm);
 
     /* At integer microsecond resolution, exactly 20 mm is not representable. */
     return ((!b_below) && b_above && (distance_mm >= 20u)
@@ -70,21 +83,22 @@ test_ranging_minimum (test_interface_api_t const * p_api)
 static bool
 test_ranging_maximum (test_interface_api_t const * p_api)
 {
-    uint16_t distance_mm = 0u;
-    bool b_below = p_api->p_pulse_mm(23529u, &distance_mm);
-    bool b_distance_valid = (distance_mm >= 3999u) && (distance_mm <= 4000u);
-    bool b_above = p_api->p_pulse_mm(23530u, &distance_mm);
+    uint16_t   distance_mm      = 0u;
+    bool const b_maximum        = p_api->p_pulse_mm(23530u, &distance_mm);
+    bool const b_distance_valid = (4000u == distance_mm);
+    bool const b_above          =
+        p_api->p_pulse_mm(23531u, &distance_mm);
 
-    return (b_below && b_distance_valid && (!b_above));
+    return (b_maximum && b_distance_valid && (!b_above));
 }
 
 static bool
 test_ranging_unchanged (test_interface_api_t const * p_api)
 {
-    uint16_t distance_mm = TEST_RANGING_SENTINEL;
-    bool b_valid = p_api->p_pulse_mm(0u, &distance_mm);
+    uint16_t   distance_mm = g_test_ranging_sentinel;
+    bool const b_valid     = p_api->p_pulse_mm(0u, &distance_mm);
 
-    return ((!b_valid) && (TEST_RANGING_SENTINEL == distance_mm));
+    return ((!b_valid) && (g_test_ranging_sentinel == distance_mm));
 }
 
 static bool
@@ -96,12 +110,12 @@ test_ranging_null (test_interface_api_t const * p_api)
 static bool
 test_ranging_overflow (test_interface_api_t const * p_api)
 {
-    uint16_t distance_mm = TEST_RANGING_SENTINEL;
-    bool b_late = p_api->p_pulse_mm(30000u, &distance_mm);
-    bool b_maximum = p_api->p_pulse_mm(UINT32_MAX, &distance_mm);
+    uint16_t   distance_mm = g_test_ranging_sentinel;
+    bool const b_late      = p_api->p_pulse_mm(30000u, &distance_mm);
+    bool const b_maximum   = p_api->p_pulse_mm(UINT32_MAX, &distance_mm);
 
     return ((!b_late) && (!b_maximum)
-            && (TEST_RANGING_SENTINEL == distance_mm));
+            && (g_test_ranging_sentinel == distance_mm));
 }
 
 /* End of file. */

@@ -1,0 +1,47 @@
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+[S2] GP20: START requested
+s4: new run 1; hump maximum cleared
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=452 mm y=0 mm heading=-481 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 57582718 us in 57460 ms of kernel time (expect 1000 us per ms)
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 2; hump maximum cleared
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=451 mm y=0 mm heading=-962 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 74762716 us in 74640 ms of kernel time (expect 1000 us per ms)
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 3; hump maximum cleared
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=452 mm y=0 mm heading=481 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 90482724 us in 90360 ms of kernel time (expect 1000 us per ms)
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating
+[S2] GP20: RESET requested before restart
+[S2] GP20: START requested
+s4: new run 4; hump maximum cleared
+[S2] CAL hump pass, forward 450 mm finished
+[S2] CAL odometry: x=452 mm y=0 mm heading=0 mdeg; result=2 reason=0 state=4 fault=0
+[S2] CAL timer: 100682703 us in 100560 ms of kernel time (expect 1000 us per ms)
+s4: terrain fault 1; sensor restart
+s4: LSM303DLHC ready; calibrating

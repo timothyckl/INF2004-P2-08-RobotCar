@@ -250,6 +250,15 @@
 
 #define	XOSC_STATUS_STABLE      (0x80000000)
 
+/* Watchdog tick generator (RP2040 datasheet 4.7.2, Table 550). It also
+   clocks the 1 MHz system timer. CYCLES resets to 0, which divides clk_ref
+   by 512, so it must be set to clk_ref in MHz at start-up. */
+#define WATCHDOG_BASE           0x40058000
+#define WATCHDOG_TICK           (WATCHDOG_BASE+0x2C)
+
+#define	WATCHDOG_TICK_ENABLE    (1<<9)
+#define	WATCHDOG_TICK_CYCLES    (0x1FF)
+
 /* PLL */
 #define PLL_SYS_BASE            (0x40028000)
 #define PLL_USB_BASE            (0x4002C000)

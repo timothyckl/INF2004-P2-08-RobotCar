@@ -1,0 +1,261 @@
+# Subsystem 3: line sensing and barcode foundation
+
+Every build uses the agreed pin mapping in `AGENTS.md`, viewed from behind:
+
+- front-left AO: GP26/ADC0;
+- front-right AO: GP27/ADC1;
+- side barcode AO: GP28/ADC2 (Grove 7).
+
+All three sensors have analogue outputs only; their DOUT wires are
+disconnected, and GP6 is unused. Keep the GP28 battery-sense jumper open.
+
+Subsystem 3 never writes motor PWM. In the mission image it
+sends line positions to the Vehicle Controller, and only Motion Control writes
+PWM. The existing consumer task and its mailbox/statistics interfaces remain
+present for the other starter subsystems.
+
+## On-car raw input monitor
+
+1. Connect all three sensor modules to 3V3 and a common ground. From behind
+   the robot, connect front-left AO to GP26, front-right AO to GP27, and the
+   side barcode AO to GP28 (Grove 7). Disconnect all three DOUT wires.
+2. Build the dedicated monitor with `TEST=1`, `S3_HW_TEST=1`, and
+   `CRASH_REPORT=0`:
+
+   ```text
+   make -C build_make TEST=1 S3_HW_TEST=1 CRASH_REPORT=0 -j8
+   ```
+
+3. Flash the generated `_test_s3hw.uf2` and open the serial console. This
+   profile starts only the Subsystem 3 sensor monitor; the other application
+   subsystems and their output are suppressed.
+4. Move each front sensor over representative white, solid black, and faded
+   black sections at its installed height. The monitor prints the 12-bit ADC
+   readings at 10 Hz until the Pico is reset. Move the side sensor over white
+   and black to check the barcode AO the same way.
+
+Example raw diagnostic output:
+
+```text
+s3 raw: left_adc=742 right_adc=801 barcode_adc=760
+```
+
+`left_adc`, `right_adc` and `barcode_adc` are raw values from 0 through 4095;
+the example is illustrative and is not a validated threshold. Record stable ranges for every tested surface. This stage does
+not label readings as white or black and does not command the motors.
+
+The mission image uses these same two AO inputs for line following. The former
+`S3_CAL_TEST=1` digital-output calibration profile was removed on 2026-11-10
+because the front sensors have no digital outputs; the makefile refuses it.
+
+A normal `TEST=1` build without either S3-specific option reports the hardware
+checks as blocked and runs the regular subsystem tests instead.
+
+## Line following in the mission image
+
+First verify both AO channels with `S3_HW_TEST=1`. Then build the mission
+(S2 decision 28); `TEST=1 S3_LINE_TEST=1` builds the same mission:
+
+```text
+make -C build_make NET=lwip MQTT=1 -j8
+```
+
+The loop is `s3_follow_run()` in `s3_follow.c`, run by `usermain()` after
+Subsystems 2, 4 and 5 start. It samples front-left AO on GP26 and
+front-right AO on GP27 every 10 ms.
+The drivetrain follows the agreed pin mapping used by every build.
+It waits for Motion Control to become ready, then continuously reports fresh
+line positions while STOP remains latched. Place the car on the track and press
+the Robo Pico programmable button on GP20 to start. Press GP20 again to stop;
+after the wheels stop, another press resets and starts a new run. The input is
+active-low and debounced for 30 ms by the Vehicle Controller.
+
+Each channel has an independent filtered threshold because the measured sensor
+ranges differ. The initial white baselines are 136 counts on the left and 180
+on the right. While a channel remains white, its baseline moves by at most one
+count per eight samples and the threshold follows it. The left baseline is
+bounded to 96..168 counts and uses 100-count detection and 80-count release
+margins (raised from 32 and 20 on 2026-11-16, decision 8, so that the car
+rolling on the hump does not read white as black). The right baseline is bounded to 100..300 counts and uses 500-count
+detection and 350-count release margins. A black reading freezes baseline
+adaptation so the algorithm cannot learn the line as white. These values come
+from the 2026-11-05 bench observations and still require on-track validation.
+
+The serial heartbeat prints raw ADC values, filtered values and the current
+thresholds, plus a 0..100 steering strength for a single-black observation.
+The strength is normalised independently against the measured solid-black
+references of 1500 counts on the left and 3300 counts on the right. If a sensor
+or mounting height changes, rerun `S3_HW_TEST=1` and review all white,
+solid-black and faded-black ranges before changing them.
+
+There is no automatic run-time limit. Its verified sensor mapping is:
+
+| Left | Right | Request |
+|---|---|---|
+| WHITE | WHITE | centred straight |
+| BLACK | WHITE | left correction |
+| WHITE | BLACK | right correction |
+| BLACK | BLACK | crossing/junction candidate |
+
+BLACK/BLACK must persist for 100 ms before the controller confirms a junction;
+brief BLACK/BLACK observations retain the preceding curve command. A confirmed
+junction crosses straight and must clear within 1500 ms. Its first clear reading
+starts a straight exit of at least 600 ms. After that minimum, a side-black
+reading that persists for 150 ms resumes normal curve tracking, while
+WHITE/WHITE must remain stable for 100 ms before normal following resumes. The
+exit requests STOP after 2500 ms if neither pattern becomes stable.
+
+It also stops if reports become invalid or stale, a queue/API operation fails,
+or the GP20 button is pressed while running. The supervised USB-logging profile
+samples the front sensors every 10 ms, requires three consecutive matching
+samples, and refreshes the Vehicle Controller report every 30 ms. It allows at
+most 500 ms between valid line reports. The
+outer/straight speed is 40 mm/s. During an ordinary correction, the inside
+wheel scales from 38 down to 32 mm/s as analog contrast rises from 0 to 100,
+while the other wheel remains at 40 mm/s. This replaces the immediate fixed
+32/40 step that caused excessive left-right oscillation on straights. `LEFT`
+slows the left wheel and drives the right wheel; `RIGHT` drives the left wheel
+and slows the right wheel. A single-black observation must persist for 200 ms
+before the sustained curve target becomes a rolling 5/35 mm/s LEFT arc or
+35/5 mm/s RIGHT arc. If WHITE/WHITE appears during a sustained curve, LEFT is
+retained for at most 250 ms and RIGHT for 150 ms before returning to straight.
+The lower forward targets provide additional margin below the test profile's
+PWM ceiling, while the larger wheel-speed ratio produces a tighter rolling
+curve without braking a wheel. The sensor labels and GPIO assignments are
+unchanged. The serial monitor prints the classified sensor state at least every
+500 ms, even when it has not changed.
+The earlier 30/15 mm/s target did not reduce the observed physical speed and
+the controller entered Fault. These are provisional commands, not measured
+wheel speeds. Keep the wheels raised for the first run because the motor
+polarity, encoder polarity and PID tuning still require physical validation.
+
+The dedicated line-follow image also limits Motion Control to 20% PWM. This
+provisional ceiling prevents an uncalibrated speed loop or missing encoder
+feedback from increasing the motors to full power. A zero wheel target clears
+that wheel's PID history and applies the motor driver's brake state. If the
+outside motor cannot start at 20%, Motion Control reports a stall fault and
+stops; do not increase the ceiling until the encoder counts and measured wheel
+speeds are verified.
+
+WHITE/WHITE is intentionally the centred pattern for the separated-sensor
+geometry, but it is also possible after the car loses the line completely.
+The bounded curve hold cannot distinguish those two physical situations.
+Supervise the whole run and keep a hand near GP20; do not use this as an
+unattended line follower.
+
+## Save every serial line
+
+Close VS Code Serial Monitor first because only one program can own COM4, then
+run the logger from the project root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File testing/subsystem3/capture_serial.ps1 -Port COM4
+```
+
+It displays every received line and writes it immediately, with a host
+timestamp, under `testing/subsystem3/logs/`. Start the logger first and then
+reset the Pico if the boot messages must be included. Press Ctrl+C to close the
+port and finish the log. Change `-Port` if Windows assigns a different COM
+number.
+
+## Host tests
+
+From the project root, with GCC on `PATH`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
+```
+
+These tests cover the adaptive analogue thresholds, filtering, the verified
+four-state steering table, the synthetic barcode/navigation foundation,
+and Code 39 A--Z scan decoding in both travel directions. On macOS or Linux,
+`make -C testing/host s3` runs the same cases. They do not verify
+wiring, optical distance, surface contrast, ambient-light immunity, sampling
+performance, line following, motor behaviour, or the printed course barcode.
+
+## Existing software foundation
+
+- `s3_bar` provides bounded edge capture, timeout handling, and a configurable
+  one-symbol decoder. Sentinels and gaps must match exactly; the payload may
+  differ from one dictionary entry by one element only when that entry is
+  uniquely closest.
+- `s3_scan` frames captures from timestamped side-sensor edges, derives the
+  narrow/wide boundary from each capture, and decodes forwards then reversed.
+  A 24--29 run capture is accepted when one intact end supplies a
+  sentinel, both gaps and the full payload, and a 31-run capture with one
+  stray mark beside the code is read from its first and last 29 runs.
+- `s3_code39` holds the standard Code 39 A--Z patterns and the `*` sentinel.
+- `s3_barcode` classifies each ADC2 sample with an unfiltered adaptive
+  threshold (white baseline 154..184, black at baseline + 400, release at
+  baseline + 300) and feeds level changes, timestamped from the 1 MHz
+  `TIMERAWL`, to `s3_scan`. A run over 800 ms aborts a capture and 700 ms of
+  white ends one. All of these values are provisional.
+- `s3_scan`, `s3_code39`, the `s3_bar` near-match rule and the barcode
+  thresholds were ported from `feature/subsystem3-ir-line-barcode` (commit
+  `e6a7027`), where they were measured on 2026-11-11 at about 40 mm/s.
+  They are host-tested on this branch; reads of the printed course barcodes
+  on this car are not yet validated.
+
+## Barcode reporting in the line-follow image
+
+The mission image reads ADC2/GP28 in the same 10 ms loop as the
+front sensors, so one task owns the ADC and the barcode state. The barcode
+never steers; each decoded letter goes to the Vehicle Controller, which
+acts on a mapped command at the next junction (below). Once a capture looks like a barcode (three
+runs of at least 60 ms), each line report carries `S2_LINE_FLAG_BARCODE`
+until it ends, and the controller replaces strong curves with gentle
+corrections (S2 decision 25). A failed ADC2 read abandons the capture
+without stopping line following. Serial lines:
+
+```text
+s3 bar: DECODED A (decoded=1 errors=0)
+s3 bar: capture rejected, runs=25 threshold=569 (decoded=1 errors=1)
+s3 bar: single bar (crossing line), ignored
+```
+
+To validate on the car:
+
+1. With the `S3_HW_TEST=1` raw monitor, hold the car still and record
+   `barcode_adc` on white, solid black and faded black at the mounted height.
+   White must stay within 154..184 and black above about 600, or the
+   thresholds in `s3_barcode.c` need re-measuring.
+2. With the mission image, drive past each course barcode in both
+   directions and record each `s3 bar:` line with the expected letter.
+3. Record the results in `testing/subsystem3/TEST_LOG.md`.
+
+## Acting on a barcode (S2 decision 26)
+
+A decoded letter is mapped by `s3_nav_command()`: the brief's example
+A-D, plus the test letter F, set at build time:
+
+```sh
+make NET=lwip MQTT=1 S3_NAV_F=1 -j8   # F = left
+```
+
+`S3_NAV_F` is 0 (none), 1 (left), 2 (right), 3 (straight) or 4 (U-turn);
+the image name ends `_navF<n>`. Other letters are reported and ignored.
+The mapped command goes to the Vehicle Controller, which carries it out at
+the next junction. Expect these serial lines:
+
+```text
+s3 bar: DECODED F (decoded=1 errors=0)
+[S2] nav: LEFT held for the next junction (scan 1)
+[S2] line: junction confirmed; crossing straight
+[S2] nav: junction; stopping to turn
+[S2] nav: step 118 mm onto the junction
+[S2] nav: spinning left until a sensor sees the line
+[S2] nav: on the new line; following
+```
+- `s3_nav` provides the current synthetic A/B/C/D command mapping, duplicate
+  suppression, expiry, STOP cancellation, and controller-authority gating. It
+  contains no motor actions or validated turn angles.
+
+Before barcode integration, confirm the printed symbology and measured timing,
+keep raw edge capture separate from filtered steering samples, and use the
+team's shared GPIO interrupt dispatcher. Barcode state must be task-owned or
+passed through an agreed bounded queue; do not share mutable capture state with
+an ISR or another core without concurrency protection.
+
+Line following should be added only after both front sensors pass the physical
+white/black test. Steering requests must go through the Vehicle Controller;
+only Motion Control may write motor PWM.
