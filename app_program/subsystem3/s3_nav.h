@@ -33,10 +33,21 @@ typedef struct
 #error "S3_NAV_F must be 0..4"
 #endif
 
-/** Letter to command: the brief's example A-D plus the F test letter.
- * Any other letter is NONE, which the car reports and ignores.
+/** Letter to command. At boot: the brief's example A-D plus the F test
+ * letter; s3_nav_set_letter() changes it at run time (S1 decision 6).
+ * Any unmapped letter is NONE, which the car reports and ignores.
  */
 s3_command_t s3_nav_command(char symbol);
+/** Make letter the only letter for command (LEFT..UTURN): every letter
+ * mapped to command is first unmapped, then letter is mapped to it,
+ * replacing whatever letter had before. Single writer: the WiFi service
+ * task. Each entry is one byte, so a concurrent s3_nav_command() sees an
+ * old or new entry, never a torn one; mid-update a letter may read NONE,
+ * which is reported and ignored. The table resets to the boot map only on
+ * a restart.
+ * @return false, changing nothing, for a bad command or a letter not A-Z.
+ */
+bool s3_nav_set_letter(s3_command_t command, char letter);
 /** Only call with a validated complete frame; one unique ID per scan.
  * Does not overwrite a pending command. Duplicate IDs are rejected.
  */

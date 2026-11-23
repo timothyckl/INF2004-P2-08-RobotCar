@@ -65,6 +65,8 @@ function render(s) {
   history = s.speeds;
   drawSpeeds(s.now);
 
+  renderLetters(s);
+
   set("frames", `${s.frames} good, ${s.bad_frames} bad`);
   set("hb", s.heartbeat ? `${s.heartbeat} (${age(s.heartbeat_age)})` : "none yet");
   set("stats", s.stats || "none yet");
@@ -134,6 +136,70 @@ document.querySelectorAll("button[data-cmd]").forEach((b) => {
       b.disabled = false;
     }
   });
+});
+
+// Barcode letters: the page edits a draft; the server holds the table it
+// last sent and re-sends it when the car restarts (S1 decision 6).
+const letterSelects = [...document.querySelectorAll("select[data-route]")];
+const BOOT = { L: "A", R: "B", S: "C", U: "D" };
+let lettersEdited = false;     // keep the user's draft while polling
+
+for (const sel of letterSelects) {
+  for (let c = 65; c <= 90; c++) sel.add(new Option(String.fromCharCode(c)));
+  sel.addEventListener("change", () => { lettersEdited = true; checkLetters(); });
+}
+
+function draftLetters() {
+  return Object.fromEntries(letterSelects.map((s) => [s.dataset.route, s.value]));
+}
+
+function showLetters(table) {
+  for (const sel of letterSelects) sel.value = table[sel.dataset.route];
+  checkLetters();
+}
+
+function checkLetters() {
+  const values = letterSelects.map((s) => s.value);
+  let dup = false;
+  for (const sel of letterSelects) {
+    const clash = values.filter((v) => v === sel.value).length > 1;
+    sel.classList.toggle("dup", clash);
+    dup = dup || clash;
+  }
+  $("sendletters").disabled = dup;
+  if (dup) set("lettermsg", "Each command needs a different letter.", "off");
+  return !dup;
+}
+
+function renderLetters(s) {
+  if (!lettersEdited) showLetters(s.letters);
+  if (!lettersEdited && s.letters_note) {
+    set("lettermsg", s.letters_note, s.letters_note.includes("NOT") ? "off" : "");
+  }
+}
+
+$("bootletters").addEventListener("click", () => {
+  lettersEdited = true;
+  showLetters(BOOT);
+});
+
+$("sendletters").addEventListener("click", async () => {
+  if (!checkLetters()) return;
+  const b = $("sendletters");
+  b.disabled = true;
+  try {
+    const r = await fetch("/api/letters", {
+      method: "POST", headers: { "X-Dashboard": "1" },
+      body: JSON.stringify(draftLetters()),
+    });
+    const j = await r.json();
+    set("lettermsg", j.message, j.ok ? "" : "off");
+    if (j.ok) lettersEdited = false;
+  } catch (err) {
+    set("lettermsg", "server not reachable", "off");
+  } finally {
+    b.disabled = false;
+  }
 });
 
 poll();

@@ -184,6 +184,57 @@ command, count wrap, cause only while latched), S2-U37, S2-U39 and S2-U40
 (revised), S2-U78 (new), and the dashboard unit tests. INT-07 must run on
 the car.
 
+### 6. Barcode letters set over MQTT (2026-11-23)
+
+Approved by Dalton on the integration branch; also changes subsystem 3's
+letter map. Run on the car for one junction (2026-11-23).
+
+**Problem.** The course letters are announced on the day, but the letter
+for each junction command was fixed at build time (A-D, plus F through
+`S3_NAV_F`). Changing one meant a rebuild and reflash at the course.
+
+**Decision.**
+
+- **Payload.** On the existing command topic, exactly three bytes: `L`,
+  `R`, `S` or `U` (left, right, straight, U-turn), `=`, then a letter
+  `A`–`Z`, for example `U=K`. Anything else is invalid, as before. It fits
+  the 5-byte command limit and cannot be confused with START, STOP or
+  RESET. `command_parser_parse_assign()` checks the syntax only.
+- **Route.** The service bridge passes a valid assignment to a fourth
+  port function, which `mqtt_service.c` maps explicitly to
+  `s3_nav_set_letter()`. It does not use `remote_q` and does not involve
+  the Vehicle Controller: it moves nothing, and the controller still
+  authorises every junction action. Counted in the bridge's valid or
+  delivery-failure counters like other commands.
+- **Table.** Subsystem 3 keeps one byte per letter A–Z (26 bytes; command
+  0..4). An assignment first unmaps every letter that had that command,
+  then maps the new letter, replacing whatever it had. So each command
+  ends with exactly one letter, and sending all four leaves exactly four
+  letters mapped, whatever the order. The boot map is unchanged (A-D, F by
+  `S3_NAV_F`), and the car returns to it on every restart; nothing is
+  stored in flash.
+- **Concurrency.** One writer (the WiFi service task) and one reader (the
+  S3 line loop, at each decode). Each entry is a single byte, written and
+  read whole on the RP2040, so a reader sees an old or a new entry. Between
+  the unmap and the map a letter can read as unmapped; a decode in that
+  moment is reported and ignored, as for any unmapped letter. A command
+  already staged is not affected.
+- **Dashboard.** A Barcode letters table sends all four assignments and
+  refuses two commands with the same letter. The car does not acknowledge
+  them, so the decoded letter and command in telemetry are the check.
+  When the heartbeat count goes back (only a restart resets it,
+  `mqtt_utk.c`), the dashboard sends the last table again.
+
+**Tests.** S1-U04 (assignment syntax), S1-U07 (bridge routing, delivery
+failure, invalid letter), the S3 host navigation cases (remap, move a
+letter, rejects, boot map restored) and the dashboard unit tests pass on
+the host. The mission and TEST images build without warnings. Against a
+local mosquitto, the dashboard published `L=G`, `R=H`, `S=C`, `U=Z`,
+refused a duplicate letter and a cross-site post, and re-sent the table
+after a simulated `hb 0`. On the car on 2026-11-23 (system test log):
+with LEFT set to F, `F` decoded as LEFT and the car took the left branch,
+and the table was re-sent after a restart. One junction only.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins

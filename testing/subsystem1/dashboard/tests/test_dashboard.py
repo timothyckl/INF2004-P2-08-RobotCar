@@ -139,5 +139,37 @@ class ChangesTest(unittest.TestCase):
                          server.changes(self.d(fault=2), self.d()))
 
 
+class LetterTest(unittest.TestCase):
+    """Barcode letter table (S1 decision 6)."""
+
+    def test_valid_table(self):
+        self.assertIsNone(server.check_letters(
+            {"L": "G", "R": "H", "S": "C", "U": "Z"}))
+        self.assertIsNone(server.check_letters(server.BOOT_LETTERS))
+
+    def test_invalid_tables(self):
+        bad = [None, [], {"L": "A", "R": "B", "S": "C"},
+               {"L": "A", "R": "B", "S": "C", "U": "D", "X": "E"},
+               {"L": "a", "R": "B", "S": "C", "U": "D"},
+               {"L": "AB", "R": "B", "S": "C", "U": "D"},
+               {"L": 1, "R": "B", "S": "C", "U": "D"},
+               {"L": "A", "R": "A", "S": "C", "U": "D"}]
+        for table in bad:
+            self.assertIsNotNone(server.check_letters(table), table)
+
+    def test_payload_format_matches_the_car(self):
+        for good in ("L=A", "R=Z", "S=F", "U=D"):
+            self.assertTrue(server.ASSIGN.fullmatch(good))
+        for bad in ("L=a", "X=A", "L=AB", "L:A", "l=A", "L="):
+            self.assertIsNone(server.ASSIGN.fullmatch(bad))
+
+    def test_restart_detection(self):
+        self.assertEqual(server.restarted(None, "hb 0"), (0, False))
+        self.assertEqual(server.restarted(0, "hb 0"), (0, False))  # dup
+        self.assertEqual(server.restarted(0, "hb 1"), (1, False))
+        self.assertEqual(server.restarted(41, "hb 0"), (0, True))
+        self.assertEqual(server.restarted(7, "garbage"), (7, False))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -11,6 +11,8 @@ static service_bridge_result_t finish_command (
 static service_bridge_result_t forward_command (
     service_bridge_t * p_bridge, command_parser_command_t command,
     uint32_t received_ms);
+static service_bridge_result_t count_delivery (
+    service_bridge_t * p_bridge, bool delivered);
 static service_bridge_result_t mark_invalid (service_bridge_t * p_bridge);
 static bool port_is_valid (const service_bridge_port_t * p_port);
 
@@ -176,14 +178,23 @@ static service_bridge_result_t finish_command (
     const command_parser_command_t command = command_parser_parse(
         p_bridge->command_data, p_bridge->received_length);
     service_bridge_result_t result = SERVICE_BRIDGE_INVALID;
+    uint8_t route = 0u;
+    char    letter = '\0';
 
-    if (COMMAND_PARSER_INVALID == command)
+    if (COMMAND_PARSER_INVALID != command)
     {
-        increment_saturated(&p_bridge->stats.invalid_messages);
+        result = forward_command(p_bridge, command, received_ms);
+    }
+    else if (command_parser_parse_assign(p_bridge->command_data,
+                 p_bridge->received_length, &route, &letter))
+    {
+        result = count_delivery(p_bridge,
+            p_bridge->port.p_assign_letter(p_bridge->port.p_context,
+                                           route, letter));
     }
     else
     {
-        result = forward_command(p_bridge, command, received_ms);
+        increment_saturated(&p_bridge->stats.invalid_messages);
     }
 
     return result;
@@ -194,7 +205,6 @@ static service_bridge_result_t forward_command (
     uint32_t received_ms)
 {
     bool delivered = false;
-    service_bridge_result_t result = SERVICE_BRIDGE_UNDELIVERED;
 
     if (COMMAND_PARSER_STOP == command)
     {
@@ -206,6 +216,14 @@ static service_bridge_result_t forward_command (
         delivered = p_bridge->port.p_send_regular_command(
             p_bridge->port.p_context, command, received_ms);
     }
+
+    return count_delivery(p_bridge, delivered);
+}
+
+static service_bridge_result_t count_delivery (
+    service_bridge_t * p_bridge, bool delivered)
+{
+    service_bridge_result_t result = SERVICE_BRIDGE_UNDELIVERED;
 
     if (delivered)
     {
@@ -236,7 +254,8 @@ static bool port_is_valid (const service_bridge_port_t * p_port)
     {
         valid = (NULL != p_port->p_raise_remote_stop) &&
                 (NULL != p_port->p_send_regular_command) &&
-                (NULL != p_port->p_read_snapshot);
+                (NULL != p_port->p_read_snapshot) &&
+                (NULL != p_port->p_assign_letter);
     }
 
     return valid;

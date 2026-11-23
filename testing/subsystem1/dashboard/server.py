@@ -4,7 +4,9 @@ Subscribes to the car's topics, decodes telemetry with the shared reference
 decoder (../decode_telemetry_v2.py), records every message to a JSON-lines
 session log and serves a single page that polls /api/state. The page can
 send START, STOP and RESET to the command topic; the Vehicle Controller
-still decides whether to act on them.
+still decides whether to act on them. It can also set which barcode letter
+means each junction command ("L=A", S1 decision 6), and sends that table
+again when it sees the car restart.
 
 Usage:
     python server.py --broker 192.168.1.10
@@ -19,6 +21,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
+import re
 import sys
 import threading
 import time
@@ -35,6 +38,13 @@ sys.path.insert(0, str(HERE.parent))
 import decode_telemetry_v2 as decoder  # noqa: E402  (shared reference decoder)
 
 COMMANDS = ("START", "STOP", "RESET")
+# Junction commands in the order the page lists them, with the payload
+# prefix the car parses (command_parser.h) and the car's boot letter.
+ROUTES = (("L", "LEFT", "A"), ("R", "RIGHT", "B"), ("S", "STRAIGHT", "C"),
+          ("U", "UTURN", "D"))
+BOOT_LETTERS = {code: letter for code, _, letter in ROUTES}
+ASSIGN = re.compile(r"[LRSU]=[A-Z]")
+HEARTBEAT = re.compile(r"hb (\d+)")
 STATIC = {"/": "index.html", "/app.js": "app.js", "/styles.css": "styles.css"}
 TYPES = {".html": "text/html; charset=utf-8",
          ".js": "text/javascript; charset=utf-8",
@@ -68,6 +78,31 @@ def describe(fields: dict[str, Any]) -> dict[str, Any]:
         decoder.STOP.get(fields["stop_cause"], str(fields["stop_cause"]))
         if out["stop_latched"] and fields["stop_cause"] != 0 else None)
     return out
+
+
+def check_letters(table: Any) -> str | None:
+    """Why a letter table cannot be sent, or None if it can."""
+    if not isinstance(table, dict) or set(table) != set(BOOT_LETTERS):
+        return "need a letter for each of L, R, S and U"
+    letters = list(table.values())
+    if not all(isinstance(v, str) and re.fullmatch(r"[A-Z]", v)
+               for v in letters):
+        return "letters must be A to Z"
+    if len(set(letters)) != len(letters):
+        return "each command needs a different letter"
+    return None
+
+
+def restarted(previous: int | None, text: str) -> tuple[int | None, bool]:
+    """Heartbeat count, and whether it shows a car restart.
+
+    The car's count only goes back to 0 when the car restarts (mqtt_utk.c
+    keeps it across reconnects)."""
+    match = HEARTBEAT.fullmatch(text.strip())
+    if match is None:
+        return previous, False
+    count = int(match.group(1))
+    return count, previous is not None and count < previous
 
 
 def changes(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
@@ -116,6 +151,10 @@ class Store:
         self.heartbeat_at = 0.0
         self.frames = 0
         self.bad_frames = 0
+        self.hb_count: int | None = None
+        # The table the car should hold; None until the page sends one.
+        self.letters: dict[str, str] | None = None
+        self.letters_note = ""
         # Last 60 s of wheel speeds, so a page opened mid-run has a chart.
         self.speeds: deque[tuple[float, int, int]] = deque(maxlen=600)
         self.log_path = log_path
@@ -154,6 +193,9 @@ class Store:
                 "events": [e for e in self.events if e["seq"] > after],
                 "speeds": [p for p in self.speeds if now - p[0] <= 60],
                 "log": self.log_path.name,
+                "letters": dict(self.letters or BOOT_LETTERS),
+                "letters_sent": self.letters is not None,
+                "letters_note": self.letters_note,
             }
 
 
@@ -182,7 +224,7 @@ class Bridge:
         self.client.disconnect()
 
     def send(self, command: str) -> tuple[bool, str]:
-        if command not in COMMANDS:
+        if command not in COMMANDS and not ASSIGN.fullmatch(command):
             return False, "unsupported command"
         info = self.client.publish(self.topic_command, command.encode(), 1)
         ok = info.rc == mqtt.MQTT_ERR_SUCCESS
@@ -190,6 +232,23 @@ class Bridge:
             self.store.event(f"command {command} "
                              f"{'sent' if ok else 'NOT sent'}")
         return ok, "sent" if ok else f"publish failed ({info.rc})"
+
+    def send_letters(self, table: dict[str, str], why: str) -> tuple[bool, str]:
+        """Publish one assignment per command; the car keeps the last one."""
+        problem = check_letters(table)
+        if problem:
+            return False, problem
+        failed = [code for code, _, _ in ROUTES
+                  if not self.send(f"{code}={table[code]}")[0]]
+        ok = not failed
+        text = ", ".join(f"{name} {table[code]}" for code, name, _ in ROUTES)
+        note = (f"{why}: {text}" if ok
+                else f"{why}: NOT sent for {', '.join(failed)}")
+        with self.store.lock:
+            self.store.letters = dict(table)
+            self.store.letters_note = note
+            self.store.event(f"barcode letters {note}")
+        return ok, note
 
     def _on_connect(self, client, userdata, flags, reason, props) -> None:
         ok = not reason.is_failure
@@ -236,6 +295,13 @@ class Bridge:
             with s.lock:
                 s.heartbeat, s.heartbeat_at = text, now
                 s.record("heartbeat", text)
+                s.hb_count, rebooted = restarted(s.hb_count, text)
+                table = dict(s.letters) if s.letters else None
+                if rebooted:
+                    s.event("car restarted (heartbeat count went back)")
+            # A restart puts the car back on A-D; send the table again.
+            if rebooted and table:
+                self.send_letters(table, "re-sent after restart")
         elif msg.topic != self.topic_command:
             with s.lock:
                 s.record("other", {"topic": msg.topic,
@@ -276,13 +342,25 @@ def make_handler(store: Store, bridge: Bridge):
 
         def do_POST(self) -> None:
             # A custom header keeps cross-site form posts out (CSRF).
-            if (urlparse(self.path).path != "/api/command"
+            path = urlparse(self.path).path
+            if (path not in ("/api/command", "/api/letters")
                     or self.headers.get("X-Dashboard") != "1"):
                 self._json(HTTPStatus.FORBIDDEN, {"error": "forbidden"})
                 return
-            length = min(int(self.headers.get("Content-Length", "0")), 64)
-            command = self.rfile.read(length).decode("ascii", "replace")
-            ok, text = bridge.send(command.strip().upper())
+            length = min(int(self.headers.get("Content-Length", "0")), 256)
+            body = self.rfile.read(length).decode("ascii", "replace")
+            if path == "/api/letters":
+                try:
+                    table = json.loads(body)
+                except ValueError:
+                    table = None
+                ok, text = bridge.send_letters(table, "sent")
+            elif body.strip().upper() in COMMANDS:
+                ok, text = bridge.send(body.strip().upper())
+            else:
+                # Letters go through /api/letters, so the table the server
+                # re-sends after a restart is always the car's.
+                ok, text = False, "unsupported command"
             self._json(HTTPStatus.OK if ok else HTTPStatus.BAD_REQUEST,
                        {"ok": ok, "message": text})
 

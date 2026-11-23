@@ -246,6 +246,26 @@ static void test_navigation(void)
     check(!s3_nav_stage(NULL, 'A', 0U, 0U), "null navigation");
     check(S3_NAV_NONE == s3_nav_take(NULL, false, true, true, 0U, 1U),
           "null take");
+
+    /* Run-time letters (S1 decision 6). */
+    check(s3_nav_set_letter(S3_NAV_LEFT, 'G'), "set G left");
+    check(S3_NAV_LEFT == s3_nav_command('G'), "G maps left");
+    check(S3_NAV_NONE == s3_nav_command('A'), "A no longer left");
+    check(s3_nav_set_letter(S3_NAV_RIGHT, 'G'), "set G right");
+    check(S3_NAV_RIGHT == s3_nav_command('G'), "G moved to right");
+    check(S3_NAV_NONE == s3_nav_command('B'), "B no longer right");
+    check(S3_NAV_STRAIGHT == s3_nav_command('C'), "C untouched");
+    check(!s3_nav_set_letter(S3_NAV_NONE, 'H'), "NONE rejected");
+    check(!s3_nav_set_letter((s3_command_t)5, 'H'), "code 5 rejected");
+    check(!s3_nav_set_letter(S3_NAV_LEFT, 'a'), "lower case rejected");
+    check(!s3_nav_set_letter(S3_NAV_LEFT, '['), "past Z rejected");
+    check(S3_NAV_NONE == s3_nav_command('H'), "rejects change nothing");
+    check(S3_NAV_NONE == s3_nav_command('@'), "below A unmapped");
+    check(s3_nav_set_letter(S3_NAV_LEFT, 'A') &&
+          s3_nav_set_letter(S3_NAV_RIGHT, 'B') &&
+          (S3_NAV_NONE == s3_nav_command('G')) &&
+          (S3_NAV_LEFT == s3_nav_command('A')) &&
+          (S3_NAV_RIGHT == s3_nav_command('B')), "boot map restored");
 }
 
 static void test_pipeline(void)

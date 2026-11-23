@@ -9,14 +9,17 @@ The defaults below may be overridden in `config/wifi_secrets.h`:
 
 | Direction | Topic | QoS | Retained | Payload |
 |---|---|---:|---:|---|
-| Broker to robot | `p2-08/p2-08-car-01/command` | 1 | no | Exactly `START`, `STOP` or `RESET` |
+| Broker to robot | `p2-08/p2-08-car-01/command` | 1 | no | Exactly `START`, `STOP` or `RESET`, or a barcode letter assignment `L=A`, `R=A`, `S=A` or `U=A` (any letter `A`–`Z`; S1 decision 6) |
 | Robot to broker | `p2-08/p2-08-car-01/telemetry` | 0 | no | 29-byte binary frame, version 3 |
 | Robot to broker | `p2-08/p2-08-car-01/heartbeat` | 0 | no | ASCII `hb N`, every 5 s |
 | Robot to broker | `p2-08/p2-08-car-01/stats` | 0 | no | ASCII telemetry counters since boot, every 10 s (S1 decision 4) |
 
 `STOP` raises Buddy 2's urgent, latched STOP flag. `START` and `RESET` are
-offered to Buddy 2's non-blocking remote-command queue. A received command
-does not write motor PWM and does not bypass the Vehicle Controller.
+offered to Buddy 2's non-blocking remote-command queue. A letter
+assignment makes that letter the only one for left (`L`), right (`R`),
+straight (`S`) or U-turn (`U`) in subsystem 3's table, until the car
+restarts. A received command does not write motor PWM and does not bypass
+the Vehicle Controller.
 
 The telemetry frame is version 3 (`docs/decisions.md`, subsystem 1,
 decisions 1 and 5), little-endian. The authoritative byte layout is the comment in

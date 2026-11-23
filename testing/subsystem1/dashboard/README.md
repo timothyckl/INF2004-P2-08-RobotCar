@@ -13,6 +13,7 @@ Fields whose validity flag is clear are shown as "—", not as zero.
 | Header | broker link, frame age, state, mode, fault, STOP latched and its cause; START / STOP / RESET buttons | telemetry, command topic |
 | Motion (S2) | left/right wheel speed, distance, heading, last 60 s of wheel speeds | telemetry |
 | Line & barcode (S3) | which front sensor is on black; last barcode letter, its command, letters read | telemetry (barcode: version 3) |
+| Barcode letters | which letter means left, right, straight and U-turn; Send to car, A–D (fills in the boot letters) | command topic (S1 decision 6) |
 | Terrain (S4) | highest hump of the run | telemetry |
 | Obstacle (S5) | forward range, last scan result and bypass side, nearest point, width, centre offset | telemetry |
 | Events | state, mode (with the barcode command on NAVIGATE), fault, STOP and its cause, each barcode read, scan and hump changes, commands sent, broker link | derived |
@@ -25,6 +26,18 @@ shows as the stop cause "junction".
 The buttons only publish `START`, `STOP` or `RESET` to the command topic.
 The Vehicle Controller still decides whether to act, exactly as for the GP20
 button.
+
+**Barcode letters.** Pick a different letter for each command and press
+Send to car. The page refuses to send two commands with the same letter.
+The server publishes `L=G`, `R=H`, `S=C`, `U=Z` (for example) to the
+command topic, one per command. The car does not reply to these, so
+"sent" means the broker accepted them. To check that the car took them,
+drive over a barcode: the Line & barcode panel shows the letter and the
+command the car used. The car goes back to A–D whenever it restarts, so
+when the server sees the heartbeat count go back (`hb 0` after a higher
+count), it sends the last table again and logs `car restarted` and
+`barcode letters re-sent after restart`. If the dashboard was restarted
+instead, press Send to car again.
 
 ## Set up (once)
 
