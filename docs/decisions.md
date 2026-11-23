@@ -964,6 +964,52 @@ runs. The closing rows state the sample size.
 how often it does. SYS-03 (junction turns) and SYS-07 (bypass turns) are
 the larger check of turn accuracy on the course.
 
+### 33. The mission runs on one core, `SMP=0` (2026-11-23)
+
+Approved by Dalton on the integration branch. Changes the build default
+in `build_make/pico_rp2040.mk` from `SMP=1` to `SMP=0`; no application
+code changes.
+
+**Problem.** On 2026-11-23 the dual-core mission image (the committed
+`5416b39` code, and the same with S1 decision 6) repeatedly lost a task.
+Evidence is in `testing/system/logs/2026-11-23_console.txt`.
+
+- The S3 line loop stopped printing within about 3 s of the MQTT
+  connection on the boots at 16:14, 16:24, 16:27 and 16:45 (the 16:45
+  boot ran the committed code without decision 6), so every START ended
+  `[S2] line: no report after START; STOP`. WiFi, MQTT, the controller and
+  the console kept running.
+- On the 17:08 boot the S4 IMU task calibrated
+  (`stationary calibration complete`) and then never printed again: no
+  `s4: new run` at START, and a lift ended in a line stop instead of a
+  pick-up stop.
+- Neither task printed `ADC read failed` or `IMU read failed`, which both
+  drivers print after their 1000 ms flag-wait timeout
+  (`DEVCNF_ADC_TMOSCAN`, `DEVCNF_I2C1_TMO`). So the task never returned
+  from a timed wait: a wake-up or a timeout was lost, not a sensor error.
+  This also fits the unexplained S3 stall of 2026-11-17 and the boot on
+  2026-11-20 where pick-up detection did not work (SYS-10, first row).
+- The stall was intermittent: on two boots (16:49 with a diagnostic
+  marker, 16:52) the line loop kept running.
+
+**Decision.** Build the mission with `SMP=0`. The image name becomes
+`mtk3pico_smp0_...`. `SMP=1` stays available for investigation.
+
+**Evidence so far.** One single-core boot (17:12, USB and power bank):
+`s4: new run 1` at START, `s4: car lifted; STOP requested` and the
+dashboard showed STOP latched: pick-up; then a run of more than 30 s
+with line following, `s4: hump 11 mm under the right wheel`, and MQTT
+telemetry and commands working. That image still had the temporary S3
+stage marker used for diagnosis; it was removed before this commit.
+
+**Not proven.** The kernel defect behind the lost wake-up is not found.
+The single-core image is checked on one boot only, and the mission has no
+earlier recorded run on one core, so all of it must be re-checked before
+the demo: laps (SYS-01), barcodes and junctions (SYS-02, SYS-03), humps
+(SYS-04), the obstacle with 15 cm and with 20 cm across the line
+(SYS-05 to SYS-07; S5 ultrasonic timing), pick-up (SYS-10) and cold
+boots (SYS-11).
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

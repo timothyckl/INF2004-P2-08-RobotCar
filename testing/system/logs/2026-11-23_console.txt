@@ -1,0 +1,1850 @@
+16:14:33.341 
+16:14:33.341 
+16:14:33.341 microT-Kernel Version 3.00
+16:14:33.341 
+16:14:33.341 
+16:14:33.341 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:14:33.341 dual-core (SMP) build, usermain on core 0
+16:14:33.341 [S2] GP20 button ready: press to START or STOP
+16:14:33.341 mission image: S2/S3/S4/S5 started
+16:14:33.341 wifi: cyw43_utk_task starting (proc 1)
+16:14:33.341 wifi: cyw43_init() ...
+16:14:33.341 wifi: cyw43_init() returned, bringing interface up ...
+16:14:33.341 s4: LSM303DLHC ready; calibrating
+16:14:33.341 s3 line: place the car on the line, then press GP20 to START or STOP
+16:14:33.341 s3 line: adaptive AO left=GP26 right=GP27
+16:14:33.341 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:14:33.341 s3 line: adc=140/208 filtered=141/204 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.342 s3 line: adc=126/217 filtered=126/211 threshold=235/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.343 s3 line: adc=142/204 filtered=141/204 threshold=236/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.343 wifi: joining "Pixel_1232" ...
+16:14:33.343 s4: stationary calibration complete (50 samples in 1460 ms)
+16:14:33.344 wifi: link status -> joined AP, waiting for IP (1)
+16:14:33.344 s3 line: adc=125/178 filtered=131/187 threshold=236/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.344 s3 line: adc=131/213 filtered=132/210 threshold=236/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.345 s3 line: adc=131/194 filtered=134/201 threshold=235/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.345 s3 line: adc=124/214 filtered=132/210 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.346 s3 line: adc=137/195 filtered=142/196 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.346 s3 line: adc=157/180 filtered=151/193 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.346 wifi: link status -> joined AP, no IP yet (2)
+16:14:33.346 wifi: link up, ip=10.157.130.101
+16:14:33.347 wifi: power save off (0)
+16:14:33.347 s3 line: adc=153/210 filtered=145/204 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.347 mqtt: connection status 256, retrying in 3s
+16:14:33.347 s3 line: adc=141/205 filtered=144/203 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.348 s3 line: adc=153/198 filtered=148/202 threshold=237/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.348 s3 line: adc=149/188 filtered=145/195 threshold=236/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.349 s3 line: adc=152/198 filtered=151/198 threshold=235/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.349 s3 line: adc=122/212 filtered=129/209 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.350 s3 line: adc=141/207 filtered=134/206 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.350 mqtt: connection status 256, retrying in 3s
+16:14:33.350 s3 line: adc=147/192 filtered=145/198 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.350 s3 line: adc=155/201 filtered=149/200 threshold=236/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.351 s3 line: adc=145/196 filtered=141/200 threshold=239/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.351 s3 line: adc=147/210 filtered=138/207 threshold=237/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.352 s3 line: adc=148/204 filtered=148/204 threshold=234/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.353 s3 line: adc=125/206 filtered=130/199 threshold=233/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.353 mqtt: connection status 256, retrying in 3s
+16:14:33.353 s3 line: adc=122/212 filtered=131/211 threshold=232/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.354 s3 line: adc=124/195 filtered=126/197 threshold=230/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.354 s3 line: adc=150/203 filtered=141/200 threshold=231/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:14:33.354 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:33.355 mqtt: connection status 256, retrying in 3s
+16:14:35.093 mqtt: connected to 10.157.130.224
+16:14:35.113 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:14:40.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+16:14:45.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+16:14:45.093 mqtt: telemetry periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0
+16:14:50.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+16:14:55.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+16:14:55.093 mqtt: telemetry periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0
+16:15:00.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+16:15:05.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+16:15:05.093 mqtt: telemetry periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0
+16:15:10.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+16:15:15.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+16:15:15.093 mqtt: telemetry periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0
+16:15:20.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+16:15:25.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+16:15:25.093 mqtt: telemetry periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0
+16:15:30.093 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+16:23:13.908 [capture] connected /dev/cu.usbmodemMTK3PICO1
+16:23:13.912 
+16:23:13.912 
+16:23:13.912 microT-Kernel Version 3.00
+16:23:13.912 
+16:23:13.912 
+16:23:13.912 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:23:13.912 dual-core (SMP) build, usermain on core 0
+16:23:13.912 [S2] GP20 button ready: press to START or STOP
+16:23:13.913 mission image: S2/S3/S4/S5 started
+16:23:13.913 wifi: cyw43_utk_task starting (proc 1)
+16:23:13.913 wifi: cyw43_init() ...
+16:23:13.913 wifi: cyw43_init() returned, bringing interface up ...
+16:23:13.913 s4: LSM303DLHC ready; calibrating
+16:23:13.913 s3 line: place the car on the line, then press GP20 to START or STOP
+16:23:13.913 s3 line: adaptive AO left=GP26 right=GP27
+16:23:13.913 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:23:13.913 s3 line: adc=134/210 filtered=137/210 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:14.346 s3 line: adc=144/217 filtered=142/217 threshold=239/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:14.866 s3 line: adc=136/204 filtered=145/207 threshold=240/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:14.925 wifi: joining "Pixel_1232" ...
+16:23:15.025 s4: stationary calibration complete (50 samples in 1370 ms)
+16:23:15.165 wifi: link status -> joined AP, waiting for IP (1)
+16:23:15.386 s3 line: adc=161/211 filtered=153/214 threshold=244/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:15.906 s3 line: adc=162/203 filtered=153/212 threshold=245/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:16.426 s3 line: adc=167/207 filtered=160/214 threshold=244/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:16.946 s3 line: adc=131/209 filtered=143/210 threshold=247/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:17.466 s3 line: adc=132/205 filtered=143/209 threshold=249/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:17.986 s3 line: adc=147/214 filtered=142/217 threshold=250/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:18.125 wifi: link status -> FAILED (association failure) (-1)
+16:23:18.445 [S2] GP20: START requested
+16:23:18.465 s4: new run 1; hump maximum cleared
+16:23:18.506 s3 line: adc=141/209 filtered=139/212 threshold=249/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:19.026 s3 line: adc=150/220 filtered=151/214 threshold=252/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:19.526 s3 line: adc=168/212 filtered=160/214 threshold=254/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:19.745 [S2] GP20: STOP requested
+16:23:19.746 [S2] run summary: distance 43 mm, highest hump 0 mm (none)
+16:23:20.066 s3 line: adc=156/220 filtered=152/221 threshold=253/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:20.589 s3 line: adc=147/226 filtered=146/226 threshold=252/715 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:21.106 s3 line: adc=154/224 filtered=149/222 threshold=250/716 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:21.626 s3 line: adc=160/225 filtered=150/217 threshold=248/716 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:22.146 s3 line: adc=139/226 filtered=146/221 threshold=247/715 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:22.666 s3 line: adc=139/210 filtered=144/215 threshold=248/716 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:23.145 wifi: joining "Pixel_1232" ...
+16:23:23.187 s3 line: adc=162/219 filtered=161/219 threshold=249/717 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:23.426 wifi: link status -> joined AP, waiting for IP (1)
+16:23:23.706 s3 line: adc=157/237 filtered=149/223 threshold=249/715 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:24.226 s3 line: adc=141/214 filtered=148/214 threshold=250/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:24.746 s3 line: adc=149/221 filtered=144/223 threshold=251/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:25.266 s3 line: adc=151/210 filtered=149/215 threshold=250/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:25.786 s3 line: adc=168/208 filtered=160/212 threshold=251/717 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:26.306 s3 line: adc=139/197 filtered=144/205 threshold=250/720 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:26.446 wifi: link status -> joined AP, no IP yet (2)
+16:23:26.545 wifi: link up, ip=10.157.130.101
+16:23:26.685 wifi: power save off (0)
+16:23:26.826 s3 line: adc=134/209 filtered=138/217 threshold=249/720 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:26.966 mqtt: connected to 10.157.130.224
+16:23:27.026 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:23:27.346 s3 line: adc=152/213 filtered=154/211 threshold=248/718 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:23:27.866 s3 line: adc=165/226 filtered=155/221 threshold=247/716 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:24:48.871 [capture] connected /dev/cu.usbmodemMTK3PICO1
+16:24:48.876 
+16:24:48.876 
+16:24:48.876 microT-Kernel Version 3.00
+16:24:48.876 
+16:24:48.877 
+16:24:48.877 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:24:48.877 dual-core (SMP) build, usermain on core 0
+16:24:48.877 [S2] GP20 button ready: press to START or STOP
+16:24:48.877 mission image: S2/S3/S4/S5 started
+16:24:48.877 wifi: cyw43_utk_task starting (proc 1)
+16:24:48.877 wifi: cyw43_init() ...
+16:24:48.877 wifi: cyw43_init() returned, bringing interface up ...
+16:24:48.877 s4: LSM303DLHC ready; calibrating
+16:24:48.878 s3 line: place the car on the line, then press GP20 to START or STOP
+16:24:48.878 s3 line: adaptive AO left=GP26 right=GP27
+16:24:48.878 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:24:48.878 s3 line: adc=123/198 filtered=133/194 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:24:48.878 s3 line: adc=122/196 filtered=127/196 threshold=235/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:24:48.878 s3 line: adc=134/194 filtered=134/190 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:24:48.878 wifi: joining "Pixel_1232" ...
+16:24:48.878 s4: stationary calibration complete (50 samples in 1440 ms)
+16:24:48.878 wifi: link status -> joined AP, waiting for IP (1)
+16:24:48.878 s3 line: adc=117/184 filtered=121/190 threshold=230/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:24:48.879 s3 line: adc=137/194 filtered=130/193 threshold=233/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:24:48.879 wifi: link status -> joined AP, no IP yet (2)
+16:24:48.879 wifi: link up, ip=10.157.130.101
+16:24:48.879 wifi: power save off (0)
+16:24:48.879 mqtt: connected to 10.157.130.224
+16:24:48.879 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:24:48.879 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+16:24:48.880 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+16:24:48.880 mqtt: telemetry periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0
+16:24:48.880 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+16:24:48.880 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+16:24:48.880 mqtt: telemetry periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0
+16:24:48.881 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+16:24:48.881 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+16:24:48.881 mqtt: telemetry periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0
+16:24:48.881 [S2] line: no report after START; STOP
+16:24:48.881 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+16:24:50.356 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+16:24:50.356 mqtt: telemetry periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0
+16:24:54.215 [S2] line: no report after START; STOP
+16:24:55.356 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+16:25:00.356 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+16:25:00.356 mqtt: telemetry periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0
+16:25:03.176 [S2] GP20: RESET requested before restart
+16:25:03.176 [S2] GP20: START requested
+16:25:03.435 [S2] line: no report after START; STOP
+16:25:03.816 [S2] GP20: RESET requested before restart
+16:25:03.816 [S2] GP20: START requested
+16:25:04.075 [S2] line: no report after START; STOP
+16:25:05.356 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+16:27:34.894 [capture] connected /dev/cu.usbmodemMTK3PICO1
+16:27:34.899 
+16:27:34.900 
+16:27:34.900 microT-Kernel Version 3.00
+16:27:34.900 
+16:27:34.900 
+16:27:34.900 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:27:34.900 dual-core (SMP) build, usermain on core 0
+16:27:34.900 [S2] GP20 button ready: press to START or STOP
+16:27:34.900 mission image: S2/S3/S4/S5 started
+16:27:34.900 wifi: cyw43_utk_task starting (proc 1)
+16:27:34.900 wifi: cyw43_init() ...
+16:27:34.900 wifi: cyw43_init() returned, bringing interface up ...
+16:27:34.900 s4: LSM303DLHC ready; calibrating
+16:27:34.900 s3 line: place the car on the line, then press GP20 to START or STOP
+16:27:34.900 s3 line: adaptive AO left=GP26 right=GP27
+16:27:34.901 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:27:34.901 s3 line: adc=130/198 filtered=131/193 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:35.217 s3 line: adc=140/182 filtered=134/186 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:35.737 s3 line: adc=112/189 filtered=114/193 threshold=232/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:35.776 wifi: joining "Pixel_1232" ...
+16:27:35.916 s4: stationary calibration complete (50 samples in 1400 ms)
+16:27:35.976 wifi: link status -> joined AP, waiting for IP (1)
+16:27:36.256 s3 line: adc=169/212 filtered=152/206 threshold=232/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:36.776 s3 line: adc=124/201 filtered=129/201 threshold=229/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:37.297 s3 line: adc=132/179 filtered=138/189 threshold=229/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:37.816 s3 line: adc=112/190 filtered=122/195 threshold=226/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:38.337 s3 line: adc=144/193 filtered=134/194 threshold=226/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:38.856 s3 line: adc=145/193 filtered=143/189 threshold=228/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:38.936 wifi: link status -> joined AP, no IP yet (2)
+16:27:39.036 wifi: link up, ip=10.157.130.101
+16:27:39.155 wifi: power save off (0)
+16:27:39.376 s3 line: adc=145/193 filtered=139/196 threshold=229/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:39.461 mqtt: connected to 10.157.130.224
+16:27:39.496 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:27:39.897 s3 line: adc=120/190 filtered=132/193 threshold=230/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:40.416 s3 line: adc=120/197 filtered=127/192 threshold=230/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:40.937 s3 line: adc=118/185 filtered=120/192 threshold=231/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:41.456 s3 line: adc=132/190 filtered=130/193 threshold=230/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:41.977 s3 line: adc=115/201 filtered=125/199 threshold=231/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:27:42.636 [S2] GP20: START requested
+16:27:42.875 [S2] line: no report after START; STOP
+16:27:44.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+16:27:49.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+16:27:49.456 mqtt: telemetry periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0
+16:27:54.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+16:27:59.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+16:27:59.456 mqtt: telemetry periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0
+16:28:03.775 [S2] line: no report after START; STOP
+16:28:04.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+16:28:09.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+16:28:09.459 mqtt: telemetry periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0
+16:28:14.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+16:28:19.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+16:28:19.456 mqtt: telemetry periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0
+16:28:24.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+16:28:29.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+16:28:29.456 mqtt: telemetry periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0
+16:28:34.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+16:28:39.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 11"
+16:28:39.456 mqtt: telemetry periods 60 sent 60 refused 0 err 0 nosnap 0 nolink 0
+16:28:44.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 12"
+16:28:49.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 13"
+16:28:49.456 mqtt: telemetry periods 70 sent 70 refused 0 err 0 nosnap 0 nolink 0
+16:28:54.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 14"
+16:28:59.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 15"
+16:28:59.456 mqtt: telemetry periods 80 sent 80 refused 0 err 0 nosnap 0 nolink 0
+16:29:04.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 16"
+16:29:09.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 17"
+16:29:09.456 mqtt: telemetry periods 90 sent 90 refused 0 err 0 nosnap 0 nolink 0
+16:29:14.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 18"
+16:29:19.456 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 19"
+16:29:19.456 mqtt: telemetry periods 100 sent 100 refused 0 err 0 nosnap 0 nolink 0
+16:29:24.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 20"
+16:29:29.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 21"
+16:29:29.456 mqtt: telemetry periods 110 sent 105 refused 5 err -1 nosnap 0 nolink 0
+16:29:34.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 22"
+16:29:39.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 23"
+16:29:39.455 mqtt: telemetry periods 120 sent 115 refused 5 err -1 nosnap 0 nolink 0
+16:29:44.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 24"
+16:29:49.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 25"
+16:29:49.456 mqtt: telemetry periods 130 sent 125 refused 5 err -1 nosnap 0 nolink 0
+16:29:54.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 26"
+16:29:59.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 27"
+16:29:59.455 mqtt: telemetry periods 140 sent 135 refused 5 err -1 nosnap 0 nolink 0
+16:30:04.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 28"
+16:30:09.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 29"
+16:30:09.455 mqtt: telemetry periods 150 sent 145 refused 5 err -1 nosnap 0 nolink 0
+16:30:14.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 30"
+16:30:19.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 31"
+16:30:19.456 mqtt: telemetry periods 160 sent 155 refused 5 err -1 nosnap 0 nolink 0
+16:30:24.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 32"
+16:30:29.459 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 33"
+16:30:29.459 mqtt: telemetry periods 170 sent 165 refused 5 err -1 nosnap 0 nolink 0
+16:31:01.050 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 34"
+16:31:01.134 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 35"
+16:31:01.134 mqtt: telemetry periods 180 sent 166 refused 14 err -1 nosnap 0 nolink 0
+16:31:01.134 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 36"
+16:31:01.134 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 37"
+16:31:01.134 mqtt: telemetry periods 190 sent 166 refused 24 err -1 nosnap 0 nolink 0
+16:31:01.134 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 38"
+16:31:01.134 wifi: link status -> joined AP, waiting for IP (1)
+16:31:01.134 mqtt: publish failed, err=-3
+16:31:01.134 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 39"
+16:31:01.134 mqtt: telemetry periods 200 sent 166 refused 34 err -1 nosnap 0 nolink 0
+16:31:04.251 mqtt: publish failed, err=-3
+16:31:04.252 mqtt: publish failed, err=-3
+16:31:04.252 mqtt: publish failed, err=-3
+16:31:04.451 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 40"
+16:31:09.455 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 41"
+16:31:09.455 mqtt: telemetry periods 210 sent 168 refused 42 err -1 nosnap 0 nolink 0
+16:31:14.457 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 42"
+16:31:19.458 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 43"
+16:31:19.459 mqtt: telemetry periods 220 sent 168 refused 52 err -1 nosnap 0 nolink 0
+16:42:05.772 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 44"
+16:42:05.864 mqtt: publish failed, err=-3
+16:42:05.864 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 45"
+16:42:05.865 mqtt: telemetry periods 230 sent 168 refused 62 err -1 nosnap 0 nolink 0
+16:42:05.865 mqtt: publish failed, err=-3
+16:42:05.867 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 46"
+16:42:05.869 mqtt: publish failed, err=-3
+16:42:05.869 mqtt: publish failed, err=-3
+16:42:05.869 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 47"
+16:42:05.873 mqtt: telemetry periods 240 sent 169 refused 71 err -1 nosnap 0 nolink 0
+16:42:05.873 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 48"
+16:42:05.873 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 49"
+16:42:05.873 mqtt: telemetry periods 250 sent 169 refused 81 err -1 nosnap 0 nolink 0
+16:42:05.873 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 50"
+16:42:05.873 mqtt: publish failed, err=-3
+16:42:05.873 mqtt: connection status 257, retrying in 3s
+16:42:05.873 mqtt: telemetry periods 260 sent 169 refused 90 err -1 nosnap 0 nolink 1
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: telemetry periods 270 sent 169 refused 90 err -1 nosnap 0 nolink 11
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: telemetry periods 280 sent 169 refused 90 err -1 nosnap 0 nolink 21
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.873 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: telemetry periods 290 sent 169 refused 90 err -1 nosnap 0 nolink 31
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: telemetry periods 300 sent 169 refused 90 err -1 nosnap 0 nolink 41
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: telemetry periods 310 sent 169 refused 90 err -1 nosnap 0 nolink 51
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: telemetry periods 320 sent 169 refused 90 err -1 nosnap 0 nolink 61
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.874 mqtt: telemetry periods 330 sent 169 refused 90 err -1 nosnap 0 nolink 71
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: telemetry periods 340 sent 169 refused 90 err -1 nosnap 0 nolink 81
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: telemetry periods 350 sent 169 refused 90 err -1 nosnap 0 nolink 91
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: telemetry periods 360 sent 169 refused 90 err -1 nosnap 0 nolink 101
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: telemetry periods 370 sent 169 refused 90 err -1 nosnap 0 nolink 111
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.875 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: telemetry periods 380 sent 169 refused 90 err -1 nosnap 0 nolink 121
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: telemetry periods 390 sent 169 refused 90 err -1 nosnap 0 nolink 131
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: telemetry periods 400 sent 169 refused 90 err -1 nosnap 0 nolink 141
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: telemetry periods 410 sent 169 refused 90 err -1 nosnap 0 nolink 151
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:05.876 mqtt: mqtt_client_connect() failed, err=-4
+16:42:09.460 mqtt: telemetry periods 420 sent 169 refused 90 err -1mqtt: telemetry periods 870 sent 169 refused 90 err -1 nosnap 0 nolink 611
+16:42:15.101 mqtt: connection status 256, retrying in 3s
+16:42:19.462 mqtt: telemetry periods 880 sent 169 refused 90 err -1 nosnap 0 nolink 621
+16:42:29.462 mqtt: telemetry periods 890 sent 169 refused 90 err -1 nosnap 0 nolink 631
+16:42:39.463 mqtt: telemetry periods 900 sent 169 refused 90 err -1 nosnap 0 nolink 641
+16:42:46.303 mqtt: connection status 256, retrying in 3s
+16:43:59.452 [capture] connected /dev/cu.usbmodemMTK3PICO1
+16:43:59.460 
+16:43:59.461 
+16:43:59.461 microT-Kernel Version 3.00
+16:43:59.461 
+16:43:59.461 
+16:43:59.461 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:43:59.461 dual-core (SMP) build, usermain on core 0
+16:43:59.461 [S2] GP20 button ready: press to START or STOP
+16:43:59.461 mission image: S2/S3/S4/S5 started
+16:43:59.462 wifi: cyw43_utk_task starting (proc 1)
+16:43:59.462 wifi: cyw43_init() ...
+16:43:59.462 wifi: cyw43_init() returned, bringing interface up ...
+16:43:59.462 s4: LSM303DLHC ready; calibrating
+16:43:59.462 s3 line: place the car on the line, then press GP20 to START or STOP
+16:43:59.462 s3 line: adaptive AO left=GP26 right=GP27
+16:43:59.462 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:43:59.462 s3 line: adc=148/189 filtered=141/194 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:43:59.478 s3 line: adc=142/184 filtered=140/191 threshold=237/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:43:59.998 s3 line: adc=154/212 filtered=139/208 threshold=238/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:00.077 wifi: joining "Pixel_1232" ...
+16:44:00.218 s4: stationary calibration complete (50 samples in 1430 ms)
+16:44:00.318 wifi: link status -> joined AP, waiting for IP (1)
+16:44:00.518 s3 line: adc=140/190 filtered=142/196 threshold=238/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:01.039 s3 line: adc=150/192 filtered=145/194 threshold=235/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:01.558 s3 line: adc=155/206 filtered=142/200 threshold=236/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:02.078 s3 line: adc=119/194 filtered=128/200 threshold=237/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:02.598 s3 line: adc=122/200 filtered=132/202 threshold=239/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:03.118 s3 line: adc=122/182 filtered=128/186 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:03.237 wifi: link status -> joined AP, no IP yet (2)
+16:44:03.457 wifi: link up, ip=10.157.130.101
+16:44:03.597 wifi: power save off (0)
+16:44:03.638 s3 line: adc=132/189 filtered=132/192 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:04.158 s3 line: adc=140/213 filtered=140/210 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:04.678 s3 line: adc=123/195 filtered=128/196 threshold=239/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:05.198 s3 line: adc=156/197 filtered=145/202 threshold=242/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:05.718 s3 line: adc=125/203 filtered=137/204 threshold=241/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:06.238 s3 line: adc=141/204 filtered=142/205 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:06.758 s3 line: adc=125/189 filtered=133/196 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:07.278 s3 line: adc=156/198 filtered=144/200 threshold=243/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:07.798 s3 line: adc=141/204 filtered=132/201 threshold=240/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:08.318 s3 line: adc=123/187 filtered=131/193 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:08.838 s3 line: adc=152/180 filtered=149/193 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:09.358 s3 line: adc=148/201 filtered=141/198 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:09.878 s3 line: adc=124/190 filtered=136/195 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:10.398 s3 line: adc=121/210 filtered=134/206 threshold=238/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:10.919 s3 line: adc=129/204 filtered=129/201 threshold=238/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:11.438 s3 line: adc=149/197 filtered=147/194 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:11.959 s3 line: adc=147/194 filtered=136/192 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:12.478 s3 line: adc=134/201 filtered=136/204 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:12.998 s3 line: adc=125/208 filtered=132/200 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:13.518 s3 line: adc=157/211 filtered=150/204 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:14.039 s3 line: adc=125/210 filtered=133/207 threshold=239/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:14.558 s3 line: adc=154/205 filtered=145/206 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:15.078 s3 line: adc=154/198 filtered=143/198 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:15.598 s3 line: adc=140/207 filtered=145/203 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:16.118 s3 line: adc=132/194 filtered=129/196 threshold=234/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:16.638 s3 line: adc=122/201 filtered=132/201 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:17.158 s3 line: adc=124/194 filtered=135/199 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:17.678 s3 line: adc=141/196 filtered=138/197 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:18.199 s3 line: adc=121/181 filtered=129/189 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:18.718 s3 line: adc=154/210 filtered=153/206 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:19.238 s3 line: adc=139/186 filtered=144/195 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:19.758 s3 line: adc=126/205 filtered=135/205 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:20.279 s3 line: adc=155/214 filtered=147/202 threshold=242/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:20.798 s3 line: adc=150/203 filtered=144/201 threshold=241/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:21.318 s3 line: adc=140/192 filtered=139/195 threshold=240/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:21.838 s3 line: adc=139/192 filtered=138/196 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:22.358 s3 line: adc=152/201 filtered=145/203 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:22.878 s3 line: adc=132/210 filtered=132/205 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:23.398 s3 line: adc=125/210 filtered=137/205 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:23.918 s3 line: adc=122/203 filtered=133/202 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:24.439 s3 line: adc=123/212 filtered=133/203 threshold=240/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:24.958 s3 line: adc=129/193 filtered=132/196 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:25.478 s3 line: adc=148/192 filtered=141/197 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:25.998 s3 line: adc=130/205 filtered=133/206 threshold=238/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:26.518 s3 line: adc=156/202 filtered=140/202 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:27.038 s3 line: adc=132/207 filtered=139/206 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:27.558 s3 line: adc=153/195 filtered=138/192 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:28.078 s3 line: adc=157/213 filtered=147/202 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:28.598 s3 line: adc=123/203 filtered=130/201 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:29.118 s3 line: adc=153/201 filtered=141/201 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:29.638 s3 line: adc=144/193 filtered=135/196 threshold=236/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:30.158 s3 line: adc=125/181 filtered=123/186 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:30.678 s3 line: adc=136/196 filtered=142/199 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:31.198 s3 line: adc=118/192 filtered=127/197 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:31.718 s3 line: adc=123/208 filtered=130/202 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:32.238 s3 line: adc=149/213 filtered=147/201 threshold=234/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:32.758 s3 line: adc=125/192 filtered=134/195 threshold=233/695 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:33.278 s3 line: adc=121/204 filtered=125/201 threshold=234/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:33.497 mqtt: connection status 256, retrying in 3s
+16:44:33.798 s3 line: adc=116/208 filtered=126/207 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:34.318 s3 line: adc=142/195 filtered=142/198 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:34.838 s3 line: adc=132/204 filtered=134/197 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:35.358 s3 line: adc=145/200 filtered=146/204 threshold=234/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:35.878 s3 line: adc=120/196 filtered=129/202 threshold=234/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:36.398 s3 line: adc=126/213 filtered=126/210 threshold=235/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:36.918 s3 line: adc=139/204 filtered=139/200 threshold=234/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:37.438 s3 line: adc=155/211 filtered=148/204 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:37.959 s3 line: adc=152/195 filtered=148/199 threshold=239/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:38.478 s3 line: adc=143/194 filtered=140/197 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:38.998 s3 line: adc=126/194 filtered=128/202 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:39.518 s3 line: adc=124/196 filtered=134/198 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:40.039 s3 line: adc=133/209 filtered=133/203 threshold=233/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:40.558 s3 line: adc=143/203 filtered=140/201 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:41.079 s3 line: adc=148/192 filtered=143/192 threshold=237/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:41.598 s3 line: adc=148/189 filtered=138/195 threshold=236/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:42.118 s3 line: adc=131/193 filtered=132/197 threshold=238/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:42.638 s3 line: adc=157/196 filtered=148/199 threshold=235/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:43.159 s3 line: adc=134/200 filtered=134/202 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:43.678 s3 line: adc=122/205 filtered=135/203 threshold=235/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:44.198 s3 line: adc=136/206 filtered=134/206 threshold=231/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:44.718 s3 line: adc=126/212 filtered=133/210 threshold=234/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:45.239 s3 line: adc=129/213 filtered=135/206 threshold=232/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:45.758 s3 line: adc=119/198 filtered=127/198 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:46.278 s3 line: adc=156/177 filtered=141/185 threshold=233/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:46.798 s3 line: adc=153/186 filtered=150/191 threshold=235/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:47.319 s3 line: adc=155/194 filtered=143/197 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:47.838 s3 line: adc=136/188 filtered=141/192 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:48.358 s3 line: adc=135/201 filtered=133/200 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:48.878 s3 line: adc=144/212 filtered=142/200 threshold=236/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:49.398 s3 line: adc=121/208 filtered=131/203 threshold=233/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:49.918 s3 line: adc=136/195 filtered=134/198 threshold=232/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:50.439 s3 line: adc=128/201 filtered=128/202 threshold=234/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:50.958 s3 line: adc=125/187 filtered=130/193 threshold=233/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:51.478 s3 line: adc=154/190 filtered=150/193 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:51.998 s3 line: adc=124/212 filtered=130/208 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:52.518 s3 line: adc=157/193 filtered=149/194 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:53.038 s3 line: adc=154/205 filtered=140/206 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:53.558 s3 line: adc=152/194 filtered=144/202 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:54.078 s3 line: adc=121/210 filtered=131/207 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:54.599 s3 line: adc=136/189 filtered=136/194 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:55.118 s3 line: adc=121/194 filtered=133/196 threshold=233/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:55.638 s3 line: adc=150/191 filtered=140/195 threshold=232/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:56.158 s3 line: adc=133/206 filtered=130/205 threshold=235/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:56.678 s3 line: adc=125/202 filtered=130/200 threshold=235/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:57.198 s3 line: adc=120/207 filtered=123/202 threshold=234/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:57.718 s3 line: adc=130/190 filtered=132/195 threshold=233/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:58.238 s3 line: adc=152/205 filtered=138/201 threshold=233/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:58.758 s3 line: adc=153/203 filtered=149/199 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:59.278 s3 line: adc=121/211 filtered=124/203 threshold=236/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:44:59.798 s3 line: adc=121/208 filtered=128/204 threshold=235/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:00.318 s3 line: adc=128/214 filtered=135/207 threshold=234/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:00.839 s3 line: adc=121/192 filtered=124/196 threshold=234/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:01.358 s3 line: adc=148/195 filtered=142/192 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:01.878 s3 line: adc=121/188 filtered=132/191 threshold=238/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:02.398 s3 line: adc=121/182 filtered=124/191 threshold=239/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:02.918 s3 line: adc=158/196 filtered=153/197 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:03.438 s3 line: adc=124/211 filtered=130/208 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:03.958 s3 line: adc=141/189 filtered=141/190 threshold=239/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:04.478 s3 line: adc=147/205 filtered=145/198 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:04.577 mqtt: connection status 256, retrying in 3s
+16:45:04.998 s3 line: adc=120/189 filtered=126/193 threshold=238/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:05.518 s3 line: adc=136/186 filtered=134/193 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:06.038 s3 line: adc=142/201 filtered=138/202 threshold=241/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:06.558 s3 line: adc=128/205 filtered=139/205 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:07.078 s3 line: adc=119/192 filtered=134/197 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:07.599 s3 line: adc=132/202 filtered=129/199 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:08.118 s3 line: adc=129/203 filtered=130/199 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:08.639 s3 line: adc=134/212 filtered=138/210 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:09.158 s3 line: adc=148/194 filtered=146/198 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:09.678 s3 line: adc=153/204 filtered=141/205 threshold=240/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:10.198 s3 line: adc=130/203 filtered=140/201 threshold=239/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:10.718 s3 line: adc=150/194 filtered=146/194 threshold=236/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:11.238 s3 line: adc=134/183 filtered=134/190 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:11.758 s3 line: adc=125/202 filtered=130/201 threshold=236/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:12.278 s3 line: adc=156/187 filtered=140/191 threshold=235/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:12.798 s3 line: adc=130/194 filtered=137/196 threshold=234/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:13.318 s3 line: adc=142/201 filtered=141/203 threshold=234/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:13.838 s3 line: adc=132/212 filtered=134/208 threshold=233/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:14.358 s3 line: adc=141/191 filtered=141/196 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:14.878 s3 line: adc=146/192 filtered=140/192 threshold=234/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:15.398 s3 line: adc=124/186 filtered=132/193 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:15.918 s3 line: adc=122/196 filtered=131/200 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:16.438 s3 line: adc=131/209 filtered=133/201 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:16.857 mqtt: connected to 10.157.130.224
+16:45:16.958 s3 line: adc=121/201 filtered=125/200 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:16.997 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:45:17.478 s3 line: adc=139/208 filtered=140/201 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:17.998 s3 line: adc=126/187 filtered=129/195 threshold=234/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:18.518 s3 line: adc=150/185 filtered=146/193 threshold=237/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:19.038 s3 line: adc=133/211 filtered=136/202 threshold=236/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:19.559 s3 line: adc=156/195 filtered=146/201 threshold=236/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:20.078 s3 line: adc=156/195 filtered=147/201 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:20.598 s3 line: adc=156/193 filtered=153/194 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:21.118 s3 line: adc=150/195 filtered=138/195 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:21.638 s3 line: adc=121/201 filtered=123/204 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:21.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+16:45:22.158 s3 line: adc=122/201 filtered=132/202 threshold=236/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:22.678 s3 line: adc=124/208 filtered=128/204 threshold=237/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:45:26.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+16:45:26.858 mqtt: telemetry periods 10 sent 9 refused 1 err -1 nosnap 0 nolink 0
+16:45:31.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+16:45:36.858 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+16:45:36.858 mqtt: telemetry periods 20 sent 19 refused 1 err -1 nosnap 0 nolink 0
+16:45:41.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+16:45:46.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+16:45:46.858 mqtt: telemetry periods 30 sent 29 refused 1 err -1 nosnap 0 nolink 0
+16:45:51.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+16:45:56.858 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+16:45:56.859 mqtt: telemetry periods 40 sent 39 refused 1 err -1 nosnap 0 nolink 0
+16:46:01.858 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+16:46:06.858 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+16:46:06.858 mqtt: telemetry periods 50 sent 49 refused 1 err -1 nosnap 0 nolink 0
+16:46:11.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+16:46:16.859 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 11"
+16:46:16.859 mqtt: telemetry periods 60 sent 58 refused 1 err -1 nosnap 1 nolink 0
+16:46:21.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 12"
+16:46:26.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 13"
+16:46:26.858 mqtt: telemetry periods 70 sent 68 refused 1 err -1 nosnap 1 nolink 0
+16:46:31.857 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 14"
+16:46:36.858 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 15"
+16:46:36.858 mqtt: telemetry periods 80 sent 77 refused 1 err -1 nosnap 2 nolink 0
+16:46:41.860 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 16"
+16:46:46.862 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 17"
+16:46:46.863 mqtt: telemetry periods 90 sent 87 refused 1 err -1 nosnap 2 nolink 0
+16:46:51.864 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 18"
+16:46:56.865 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 19"
+16:46:56.865 mqtt: telemetry periods 100 sent 97 refused 1 err -1 nosnap 2 nolink 0
+16:47:01.865 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 20"
+16:47:06.866 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 21"
+16:47:06.867 mqtt: telemetry periods 110 sent 107 refused 1 err -1 nosnap 2 nolink 0
+16:47:11.867 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 22"
+16:47:16.867 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 23"
+16:47:16.868 mqtt: telemetry periods 120 sent 117 refused 1 err -1 nosnap 2 nolink 0
+16:47:21.867 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 24"
+16:47:26.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 25"
+16:47:26.868 mqtt: telemetry periods 130 sent 126 refused 1 err -1 nosnap 3 nolink 0
+16:47:31.867 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 26"
+16:47:36.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 27"
+16:47:36.868 mqtt: telemetry periods 140 sent 136 refused 1 err -1 nosnap 3 nolink 0
+16:47:41.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 28"
+16:47:46.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 29"
+16:47:46.868 mqtt: telemetry periods 150 sent 146 refused 1 err -1 nosnap 3 nolink 0
+16:47:51.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 30"
+16:47:56.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 31"
+16:47:56.868 mqtt: telemetry periods 160 sent 156 refused 1 err -1 nosnap 3 nolink 0
+16:48:01.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 32"
+16:48:06.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 33"
+16:48:06.869 mqtt: telemetry periods 170 sent 164 refused 1 err -1 nosnap 5 nolink 0
+16:48:11.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 34"
+16:48:16.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 35"
+16:48:16.869 mqtt: telemetry periods 180 sent 174 refused 1 err -1 nosnap 5 nolink 0
+16:48:21.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 36"
+16:48:26.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 37"
+16:48:26.869 mqtt: telemetry periods 190 sent 183 refused 1 err -1 nosnap 6 nolink 0
+16:48:31.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 38"
+16:48:36.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 39"
+16:48:36.869 mqtt: telemetry periods 200 sent 193 refused 1 err -1 nosnap 6 nolink 0
+16:48:41.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 40"
+16:48:46.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 41"
+16:48:46.868 mqtt: telemetry periods 210 sent 203 refused 1 err -1 nosnap 6 nolink 0
+16:48:51.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 42"
+16:48:56.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 43"
+16:48:56.869 mqtt: telemetry periods 220 sent 213 refused 1 err -1 nosnap 6 nolink 0
+16:49:01.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 44"
+16:49:06.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 45"
+16:49:06.869 mqtt: telemetry periods 230 sent 222 refused 1 err -1 nosnap 7 nolink 0
+16:49:08.288 s4: new run 1; hump maximum cleared
+16:49:08.488 [S2] line: no report after START; STOP
+16:49:11.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 46"
+16:49:16.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 47"
+16:49:16.869 mqtt: telemetry periods 240 sent 231 refused 1 err -1 nosnap 8 nolink 0
+16:49:21.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 48"
+16:49:26.868 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 49"
+16:49:26.869 mqtt: telemetry periods 250 sent 240 refused 2 err -1 nosnap 8 nolink 0
+16:49:29.000 [capture] port lost
+16:49:46.515 [capture] connected /dev/cu.usbmodemMTK3PICO1
+16:49:46.520 
+16:49:46.520 
+16:49:46.521 microT-Kernel Version 3.00
+16:49:46.521 
+16:49:46.521 
+16:49:46.521 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:49:46.521 dual-core (SMP) build, usermain on core 0
+16:49:46.521 [S2] GP20 button ready: press to START or STOP
+16:49:46.521 mission image: S2/S3/S4/S5 started
+16:49:46.521 wifi: cyw43_utk_task starting (proc 1)
+16:49:46.521 wifi: cyw43_init() ...
+16:49:46.521 wifi: cyw43_init() returned, bringing interface up ...
+16:49:46.522 s4: LSM303DLHC ready; calibrating
+16:49:46.522 s3 line: place the car on the line, then press GP20 to START or STOP
+16:49:46.522 s3 line: adaptive AO left=GP26 right=GP27
+16:49:46.522 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:49:46.522 s3 line: adc=152/203 filtered=146/199 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:46.715 s3 line: adc=154/189 filtered=147/196 threshold=238/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:47.254 s3 line: adc=125/210 filtered=128/206 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:47.314 wifi: joining "Pixel_1232" ...
+16:49:47.474 s4: stationary calibration complete (50 samples in 1430 ms)
+16:49:47.534 wifi: link status -> joined AP, waiting for IP (1)
+16:49:47.775 s3 line: adc=148/211 filtered=152/202 threshold=236/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:48.294 s3 line: adc=145/192 filtered=144/190 threshold=237/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:48.814 s3 line: adc=144/203 filtered=144/206 threshold=239/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:49.335 s3 line: adc=125/206 filtered=137/205 threshold=240/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:49.855 s3 line: adc=158/213 filtered=144/201 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:50.375 s3 line: adc=134/201 filtered=133/204 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:50.674 wifi: link status -> joined AP, no IP yet (2)
+16:49:50.894 s3 line: adc=155/189 filtered=142/193 threshold=243/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:50.994 wifi: link up, ip=10.157.130.101
+16:49:51.134 wifi: power save off (0)
+16:49:51.334 mqtt: connected to 10.157.130.224
+16:49:51.394 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:49:51.395 s3 line: adc=126/208 filtered=136/208 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:51.934 s3 line: adc=156/185 filtered=148/195 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:52.455 s3 line: adc=140/194 filtered=144/199 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:52.974 s3 line: adc=154/189 filtered=146/198 threshold=241/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:53.494 s3 line: adc=129/206 filtered=137/204 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:54.014 s3 line: adc=149/193 filtered=139/202 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:54.534 s3 line: adc=137/190 filtered=137/197 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:55.054 s3 line: adc=146/210 filtered=140/206 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:55.575 s3 line: adc=138/187 filtered=135/192 threshold=237/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:56.094 s3 line: adc=141/211 filtered=147/203 threshold=237/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:56.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+16:49:56.615 s3 line: adc=123/201 filtered=132/202 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:57.134 s3 line: adc=147/192 filtered=148/194 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:57.655 s3 line: adc=128/199 filtered=134/204 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:58.174 s3 line: adc=120/195 filtered=131/198 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:58.694 s3 line: adc=146/189 filtered=138/198 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:59.215 s3 line: adc=156/212 filtered=155/206 threshold=239/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:49:59.734 s3 line: adc=152/194 filtered=153/197 threshold=238/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:00.255 s3 line: adc=133/192 filtered=138/198 threshold=236/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:00.774 s3 line: adc=145/209 filtered=145/210 threshold=235/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:01.294 s3 line: adc=146/211 filtered=146/211 threshold=234/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:01.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+16:50:01.335 mqtt: telemetry periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0
+16:50:01.815 s3 line: adc=138/209 filtered=141/209 threshold=233/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:02.334 s3 line: adc=130/209 filtered=138/209 threshold=235/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:02.854 s3 line: adc=134/193 filtered=142/200 threshold=238/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:03.375 s3 line: adc=128/211 filtered=137/207 threshold=239/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:03.894 s3 line: adc=137/203 filtered=146/203 threshold=238/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:04.414 s3 line: adc=134/201 filtered=123/201 threshold=234/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:04.935 s3 line: adc=134/193 filtered=137/193 threshold=234/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:05.455 s3 line: adc=150/195 filtered=148/194 threshold=234/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:05.974 s3 line: adc=156/212 filtered=147/206 threshold=235/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:06.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+16:50:06.495 s3 line: adc=140/205 filtered=140/199 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:07.014 s3 line: adc=133/196 filtered=131/200 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:07.534 s3 line: adc=124/198 filtered=126/202 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:08.055 s3 line: adc=134/209 filtered=139/204 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:08.574 s3 line: adc=125/196 filtered=128/200 threshold=238/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:09.094 s3 line: adc=133/196 filtered=136/200 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:09.615 s3 line: adc=145/194 filtered=135/198 threshold=243/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:10.134 s3 line: adc=125/208 filtered=138/204 threshold=245/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:10.654 s3 line: adc=148/195 filtered=145/198 threshold=244/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:11.175 s3 line: adc=154/193 filtered=145/195 threshold=244/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:11.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+16:50:11.335 mqtt: telemetry periods 20 sent 19 refused 0 err 0 nosnap 1 nolink 0
+16:50:11.694 s3 line: adc=144/210 filtered=143/208 threshold=243/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:12.215 s3 line: adc=148/205 filtered=142/203 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:12.734 s3 line: adc=130/208 filtered=137/207 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:13.254 s3 line: adc=121/189 filtered=133/195 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:13.775 s3 line: adc=124/192 filtered=132/201 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:14.294 s3 line: adc=152/189 filtered=147/192 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:14.814 s3 line: adc=125/203 filtered=130/198 threshold=241/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:15.335 s3 line: adc=133/201 filtered=133/201 threshold=240/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:15.854 s3 line: adc=120/200 filtered=135/205 threshold=241/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:16.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+16:50:16.375 s3 line: adc=133/197 filtered=134/203 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:16.894 s3 line: adc=120/211 filtered=126/201 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:17.414 s3 line: adc=156/191 filtered=151/197 threshold=241/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:17.935 s3 line: adc=126/204 filtered=130/203 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:18.454 s3 line: adc=121/209 filtered=131/203 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:18.974 s3 line: adc=150/194 filtered=147/195 threshold=241/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:19.495 s3 line: adc=148/194 filtered=140/201 threshold=242/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:20.015 s3 line: adc=152/210 filtered=142/203 threshold=242/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:20.534 s3 line: adc=121/212 filtered=131/209 threshold=243/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:21.055 s3 line: adc=142/209 filtered=141/204 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:21.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+16:50:21.334 mqtt: telemetry periods 30 sent 29 refused 0 err 0 nosnap 1 nolink 0
+16:50:21.574 s3 line: adc=150/202 filtered=148/206 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:22.095 s3 line: adc=141/192 filtered=136/198 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:22.614 s3 line: adc=141/207 filtered=133/205 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:23.135 s3 line: adc=156/210 filtered=154/205 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:23.654 s3 line: adc=147/214 filtered=140/209 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:24.174 s3 line: adc=140/206 filtered=135/205 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:24.695 s3 line: adc=130/212 filtered=129/204 threshold=235/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:25.214 s3 line: adc=128/182 filtered=133/189 threshold=236/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:25.734 s3 line: adc=122/194 filtered=135/198 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:26.255 s3 line: adc=141/203 filtered=141/199 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:26.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+16:50:26.774 s3 line: adc=139/205 filtered=138/205 threshold=238/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:27.294 s3 line: adc=124/194 filtered=127/194 threshold=234/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:27.815 s3 line: adc=135/198 filtered=140/197 threshold=235/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:28.335 s3 line: adc=143/206 filtered=147/209 threshold=238/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:28.854 s3 line: adc=153/213 filtered=144/209 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:29.375 s3 line: adc=128/205 filtered=128/204 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:29.894 s3 line: adc=147/204 filtered=144/204 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:30.414 s3 line: adc=122/211 filtered=129/209 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:30.935 s3 line: adc=157/212 filtered=153/203 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:31.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+16:50:31.334 mqtt: telemetry periods 40 sent 38 refused 0 err 0 nosnap 2 nolink 0
+16:50:31.454 s3 line: adc=147/197 filtered=138/197 threshold=239/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:31.975 s3 line: adc=140/190 filtered=137/196 threshold=236/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:32.494 s3 line: adc=125/201 filtered=131/203 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:33.014 s3 line: adc=151/212 filtered=147/204 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:33.535 s3 line: adc=154/192 filtered=146/192 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:34.054 s3 line: adc=144/195 filtered=145/199 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:34.574 s3 line: adc=152/205 filtered=140/206 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:35.095 s3 line: adc=144/209 filtered=148/209 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:35.614 s3 line: adc=128/198 filtered=134/201 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:36.134 s3 line: adc=140/205 filtered=143/203 threshold=236/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:36.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+16:50:36.654 s3 line: adc=145/211 filtered=140/202 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:37.174 s3 line: adc=131/190 filtered=141/195 threshold=237/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:37.695 s3 line: adc=144/209 filtered=134/205 threshold=234/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:38.214 s3 line: adc=120/202 filtered=130/201 threshold=237/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:38.735 s3 line: adc=149/203 filtered=143/205 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:39.254 s3 line: adc=152/198 filtered=143/201 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:39.775 s3 line: adc=158/210 filtered=145/209 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:40.294 s3 line: adc=144/196 filtered=139/200 threshold=242/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:40.815 s3 line: adc=142/209 filtered=142/204 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:41.335 s3 line: adc=155/209 filtered=151/207 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:41.335 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+16:50:41.336 mqtt: telemetry periods 50 sent 47 refused 0 err 0 nosnap 3 nolink 0
+16:50:41.855 s3 line: adc=158/202 filtered=146/202 threshold=243/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:42.374 s3 line: adc=135/205 filtered=133/198 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:42.895 s3 line: adc=156/195 filtered=148/195 threshold=239/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:43.414 s3 line: adc=123/194 filtered=130/198 threshold=238/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:43.935 s3 line: adc=124/195 filtered=133/200 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:44.454 s3 line: adc=121/210 filtered=134/204 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:44.974 s3 line: adc=154/193 filtered=151/199 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:45.495 s3 line: adc=153/197 filtered=143/201 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:46.014 s3 line: adc=150/202 filtered=140/202 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:46.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+16:50:46.534 s3 line: adc=129/209 filtered=128/202 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:47.055 s3 line: adc=153/203 filtered=147/206 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:47.574 s3 line: adc=156/193 filtered=143/201 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:48.094 s3 line: adc=126/196 filtered=135/196 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:48.615 s3 line: adc=141/214 filtered=136/207 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:49.134 s3 line: adc=160/192 filtered=156/199 threshold=235/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:49.655 s3 line: adc=128/188 filtered=131/190 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:50.174 s3 line: adc=149/192 filtered=143/193 threshold=239/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:50.694 s3 line: adc=137/210 filtered=137/204 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:51.215 s3 line: adc=145/193 filtered=141/192 threshold=243/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:51.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 11"
+16:50:51.335 mqtt: telemetry periods 60 sent 56 refused 0 err 0 nosnap 4 nolink 0
+16:50:51.734 s3 line: adc=146/211 filtered=141/208 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:52.254 s3 line: adc=155/202 filtered=147/200 threshold=243/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:52.775 s3 line: adc=126/203 filtered=136/202 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:53.294 s3 line: adc=130/205 filtered=129/205 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:53.814 s3 line: adc=157/205 filtered=147/205 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:54.335 s3 line: adc=132/195 filtered=132/200 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:54.854 s3 line: adc=121/210 filtered=128/204 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:55.375 s3 line: adc=126/198 filtered=135/200 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:55.894 s3 line: adc=141/189 filtered=137/194 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:56.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 12"
+16:50:56.414 s3 line: adc=121/209 filtered=127/208 threshold=239/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:56.935 s3 line: adc=148/195 filtered=147/194 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:57.454 s3 line: adc=153/205 filtered=142/204 threshold=243/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:57.975 s3 line: adc=126/209 filtered=127/204 threshold=244/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:58.494 s3 line: adc=120/191 filtered=132/196 threshold=240/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:59.014 s3 line: adc=118/186 filtered=133/193 threshold=241/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:50:59.535 s3 line: adc=154/212 filtered=143/210 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:00.054 s3 line: adc=131/204 filtered=135/202 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:00.575 s3 line: adc=146/206 filtered=140/204 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:01.094 s3 line: adc=122/185 filtered=134/194 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:01.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 13"
+16:51:01.335 mqtt: telemetry periods 70 sent 66 refused 0 err 0 nosnap 4 nolink 0
+16:51:01.615 s3 line: adc=148/202 filtered=140/202 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:02.134 s3 line: adc=126/198 filtered=130/196 threshold=241/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:02.654 s3 line: adc=128/195 filtered=130/200 threshold=239/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:03.175 s3 line: adc=129/192 filtered=129/193 threshold=236/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:03.694 s3 line: adc=124/203 filtered=131/198 threshold=237/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:04.214 s3 line: adc=128/210 filtered=126/205 threshold=238/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:04.735 s3 line: adc=134/208 filtered=139/203 threshold=236/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:05.254 s3 line: adc=124/195 filtered=131/197 threshold=234/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:05.774 s3 line: adc=142/202 filtered=142/206 threshold=235/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:06.295 s3 line: adc=123/200 filtered=127/199 threshold=236/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:06.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 14"
+16:51:06.814 s3 line: adc=154/214 filtered=150/208 threshold=238/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:07.335 s3 line: adc=154/193 filtered=146/192 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:07.854 s3 line: adc=134/209 filtered=139/203 threshold=240/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:08.374 s3 line: adc=130/196 filtered=130/201 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:08.895 s3 line: adc=134/204 filtered=130/201 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:09.414 s3 line: adc=158/202 filtered=152/201 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:09.934 s3 line: adc=144/212 filtered=142/208 threshold=239/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:10.455 s3 line: adc=150/204 filtered=146/204 threshold=237/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:10.974 s3 line: adc=154/212 filtered=143/206 threshold=239/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:11.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 15"
+16:51:11.335 mqtt: telemetry periods 80 sent 76 refused 0 err 0 nosnap 4 nolink 0
+16:51:11.495 s3 line: adc=130/207 filtered=129/206 threshold=236/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:12.014 s3 line: adc=150/213 filtered=143/210 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:12.534 s3 line: adc=121/185 filtered=136/192 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:13.055 s3 line: adc=154/207 filtered=148/201 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:13.574 s3 line: adc=125/193 filtered=130/199 threshold=240/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:14.094 s3 line: adc=134/209 filtered=141/204 threshold=237/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:14.615 s3 line: adc=134/189 filtered=141/195 threshold=236/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:15.134 s3 line: adc=129/189 filtered=131/197 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:15.654 s3 line: adc=142/200 filtered=136/202 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:16.175 s3 line: adc=157/198 filtered=150/203 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:16.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 16"
+16:51:16.694 s3 line: adc=130/187 filtered=137/197 threshold=236/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:17.215 s3 line: adc=136/204 filtered=141/204 threshold=239/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:17.734 s3 line: adc=138/201 filtered=143/197 threshold=242/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:18.254 s3 line: adc=154/192 filtered=142/196 threshold=239/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:18.775 s3 line: adc=124/194 filtered=125/197 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:19.294 s3 line: adc=139/201 filtered=139/201 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:19.814 s3 line: adc=123/209 filtered=128/202 threshold=243/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:20.335 s3 line: adc=140/190 filtered=137/198 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:20.854 s3 line: adc=123/186 filtered=134/189 threshold=243/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:21.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 17"
+16:51:21.335 mqtt: telemetry periods 90 sent 85 refused 0 err 0 nosnap 5 nolink 0
+16:51:21.375 s3 line: adc=129/210 filtered=132/209 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:21.894 s3 line: adc=130/207 filtered=136/202 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:22.414 s3 line: adc=160/198 filtered=153/194 threshold=243/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:22.935 s3 line: adc=130/200 filtered=140/199 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:23.455 s3 line: adc=123/205 filtered=126/200 threshold=240/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:23.974 s3 line: adc=133/207 filtered=139/207 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:24.495 s3 line: adc=149/203 filtered=140/203 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:25.015 s3 line: adc=157/202 filtered=142/201 threshold=241/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:25.534 s3 line: adc=118/211 filtered=126/207 threshold=237/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:26.055 s3 line: adc=134/210 filtered=140/208 threshold=238/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:26.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 18"
+16:51:26.574 s3 line: adc=147/196 filtered=143/201 threshold=239/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:27.095 s3 line: adc=155/212 filtered=144/207 threshold=238/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:27.614 s3 line: adc=146/208 filtered=138/203 threshold=239/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:28.134 s3 line: adc=158/198 filtered=146/201 threshold=236/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:28.655 s3 line: adc=152/195 filtered=150/196 threshold=239/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:29.174 s3 line: adc=136/213 filtered=141/206 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:29.695 s3 line: adc=140/213 filtered=135/208 threshold=240/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:30.215 s3 line: adc=156/195 filtered=152/197 threshold=241/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:30.734 s3 line: adc=133/186 filtered=140/189 threshold=242/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:31.255 s3 line: adc=146/211 filtered=146/205 threshold=241/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:31.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 19"
+16:51:31.335 mqtt: telemetry periods 100 sent 94 refused 0 err 0 nosnap 6 nolink 0
+16:51:31.774 s3 line: adc=158/187 filtered=149/194 threshold=239/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:32.294 s3 line: adc=153/210 filtered=148/209 threshold=238/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:32.815 s3 line: adc=122/194 filtered=127/203 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:33.335 s3 line: adc=148/205 filtered=145/206 threshold=240/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:33.854 s3 line: adc=154/216 filtered=141/207 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:34.375 s3 line: adc=156/206 filtered=156/206 threshold=240/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:34.895 s3 line: adc=157/179 filtered=153/190 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:35.414 s3 line: adc=134/206 filtered=132/203 threshold=242/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:35.935 s3 line: adc=122/205 filtered=133/205 threshold=242/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:36.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 20"
+16:51:36.454 s3 line: adc=149/189 filtered=141/196 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:36.975 s3 line: adc=144/213 filtered=141/209 threshold=241/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:37.495 s3 line: adc=121/191 filtered=128/193 threshold=240/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:38.014 s3 line: adc=123/196 filtered=130/197 threshold=242/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:38.535 s3 line: adc=145/211 filtered=144/207 threshold=241/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:38.714 s3 line: adc=240/2559 filtered=211/1965 threshold=242/704 left=WHITE right=BLACK mask=2 strength=57 command=RIGHT
+16:51:38.755 s3 line: adc=2126/3081 filtered=1507/2883 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:39.294 s3 line: adc=3968/4036 filtered=3974/4026 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:39.815 s3 line: adc=4042/4052 filtered=4036/4056 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:40.335 s3 line: adc=4045/4086 filtered=4049/4079 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:40.855 s3 line: adc=4032/4088 filtered=4043/4085 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:41.154 s3 bar: capture rejected, runs=0 threshold=584 (decoded=0 errors=1)
+16:51:41.155 s3 bar:  open run BLACK for 2500 ms
+16:51:41.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 21"
+16:51:41.335 mqtt: telemetry periods 110 sent 103 refused 0 err 0 nosnap 7 nolink 0
+16:51:41.375 s3 line: adc=4029/4073 filtered=4031/4072 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:41.895 s3 line: adc=4061/4068 filtered=4047/4074 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:42.414 s3 line: adc=4024/4074 filtered=4037/4074 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:42.935 s3 line: adc=4060/4062 filtered=4058/4066 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:43.454 s3 line: adc=4032/4076 filtered=4032/4071 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:43.975 s3 line: adc=4056/4061 filtered=4052/4068 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:44.495 s3 line: adc=4026/4064 filtered=4035/4069 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:45.014 s3 line: adc=4028/4062 filtered=4034/4067 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:45.535 s3 line: adc=4041/4062 filtered=4045/4069 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:46.055 s3 line: adc=4025/4073 filtered=4034/4073 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:46.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 22"
+16:51:46.574 s3 line: adc=4019/4062 filtered=4025/4063 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:47.095 s3 line: adc=4026/4077 filtered=4034/4073 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:47.615 s3 line: adc=4018/4063 filtered=4027/4061 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:48.134 s3 line: adc=4020/4062 filtered=4029/4063 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:48.655 s3 line: adc=4026/4055 filtered=4026/4062 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:49.175 s3 line: adc=4005/4043 filtered=4009/4045 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:49.694 s3 line: adc=4017/4038 filtered=4015/4040 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:50.215 s3 line: adc=3986/4028 filtered=3997/4029 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:50.735 s3 line: adc=3501/3636 filtered=3559/3689 threshold=242/704 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+16:51:51.275 s3 line: adc=212/274 filtered=285/330 threshold=242/704 left=BLACK right=WHITE mask=1 strength=11 command=LEFT
+16:51:51.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 23"
+16:51:51.335 mqtt: telemetry periods 120 sent 113 refused 0 err 0 nosnap 7 nolink 0
+16:51:51.335 s3 line: adc=178/216 filtered=188/229 threshold=242/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:51.875 s3 line: adc=129/168 filtered=127/178 threshold=241/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:52.395 s3 line: adc=123/174 filtered=126/175 threshold=238/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:51:52.714 s3 line: adc=1673/210 filtered=1259/212 threshold=238/699 left=BLACK right=WHITE mask=1 strength=82 command=LEFT
+16:51:53.235 s3 line: adc=1188/179 filtered=1195/182 threshold=238/696 left=BLACK right=WHITE mask=1 strength=78 command=LEFT
+16:51:53.755 s3 line: adc=1208/192 filtered=1201/187 threshold=238/693 left=BLACK right=WHITE mask=1 strength=78 command=LEFT
+16:51:54.274 s3 line: adc=1255/200 filtered=1257/196 threshold=238/691 left=BLACK right=WHITE mask=1 strength=82 command=LEFT
+16:51:54.795 s3 line: adc=1241/198 filtered=1248/191 threshold=238/688 left=BLACK right=WHITE mask=1 strength=81 command=LEFT
+16:51:55.315 s3 line: adc=1165/190 filtered=1181/185 threshold=238/687 left=BLACK right=WHITE mask=1 strength=77 command=LEFT
+16:51:55.835 s3 line: adc=1190/195 filtered=1204/190 threshold=238/688 left=BLACK right=WHITE mask=1 strength=78 command=LEFT
+16:51:56.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 24"
+16:51:56.335 s3 line: adc=1223/197 filtered=1222/193 threshold=238/688 left=BLACK right=WHITE mask=1 strength=80 command=LEFT
+16:51:56.875 s3 line: adc=1218/197 filtered=1215/185 threshold=238/688 left=BLACK right=WHITE mask=1 strength=79 command=LEFT
+16:51:57.395 s3 line: adc=1123/191 filtered=1134/185 threshold=238/687 left=BLACK right=WHITE mask=1 strength=73 command=LEFT
+16:51:57.915 s3 line: adc=1156/194 filtered=1151/191 threshold=238/684 left=BLACK right=WHITE mask=1 strength=74 command=LEFT
+16:51:58.435 s3 line: adc=1216/184 filtered=1200/184 threshold=238/684 left=BLACK right=WHITE mask=1 strength=78 command=LEFT
+16:51:58.955 s3 line: adc=1152/182 filtered=1146/187 threshold=238/683 left=BLACK right=WHITE mask=1 strength=74 command=LEFT
+16:51:59.475 s3 line: adc=1118/171 filtered=1131/173 threshold=238/682 left=BLACK right=WHITE mask=1 strength=73 command=LEFT
+16:51:59.995 s3 line: adc=1339/175 filtered=1339/177 threshold=238/681 left=BLACK right=WHITE mask=1 strength=88 command=LEFT
+16:52:00.515 s3 line: adc=1124/178 filtered=1130/177 threshold=238/679 left=BLACK right=WHITE mask=1 strength=73 command=LEFT
+16:52:01.035 s3 line: adc=1186/189 filtered=1170/182 threshold=238/680 left=BLACK right=WHITE mask=1 strength=76 command=LEFT
+16:52:01.334 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 25"
+16:52:01.335 mqtt: telemetry periods 130 sent 123 refused 0 err 0 nosnap 7 nolink 0
+16:52:01.335 s3 line: adc=125/196 filtered=148/193 threshold=238/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:01.875 s3 line: adc=137/178 filtered=137/179 threshold=237/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:02.054 s3 line: adc=1093/182 filtered=907/182 threshold=238/683 left=BLACK right=WHITE mask=1 strength=56 command=LEFT
+16:52:02.575 s3 line: adc=533/197 filtered=511/195 threshold=238/685 left=BLACK right=WHITE mask=1 strength=27 command=LEFT
+16:52:03.095 s3 line: adc=1252/194 filtered=1301/190 threshold=238/687 left=BLACK right=WHITE mask=1 strength=85 command=LEFT
+16:52:03.275 s3 line: adc=144/179 filtered=152/178 threshold=238/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:03.795 s3 line: adc=144/189 filtered=136/189 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:04.315 s3 line: adc=118/185 filtered=124/185 threshold=238/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:04.835 s3 line: adc=143/174 filtered=136/175 threshold=236/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:05.000 [capture] port lost
+16:52:09.279 [capture] connected /dev/cu.usbmodemMTK3PICO1
+16:52:09.283 
+16:52:09.283 
+16:52:09.283 microT-Kernel Version 3.00
+16:52:09.283 
+16:52:09.283 
+16:52:09.283 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+16:52:09.283 dual-core (SMP) build, usermain on core 0
+16:52:09.283 [S2] GP20 button ready: press to START or STOP
+16:52:09.283 mission image: S2/S3/S4/S5 started
+16:52:09.284 wifi: cyw43_utk_task starting (proc 1)
+16:52:09.284 wifi: cyw43_init() ...
+16:52:09.284 wifi: cyw43_init() returned, bringing interface up ...
+16:52:09.284 s4: LSM303DLHC ready; calibrating
+16:52:09.284 s3 line: place the car on the line, then press GP20 to START or STOP
+16:52:09.284 s3 line: adaptive AO left=GP26 right=GP27
+16:52:09.284 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+16:52:09.284 s3 line: adc=148/180 filtered=140/183 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:09.355 s3 line: adc=125/182 filtered=134/185 threshold=237/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:09.875 s3 line: adc=118/178 filtered=124/181 threshold=238/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:09.974 wifi: joining "Pixel_1232" ...
+16:52:10.115 s4: calibration failed, car moved (span fwd 86 left 47 up 11 mg); keep still
+16:52:10.174 wifi: link status -> joined AP, waiting for IP (1)
+16:52:10.395 s3 line: adc=133/187 filtered=129/189 threshold=237/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:10.915 s3 line: adc=137/172 filtered=144/177 threshold=238/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:11.435 s3 line: adc=129/182 filtered=132/181 threshold=241/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:11.594 s4: stationary calibration complete (50 samples in 1480 ms)
+16:52:11.955 s3 line: adc=139/193 filtered=142/192 threshold=242/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:12.475 s3 line: adc=150/184 filtered=146/187 threshold=242/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:12.995 s3 line: adc=126/187 filtered=136/188 threshold=241/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:13.515 s3 line: adc=135/194 filtered=139/189 threshold=240/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:14.035 s3 line: adc=148/171 filtered=145/176 threshold=241/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:14.555 s3 line: adc=150/192 filtered=145/189 threshold=240/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:15.075 s3 line: adc=117/194 filtered=125/190 threshold=239/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:15.595 s3 line: adc=149/180 filtered=148/184 threshold=241/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:16.115 s3 line: adc=152/189 filtered=145/189 threshold=240/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:16.635 s3 line: adc=119/195 filtered=127/192 threshold=238/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:17.155 s3 line: adc=150/178 filtered=149/185 threshold=239/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:17.675 s3 line: adc=144/173 filtered=140/175 threshold=240/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:18.195 s3 line: adc=142/189 filtered=142/187 threshold=239/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:18.715 s3 line: adc=122/195 filtered=135/192 threshold=239/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:18.854 wifi: link status -> joined AP, no IP yet (2)
+16:52:18.914 wifi: link up, ip=10.157.130.101
+16:52:19.034 wifi: power save off (0)
+16:52:19.235 s3 line: adc=143/186 filtered=141/183 threshold=240/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:19.374 mqtt: connected to 10.157.130.224
+16:52:19.414 mqtt: subscribed to p2-08/p2-08-car-01/command
+16:52:19.755 s3 line: adc=153/177 filtered=151/184 threshold=241/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:20.275 s3 line: adc=132/180 filtered=138/184 threshold=242/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:20.795 s3 line: adc=123/178 filtered=131/178 threshold=240/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:21.315 s3 line: adc=130/179 filtered=136/183 threshold=242/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:21.835 s3 line: adc=147/194 filtered=146/191 threshold=241/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:22.355 s3 line: adc=150/180 filtered=138/182 threshold=242/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:22.875 s3 line: adc=157/196 filtered=149/191 threshold=240/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:23.395 s3 line: adc=123/196 filtered=135/186 threshold=241/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:23.915 s3 line: adc=150/189 filtered=142/188 threshold=238/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:24.374 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+16:52:24.435 s3 line: adc=142/198 filtered=141/191 threshold=239/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:24.955 s3 line: adc=152/172 filtered=146/180 threshold=240/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:25.275 s3 line: adc=257/184 filtered=266/183 threshold=241/685 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+16:52:25.495 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+16:52:25.635 s3 line: adc=151/171 filtered=156/178 threshold=241/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:25.995 s3 line: adc=134/1654 filtered=126/1323 threshold=239/683 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+16:52:26.215 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+16:52:26.355 s3 line: adc=136/196 filtered=126/269 threshold=237/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:26.875 s3 line: adc=139/190 filtered=141/185 threshold=235/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:27.395 s3 line: adc=239/189 filtered=230/183 threshold=238/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:27.455 s3 line: adc=242/188 filtered=250/185 threshold=238/685 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+16:52:27.675 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+16:52:27.815 s3 line: adc=141/170 filtered=160/177 threshold=238/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:28.235 s3 line: adc=114/2013 filtered=123/1575 threshold=237/683 left=WHITE right=BLACK mask=2 strength=45 command=RIGHT
+16:52:28.455 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+16:52:28.595 s3 line: adc=125/188 filtered=124/239 threshold=235/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:29.115 s3 line: adc=146/174 filtered=143/178 threshold=234/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:29.375 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+16:52:29.375 mqtt: telemetry periods 10 sent 9 refused 0 err 0 nosnap 1 nolink 0
+16:52:29.575 s3 line: adc=262/170 filtered=249/176 threshold=237/683 left=BLACK right=WHITE mask=1 strength=8 command=LEFT
+16:52:29.795 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+16:52:29.895 s3 line: adc=170/168 filtered=180/176 threshold=237/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:30.415 s3 line: adc=138/250 filtered=136/249 threshold=234/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:30.935 s3 line: adc=104/190 filtered=112/185 threshold=235/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:31.455 s3 line: adc=198/190 filtered=178/190 threshold=233/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:31.555 s3 line: adc=511/169 filtered=417/179 threshold=233/685 left=BLACK right=WHITE mask=1 strength=21 command=LEFT
+16:52:31.775 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+16:52:32.075 s3 line: adc=323/181 filtered=378/178 threshold=233/681 left=BLACK right=WHITE mask=1 strength=18 command=LEFT
+16:52:32.235 s3 line: adc=131/180 filtered=150/180 threshold=233/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:32.755 s3 line: adc=114/176 filtered=123/179 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:33.035 s3 line: adc=511/182 filtered=415/179 threshold=232/681 left=BLACK right=WHITE mask=1 strength=21 command=LEFT
+16:52:33.255 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+16:52:33.555 s3 line: adc=1104/190 filtered=1111/190 threshold=232/684 left=BLACK right=WHITE mask=1 strength=72 command=LEFT
+16:52:34.055 s3 line: adc=163/171 filtered=174/180 threshold=232/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+16:52:34.374 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+16:52:34.615 s3 line: adc=664/188 filtered=476/180 threshold=231/682 left=BLACK right=WHITE mask=1 strength=25 command=LEFT
+16:52:34.835 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+16:52:35.135 s3 line: adc=1107/181 filtered=1125/181 threshold=231/681 left=BLACK right=WHITE mask=1 strength=73 command=LEFT
+16:52:35.655 s3 line: adc=1164/177 filtered=1157/180 threshold=231/680 left=BLACK right=WHITE mask=1 strength=75 command=LEFT
+16:52:36.175 s3 line: adc=1165/187 filtered=1157/184 threshold=231/681 left=BLACK right=WHITE mask=1 strength=75 command=LEFT
+16:52:36.695 s3 line: adc=1109/157 filtered=1131/167 threshold=231/681 left=BLACK right=WHITE mask=1 strength=73 command=LEFT
+16:52:37.215 s3 line: adc=1182/190 filtered=1171/182 threshold=231/680 left=BLACK right=WHITE mask=1 strength=76 command=LEFT
+16:52:37.000 [capture] port lost
+17:08:53.089 [capture] connected /dev/cu.usbmodemMTK3PICO1
+17:08:53.095 
+17:08:53.096 
+17:08:53.096 microT-Kernel Version 3.00
+17:08:53.096 
+17:08:53.096 
+17:08:53.096 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+17:08:53.096 dual-core (SMP) build, usermain on core 0
+17:08:53.097 [S2] GP20 button ready: press to START or STOP
+17:08:53.097 mission image: S2/S3/S4/S5 started
+17:08:53.097 wifi: cyw43_utk_task starting (proc 1)
+17:08:53.097 wifi: cyw43_init() ...
+17:08:53.097 wifi: cyw43_init() returned, bringing interface up ...
+17:08:53.097 s4: LSM303DLHC ready; calibrating
+17:08:53.097 s3 line: place the car on the line, then press GP20 to START or STOP
+17:08:53.098 s3 line: adaptive AO left=GP26 right=GP27
+17:08:53.098 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+17:08:53.098 s3 line: adc=140/188 filtered=134/181 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:53.495 s3 line: adc=116/177 filtered=121/180 threshold=233/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:54.015 s3 line: adc=130/180 filtered=133/181 threshold=230/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:54.074 wifi: joining "Pixel_1232" ...
+17:08:54.214 s4: stationary calibration complete (50 samples in 1400 ms)
+17:08:54.274 wifi: link status -> joined AP, waiting for IP (1)
+17:08:54.535 s3 line: adc=105/179 filtered=118/180 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:55.055 s3 line: adc=139/172 filtered=134/177 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:55.575 s3 line: adc=140/190 filtered=136/185 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:56.095 s3 line: adc=107/190 filtered=120/190 threshold=230/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:56.614 s3 line: adc=138/184 filtered=123/183 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:57.135 s3 line: adc=122/172 filtered=128/172 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:57.214 wifi: link status -> joined AP, no IP yet (2)
+17:08:57.454 wifi: link up, ip=10.157.130.101
+17:08:57.574 wifi: power save off (0)
+17:08:57.655 s3 line: adc=124/171 filtered=127/174 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:57.974 mqtt: connected to 10.157.130.224
+17:08:58.054 mqtt: subscribed to p2-08/p2-08-car-01/command
+17:08:58.174 s3 line: adc=113/173 filtered=116/179 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:58.695 s3 line: adc=116/187 filtered=116/185 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:59.215 s3 line: adc=110/186 filtered=120/185 threshold=226/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:08:59.734 s3 line: adc=132/190 filtered=132/189 threshold=227/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:00.255 s3 line: adc=106/181 filtered=114/179 threshold=226/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:00.775 s3 line: adc=137/185 filtered=126/179 threshold=224/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:01.295 s3 line: adc=107/188 filtered=117/185 threshold=223/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:01.815 s3 line: adc=105/180 filtered=113/181 threshold=222/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:02.335 s3 line: adc=130/184 filtered=121/184 threshold=223/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:02.854 s3 line: adc=130/189 filtered=127/189 threshold=224/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:02.974 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+17:09:03.375 s3 line: adc=112/173 filtered=120/177 threshold=225/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:03.895 s3 line: adc=134/175 filtered=124/173 threshold=224/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:04.415 s3 line: adc=105/188 filtered=119/182 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:04.935 s3 line: adc=116/173 filtered=123/181 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:05.455 s3 line: adc=140/182 filtered=133/178 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:05.975 s3 line: adc=137/172 filtered=134/180 threshold=227/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:06.495 s3 line: adc=118/171 filtered=116/175 threshold=226/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:07.015 s3 line: adc=118/175 filtered=118/177 threshold=224/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:07.535 s3 line: adc=108/172 filtered=120/177 threshold=225/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:07.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+17:09:07.975 mqtt: telemetry periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0
+17:09:08.055 s3 line: adc=109/190 filtered=116/182 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:08.575 s3 line: adc=115/185 filtered=118/181 threshold=226/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:09.095 s3 line: adc=141/191 filtered=126/189 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:09.615 s3 line: adc=123/191 filtered=118/190 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:10.135 s3 line: adc=110/173 filtered=114/176 threshold=224/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:10.655 s3 line: adc=137/170 filtered=127/175 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:11.175 s3 line: adc=129/171 filtered=128/175 threshold=226/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:11.695 s3 line: adc=141/179 filtered=136/181 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:12.215 s3 line: adc=122/180 filtered=122/180 threshold=226/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:12.735 s3 line: adc=144/189 filtered=132/184 threshold=227/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:12.974 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+17:09:13.255 s3 line: adc=131/190 filtered=123/187 threshold=228/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:13.775 s3 line: adc=109/172 filtered=115/178 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:14.295 s3 line: adc=144/173 filtered=140/178 threshold=227/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:14.815 s3 line: adc=144/189 filtered=131/187 threshold=226/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:15.335 s3 line: adc=113/190 filtered=113/188 threshold=226/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:15.855 s3 line: adc=137/173 filtered=129/175 threshold=223/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:16.375 s3 line: adc=115/182 filtered=128/178 threshold=224/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:16.895 s3 line: adc=138/170 filtered=130/174 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:17.415 s3 line: adc=112/177 filtered=118/179 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:17.935 s3 line: adc=109/192 filtered=114/186 threshold=226/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:17.974 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+17:09:17.975 mqtt: telemetry periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0
+17:09:18.455 s3 line: adc=125/189 filtered=130/182 threshold=228/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:18.975 s3 line: adc=133/180 filtered=131/181 threshold=229/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:19.495 s3 line: adc=126/189 filtered=127/185 threshold=228/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:20.015 s3 line: adc=107/192 filtered=123/181 threshold=229/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:20.535 s3 line: adc=122/169 filtered=125/173 threshold=228/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:21.055 s3 line: adc=139/182 filtered=131/180 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:21.575 s3 line: adc=141/171 filtered=139/179 threshold=227/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:22.095 s3 line: adc=109/178 filtered=117/176 threshold=224/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:22.615 s3 line: adc=109/189 filtered=118/184 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:22.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+17:09:23.135 s3 line: adc=110/174 filtered=113/174 threshold=224/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:23.655 s3 line: adc=106/184 filtered=111/184 threshold=224/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:24.175 s3 line: adc=125/173 filtered=125/178 threshold=223/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:24.695 s3 line: adc=136/157 filtered=132/168 threshold=224/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:25.215 s3 line: adc=117/184 filtered=124/185 threshold=223/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:25.735 s3 line: adc=142/189 filtered=131/181 threshold=221/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:26.255 s3 line: adc=122/172 filtered=125/174 threshold=224/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:26.775 s3 line: adc=129/171 filtered=127/178 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:27.295 s3 line: adc=113/183 filtered=118/180 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:27.815 s3 line: adc=108/177 filtered=115/180 threshold=228/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:27.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+17:09:27.975 mqtt: telemetry periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0
+17:09:28.335 s3 line: adc=114/188 filtered=122/188 threshold=229/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:28.855 s3 line: adc=128/180 filtered=129/177 threshold=228/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:29.375 s3 line: adc=145/176 filtered=141/181 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:29.895 s3 line: adc=108/173 filtered=112/175 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:30.415 s3 line: adc=131/182 filtered=130/185 threshold=228/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:30.935 s3 line: adc=107/191 filtered=113/186 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:31.455 s3 line: adc=136/180 filtered=123/184 threshold=226/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:31.975 s3 line: adc=110/191 filtered=124/181 threshold=228/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:32.495 s3 line: adc=145/184 filtered=134/176 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:32.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+17:09:33.015 s3 line: adc=133/165 filtered=127/170 threshold=228/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:33.535 s3 line: adc=139/189 filtered=126/183 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:34.055 s3 line: adc=106/171 filtered=114/178 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:34.575 s3 line: adc=112/175 filtered=116/178 threshold=226/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:35.095 s3 line: adc=146/166 filtered=134/170 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:35.615 s3 line: adc=131/176 filtered=128/174 threshold=222/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:36.135 s3 line: adc=139/176 filtered=133/179 threshold=224/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:36.655 s3 line: adc=106/182 filtered=116/182 threshold=223/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:37.175 s3 line: adc=134/171 filtered=133/178 threshold=222/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:37.695 s3 line: adc=111/181 filtered=117/183 threshold=223/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:37.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+17:09:37.975 mqtt: telemetry periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0
+17:09:38.215 s3 line: adc=141/179 filtered=129/184 threshold=223/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:38.735 s3 line: adc=109/173 filtered=120/176 threshold=224/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:39.255 s3 line: adc=132/169 filtered=124/174 threshold=223/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:39.775 s3 line: adc=132/177 filtered=123/179 threshold=222/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:40.295 s3 line: adc=140/181 filtered=136/180 threshold=224/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:40.815 s3 line: adc=114/191 filtered=124/187 threshold=224/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:41.335 s3 line: adc=112/173 filtered=120/179 threshold=225/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:41.855 s3 line: adc=107/177 filtered=110/180 threshold=224/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:42.375 s3 line: adc=137/180 filtered=127/181 threshold=224/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:42.895 s3 line: adc=124/188 filtered=128/186 threshold=223/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:42.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+17:09:43.415 s3 line: adc=138/190 filtered=132/188 threshold=224/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:43.935 s3 line: adc=136/176 filtered=132/176 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:44.455 s3 line: adc=112/182 filtered=119/180 threshold=226/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:44.975 s3 line: adc=142/189 filtered=137/182 threshold=229/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:45.495 s3 line: adc=139/171 filtered=133/171 threshold=228/676 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:46.015 s3 line: adc=106/192 filtered=113/189 threshold=225/673 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:46.535 s3 line: adc=134/174 filtered=132/174 threshold=223/675 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:47.055 s3 line: adc=117/173 filtered=117/178 threshold=223/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:47.575 s3 line: adc=142/182 filtered=136/179 threshold=224/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:47.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+17:09:47.975 mqtt: telemetry periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0
+17:09:48.095 s3 line: adc=116/173 filtered=122/172 threshold=226/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:48.615 s3 line: adc=134/178 filtered=126/179 threshold=226/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:49.135 s3 line: adc=134/169 filtered=134/173 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:49.655 s3 line: adc=134/182 filtered=134/182 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:50.175 s3 line: adc=117/181 filtered=125/181 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:50.695 s3 line: adc=135/170 filtered=130/175 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:51.215 s3 line: adc=111/172 filtered=111/176 threshold=228/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:51.735 s3 line: adc=145/163 filtered=139/174 threshold=225/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:52.255 s3 line: adc=117/190 filtered=118/186 threshold=226/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:52.775 s3 line: adc=131/169 filtered=130/170 threshold=226/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:52.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+17:09:53.295 s3 line: adc=122/189 filtered=126/187 threshold=225/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:53.815 s3 line: adc=114/182 filtered=122/181 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:54.335 s3 line: adc=117/189 filtered=121/187 threshold=225/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:54.855 s3 line: adc=122/182 filtered=121/182 threshold=223/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:55.375 s3 line: adc=138/182 filtered=135/182 threshold=226/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:55.895 s3 line: adc=144/180 filtered=131/178 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:56.415 s3 line: adc=126/187 filtered=121/187 threshold=226/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:56.935 s3 line: adc=141/193 filtered=138/187 threshold=226/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:57.455 s3 line: adc=126/190 filtered=132/188 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:57.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 11"
+17:09:57.975 mqtt: telemetry periods 60 sent 60 refused 0 err 0 nosnap 0 nolink 0
+17:09:57.976 s3 line: adc=123/188 filtered=122/188 threshold=230/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:58.495 s3 line: adc=110/172 filtered=120/173 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:59.015 s3 line: adc=119/173 filtered=119/180 threshold=227/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:09:59.535 s3 line: adc=136/185 filtered=135/182 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:00.055 s3 line: adc=136/187 filtered=130/180 threshold=228/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:00.575 s3 line: adc=110/173 filtered=113/181 threshold=227/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:01.095 s3 line: adc=138/188 filtered=135/185 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:01.615 s3 line: adc=139/182 filtered=131/177 threshold=224/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:02.135 s3 line: adc=109/176 filtered=116/182 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:02.655 s3 line: adc=130/178 filtered=125/181 threshold=226/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:02.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 12"
+17:10:03.175 s3 line: adc=138/188 filtered=134/188 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:03.695 s3 line: adc=134/190 filtered=129/182 threshold=226/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:04.215 s3 line: adc=120/171 filtered=127/175 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:04.735 s3 line: adc=129/164 filtered=131/171 threshold=222/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:05.255 s3 line: adc=109/179 filtered=114/180 threshold=220/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:05.775 s3 line: adc=112/185 filtered=124/181 threshold=222/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:06.295 s3 line: adc=112/190 filtered=114/187 threshold=223/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:06.815 s3 line: adc=118/184 filtered=121/182 threshold=224/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:07.335 s3 line: adc=128/190 filtered=132/187 threshold=226/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:07.855 s3 line: adc=138/173 filtered=136/177 threshold=227/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:07.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 13"
+17:10:07.975 mqtt: telemetry periods 70 sent 70 refused 0 err 0 nosnap 0 nolink 0
+17:10:08.375 s3 line: adc=118/169 filtered=126/175 threshold=229/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:08.895 s3 line: adc=113/193 filtered=116/185 threshold=228/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:09.415 s3 line: adc=131/190 filtered=132/184 threshold=226/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:09.935 s3 line: adc=114/193 filtered=112/185 threshold=223/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:10.455 s3 line: adc=139/175 filtered=129/173 threshold=224/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:10.975 s3 line: adc=136/194 filtered=125/191 threshold=223/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:11.495 s3 line: adc=121/174 filtered=125/177 threshold=226/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:12.015 s3 line: adc=136/179 filtered=125/179 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:12.535 s3 line: adc=134/176 filtered=133/178 threshold=227/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:12.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 14"
+17:10:13.055 s3 line: adc=129/181 filtered=127/183 threshold=224/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:13.575 s3 line: adc=124/185 filtered=124/186 threshold=223/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:14.095 s3 line: adc=139/163 filtered=133/168 threshold=221/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:14.615 s3 line: adc=106/165 filtered=113/172 threshold=222/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:15.135 s3 line: adc=114/192 filtered=115/183 threshold=225/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:15.655 s3 line: adc=146/192 filtered=130/188 threshold=223/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:16.175 s3 line: adc=129/174 filtered=130/178 threshold=225/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:16.695 s3 line: adc=113/183 filtered=120/182 threshold=224/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:17.215 s3 line: adc=118/177 filtered=116/175 threshold=221/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:17.735 s3 line: adc=138/190 filtered=131/190 threshold=223/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:17.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 15"
+17:10:17.976 mqtt: telemetry periods 80 sent 80 refused 0 err 0 nosnap 0 nolink 0
+17:10:18.255 s3 line: adc=131/163 filtered=126/170 threshold=222/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:18.775 s3 line: adc=144/174 filtered=140/176 threshold=223/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:19.295 s3 line: adc=138/193 filtered=127/187 threshold=222/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:19.815 s3 line: adc=131/181 filtered=128/179 threshold=224/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:20.335 s3 line: adc=121/187 filtered=127/187 threshold=224/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:20.855 s3 line: adc=115/177 filtered=124/181 threshold=225/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:21.375 s3 line: adc=131/180 filtered=126/180 threshold=224/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:21.895 s3 line: adc=118/202 filtered=128/198 threshold=226/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:22.415 s3 line: adc=126/174 filtered=126/185 threshold=225/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:22.935 s3 line: adc=137/205 filtered=126/197 threshold=222/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:22.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 16"
+17:10:23.455 s3 line: adc=115/208 filtered=116/211 threshold=225/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:23.976 s3 line: adc=139/228 filtered=135/230 threshold=225/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:24.496 s3 line: adc=124/403 filtered=121/354 threshold=224/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:24.616 s3 line: adc=122/1123 filtered=122/1000 threshold=223/699 left=WHITE right=BLACK mask=2 strength=26 command=RIGHT
+17:10:24.835 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:10:24.895 s3 line: adc=111/221 filtered=114/301 threshold=224/699 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:25.416 s3 line: adc=135/161 filtered=128/170 threshold=222/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:25.936 s3 line: adc=123/170 filtered=133/175 threshold=225/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:26.456 s3 line: adc=140/182 filtered=133/186 threshold=228/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:27.016 s3 line: adc=339/192 filtered=295/192 threshold=231/689 left=BLACK right=WHITE mask=1 strength=12 command=LEFT
+17:10:27.235 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:10:27.556 s3 line: adc=1025/171 filtered=875/175 threshold=231/687 left=BLACK right=WHITE mask=1 strength=54 command=LEFT
+17:10:27.876 s3 line: adc=175/224 filtered=164/207 threshold=231/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:27.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 17"
+17:10:27.976 mqtt: telemetry periods 90 sent 90 refused 0 err 0 nosnap 0 nolink 0
+17:10:27.996 s3 line: adc=2151/2908 filtered=1558/2627 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:27.996 [S2] line: BOTH BLACK; confirming junction
+17:10:28.115 [S2] line: junction confirmed; crossing straight
+17:10:28.516 s3 line: adc=3998/4016 filtered=3991/4011 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:29.036 s3 line: adc=3994/4038 filtered=4000/4037 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:29.556 s3 line: adc=4020/4017 filtered=4016/4024 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:29.615 [S2] line: junction/recovery bound exceeded; STOP
+17:10:30.075 s3 line: adc=4002/4027 filtered=4004/4030 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:30.375 s3 bar: capture rejected, runs=0 threshold=584 (decoded=0 errors=1)
+17:10:30.376 s3 bar:  open run BLACK for 2519 ms
+17:10:30.595 s3 line: adc=3995/4042 filtered=4003/4034 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:31.115 s3 line: adc=4001/4030 filtered=3997/4028 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:31.635 s3 line: adc=3867/3913 filtered=3868/3918 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:32.156 s3 line: adc=2099/3332 filtered=2245/3368 threshold=231/687 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:10:32.355 s3 line: adc=158/1938 filtered=167/1915 threshold=231/687 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+17:10:32.575 s3 line: adc=163/225 filtered=158/295 threshold=232/687 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:32.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 18"
+17:10:33.095 s3 line: adc=133/218 filtered=125/215 threshold=233/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:33.615 s3 line: adc=124/202 filtered=120/201 threshold=230/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:34.135 s3 line: adc=107/213 filtered=116/213 threshold=227/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:34.655 s3 line: adc=128/198 filtered=132/201 threshold=228/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:35.175 s3 line: adc=142/218 filtered=128/214 threshold=228/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:35.696 s3 line: adc=110/207 filtered=117/210 threshold=229/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:36.216 s3 line: adc=113/212 filtered=118/210 threshold=228/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:36.735 s3 line: adc=140/220 filtered=132/215 threshold=225/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:37.255 s3 line: adc=109/218 filtered=117/212 threshold=222/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:37.775 s3 line: adc=108/222 filtered=111/215 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:37.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 19"
+17:10:37.976 mqtt: telemetry periods 100 sent 100 refused 0 err 0 nosnap 0 nolink 0
+17:10:38.295 s3 line: adc=142/204 filtered=139/203 threshold=224/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:38.815 s3 line: adc=123/221 filtered=126/217 threshold=227/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:39.335 s3 line: adc=110/221 filtered=114/214 threshold=225/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:39.856 s3 line: adc=120/198 filtered=124/202 threshold=226/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:40.375 s3 line: adc=138/206 filtered=128/210 threshold=224/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:40.895 s3 line: adc=131/216 filtered=127/208 threshold=223/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:41.416 s3 line: adc=118/197 filtered=117/207 threshold=221/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:41.935 s3 line: adc=131/214 filtered=123/213 threshold=221/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:42.456 s3 line: adc=140/212 filtered=133/212 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:42.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 20"
+17:10:42.976 s3 line: adc=137/219 filtered=133/217 threshold=221/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:43.496 s3 line: adc=117/206 filtered=121/205 threshold=221/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:44.015 s3 line: adc=130/219 filtered=130/212 threshold=222/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:44.536 s3 line: adc=136/219 filtered=131/216 threshold=221/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:45.056 s3 line: adc=109/202 filtered=120/209 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:45.576 s3 line: adc=134/214 filtered=126/212 threshold=223/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:46.095 s3 line: adc=125/197 filtered=126/207 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:46.615 s3 line: adc=107/216 filtered=110/215 threshold=225/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:47.136 s3 line: adc=140/212 filtered=137/212 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:47.656 s3 line: adc=111/219 filtered=126/217 threshold=226/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:47.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 21"
+17:10:47.976 mqtt: telemetry periods 110 sent 110 refused 0 err 0 nosnap 0 nolink 0
+17:10:48.175 s3 line: adc=134/213 filtered=130/210 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:48.695 s3 line: adc=140/211 filtered=139/209 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:49.216 s3 line: adc=123/217 filtered=126/210 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:49.736 s3 line: adc=106/219 filtered=115/213 threshold=222/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:50.256 s3 line: adc=133/219 filtered=131/214 threshold=223/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:50.776 s3 line: adc=118/196 filtered=115/204 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:51.296 s3 line: adc=110/206 filtered=121/211 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:51.816 s3 line: adc=141/204 filtered=127/209 threshold=225/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:52.336 s3 line: adc=114/202 filtered=126/206 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:52.856 s3 line: adc=137/203 filtered=133/207 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:52.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 22"
+17:10:53.376 s3 line: adc=111/211 filtered=117/207 threshold=226/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:53.896 s3 line: adc=122/203 filtered=120/204 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:54.416 s3 line: adc=139/206 filtered=130/206 threshold=227/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:54.936 s3 line: adc=134/219 filtered=124/217 threshold=226/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:55.455 s3 line: adc=115/204 filtered=116/206 threshold=227/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:55.976 s3 line: adc=142/213 filtered=130/212 threshold=227/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:56.496 s3 line: adc=122/203 filtered=126/204 threshold=226/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:57.016 s3 line: adc=111/216 filtered=115/216 threshold=223/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:57.536 s3 line: adc=117/216 filtered=120/211 threshold=220/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:57.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 23"
+17:10:57.976 mqtt: telemetry periods 120 sent 120 refused 0 err 0 nosnap 0 nolink 0
+17:10:58.056 s3 line: adc=104/210 filtered=113/206 threshold=222/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:58.575 s3 line: adc=116/222 filtered=115/221 threshold=221/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:59.096 s3 line: adc=133/221 filtered=130/219 threshold=221/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:10:59.616 s3 line: adc=122/218 filtered=124/211 threshold=220/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:00.136 s3 line: adc=125/220 filtered=123/213 threshold=222/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:00.656 s3 line: adc=138/202 filtered=133/210 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:01.176 s3 line: adc=113/214 filtered=122/212 threshold=222/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:01.696 s3 line: adc=132/220 filtered=124/212 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:02.216 s3 line: adc=121/220 filtered=123/212 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:02.736 s3 line: adc=112/200 filtered=119/207 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:02.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 24"
+17:11:03.256 s3 line: adc=114/221 filtered=125/217 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:03.776 s3 line: adc=137/222 filtered=131/217 threshold=229/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:04.296 s3 line: adc=104/214 filtered=118/214 threshold=227/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:04.816 s3 line: adc=121/210 filtered=121/214 threshold=227/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:05.336 s3 line: adc=121/204 filtered=115/206 threshold=224/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:05.855 s3 line: adc=138/218 filtered=131/214 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:06.376 s3 line: adc=134/214 filtered=127/211 threshold=225/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:06.896 s3 line: adc=111/212 filtered=122/207 threshold=226/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:07.416 s3 line: adc=125/202 filtered=124/209 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:07.936 s3 line: adc=139/204 filtered=128/204 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:07.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 25"
+17:11:07.976 mqtt: telemetry periods 130 sent 130 refused 0 err 0 nosnap 0 nolink 0
+17:11:08.456 s3 line: adc=132/197 filtered=132/204 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:08.976 s3 line: adc=106/220 filtered=120/213 threshold=225/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:09.496 s3 line: adc=108/211 filtered=110/211 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:10.016 s3 line: adc=109/212 filtered=113/212 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:10.536 s3 line: adc=130/200 filtered=123/207 threshold=223/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:11.056 s3 line: adc=107/219 filtered=122/213 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:11.576 s3 line: adc=143/212 filtered=133/209 threshold=225/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:12.096 s3 line: adc=125/216 filtered=128/213 threshold=226/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:12.616 s3 line: adc=108/204 filtered=116/208 threshold=224/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:12.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 26"
+17:11:13.136 s3 line: adc=136/210 filtered=130/210 threshold=227/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:13.656 s3 line: adc=138/214 filtered=124/213 threshold=228/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:14.176 s3 line: adc=115/205 filtered=119/205 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:14.696 s3 line: adc=107/194 filtered=120/202 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:15.216 s3 line: adc=144/204 filtered=133/209 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:15.736 s3 line: adc=115/206 filtered=125/211 threshold=222/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:16.256 s3 line: adc=116/200 filtered=115/204 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:16.776 s3 line: adc=105/218 filtered=108/217 threshold=221/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:17.296 s3 line: adc=137/219 filtered=123/213 threshold=220/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:17.816 s3 line: adc=140/200 filtered=127/205 threshold=223/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:17.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 27"
+17:11:17.976 mqtt: telemetry periods 140 sent 140 refused 0 err 0 nosnap 0 nolink 0
+17:11:18.336 s3 line: adc=117/209 filtered=115/209 threshold=222/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:18.856 s3 line: adc=130/203 filtered=130/206 threshold=222/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:19.376 s3 line: adc=110/207 filtered=116/212 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:19.896 s3 line: adc=136/203 filtered=137/204 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:20.416 s3 line: adc=138/216 filtered=128/215 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:20.936 s3 line: adc=106/217 filtered=108/217 threshold=225/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:21.456 s3 line: adc=128/215 filtered=129/211 threshold=226/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:21.976 s3 line: adc=105/200 filtered=115/205 threshold=227/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:22.496 s3 line: adc=107/213 filtered=115/212 threshold=224/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:22.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 28"
+17:11:23.016 s3 line: adc=141/217 filtered=135/217 threshold=224/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:23.536 s3 line: adc=114/218 filtered=114/213 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:24.056 s3 line: adc=134/222 filtered=132/214 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:24.576 s3 line: adc=131/222 filtered=130/220 threshold=221/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:25.096 s3 line: adc=118/209 filtered=121/214 threshold=221/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:25.616 s3 line: adc=143/213 filtered=133/212 threshold=222/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:26.136 s3 line: adc=137/219 filtered=129/213 threshold=219/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:26.656 s3 line: adc=126/203 filtered=128/206 threshold=220/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:27.176 s3 line: adc=126/205 filtered=126/206 threshold=224/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:27.696 s3 line: adc=136/200 filtered=127/203 threshold=225/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:27.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 29"
+17:11:27.976 mqtt: telemetry periods 150 sent 150 refused 0 err 0 nosnap 0 nolink 0
+17:11:28.216 s3 line: adc=110/218 filtered=114/219 threshold=225/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:28.736 s3 line: adc=130/220 filtered=124/216 threshold=224/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:29.256 s3 line: adc=133/214 filtered=129/213 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:29.776 s3 line: adc=105/219 filtered=115/213 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:30.296 s3 line: adc=145/205 filtered=134/205 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:30.816 s3 line: adc=128/216 filtered=128/211 threshold=224/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:31.336 s3 line: adc=137/213 filtered=130/214 threshold=224/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:31.856 s3 line: adc=112/210 filtered=118/212 threshold=223/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:32.376 s3 line: adc=138/216 filtered=130/217 threshold=224/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:32.896 s3 line: adc=130/218 filtered=129/218 threshold=225/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:32.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 30"
+17:11:33.416 s3 line: adc=134/219 filtered=132/218 threshold=229/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:33.936 s3 line: adc=137/206 filtered=128/207 threshold=228/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:34.456 s3 line: adc=122/221 filtered=114/217 threshold=227/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:34.976 s3 line: adc=128/212 filtered=127/210 threshold=226/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:35.496 s3 line: adc=132/219 filtered=127/218 threshold=226/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:36.016 s3 line: adc=113/198 filtered=121/207 threshold=225/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:36.536 s3 line: adc=106/212 filtered=112/209 threshold=224/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:37.056 s3 line: adc=121/209 filtered=119/210 threshold=223/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:37.576 s3 line: adc=138/205 filtered=127/209 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:37.975 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 31"
+17:11:37.976 mqtt: telemetry periods 160 sent 160 refused 0 err 0 nosnap 0 nolink 0
+17:11:38.096 s3 line: adc=119/202 filtered=123/202 threshold=222/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:38.616 s3 line: adc=142/214 filtered=128/209 threshold=225/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:39.136 s3 line: adc=138/198 filtered=130/201 threshold=227/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:39.656 s3 line: adc=138/218 filtered=130/215 threshold=229/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:40.176 s3 line: adc=110/219 filtered=112/213 threshold=226/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:40.696 s3 line: adc=107/218 filtered=112/216 threshold=223/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:41.216 s3 line: adc=112/205 filtered=123/205 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:41.736 s3 line: adc=115/218 filtered=124/218 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:42.256 s3 line: adc=136/216 filtered=125/207 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:42.776 s3 line: adc=113/217 filtered=122/211 threshold=224/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:42.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 32"
+17:11:43.296 s3 line: adc=109/211 filtered=120/208 threshold=226/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:43.816 s3 line: adc=116/221 filtered=117/215 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:44.336 s3 line: adc=124/193 filtered=130/201 threshold=229/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:44.856 s3 line: adc=115/216 filtered=124/214 threshold=232/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:45.376 s3 line: adc=128/198 filtered=132/204 threshold=231/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:45.896 s3 line: adc=136/203 filtered=130/209 threshold=230/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:46.416 s3 line: adc=112/205 filtered=114/205 threshold=227/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:46.936 s3 line: adc=140/218 filtered=132/211 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:47.456 s3 line: adc=114/224 filtered=120/220 threshold=227/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:47.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 33"
+17:11:47.976 mqtt: telemetry periods 170 sent 170 refused 0 err 0 nosnap 0 nolink 0
+17:11:47.977 s3 line: adc=115/221 filtered=116/220 threshold=225/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:48.496 s3 line: adc=137/221 filtered=126/212 threshold=224/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:49.016 s3 line: adc=105/204 filtered=111/210 threshold=225/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:49.536 s3 line: adc=138/201 filtered=133/203 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:50.056 s3 line: adc=137/200 filtered=126/206 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:50.576 s3 line: adc=122/211 filtered=117/211 threshold=223/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:51.096 s3 line: adc=121/205 filtered=123/206 threshold=221/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:51.616 s3 line: adc=117/219 filtered=124/216 threshold=222/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:52.136 s3 line: adc=117/216 filtered=122/212 threshold=222/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:52.656 s3 line: adc=120/219 filtered=122/215 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:52.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 34"
+17:11:53.176 s3 line: adc=134/203 filtered=135/204 threshold=224/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:53.696 s3 line: adc=115/211 filtered=124/207 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:54.216 s3 line: adc=130/211 filtered=129/209 threshold=225/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:54.736 s3 line: adc=116/220 filtered=120/217 threshold=226/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:55.256 s3 line: adc=139/198 filtered=128/206 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:55.776 s3 line: adc=137/197 filtered=126/201 threshold=222/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:56.296 s3 line: adc=114/206 filtered=119/206 threshold=222/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:56.816 s3 line: adc=138/219 filtered=135/218 threshold=222/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:57.336 s3 line: adc=108/221 filtered=110/213 threshold=225/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:57.856 s3 line: adc=137/200 filtered=131/203 threshold=224/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:57.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 35"
+17:11:57.976 mqtt: telemetry periods 180 sent 180 refused 0 err 0 nosnap 0 nolink 0
+17:11:58.376 s3 line: adc=131/217 filtered=133/211 threshold=226/712 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:58.896 s3 line: adc=138/203 filtered=127/208 threshold=226/714 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:59.416 s3 line: adc=128/207 filtered=123/210 threshold=225/713 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:11:59.936 s3 line: adc=106/216 filtered=111/214 threshold=222/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:00.456 s3 line: adc=105/214 filtered=116/211 threshold=224/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:00.976 s3 line: adc=137/216 filtered=129/214 threshold=225/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:01.496 s3 line: adc=113/204 filtered=113/210 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:02.016 s3 line: adc=138/211 filtered=125/208 threshold=225/711 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:02.536 s3 line: adc=131/220 filtered=128/212 threshold=223/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:02.976 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 36"
+17:12:03.056 s3 line: adc=129/216 filtered=124/212 threshold=226/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:03.576 s3 line: adc=141/198 filtered=131/202 threshold=225/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:04.096 s3 line: adc=109/213 filtered=123/214 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:04.616 s3 line: adc=139/211 filtered=130/210 threshold=227/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:05.136 s3 line: adc=106/200 filtered=111/206 threshold=226/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:05.656 s3 line: adc=105/200 filtered=119/203 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:06.176 s3 line: adc=137/212 filtered=128/212 threshold=224/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:06.696 s3 line: adc=124/218 filtered=128/212 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:07.216 s3 line: adc=142/204 filtered=131/206 threshold=225/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:07.736 s3 line: adc=125/196 filtered=124/202 threshold=226/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:07.982 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 37"
+17:12:07.982 mqtt: telemetry periods 190 sent 190 refused 0 err 0 nosnap 0 nolink 0
+17:12:08.256 s3 line: adc=125/214 filtered=119/212 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:08.776 s3 line: adc=118/217 filtered=120/209 threshold=223/709 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:09.296 s3 line: adc=112/216 filtered=118/211 threshold=224/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:09.816 s3 line: adc=128/206 filtered=122/208 threshold=225/710 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:10.000 [capture] port lost
+17:12:35.005 [capture] connected /dev/cu.usbmodemMTK3PICO1
+17:12:35.009 
+17:12:35.009 
+17:12:35.009 microT-Kernel Version 3.00
+17:12:35.009 
+17:12:35.009 
+17:12:35.009 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+17:12:35.009 single-core build
+17:12:35.009 mission image: S2/S3/S4/S5 started
+17:12:35.009 wifi: cyw43_utk_task starting (proc 1)
+17:12:35.009 wifi: cyw43_init() ...
+17:12:35.009 wifi: cyw43_init() returned, bringing interface up ...
+17:12:35.009 [S2] GP20 button ready: press to START or STOP
+17:12:35.009 s4: LSM303DLHC ready; calibrating
+17:12:35.009 s3 line: place the car on the line, then press GP20 to START or STOP
+17:12:35.009 s3 line: adaptive AO left=GP26 right=GP27
+17:12:35.009 s3 bar: side AO=GP28, Code 39 A-Z; a mapped letter commands the next junction
+17:12:35.010 s3 line: adc=123/196 filtered=121/199 threshold=236/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:35.126 s4: terrain fault 3; sensor restart
+17:12:35.227 s3 line: adc=130/206 filtered=127/203 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:35.746 s3 line: adc=140/197 filtered=127/201 threshold=230/686 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:35.866 wifi: joining "Pixel_1232" ...
+17:12:36.106 wifi: link status -> joined AP, waiting for IP (1)
+17:12:36.186 s4: LSM303DLHC ready; calibrating
+17:12:36.266 s3 line: adc=123/193 filtered=123/199 threshold=229/690 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:36.786 s3 line: adc=128/187 filtered=126/197 threshold=226/693 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:37.306 s3 line: adc=124/202 filtered=128/203 threshold=227/696 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:37.826 s3 line: adc=128/210 filtered=130/210 threshold=228/698 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:37.906 s4: stationary calibration complete (50 samples in 1720 ms)
+17:12:38.346 s3 line: adc=135/191 filtered=126/198 threshold=227/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:38.866 s3 line: adc=142/211 filtered=129/208 threshold=227/701 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:39.011 wifi: link status -> joined AP, no IP yet (2)
+17:12:39.106 wifi: link up, ip=10.157.130.101
+17:12:39.246 wifi: power save off (0)
+17:12:39.386 s3 line: adc=141/210 filtered=128/204 threshold=226/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:39.806 mqtt: connected to 10.157.130.224
+17:12:39.886 mqtt: subscribed to p2-08/p2-08-car-01/command
+17:12:39.906 s3 line: adc=132/194 filtered=129/198 threshold=226/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:40.426 s3 line: adc=126/210 filtered=124/208 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:40.946 s3 line: adc=140/206 filtered=131/206 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:41.466 s3 line: adc=145/197 filtered=134/198 threshold=221/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:41.986 s3 line: adc=108/209 filtered=115/204 threshold=222/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:42.506 s3 line: adc=115/208 filtered=116/208 threshold=220/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:43.027 s3 line: adc=109/197 filtered=110/204 threshold=221/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:43.546 s3 line: adc=142/207 filtered=126/206 threshold=224/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:44.067 s3 line: adc=109/212 filtered=112/207 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:44.586 s3 line: adc=105/189 filtered=108/198 threshold=222/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:44.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 0"
+17:12:45.106 s3 line: adc=131/194 filtered=123/200 threshold=221/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:45.627 s3 line: adc=142/201 filtered=136/205 threshold=220/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:46.146 s3 line: adc=112/197 filtered=116/196 threshold=220/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:46.666 s3 line: adc=113/200 filtered=114/203 threshold=219/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:47.187 s3 line: adc=109/201 filtered=111/205 threshold=218/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:47.706 s3 line: adc=107/196 filtered=122/200 threshold=219/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:48.227 s3 line: adc=137/197 filtered=137/197 threshold=218/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:48.746 s3 line: adc=122/213 filtered=120/212 threshold=218/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:49.266 s3 line: adc=138/215 filtered=128/212 threshold=218/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:49.786 s3 line: adc=107/203 filtered=117/204 threshold=221/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:49.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 1"
+17:12:49.806 mqtt: telemetry periods 10 sent 10 refused 0 err 0 nosnap 0 nolink 0
+17:12:50.306 s3 line: adc=129/208 filtered=128/208 threshold=220/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:50.826 s3 line: adc=121/190 filtered=124/198 threshold=222/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:51.347 s3 line: adc=123/196 filtered=127/200 threshold=221/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:51.867 s3 line: adc=112/196 filtered=121/203 threshold=220/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:52.386 s3 line: adc=118/212 filtered=115/208 threshold=219/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:52.906 s3 line: adc=109/216 filtered=114/212 threshold=219/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:53.426 s3 line: adc=138/194 filtered=128/200 threshold=218/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:53.946 s3 line: adc=134/202 filtered=127/202 threshold=217/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:54.466 s3 line: adc=126/203 filtered=128/207 threshold=218/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:54.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 2"
+17:12:54.986 s3 line: adc=131/203 filtered=130/205 threshold=220/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:55.506 s3 line: adc=121/207 filtered=120/205 threshold=219/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:56.026 s3 line: adc=137/195 filtered=124/196 threshold=220/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:56.546 s3 line: adc=140/197 filtered=130/196 threshold=223/702 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:57.067 s3 line: adc=107/214 filtered=117/209 threshold=225/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:57.586 s3 line: adc=107/208 filtered=111/204 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:58.107 s3 line: adc=126/202 filtered=118/203 threshold=225/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:58.626 s3 line: adc=141/198 filtered=135/200 threshold=226/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:59.146 s3 line: adc=141/197 filtered=136/203 threshold=226/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:59.666 s3 line: adc=112/197 filtered=120/202 threshold=226/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:12:59.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 3"
+17:12:59.806 mqtt: telemetry periods 20 sent 20 refused 0 err 0 nosnap 0 nolink 0
+17:13:00.186 s3 line: adc=133/210 filtered=124/206 threshold=225/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:00.706 s3 line: adc=115/209 filtered=127/211 threshold=224/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:01.226 s3 line: adc=122/214 filtered=127/207 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:01.747 s3 line: adc=142/198 filtered=135/202 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:02.267 s3 line: adc=139/197 filtered=134/197 threshold=223/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:02.787 s3 line: adc=142/200 filtered=130/200 threshold=226/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:03.307 s3 line: adc=126/197 filtered=129/205 threshold=224/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:03.827 s3 line: adc=142/209 filtered=135/209 threshold=222/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:04.346 s3 line: adc=137/205 filtered=128/202 threshold=223/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:04.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 4"
+17:13:04.867 s3 line: adc=122/201 filtered=125/204 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:05.387 s3 line: adc=109/194 filtered=119/202 threshold=224/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:05.907 s3 line: adc=115/208 filtered=117/208 threshold=224/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:06.427 s3 line: adc=107/208 filtered=118/204 threshold=225/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:06.947 s3 line: adc=128/217 filtered=130/208 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:07.466 s3 line: adc=136/181 filtered=134/195 threshold=226/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:07.987 s3 line: adc=136/198 filtered=130/204 threshold=223/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:08.507 s3 line: adc=107/218 filtered=112/205 threshold=222/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:09.027 s3 line: adc=141/193 filtered=131/196 threshold=223/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:09.547 s3 line: adc=140/196 filtered=131/196 threshold=223/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:09.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 5"
+17:13:09.807 mqtt: telemetry periods 30 sent 30 refused 0 err 0 nosnap 0 nolink 0
+17:13:10.067 s3 line: adc=112/208 filtered=123/207 threshold=221/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:10.587 s3 line: adc=129/197 filtered=129/198 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:11.107 s3 line: adc=128/212 filtered=122/207 threshold=227/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:11.627 s3 line: adc=138/211 filtered=131/211 threshold=225/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:12.147 s3 line: adc=110/213 filtered=119/213 threshold=226/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:12.667 s3 line: adc=108/197 filtered=113/197 threshold=229/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:13.187 s3 line: adc=137/214 filtered=130/207 threshold=230/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:13.707 s3 line: adc=137/210 filtered=132/206 threshold=227/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:14.227 s3 line: adc=115/206 filtered=116/207 threshold=226/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:14.747 s3 line: adc=132/194 filtered=126/203 threshold=223/706 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:14.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 6"
+17:13:15.267 s3 line: adc=129/198 filtered=131/201 threshold=224/703 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:15.366 s4: new run 1; hump maximum cleared
+17:13:15.787 s3 line: adc=131/235 filtered=122/231 threshold=224/705 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:16.307 s3 line: adc=99/217 filtered=112/212 threshold=222/708 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:16.827 s3 line: adc=139/194 filtered=128/200 threshold=224/707 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:17.347 s3 line: adc=116/192 filtered=116/190 threshold=223/704 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:17.867 s3 line: adc=116/181 filtered=116/181 threshold=219/700 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:18.387 s3 line: adc=134/178 filtered=129/177 threshold=220/697 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:18.907 s3 line: adc=110/176 filtered=121/178 threshold=223/694 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:19.386 [S2] S4 PICKUP: car lifted, STOP latched
+17:13:19.387 [S2] run summary: distance 158 mm, highest hump 0 mm (none)
+17:13:19.387 s4: car lifted; STOP requested
+17:13:19.427 s3 line: adc=152/190 filtered=166/310 threshold=226/691 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:19.547 s3 line: adc=3009/3275 filtered=2326/2773 threshold=227/692 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:13:19.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 7"
+17:13:19.807 mqtt: telemetry periods 40 sent 40 refused 0 err 0 nosnap 0 nolink 0
+17:13:20.067 s3 line: adc=3926/3985 filtered=3926/3980 threshold=227/692 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:13:20.587 s3 line: adc=3899/3972 filtered=3913/3968 threshold=227/692 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:13:21.107 s3 line: adc=3636/3861 filtered=3676/3873 threshold=227/692 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:13:21.627 s3 line: adc=204/2207 filtered=231/2328 threshold=227/692 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:13:21.707 s3 line: adc=181/1232 filtered=186/1489 threshold=227/692 left=WHITE right=BLACK mask=2 strength=42 command=RIGHT
+17:13:21.907 s3 bar: capture rejected, runs=0 threshold=584 (decoded=0 errors=1)
+17:13:21.907 s3 bar:  open run BLACK for 2500 ms
+17:13:22.187 s3 line: adc=163/605 filtered=155/511 threshold=230/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:22.247 s3 line: adc=153/1388 filtered=155/1197 threshold=230/692 left=WHITE right=BLACK mask=2 strength=32 command=RIGHT
+17:13:22.407 s3 line: adc=163/550 filtered=160/446 threshold=231/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:22.467 s3 line: adc=180/2490 filtered=172/1980 threshold=232/692 left=WHITE right=BLACK mask=2 strength=58 command=RIGHT
+17:13:22.987 s3 line: adc=119/2036 filtered=123/1932 threshold=231/692 left=WHITE right=BLACK mask=2 strength=56 command=RIGHT
+17:13:23.507 s3 line: adc=125/2180 filtered=123/2178 threshold=228/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+17:13:24.027 s3 line: adc=132/2184 filtered=121/2191 threshold=225/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+17:13:24.547 s3 line: adc=134/2195 filtered=131/2195 threshold=225/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+17:13:24.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 8"
+17:13:25.067 s3 line: adc=138/2182 filtered=126/2190 threshold=224/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+17:13:25.587 s3 line: adc=105/2184 filtered=118/2190 threshold=223/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+17:13:26.107 s3 line: adc=112/2194 filtered=119/2194 threshold=224/692 left=WHITE right=BLACK mask=2 strength=64 command=RIGHT
+17:13:26.627 s3 line: adc=141/2203 filtered=136/2199 threshold=224/692 left=WHITE right=BLACK mask=2 strength=65 command=RIGHT
+17:13:27.147 s3 line: adc=138/2204 filtered=130/2203 threshold=223/692 left=WHITE right=BLACK mask=2 strength=65 command=RIGHT
+17:13:27.667 s3 line: adc=134/2209 filtered=132/2208 threshold=223/692 left=WHITE right=BLACK mask=2 strength=65 command=RIGHT
+17:13:28.187 s3 line: adc=139/2195 filtered=127/2199 threshold=222/692 left=WHITE right=BLACK mask=2 strength=65 command=RIGHT
+17:13:28.447 s4: new run 2; hump maximum cleared
+17:13:28.627 s3 line: adc=145/648 filtered=135/523 threshold=221/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:28.687 s3 line: adc=123/1564 filtered=127/1340 threshold=222/692 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+17:13:28.906 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:28.987 s3 line: adc=129/201 filtered=128/260 threshold=223/692 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:29.507 s3 line: adc=144/190 filtered=138/184 threshold=227/689 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:29.807 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 9"
+17:13:29.807 mqtt: telemetry periods 50 sent 50 refused 0 err 0 nosnap 0 nolink 0
+17:13:30.027 s3 line: adc=140/174 filtered=137/181 threshold=230/688 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:30.547 s3 line: adc=154/174 filtered=155/175 threshold=233/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:31.067 s3 line: adc=131/186 filtered=140/186 threshold=234/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:31.587 s3 line: adc=171/173 filtered=163/173 threshold=236/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:32.107 s3 line: adc=205/189 filtered=205/187 threshold=239/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:32.447 s3 line: adc=309/173 filtered=291/174 threshold=241/681 left=BLACK right=WHITE mask=1 strength=11 command=LEFT
+17:13:32.666 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:13:32.787 s3 line: adc=139/165 filtered=160/170 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:33.207 s3 line: adc=138/1161 filtered=127/1039 threshold=238/679 left=WHITE right=BLACK mask=2 strength=28 command=RIGHT
+17:13:33.426 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:33.527 s3 line: adc=112/188 filtered=118/276 threshold=236/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:34.047 s3 line: adc=125/173 filtered=124/177 threshold=233/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:34.567 s3 line: adc=126/171 filtered=122/178 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:34.807 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 10"
+17:13:35.087 s3 line: adc=142/171 filtered=141/176 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:35.607 s3 line: adc=133/186 filtered=134/183 threshold=229/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:36.127 s3 line: adc=117/180 filtered=118/180 threshold=227/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:36.647 s3 line: adc=142/174 filtered=126/174 threshold=226/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:37.167 s3 line: adc=144/180 filtered=132/180 threshold=227/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:37.687 s3 line: adc=115/170 filtered=115/177 threshold=227/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:38.207 s3 line: adc=126/188 filtered=125/179 threshold=228/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:38.727 s3 line: adc=168/174 filtered=160/173 threshold=231/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:39.247 s3 line: adc=141/175 filtered=147/179 threshold=234/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:39.727 s3 line: adc=362/171 filtered=321/175 threshold=237/678 left=BLACK right=WHITE mask=1 strength=13 command=LEFT
+17:13:39.807 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 11"
+17:13:39.807 mqtt: telemetry periods 60 sent 60 refused 0 err 0 nosnap 0 nolink 0
+17:13:39.946 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:13:40.027 s3 line: adc=157/170 filtered=169/178 threshold=237/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:40.527 s3 line: adc=124/1506 filtered=122/1322 threshold=236/680 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+17:13:40.746 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:40.867 s3 line: adc=105/196 filtered=118/256 threshold=235/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:41.387 s3 line: adc=110/161 filtered=122/171 threshold=232/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:41.907 s3 line: adc=120/193 filtered=125/188 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:42.427 s3 line: adc=133/174 filtered=130/176 threshold=231/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:42.947 s3 line: adc=152/187 filtered=147/184 threshold=230/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:43.467 s3 line: adc=141/209 filtered=150/201 threshold=230/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:43.607 s3 line: adc=926/3016 filtered=700/2558 threshold=231/681 left=BLACK right=BLACK mask=3 strength=0 command=CROSSING
+17:13:43.626 [S2] line: BOTH BLACK; confirming junction
+17:13:43.726 [S2] line: junction confirmed; crossing straight
+17:13:44.027 s3 line: adc=191/196 filtered=204/218 threshold=231/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:44.046 [S2] line: junction cleared; holding straight exit
+17:13:44.547 s3 line: adc=175/190 filtered=184/185 threshold=234/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:44.746 [S2] line: normal following resumed
+17:13:44.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 12"
+17:13:44.907 s3 line: adc=250/179 filtered=253/181 threshold=236/681 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+17:13:45.126 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:13:45.187 s3 line: adc=150/190 filtered=172/187 threshold=236/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:45.707 s3 line: adc=141/234 filtered=133/235 threshold=233/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:45.867 s3 line: adc=109/1760 filtered=116/1444 threshold=232/683 left=WHITE right=BLACK mask=2 strength=40 command=RIGHT
+17:13:46.087 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:46.227 s3 line: adc=141/184 filtered=141/240 threshold=230/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:46.447 s3 bar: single bar (crossing line), ignored
+17:13:46.747 s3 line: adc=147/168 filtered=133/174 threshold=228/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:47.267 s3 line: adc=122/179 filtered=134/179 threshold=229/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:47.787 s3 line: adc=129/192 filtered=127/183 threshold=228/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:48.307 s3 line: adc=146/182 filtered=155/181 threshold=231/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:48.827 s3 line: adc=221/169 filtered=221/171 threshold=235/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:48.887 s3 line: adc=682/169 filtered=481/178 threshold=235/678 left=BLACK right=WHITE mask=1 strength=25 command=LEFT
+17:13:49.107 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:13:49.207 s3 line: adc=131/172 filtered=150/177 threshold=235/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:49.507 s3 line: adc=132/2145 filtered=123/1789 threshold=233/679 left=WHITE right=BLACK mask=2 strength=52 command=RIGHT
+17:13:49.727 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:49.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 13"
+17:13:49.807 mqtt: telemetry periods 70 sent 70 refused 0 err 0 nosnap 0 nolink 0
+17:13:49.887 s3 line: adc=140/194 filtered=132/247 threshold=231/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:50.407 s3 line: adc=120/174 filtered=127/181 threshold=232/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:50.927 s3 line: adc=94/187 filtered=113/183 threshold=234/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:51.447 s3 line: adc=145/180 filtered=142/183 threshold=235/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:51.967 s3 line: adc=133/182 filtered=142/182 threshold=238/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:52.487 s3 line: adc=155/177 filtered=146/181 threshold=241/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:53.007 s3 line: adc=133/192 filtered=131/184 threshold=239/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:53.527 s3 line: adc=174/169 filtered=159/171 threshold=242/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:54.047 s3 line: adc=155/188 filtered=159/183 threshold=245/678 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:54.567 s3 line: adc=242/172 filtered=236/173 threshold=248/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:54.667 s3 line: adc=281/186 filtered=267/182 threshold=249/676 left=BLACK right=WHITE mask=1 strength=9 command=LEFT
+17:13:54.787 s3 line: adc=181/180 filtered=199/178 threshold=249/677 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:54.806 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 14"
+17:13:54.927 s3 line: adc=985/188 filtered=774/184 threshold=249/677 left=BLACK right=WHITE mask=1 strength=46 command=LEFT
+17:13:55.147 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:13:55.247 s3 line: adc=142/194 filtered=162/193 threshold=249/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:55.647 s3 line: adc=105/1672 filtered=121/1349 threshold=247/682 left=WHITE right=BLACK mask=2 strength=37 command=RIGHT
+17:13:55.867 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:55.987 s3 line: adc=126/182 filtered=123/268 threshold=244/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:56.507 s3 line: adc=123/174 filtered=126/174 threshold=241/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:57.027 s3 line: adc=170/190 filtered=164/185 threshold=240/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:57.547 s3 line: adc=208/181 filtered=211/179 threshold=243/679 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:57.647 s3 line: adc=526/174 filtered=450/181 threshold=244/679 left=BLACK right=WHITE mask=1 strength=23 command=LEFT
+17:13:57.867 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:13:57.887 s3 line: adc=184/187 filtered=192/189 threshold=244/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:58.407 s3 line: adc=149/477 filtered=156/458 threshold=245/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:58.667 s3 line: adc=177/2145 filtered=177/1699 threshold=247/685 left=WHITE right=BLACK mask=2 strength=49 command=RIGHT
+17:13:58.887 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:13:59.047 s3 line: adc=185/199 filtered=189/246 threshold=249/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:59.567 s3 line: adc=205/186 filtered=209/186 threshold=252/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:13:59.807 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 15"
+17:13:59.807 mqtt: telemetry periods 80 sent 80 refused 0 err 0 nosnap 0 nolink 0
+17:14:00.087 s3 line: adc=158/178 filtered=176/181 threshold=256/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:00.607 s3 line: adc=169/182 filtered=163/179 threshold=257/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:01.127 s3 line: adc=115/177 filtered=128/178 threshold=254/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:01.647 s3 line: adc=112/187 filtered=125/181 threshold=251/683 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:02.167 s3 line: adc=157/185 filtered=145/183 threshold=247/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:02.287 s4: hump 11 mm under the right wheel (run maximum 11 mm)
+17:14:02.427 s3 line: adc=370/172 filtered=339/173 threshold=248/680 left=BLACK right=WHITE mask=1 strength=14 command=LEFT
+17:14:02.647 [S2] line: sustained LEFT; strong curve target=5/35 mm/s
+17:14:02.767 s3 line: adc=139/182 filtered=162/184 threshold=248/682 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:03.247 s3 line: adc=134/1238 filtered=134/1014 threshold=245/685 left=WHITE right=BLACK mask=2 strength=27 command=RIGHT
+17:14:03.467 [S2] line: sustained RIGHT; strong curve target=35/5 mm/s
+17:14:03.587 s3 line: adc=134/187 filtered=132/253 threshold=243/685 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:04.107 s3 line: adc=144/191 filtered=137/183 threshold=240/684 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:04.627 s3 line: adc=117/173 filtered=123/177 threshold=236/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:04.807 mqtt: TX [p2-08/p2-08-car-01/heartbeat] "hb 16"
+17:14:05.147 s3 line: adc=121/169 filtered=134/171 threshold=237/681 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:05.667 s3 line: adc=156/171 filtered=151/178 threshold=240/680 left=WHITE right=WHITE mask=0 strength=0 command=STRAIGHT
+17:14:06.000 [capture] port lost

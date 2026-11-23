@@ -79,5 +79,5 @@ make -C testing/host -j4
 ```
 
 The production UF2 is
-`build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`.
+`build_make/mtk3pico_smp0_usb_cdc_wifi_lwip_mqtt.uf2`.
 

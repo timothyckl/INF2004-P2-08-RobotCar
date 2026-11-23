@@ -115,13 +115,13 @@ make -j8
 ```
 
 A successful build ends with a line like
-`tools/elf2uf2 mtk3pico_smp1_usb_cdc_wifi.elf mtk3pico_smp1_usb_cdc_wifi.uf2`.
-Your firmware is **`build_make/mtk3pico_smp1_usb_cdc_wifi.uf2`**.
+`tools/elf2uf2 mtk3pico_smp0_usb_cdc_wifi.elf mtk3pico_smp0_usb_cdc_wifi.uf2`.
+Your firmware is **`build_make/mtk3pico_smp0_usb_cdc_wifi.uf2`**.
 
 This image runs the robot's mission (section 3, *The mission image*).
 For telemetry over WiFi, build the robot's firmware with
 `make NET=lwip MQTT=1 -j8` instead, which gives
-`build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`.
+`build_make/mtk3pico_smp0_usb_cdc_wifi_lwip_mqtt.uf2`.
 
 If `make` stops with an error, it tells you which one is wrong:
 `arm-none-eabi-gcc not found` means fix `PATH`, and
@@ -201,8 +201,8 @@ After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
 after `make`. They can be combined in any order:
 
 ```sh
-make -j8                          # defaults: SMP=1 CONSOLE=usb_cdc WIFI=cyw43 TEST=0 CRASH_REPORT=0
-make SMP=0 -j8                    # single-core build
+make -j8                          # defaults: SMP=0 CONSOLE=usb_cdc WIFI=cyw43 TEST=0 CRASH_REPORT=0
+make SMP=1 -j8                    # dual-core build (not used: S2 decision 33)
 make CONSOLE=uart WIFI=none -j8   # no USB console, radio off (see note below)
 make TEST=1 -j8                   # firmware with the subsystem self-tests
 make CRASH_REPORT=1 -j8           # also see crash reports, on GP0/GP1 (uses those pins)
@@ -212,7 +212,7 @@ To set several options at once, list them all, separated by spaces. For
 example, to track down a crash in the test build while running on one core only:
 
 ```sh
-make SMP=0 TEST=1 CRASH_REPORT=1 -j8
+make TEST=1 CRASH_REPORT=1 -j8
 #  -> build_make/mtk3pico_smp0_usb_cdc_wifi_crash_test.uf2
 ```
 
@@ -222,7 +222,7 @@ the next plain `make` goes back to the defaults.
 
 | Option | Values (**default**) | What it does | Image name | C macro your code can test |
 |---|---|---|---|---|
-| `SMP` | `0`, **`1`** | `1` runs the kernel on both RP2040 cores; `0` uses core 0 only | `smp1` / `smp0` | `TK_SUPPORT_SMP` (1 or 0) |
+| `SMP` | **`0`**, `1` | `0` uses core 0 only (default, S2 decision 33); `1` runs the kernel on both RP2040 cores | `smp1` / `smp0` | `TK_SUPPORT_SMP` (1 or 0) |
 | `CONSOLE` | **`usb_cdc`**, `uart` | where `tm_printf` output goes. `usb_cdc` = USB cable; `uart` = UART0 only (GP0 TX / GP1 RX, needs a USB-serial adapter) | `_usb_cdc` / `_uart` | `TM_CONSOLE_USB_CDC` |
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
@@ -268,7 +268,7 @@ RP2040 hardware watchdog is not armed (`S2_WATCHDOG`, subsystem 2
 decision 28). `S3_NAV_F` maps the test barcode letter F to a command.
 
 The options are part of the image name, e.g.
-`mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build
+`mtk3pico_smp0_usb_cdc_wifi_test.uf2`, so you can always tell which build
 you are flashing. Switching options needs no `make clean`: the makefile
 notices and recompiles everything.
 
