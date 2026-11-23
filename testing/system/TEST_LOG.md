@@ -35,6 +35,15 @@ least 4 of 5 passes per barcode and no wrong letter; SYS-03 all 12 runs;
 SYS-04 within 2 mm, which also serves as the S4-H08 acceptance figure
 for these runs; SYS-08 at least 95% of periods sent.
 
+**Demo image, 2026-11-24** (Dalton, 2026-11-23): commit `4a53c23`, tag
+`demo-2026-11-24`, built with `make NET=lwip MQTT=1 S3_NAV_F=0 -j8`
+(single core, S2 decision 33) and `MQTT_BROKER_IP` 10.157.130.224 on
+Pixel_1232. Kept as `build_make/DEMO_2026-11-24_4a53c23.uf2`, SHA-256
+`a0adfa6dfa783f19d3bf1b0f04c8991070f8158450f09bc894e95da000c54336`. The
+file is not in Git: it contains the WiFi credentials from
+`config/wifi_secrets.h`. If the laptop's address on the hotspot changes,
+rebuild from the tag with the new address; the checksum then changes.
+
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
 
