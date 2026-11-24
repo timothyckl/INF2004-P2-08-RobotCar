@@ -1,0 +1,28 @@
+# Check of the host runner's exit status, 2026-11-25 01:02 +0800, Apple clang version 17.0.0 (clang-1700.6.4.2)
+# Stand-in program t.c (pass, fail or crash) and the old and new recipe, as in testing/host/Makefile:
+```c
+#include <stdio.h>
+#include <string.h>
+int main(int argc, char **argv) {
+    if (0 == strcmp(argv[1], "pass")) { printf("[TEST] X-U01 PASS  case\n[TEST] subsystemX SUMMARY 1 passed, 0 failed\n"); return 0; }
+    if (0 == strcmp(argv[1], "fail")) { printf("[TEST] X-U01 FAIL  case\n[TEST] subsystemX SUMMARY 0 passed, 1 failed\n"); return 0; }
+    printf("[TEST] X-U01 PASS  case\n"); fflush(stdout); volatile int *p = 0; *p = 1; return 0;  /* crash */
+}
+```
+```make
+old-%:
+	./t $* | tee out.txt
+	@! grep -qE " FAIL " out.txt
+new-%:
+	./t $* > out.txt 2>&1; status=$$?; \
+	    cat out.txt; exit $$status
+	@grep -q "SUMMARY" out.txt
+	@! grep -qE " FAIL " out.txt
+```
+## Results
+old recipe, pass program: make exit 0
+old recipe, fail program: make exit 2
+old recipe, crash program: make exit 0
+new recipe, pass program: make exit 0
+new recipe, fail program: make exit 2
+new recipe, crash program: make exit 2

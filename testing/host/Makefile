@@ -88,18 +88,27 @@ s3:
 	    $(S3_SRC)
 	$(OUT)/s3_logic
 
+# Output goes to a file, not through a pipe: in a pipe the shell would
+# report tee's exit status, so a crashed test (no FAIL line printed) would
+# pass. The run's own status, a SUMMARY line and no FAIL line are all
+# required.
+#
 # S4-H01 needs the sensor, so the host image is built without it
 # (S4_HARDWARE_TEST=0) and reports it BLOCKED; only FAIL fails here.
 s4:
 	$(CC) $(STRICT) -DAPP_TEST=1 -DS4_HARDWARE_TEST=0 -o $(OUT)/s4_logic \
 	    $(STUBS) $(S4_SRC)
-	$(OUT)/s4_logic | tee $(OUT)/s4.txt
+	$(OUT)/s4_logic > $(OUT)/s4.txt 2>&1; status=$$?; \
+	    cat $(OUT)/s4.txt; exit $$status
+	@grep -q "SUMMARY" $(OUT)/s4.txt
 	@! grep -qE " FAIL " $(OUT)/s4.txt
 
 # The S5 runner prints one line per case; any FAIL or BLOCKED fails here.
 s5:
 	$(CC) $(STRICT) -DAPP_TEST=1 -o $(OUT)/s5_logic $(STUBS) $(S5_SRC)
-	$(OUT)/s5_logic | tee $(OUT)/s5.txt
+	$(OUT)/s5_logic > $(OUT)/s5.txt 2>&1; status=$$?; \
+	    cat $(OUT)/s5.txt; exit $$status
+	@grep -q "SUMMARY" $(OUT)/s5.txt
 	@! grep -qE " (FAIL|BLOCKED) " $(OUT)/s5.txt
 	$(CC) $(STRICT) -DAPP_TEST=1 -Istubs -o $(OUT)/s5_view \
 	    $(APP)/subsystem5/src/scan_telemetry.c s5_telemetry_test.c
