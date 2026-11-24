@@ -2,7 +2,8 @@
 
 Two runs of the existing host suites (`make -C testing/host`, C99,
 `-Wall -Wextra -Werror -Wshadow -pedantic`; S1 and S3 add `-Wconversion`,
-S1 also `-Wsign-conversion`). Both are software-only checks after the demo.
+S1 also `-Wsign-conversion`). All three are software-only checks after the
+demo.
 They are not physical tests and do not change any recorded result.
 
 | Run | Source | Compiler | Result | Raw output |
