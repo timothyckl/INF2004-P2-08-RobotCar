@@ -20,12 +20,15 @@ checksum with the demo image (`8cf2c419…`).
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
 | Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 784/784 checks with 1 known defect (F-18), S4 37/37, S5 48/48 (2026-11-25, after the post-demo tests) |
-| Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.0% of branches (27 host-built files) |
+| Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.2% of branches (27 host-built files) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
 
 Raw output: [static analysis](../testing/host/logs/2026-11-25_static-analysis.txt),
-[tests and coverage](../testing/host/logs/2026-11-25_host-tests-and-coverage.txt).
+[tests and coverage](../testing/host/logs/2026-11-25_host-tests-and-coverage.txt);
+after the post-demo tests: [final verification](../testing/host/logs/2026-11-25_final-verification-2.txt)
+(host tests, both clean builds, static check, mission checksum) and
+[coverage](../testing/host/logs/2026-11-25_coverage-2.txt).
 
 **Severity.** *High*: can stop a mission requirement being met.
 *Medium*: weakens reliability, diagnosis or accuracy. *Low*:
@@ -236,7 +239,7 @@ misreads, but the limits no longer describe the sensor. *Proposal:*
 re-measure white at the new height (S3-H03-style stationary test).
 
 **F-12 (false positive).** `-fanalyzer` reports a write past the end of
-`g_s3_nav_map` at `s3_nav.c:45`. The index is `letter - 'A'` and the
+`g_s3_nav_map` at `s3_nav.c:49`. The index is `letter - 'A'` and the
 function returns before the write unless `letter` is between `'A'` and
 `'Z'`, so the index is 0 to 25. No change.
 

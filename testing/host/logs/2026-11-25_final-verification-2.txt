@@ -1,0 +1,39 @@
+# Final verification 2, 2026-11-25 04:37 +0800, branch feature/subsystem2-integration at 130ae13
+# host: Apple clang version 17.0.0 (clang-1700.6.4.2); target: arm-none-eabi-gcc (Arm GNU Toolchain 15.3.Rel1 (Build arm-15.149)) 15.3.1 20260627
+
+## make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] subsystem2 SUMMARY 52 passed, 0 failed
+784 checks, 0 failures, 1 known defects
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 37 passed, 0 failed
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] all suites passed
+(exit status 0)
+
+## dashboard unit tests
+Ran 23 tests in 0.000s
+
+OK
+(exit status 0)
+
+## clean mission build: make -B NET=lwip MQTT=1 S3_NAV_F=0
+(exit status 0, warnings 0)
+mission UF2 SHA-256: 8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+demo image SHA-256:  8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+
+## clean TEST=1 build
+(exit status 0, warnings 0)
+
+## python3 testing/host/target_static_check.py
+compiler: arm-none-eabi-gcc
+files: 49 application .c files (test files excluded)
+
+== strict warnings: 0 in application code, 117 in third-party headers
+
+== gcc -fanalyzer: 1 in application code, 0 in third-party headers
+  app_program/subsystem3/s3_nav.c:49: buffer overflow [CWE-787]
+(exit status 0)
