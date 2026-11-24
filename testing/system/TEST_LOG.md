@@ -70,3 +70,48 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-23 | — (S4 IMU task stops after calibration, dual core) | `5416b39` + S1 decision 6 (`SMP=1`) | Dalton | FAIL | `logs/2026-11-23_console.txt` (17:08:53 boot) | USB and power bank. `stationary calibration complete` at 17:08:54, then no `s4:` line: no `s4: new run` at START, and a lift ended STOP latched: line, not pick-up. No `IMU read failed`. Addressed by S2 decision 33 |
 | 2026-11-23 | INT (barcode letters over MQTT, S1 decision 6) | `5416b39` + S1 decision 6 (`SMP=1`) | Dalton | PASS (1 junction) | `logs/2026-11-23_system-dashboard-2.jsonl` (17:01 to 17:03) | Dashboard table sent LEFT F, RIGHT B, STRAIGHT C, UTURN D. After the car restarted at 17:02:17 the dashboard re-sent it (`car restarted`, `barcode letters re-sent after restart`). Telemetry: `barcode F decoded: LEFT`, then `NAVIGATE (LEFT)` and back to `FOLLOW` 4 s later. Earlier, with the boot map, F decoded as `none`, as expected |
 | 2026-11-23 | SYS-10 (single core, first check) | `5416b39` + S1 decision 6, `SMP=0`, with the temporary S3 stage marker | Dalton | PASS (1 lift; SYS-10 needs 5) | `logs/2026-11-23_console.txt` (17:12:35 boot), `logs/2026-11-23_system-dashboard-2.jsonl` | `s4: new run 1` at START (17:13:15), `s4: car lifted; STOP requested` (17:13:19), dashboard STOP latched: pick-up. Next run: `s4: new run 2`, over 30 s of following, `s4: hump 11 mm under the right wheel` (hump not measured). One `s4: terrain fault 3; sensor restart` at boot, then calibrated. SYS-10 and the other SYS cases must be rerun on the committed single-core image (S2 decision 33) |
+| 2026-11-24 | — (practice before the assessed runs) | `4a53c23` rebuilt for the hotspot broker (version 3 frames) | Team | OBSERVATION | `logs/2026-11-24_demo-dashboard-1.jsonl` (13:14 to 14:06) | Barcodes A (LEFT), Q, Z and F decoded; F at 13:42:33 (line 2512) followed by `NAVIGATE (UTURN)` and back to `FOLLOW` (lines 2526, 2540). Left and right bypasses back to `FOLLOW`; one `STOP latched: bypass`, motion faults at 13:18:12, 13:41:22 and 13:59:26. Hump 10 mm twice (lines 758, 1139; hump not measured). Shape-valid widths 315, 327, 219, 220 mm for the 15 x 20 cm box: not accurate |
+| 2026-11-24 | SYS-04 (assessed demo, 3 attempts) | `a41c19c` (tag `demo-2026-11-24-flashed`; `NET=lwip MQTT=1 S3_NAV_F=0`, UF2 `8cf2c419…`) | Team | PARTIAL (height within 2 mm on 3 of 3; flat lap not run) | `logs/2026-11-24_demo-dashboard-2.jsonl` lines 1191, 2554 (frame 2556), 3138 (frame 3140) | Hump 5 mm (team ruler). Readings 6, 6, 7 mm: errors +1, +1, +2 mm. The design cannot report below 6 mm (`S4_RISE_UM` 6000 um, rounding to whole mm); see the demo report D-03 |
+| 2026-11-24 | SYS-02 (assessed demo) | `a41c19c` (same image) | Team | FAIL (1 of 3 attempts decoded) | as above, lines 2800, 3100, 3303, 3390, 3538 | Course barcode O. Not decoded in attempts 1 and 2; decoded as RIGHT in attempt 3 (14:51:46, 14:54:57) and on three later short runs. No wrong letter. Letter table had O under STRAIGHT until 14:48:34 (lines 1026, 2487); O read as STRAIGHT twice between attempts (lines 1601, 2390) |
+| 2026-11-24 | SYS-03 (assessed demo) | `a41c19c` (same image) | Team | FAIL (no turn started) | as above | RIGHT decoded and held, but no `NAVIGATE` in the whole session. Junction and hold messages are console-only and the console was not captured, so the cause is not known. Two repeat runs ended by a pick-up 3 to 5 s after the decode |
+| 2026-11-24 | SYS-05, SYS-07 (assessed demo) | `a41c19c` (same image) | Team | PARTIAL (attempt 3 passed; 1 and 2 did not) | as above, lines 1279, 2615, 2926, 3010, 3240 | Attempt 1: left bypass, `STOP latched: bypass` in REACQUIRE. Attempt 2: `FAULT: scan`. Attempt 3: three left bypasses back to `FOLLOW` with no contact (team), car lifted once and restarted. Avoidance marks received (team) |
+| 2026-11-24 | SYS-06 (assessed demo) | `a41c19c` (same image) | Team | FAIL | as above | Shape never valid; raw width (edge missing) 166 to 332 mm for the 15 x 20 cm box |
+| 2026-11-24 | SYS-08 (assessed demo) | `a41c19c` (same image) | Team | OBSERVATION (frames throughout; rate not counted) | as above | Version 4 frames and heartbeats from 14:19:50 to 15:03:50; dashboard events match the run |
+| 2026-11-24 | SYS-09 (assessed demo) | `a41c19c` (same image) | Team | FAIL | as above | Full course not completed in one run: barcode turn not executed |
+
+## 24 November 2026 — assessed demonstration
+
+Full account: [demo report](../../docs/DEMO_REPORT_2026-11-24.md).
+
+**Image.** The assessed runs used the telemetry version 4 image built at
+14:17 (S1 decision 7), not the `4a53c23` image recorded above as the demo
+image: the assessed session log carries version 4 frames. Its source is
+`a41c19c`, tag `demo-2026-11-24-flashed`; relinking it the same evening
+gave the same UF2 SHA-256,
+`8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f`. The
+practice session (13:14 to 14:06) sent version 3 frames, consistent with
+`4a53c23` rebuilt for the hotspot's broker address.
+
+**Logs.** Both dashboard logs were copied here unchanged on the evening of
+24 November. SHA-256 at that time:
+
+| File | SHA-256 |
+|---|---|
+| `logs/2026-11-24_demo-dashboard-1.jsonl` | `2d8456242367b7f011a81f1df6d5eb6ce1ab495fd6c094fef64c803c0bf2cf5c` |
+| `logs/2026-11-24_demo-dashboard-2.jsonl` | `4e45008633ee0749180ffca8f17bb0391597f1152dd417d43d95cb0a3f5b3441` |
+
+**Attempts** (laptop time): 1 from 14:34:01, 2 from 14:48:36, 3 from
+14:51:32 to 14:56:30. The USB console was not captured during the
+assessment.
+
+**Marks** (team record): hump 0.5 for attempt 1 and 0.5 for attempt 2;
+attempt 3 (7 mm) was not given the 0.5 mark after a verbal miscommunication;
+the request for reconsideration is in the demo report, D-03. Obstacle
+avoidance marks received in attempt 3.
+
+**Video.** Backup evidence recorded a few hours before the demo:
+<https://www.youtube.com/watch?v=B1mWqMT2HIk> (see `videos/README.md`). It
+shows earlier working behaviour, not the assessed attempts.
+
+The [host review](../host/HOST_REVIEW_2026-11-24.md) passed all five suites
+on the demonstrated source. Host tests do not replace these physical results.

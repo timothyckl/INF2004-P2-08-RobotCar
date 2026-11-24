@@ -39,3 +39,4 @@ Newest at the bottom. Never delete a row.
 | Date | Subsystem | Test ID / demo | Commit | Student ID | Link | Notes |
 |---|---|---|---|---|---|---|
 | YYYY-MM-DD | S1 | S1-U03 | `abc1234` | | <https://youtu.be/...> | LED blinks at 2 Hz |
+| 2026-11-24 | All | Integrated system, backup evidence before the assessed demo | not shown | | <https://www.youtube.com/watch?v=B1mWqMT2HIk> | "Evidence for fully functional system few hrs before the demo", recorded by Khang a few hours before the assessment. Our backup proof that the system worked on the car; it does not show the assessed attempts or their readings. Recording time and feature timestamps not yet added. See `docs/DEMO_REPORT_2026-11-24.md` |
