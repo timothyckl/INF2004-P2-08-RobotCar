@@ -35,7 +35,7 @@ least 4 of 5 passes per barcode and no wrong letter; SYS-03 all 12 runs;
 SYS-04 within 2 mm, which also serves as the S4-H08 acceptance figure
 for these runs; SYS-08 at least 95% of periods sent.
 
-**Demo image, 2026-11-24** (Dalton, 2026-11-23): commit `4a53c23`, tag
+**Demo image, 2026-11-24** (Dalton, 2026-11-23; the assessed runs used a later image, see the 24 November section below): commit `4a53c23`, tag
 `demo-2026-11-24`, built with `make NET=lwip MQTT=1 S3_NAV_F=0 -j8`
 (single core, S2 decision 33) and `MQTT_BROKER_IP` 10.157.130.224 on
 Pixel_1232. Kept as `build_make/DEMO_2026-11-24_4a53c23.uf2`, SHA-256
@@ -78,6 +78,8 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-24 | SYS-06 (assessed demo) | `a41c19c` (same image) | Team | FAIL | as above | Shape never valid; raw width (edge missing) 166 to 332 mm for the 15 x 20 cm box |
 | 2026-11-24 | SYS-08 (assessed demo) | `a41c19c` (same image) | Team | OBSERVATION (frames throughout; rate not counted) | as above | Version 4 frames and heartbeats from 14:19:50 to 15:03:50; dashboard events match the run |
 | 2026-11-24 | SYS-09 (assessed demo) | `a41c19c` (same image) | Team | FAIL | as above | Full course not completed in one run: barcode turn not executed |
+| 2026-11-25 | SYS-08 (analysis of the 2026-11-24 assessed session log) | `a41c19c` (demo image) | Dalton | PASS (98.6% of periods received) | `logs/2026-11-24_demo-dashboard-2.jsonl` (stats line at 15:03:50) | No new run. From the last car restart (heartbeat back to `hb 0`, 14:32:25) to 15:03:50 the car counted 1890 periods, 1867 sent, 23 refused (err -1); the dashboard received 1863 frames (98.6%, criterion 95%). Heartbeat `hb 377` at 15:03:50 matches 5 s spacing. The dashboard records each heartbeat twice (748 lines from 14:32:26 to 15:03:50 for about 375 heartbeats); a logging duplicate, not a car fault |
+| 2026-11-25 | — (single-core check, S2 decision 33, from the 2026-11-24 logs) | `4a53c23` rebuild (13:14 to 14:06) and `a41c19c` (14:17 to 15:03), both `SMP=0` | Dalton | OBSERVATION (no line-loop stall seen) | `logs/2026-11-24_demo-dashboard-1.jsonl`, `-2.jsonl` | No new run. About 100 min of single-core running with many STARTs: no `STOP latched: line` (the symptom of the 2026-11-23 dual-core stall), 15 pick-up stops (the S4 task kept running). Four motion faults (13:18:12, 13:41:22, 13:59:26, 14:43:33) and one scan fault (14:49:54); their detail is console-only. Not a formal re-run of SYS-01 to SYS-11 on one core |
 
 ## 24 November 2026 — assessed demonstration
 
