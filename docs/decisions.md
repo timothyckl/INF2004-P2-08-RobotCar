@@ -1062,6 +1062,28 @@ the demo: laps (SYS-01), barcodes and junctions (SYS-02, SYS-03), humps
 (SYS-05 to SYS-07; S5 ultrasonic timing), pick-up (SYS-10) and cold
 boots (SYS-11).
 
+### 34. Strict warnings for every application file (2026-11-25)
+
+Approved by Dalton on the integration branch, after the demo. Build
+change only; no source change.
+
+**Problem.** `build_make/mtkernel_3/app_program/subdir.mk` compiled
+subsystem 5 with `-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+-Wshadow -Werror`, but `app_main.c` and subsystems 1 to 4 with no warning
+flags at all, so a new warning there would go unseen.
+
+**Decision.** The other application objects get `-Wall -Wextra
+-Wconversion -Wsign-conversion -Wshadow -Werror`. They keep the SDK's
+`gnu11` dialect (the kernel headers need it), so `-std=c99 -Wpedantic`
+stay subsystem 5 only.
+
+**Evidence.** `testing/host/target_static_check.py` had already shown no
+warning in any application file under a wider set of 18 flags
+([log](../testing/host/logs/2026-11-25_static-analysis.txt)). With the
+change, a clean build (`make -B`) of the mission image and of the
+`TEST=1` image gives no warning, and the mission UF2 is byte-identical to
+the demo image (SHA-256 `8cf2c419…416bf3f`).
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

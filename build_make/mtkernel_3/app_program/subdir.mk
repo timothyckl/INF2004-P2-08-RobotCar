@@ -39,6 +39,16 @@ $(SUBSYSTEM5_BUILD_OBJS): CFLAGS += -std=c99 -Wall -Wextra -Wpedantic \
                                      -Werror
 $(SUBSYSTEM5_BUILD_OBJS): | subsystem5_barr_check
 
+# The other application files (app_main.c and subsystems 1 to 4) get the
+# same warnings, as errors. Added 2026-11-25 after
+# testing/host/target_static_check.py showed none of them warns; warning
+# flags do not change the generated code (the mission UF2 is identical).
+# They stay at the SDK's C dialect because the kernel headers need it.
+APP_OTHER_BUILD_OBJS = $(subst ../, ./mtkernel_3/, \
+                           $(filter-out $(SUBSYSTEM5_OBJS), $(TEMP_OBJS)))
+$(APP_OTHER_BUILD_OBJS): CFLAGS += -Wall -Wextra -Wconversion \
+                                    -Wsign-conversion -Wshadow -Werror
+
 .PHONY: subsystem5_barr_check
 subsystem5_barr_check:
 	@$(PYTHON) $(SUBSYSTEM5_BARR_CHECK)

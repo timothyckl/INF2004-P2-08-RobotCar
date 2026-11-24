@@ -88,8 +88,8 @@ Full account: [demo report](../../docs/DEMO_REPORT_2026-11-24.md).
 **Image.** The assessed runs used the telemetry version 4 image built at
 14:17 (S1 decision 7), not the `4a53c23` image recorded above as the demo
 image: the assessed session log carries version 4 frames. Its source is
-`a41c19c`, tag `demo-2026-11-24-flashed`; relinking it the same evening
-gave the same UF2 SHA-256,
+`a41c19c`, tag `demo-2026-11-24-flashed`; a clean rebuild (`make -B`,
+2026-11-25) gives the same UF2 SHA-256,
 `8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f`. The
 practice session (13:14 to 14:06) sent version 3 frames, consistent with
 `4a53c23` rebuilt for the hotspot's broker address.

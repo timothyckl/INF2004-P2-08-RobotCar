@@ -26,8 +26,8 @@ log file.
 decision 7), built at 14:17 with `make NET=lwip MQTT=1 S3_NAV_F=0 -j8`
 (single core, S2 decision 33). Its UF2 SHA-256 is
 `8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f`. Its
-source is commit `a41c19c`, tag `demo-2026-11-24-flashed`; relinking that
-source on the same evening produced the same checksum. The tag
+source is commit `a41c19c`, tag `demo-2026-11-24-flashed`. A clean rebuild of
+that source (`make -B`, 2026-11-25) produces the same checksum. The tag
 `demo-2026-11-24` (`4a53c23`) marks the image planned the day before; the
 practice session's version 3 frames are consistent with a rebuild of it for
 the hotspot's broker address. The only difference between the two is the
