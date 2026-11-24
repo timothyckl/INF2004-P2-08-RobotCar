@@ -1,0 +1,19 @@
+# Obstacle width from synthetic box scans, scan_profile_make() at a41c19c, 2026-11-25 01:04 +0800, host Apple clang version 17.0.0 (clang-1700.6.4.2)
+# Fixtures from plain geometry (flat face 240 mm ahead, 5 degree bins, depth 200 mm); see S5-U72 in test_planning.c.
+# 'beam21' = 21 degree effective half-beam (S2 decision 18). Mission allowance is 10 degrees (scan_task.c).
+ideal 150                    allowance  0: result 2 shape 1 width 128 raw 128 centre 0 L 64 R 64
+ideal 150                    allowance  5: result 2 shape 1 width 128 raw 128 centre 0 L 64 R 64
+ideal 150                    allowance 10: result 2 shape 1 width 86 raw 128 centre 0 L 43 R 43
+ideal 150                    allowance 15: result 2 shape 1 width 42 raw 128 centre 0 L 21 R 21
+ideal 150                    allowance 20: result 2 shape 0 width 0 raw 128 centre 0 L 0 R 0
+ideal 150                    allowance 25: result 2 shape 0 width 0 raw 128 centre 0 L 0 R 0
+ideal 150                    allowance 30: result 2 shape 0 width 0 raw 128 centre 0 L 0 R 0
+beam21 150                   allowance  0: result 2 shape 1 width 282 raw 282 centre 0 L 141 R 141
+beam21 150                   allowance  5: result 2 shape 1 width 282 raw 282 centre 0 L 141 R 141
+beam21 150                   allowance 10: result 2 shape 1 width 246 raw 282 centre 0 L 123 R 123
+beam21 150                   allowance 15: result 2 shape 1 width 208 raw 282 centre 0 L 104 R 104
+beam21 150                   allowance 20: result 2 shape 1 width 168 raw 282 centre 0 L 84 R 84
+beam21 150                   allowance 25: result 2 shape 1 width 126 raw 282 centre 0 L 63 R 63
+beam21 150                   allowance 30: result 2 shape 1 width 84 raw 282 centre 0 L 42 R 42
+ideal 200                    allowance  0: result 2 shape 1 width 174 raw 174 centre 0 L 87 R 87
+ideal 150 left 50            allowance  0: result 2 shape 1 width 132 raw 132 centre 46 L 112 R 20

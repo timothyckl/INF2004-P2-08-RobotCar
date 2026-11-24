@@ -1,0 +1,169 @@
+# make -C testing/host, 2026-11-25 01:08 +0800, Apple clang version 17.0.0 (clang-1700.6.4.2); firmware source of a41c19c plus the post-demo tests
+cc -std=c99 -Wall -Wextra -Werror -Wshadow -pedantic -Wconversion -Wsign-conversion -DS1_HOST_TEST \
+	    -o <tmp>/s1_logic ../../app_program/subsystem1/command_parser.c ../../app_program/subsystem1/telemetry_encoder.c ../../app_program/subsystem1/comms_timer.c ../../app_program/subsystem1/service_bridge.c ../../app_program/subsystem1/comms_test.c ../../testing/subsystem1/logic_main.c
+<tmp>/s1_logic
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+cc -std=c99 -Wall -Wextra -Werror -Wshadow -pedantic -DAPP_TEST=1 -o <tmp>/s2_logic -Istubs stubs/kernel_stub.c ../../app_program/subsystem2/motion_logic.c ../../app_program/subsystem2/controller_logic.c ../../app_program/subsystem2/line_control.c ../../app_program/subsystem2/scan_control.c ../../app_program/subsystem2/bypass_control.c ../../app_program/subsystem2/nav_control.c ../../app_program/subsystem2/pid.c ../../app_program/subsystem2/odometry.c ../../app_program/subsystem2/motion_api.c ../../app_program/subsystem2/test_motion.c ../../app_program/subsystem2/test_controller.c ../../app_program/subsystem2/test_line_control.c ../../app_program/subsystem2/test_scan_control.c ../../app_program/subsystem2/test_bypass_control.c ../../app_program/subsystem2/test_nav_control.c s2_host_main.c
+<tmp>/s2_logic
+[HOST] S2-U20 PASS
+[HOST] S2-U21 PASS
+[HOST] S2-U22 PASS
+[HOST] S2-U23 PASS
+[HOST] S2-U24 PASS
+[HOST] S2-U25 PASS
+[HOST] S2-U26 PASS
+[HOST] S2-U27 PASS
+[HOST] S2-U28 PASS
+[HOST] S2-U29 PASS
+[HOST] S2-U30 PASS
+[HOST] S2-U31 PASS
+[HOST] S2-U32 PASS
+[HOST] S2-U33 PASS
+[HOST] S2-U34 PASS
+[HOST] S2-U35 PASS
+[HOST] S2-U55 PASS
+[HOST] S2-U56 PASS
+[HOST] S2-U41 PASS
+[HOST] S2-U42 PASS
+[HOST] S2-U43 PASS
+[HOST] S2-U44 PASS
+[HOST] S2-U45 PASS
+[HOST] S2-U46 PASS
+[HOST] S2-U47 PASS
+[HOST] S2-U48 PASS
+[HOST] S2-U49 PASS
+[HOST] S2-U50 PASS
+[HOST] S2-U51 PASS
+[HOST] S2-U52 PASS
+[HOST] S2-U53 PASS
+[HOST] S2-U78 PASS
+[HOST] S2-U58 PASS
+[HOST] S2-U59 PASS
+[HOST] S2-U73 PASS
+[HOST] S2-U60 PASS
+[HOST] S2-U61 PASS
+[HOST] S2-U62 PASS
+[HOST] S2-U63 PASS
+[HOST] S2-U64 PASS
+[HOST] S2-U65 PASS
+[HOST] S2-U66 PASS
+[HOST] S2-U67 PASS
+[HOST] S2-U68 PASS
+[HOST] S2-U69 PASS
+[HOST] S2-U70 PASS
+[HOST] S2-U74 PASS
+[HOST] S2-U75 PASS
+[HOST] S2-U76 PASS
+[HOST] S2-U77 PASS
+[HOST] S2-U79 PASS
+[HOST] S2-U80 PASS
+[HOST] subsystem2 SUMMARY 52 passed, 0 failed
+cc -std=c99 -Wall -Wextra -Werror -Wshadow -pedantic -Wconversion -I../../app_program/subsystem3 -o <tmp>/s3_logic \
+	    ../../app_program/subsystem3/s3_ir.c ../../app_program/subsystem3/s3_bar.c ../../app_program/subsystem3/s3_scan.c ../../app_program/subsystem3/s3_barcode.c ../../app_program/subsystem3/s3_code39.c ../../app_program/subsystem3/s3_nav.c ../../testing/subsystem3/test_main.c
+<tmp>/s3_logic
+noise blip: 25 of 234 payload cases gave a wrong letter
+KNOWN DEFECT (F-18): a noise blip never gives a wrong letter
+784 checks, 0 failures, 1 known defects
+cc -std=c99 -Wall -Wextra -Werror -Wshadow -pedantic -DAPP_TEST=1 -DS4_HARDWARE_TEST=0 -o <tmp>/s4_logic \
+	    -Istubs stubs/kernel_stub.c ../../app_program/subsystem4/terrain_logic.c ../../app_program/subsystem4/drv_lsm303dlhc.c ../../app_program/subsystem4/subsystem4_test.c stubs/device_stub.c s4_host_main.c
+<tmp>/s4_logic > <tmp>/s4.txt 2>&1; status=$?; \
+	    cat <tmp>/s4.txt; exit $status
+[TEST] S4-U03 PASS  stable samples complete calibration
+[TEST] S4-U04 PASS  unstable samples cause calibration fault
+[TEST] S4-U05 PASS  single tilt spike is not a hump
+[TEST] S4-U06 PASS  rise then level completes one hump
+[TEST] S4-U08 PASS  consecutive invalid samples cause sensor fault
+[TEST] S4-U09 PASS  valid sample clears invalid streak
+[TEST] S4-U10 PASS  timestamp wrap does not cause stale fault
+[TEST] S4-U11 PASS  excess sample gap causes stale fault
+[TEST] S4-U12 PASS  larger hump becomes run maximum
+[TEST] S4-U13 PASS  local recovery preserves run maximum
+[TEST] S4-U14 PASS  new run clears run maximum
+[TEST] S4-U16 PASS  impact is reported once per threshold crossing
+[TEST] S4-U17 PASS  null API inputs do not crash
+[TEST] S4-U18 PASS  driver decodes axis order and scale
+[TEST] S4-U19 PASS  driver decodes signed 12-bit limits
+[TEST] S4-U20 PASS  driver decode rejects null pointers
+[TEST] S4-U21 PASS  hump not ended in time is dropped until level
+[TEST] S4-U23 PASS  10 mm under the left wheel reads 10 mm, left wheel
+[TEST] S4-U24 PASS  10 mm under the right wheel reads 10 mm, right wheel
+[TEST] S4-U25 PASS  10 mm under both wheels reads 10 mm, both wheels
+[TEST] S4-U26 PASS  10 mm under the caster reads 10 mm, caster
+[TEST] S4-U27 PASS  pitch while accelerating is not a hump
+[TEST] S4-U28 PASS  alternating roll averages out, no hump
+[TEST] S4-U29 PASS  held tilt reads its full height through the average
+[TEST] S4-U30 PASS  average length 0 or above the maximum is rejected
+[TEST] S4-U31 PASS  no hump while disabled; a hump in progress is dropped
+[TEST] S4-U32 PASS  height scale 500 per mille halves a 10 mm reading
+[TEST] S4-U33 PASS  height scale 0 or above the maximum is rejected
+[TEST] S4-U34 PASS  no impact while disabled, nor on enabling mid-impact
+[TEST] S4-U35 PASS  upward lift needs consecutive samples; a drop is no lift
+[TEST] S4-U36 PASS  averaged tilt at the limit is a lift, below it is not
+[TEST] S4-U37 PASS  one lift per drive; none while disabled
+[TEST] S4-U38 PASS  zero lift thresholds or samples are rejected
+[TEST] S4-U39 PASS  held unaveraged tilt is a lift, a two-sample jolt is not
+[TEST] S4-U40 PASS  hump count and last height survive recovery, not a new run
+[TEST] S4-U41 PASS  mission rise and scale: no hump reads below 6 mm
+[TEST] S4-U42 PASS  reading rises with tilt, at most 1 mm per 1 mg step
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 37 passed, 0 failed
+cc -std=c99 -Wall -Wextra -Werror -Wshadow -pedantic -DAPP_TEST=1 -o <tmp>/s5_logic -Istubs stubs/kernel_stub.c ../../app_program/subsystem5/src/obstacle_test.c ../../app_program/subsystem5/src/scan_test_adapter.c ../../app_program/subsystem5/src/scan_engine.c ../../app_program/subsystem5/src/range_measurement.c ../../app_program/subsystem5/src/bypass_plan.c ../../app_program/subsystem5/src/scan_profile.c ../../app_program/subsystem5/src/forward_monitor.c ../../app_program/subsystem5/src/scan_look.c ../../testing/subsystem5/unit_tests/src/test_capture.c ../../testing/subsystem5/unit_tests/src/test_fixture.c ../../testing/subsystem5/unit_tests/src/test_look.c ../../testing/subsystem5/unit_tests/src/test_planning.c ../../testing/subsystem5/unit_tests/src/test_ranging.c ../../testing/subsystem5/unit_tests/src/test_runner.c ../../testing/subsystem5/unit_tests/src/test_safety.c ../../testing/subsystem5/unit_tests/src/test_scanning.c ../../testing/subsystem5/unit_tests/src/test_subject.c s5_host_main.c
+<tmp>/s5_logic > <tmp>/s5.txt 2>&1; status=$?; \
+	    cat <tmp>/s5.txt; exit $status
+[TEST] S5-U03 PASS  known integral pulse conversions
+[TEST] S5-U04 PASS  minimum physical range boundary
+[TEST] S5-U05 PASS  maximum physical range boundary
+[TEST] S5-U06 PASS  invalid conversion preserves output
+[TEST] S5-U07 PASS  null conversion output is rejected
+[TEST] S5-U08 PASS  oversized pulses cannot overflow valid
+[TEST] S5-U09 PASS  permission without stop cannot scan
+[TEST] S5-U10 PASS  wrong request stop cannot scan
+[TEST] S5-U11 PASS  stop without permission cannot scan
+[TEST] S5-U12 PASS  matched permission and stop allow scan
+[TEST] S5-U13 PASS  cancel invalidates scan and acknowledges
+[TEST] S5-U14 PASS  new STOP aborts an authorised scan
+[TEST] S5-U57 PASS  unstarted request expires after two seconds
+[TEST] S5-U58 PASS  busy request cannot replace the active scan
+[TEST] S5-U15 PASS  coarse scan starts at minus forty-five
+[TEST] S5-U16 PASS  no trigger before calibrated settling
+[TEST] S5-U17 PASS  withdrawn permission prevents scanning
+[TEST] S5-U51 PASS  rejected servo command prevents scanning
+[TEST] S5-U52 PASS  rejected trigger command aborts scanning
+[TEST] S5-U19 PASS  trigger spacing at least 65 ms
+[TEST] S5-U20 PASS  completion after 30 ms or past 4 m is 4000 mm
+[TEST] S5-U21 PASS  malformed capture and stuck ECHO
+[TEST] S5-U22 PASS  old completion cannot complete new capture
+[TEST] S5-U23 PASS  angle distance is the median of three
+[TEST] S5-U24 PASS  third consecutive invalid attempt faults
+[TEST] S5-U26 PASS  coarse scan angles and three samples
+[TEST] S5-U56 PASS  plan waits for safe forward clearance
+[TEST] S5-U59 PASS  coarse edges receive five-degree samples
+[TEST] S5-U28 PASS  scan past 15 s faults
+[TEST] S5-U25 PASS  unsafe, invalid or stale data stops
+[TEST] S5-U55 PASS  third invalid forward attempt faults
+[TEST] S5-U36 PASS  left whenever valid, else right
+[TEST] S5-U37 PASS  blocked or unobserved sides give no plan
+[TEST] S5-U53 PASS  plan segments, search bound and align
+[TEST] S5-U54 PASS  nothing ahead in range is no obstacle
+[TEST] S5-U60 PASS  fine edges: left preferred, else right
+[TEST] S5-U61 PASS  missing or inconsistent edge has no route
+[TEST] S5-U62 PASS  observed span and plan clearance estimate
+[TEST] S5-U63 PASS  missing edge keeps shape unknown
+[TEST] S5-U64 PASS  close obstacle: reverse before turning
+[TEST] S5-U65 PASS  turns to straight and to look set the offset
+[TEST] S5-U66 PASS  right route mirrors left
+[TEST] S5-U67 PASS  beam allowance pulls edges in
+[TEST] S5-U71 PASS  clear only if +/-15 degrees is open
+[TEST] S5-U72 PASS  box geometry: width bounds and centre sign
+[TEST] S5-U68 PASS  side look sequence and median
+[TEST] S5-U69 PASS  only windowed readings count
+[TEST] S5-U70 PASS  invalid, moved, authority, time faults
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+cc -std=c99 -Wall -Wextra -Werror -Wshadow -pedantic -DAPP_TEST=1 -Istubs -o <tmp>/s5_view \
+	    ../../app_program/subsystem5/src/scan_telemetry.c s5_telemetry_test.c
+<tmp>/s5_view
+[HOST] all suites passed
+make exit status 0

@@ -917,6 +917,8 @@ EXPORT void subsystem2_test (void)
                "junction turn fails on overshoot, rejection, slow stop");
     TEST_CHECK("S2-U79", test_nav_control_phase_limits(),
                "junction step and settle fail at the phase limit");
+    TEST_CHECK("S2-U80", test_nav_control_hold_window(),
+               "held command: taken at the limit, expired after, refreshed");
 
 #if S2_HW_TEST
     hw_test();
