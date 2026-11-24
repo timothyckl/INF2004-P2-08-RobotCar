@@ -42,6 +42,8 @@ def target_flags():
                     skip = False
                 elif arg in ("-o", "-MF", "-MT"):
                     skip = True
+                elif arg == "-Werror":
+                    pass    # report warnings as warnings (S2 d34 adds it)
                 elif not (arg.startswith(("-M", "-c"))
                           or arg.endswith((".c", ".o"))):
                     keep.append(arg)

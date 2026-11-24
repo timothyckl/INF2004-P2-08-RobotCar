@@ -1,23 +1,81 @@
 # INF2004 P2-8 — Autonomous Robot Car
 
-Team P2-8's autonomous robot car uses the Raspberry Pi Pico W + Robo Pico
-platform and micro T-Kernel 3.0. The project must follow a line, decode navigation
-barcodes, detect humps and report the highest peak, profile and bypass obstacles,
-reacquire the original line, and report telemetry over WiFi/MQTT.
+Team P2-8's autonomous robot car runs on the Raspberry Pi Pico W with a
+Cytron Robo Pico, in C with the Pico SDK and µT-Kernel 3.0. It follows a
+line, decodes Code 39 barcodes and turns at the next junction, measures the
+highest hump with an accelerometer, scans and bypasses obstacles with a
+servo-mounted ultrasonic sensor, rejoins the original line, and reports
+telemetry over WiFi/MQTT to a laptop dashboard. All decisions are made on
+the car; WiFi is only for monitoring and START/STOP.
 
-The firmware contains each subsystem's first implementation alongside some
-remaining starter examples (see `TEAM.md`). The subsystems are not yet joined
-into the complete robot behaviour, and the integrated firmware has not been
-validated on hardware. It runs on **both cores** of the Pico W's RP2040, with a
-USB serial console and the WiFi driver built in.
+All five subsystems are integrated into one mission image, built for **one
+core** (`SMP=0`, S2 decision 33). The image used in the assessed demo on
+2026-11-24 is tag **`demo-2026-11-24-flashed`** (`a41c19c`); a clean build
+of that tag reproduces the demo UF2 byte for byte. Later commits change
+only tests, tools, the build's warning flags and documentation.
 
-Project references in `docs/`:
-- `Project Description.pdf` — mission and subsystem requirements.
-- `AAI08_Design_Review.pdf` — team ownership and initial architecture.
-- `AAI08_PostTri1.pdf` — later decisions, open risks and planned validation.
+## Results at a glance
 
-See `TEAM.md` for subsystem owners. Design targets are not measured results;
-interfaces and compact data formats still need implementation and validation.
+| Mission requirement | Result | Evidence |
+|---|---|---|
+| Line following | Pass: 3 laps (SYS-01) | [system test log](testing/system/TEST_LOG.md) |
+| Barcode decoding | Partial: works, never a wrong letter, below 4 of 5 passes | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
+| Hump detection and highest peak | Detected every time; 6, 6, 7 mm for a 5 mm hump (within ±2 mm) | D-03 |
+| Obstacle detection | Pass (SYS-05) | system test log |
+| Obstacle profiling | Nearest point and side pass; width fails (SYS-06) | [software review](docs/software_quality_review.md) F-05 |
+| Bypass and line reacquisition | Pass 3/3 (SYS-07); attempt 3 of the demo | D-02 |
+| Telemetry over WiFi | Pass: 98.6% of frames received on demo day | [traceability](docs/requirements_traceability.md) FR10 |
+
+The full course was not completed in one run. Every result, including
+failures, is kept in the test logs.
+
+## Where to find things
+
+| Topic | Document |
+|---|---|
+| Assessed demo, its logs and the backup video | [docs/DEMO_REPORT_2026-11-24.md](docs/DEMO_REPORT_2026-11-24.md), [videos/README.md](videos/README.md) |
+| Requirements → design → code → tests → results | [docs/requirements_traceability.md](docs/requirements_traceability.md) |
+| Architecture, RTOS tasks, state machines, sensors, timers, efficiency, edge computing | [docs/final_architecture.md](docs/final_architecture.md) |
+| Code and logic review, defects and proposals | [docs/software_quality_review.md](docs/software_quality_review.md) |
+| Tribunal 1 and 2 closure, fault handling | [docs/tribunal_closure.md](docs/tribunal_closure.md) |
+| BARR-C:2018 compliance and static analysis | [docs/barr_c_compliance.md](docs/barr_c_compliance.md) |
+| Data bit widths and memory | [docs/data_widths.md](docs/data_widths.md) |
+| Every agreed design decision | [docs/decisions.md](docs/decisions.md) |
+| Owners, pins, task priorities, interfaces | [TEAM.md](TEAM.md), [AGENTS.md](AGENTS.md) |
+| Test definitions and every run | `testing/*/TEST_LOG.md`, [testing/README.md](testing/README.md) |
+| Original design and tribunals | [docs/AAI08_Design_Review.pdf](docs/AAI08_Design_Review.pdf), [docs/AAI08_PostTri1.pdf](docs/AAI08_PostTri1.pdf), [docs/AAI08_ImmediateTri2.pdf](docs/AAI08_ImmediateTri2.pdf) |
+| Brief | [docs/Project Description.pdf](docs/Project%20Description.pdf) |
+
+## Module topics in this project
+
+| Lecture | Where it is applied |
+|---|---|
+| W2.1 GPIO, W2.2 Interrupts | Encoder and echo ISRs with sequence counters and a ring buffer; one shared GPIO dispatcher ([architecture](docs/final_architecture.md) §7, [BARR-C](docs/barr_c_compliance.md) §3) |
+| W3.1 Digital communication | I2C to the LSM303DLHC; MQTT binary telemetry ([data widths](docs/data_widths.md)) |
+| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; the 10 ms tick behind the 20 ms barcode sampling (review F-01) |
+| W3.3 ADC | 12-bit line and barcode sensing with adaptive thresholds and hysteresis |
+| W4.1 Embedded OS | µT-Kernel tasks, priorities, mutexes with priority inheritance, event flags, message buffers |
+| W4.2 State machines | Vehicle Controller and Motion Control statecharts, tested on the host |
+| Lecture 6 Traceability and testing | [traceability](docs/requirements_traceability.md); unit, integration, system, boundary, negative and fault-injection tests; coverage |
+| W9 Sensor fusion | Encoder speed gates IMU pitch; encoder travel times the junction step; line sensors confirm the end of a bypass (no formal filter) |
+| W10 Optimisations | No floating point, packed 31-byte frame, measured memory ([data widths](docs/data_widths.md)) |
+| W11 Edge computing | All sensing, decisions and safety on the Pico ([architecture](docs/final_architecture.md) §9) |
+
+## Tests
+
+```sh
+make -C testing/host                       # five host suites
+python3 -m unittest discover -s testing/subsystem1/dashboard/tests
+sh testing/host/coverage.sh                # line and branch coverage
+python3 testing/host/target_static_check.py  # strict warnings and -fanalyzer
+python3 tools/barr_c_report.py             # BARR-C rules a script can check
+```
+
+Host tests check logic with synthetic input; they are not evidence that
+the robot works on the track (see [testing/README.md](testing/README.md)).
+
+---
 
 You need a **Raspberry Pi Pico W**, a USB cable, and a computer running
 macOS, Linux, or Windows with **WSL (Ubuntu)**. On Windows, run every
