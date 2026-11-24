@@ -19,7 +19,7 @@ checksum with the demo image (`8cf2c419…`).
 |---|---|---|
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
-| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 51/51, S3 782/782 checks, S4 36/36, S5 47/47 |
+| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 784/784 checks with 1 known defect (F-18), S4 37/37, S5 48/48 (2026-11-25, after the post-demo tests) |
 | Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.0% of branches (27 host-built files) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
@@ -51,7 +51,9 @@ maintainability or documentation.
 | F-14 | Tests | Six tests ran but were not defined in any test log | Low | **Applied** (`ad2b48c`) |
 | F-15 | S4 tests | Mission hump settings repeated in a test | Low | Proposal |
 | F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Proposal |
-| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Proposal (needs a track measurement) |
+| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Hardware proposal (P4) |
+| F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | Found by S3-U03; prototype fix (P2), not applied |
+| F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -140,9 +142,11 @@ longer than 2.5 s, but not a car that has simply run off. FR11 asks for
 persistent line loss to latch STOP, so this is a gap against our own
 requirement. In practice curve holding (`CTRL_LINE_*_HOLD_MS`) keeps the
 car turning after a sensor sees black, which is why SYS-01 passed.
-*Proposal:* track the distance since either sensor last saw black and
-latch STOP when it exceeds the longest straight stretch with no edge
-contact (to be measured on the track).
+This is a limit of the sensor layout, not only of the code: a rule such
+as "no sensor has seen black for X mm" would also fire on a long straight
+where the car stays centred, which is the normal case. *Proposal (P4):* a
+third, centre sensor over the tape, so that all three white means lost;
+until then the limitation stays in the fault table.
 
 **F-08 (Medium, proposal) — watchdog off.** `S2_WATCHDOG` defaults to 0, so
 the hardware watchdog (`drv_watchdog.c`, tested in S2-H05) is not armed in
@@ -179,12 +183,30 @@ captures of 24 to 28 runs (one damaged sentinel rebuilt) and 31 runs (one
 stray mark) are handled. A rejected capture never gives a letter, so a
 failure shows as "no letter", which is the safe outcome.
 
-**Host evidence (S3-U02, post-demo).** Over all 26 letters: one misread
-element is always corrected or rejected, never a wrong letter; with the
-speed changing steadily across one code, every letter decodes while the
-last run is 0.4 to 2.5 times the first (2.5:1 print), and no wrong letter
-appears at 0.3 or 3.5 times. Speed variation of the size seen on the car
-is therefore not, on its own, a reason for a missed read.
+**Host evidence (S3-U02, S3-U03, post-demo).** Over all 26 letters: one
+misread element is always corrected or rejected, never a wrong letter;
+with the speed changing steadily across one code, every letter decodes
+while the last run is 0.4 to 2.5 times the first (2.5:1 print), and no
+wrong letter appears at 0.3 or 3.5 times. Speed variation of the size seen
+on the car is therefore not, on its own, a reason for a missed read. A
+letter in place of the start and stop characters is rejected, except P,
+which is the mirror image of `*` (P-x-P read backwards is exactly a
+reversed `*x*`, so no two-way decoder can tell them apart).
+
+**F-18 (High, proposal) — wrong letter from a noise blip.** S3-U03 puts a
+20 ms blip (one sample at the real 20 ms sampling) inside each run of each
+letter. Inside the payload this makes a 31-run capture, which the decoder
+treats as a code with a stray mark beside it; one of the two 29-run
+windows it tries is then misaligned and, in 25 of 234 cases, matches a
+different letter exactly. FR3 requires that this never happens, so this is
+a real weakness, though no wrong letter was seen on the car. Turning off
+the one-element correction does not help (the matches are exact);
+removing the 31-run path breaks the recorded stray-mark captures of
+2026-11-17. Accepting a 31-run window only when the run it leaves out is
+shorter than half the narrowest run in the window removed all 25 and
+passed every other check ([prototype](../testing/subsystem3/logs/2026-11-25_s3-f18-blip-prototype.txt);
+[proposal P2](post_demo_proposals.md)). Not applied: the firmware stays as
+demonstrated. S3-U03 reports it as a known defect on every run.
 
 **F-01 (High, proposal) — 20 ms sampling.** `s3_follow_run()` loops with
 `tk_dly_tsk(10)`, but the kernel tick (`CNF_TIMER_PERIOD`) is 10 ms, so the
@@ -284,9 +306,21 @@ about 240 mm, the corners are at about 17°, but rays out to about
 The 10° beam allowance pulls each edge in, but the shape is valid only when
 both edges pass the contiguity checks, which did not happen on 2026-11-20.
 Planning uses the clearance profile, not the width, so bypasses still
-worked. *Proposal:* subtract the measured half-beam per edge
-(lateral = r · sin(θ_miss − 21°)), check against S5-U49 with 150 mm and
-200 mm boxes, and only then report the width as valid.
+worked.
+
+S5-U72 (post-demo) separates the causes with synthetic scans of a box face
+240 mm away ([log](../testing/subsystem5/logs/2026-11-25_s5-width-geometry.txt)).
+With ideal thin rays and no allowance the 150 mm box reads 128 mm: the
+edge logic is sound, and the only error is the 5° ray spacing (about
+23 mm per side at 240 mm, so even a perfect sensor misses the ±20 mm
+criterion by a little). With a 21° beam the raw span is 282 mm, matching
+the car's raw widths; the mission's 10° allowance gives 246 mm, and a 20°
+allowance gives 168 mm (+18 mm). So the overstatement comes from the beam
+and an allowance that does not match it, not from the geometry. A fixed
+subtraction would be wrong, because the effective beam varied between
+stops (S2 d18). See [proposal P6](post_demo_proposals.md): measure the beam
+on the car, set the allowance to the smallest measured half-beam, and
+consider 2.5° fine steps near each edge.
 
 ## 8. Integration
 
@@ -318,17 +352,26 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `ad2b48c` | Tests S2-U79, S3-U02, S4-U41; definitions for S2-U73 to U77, S4-U40; coverage and static-analysis scripts | None (tests only) | Host suites pass; mission UF2 unchanged |
 | `47a7147` | Dashboard subscribes to each topic once | None (dashboard) | 23 dashboard tests pass |
 | `53f7e02` | Strict warnings for all application files (S2 d34) | None | Clean builds, 0 warnings; mission UF2 unchanged |
+| `a618bef` | Host runner keeps a test's own exit status (F-19) | None (test infrastructure) | Stand-in pass, fail and crash programs ([log](../testing/host/logs/2026-11-25_runner-status-check.txt)) |
+| `b4871e3` | Tests S2-U80, S3-U03, S4-U42, S5-U72 | None (tests only) | Host suites pass; mission UF2 unchanged |
+| `032437c` | Range comments for every narrowing cast (BARR-C 1.6a) | None (comments only) | Mission UF2 byte-identical |
 
 ## 10. Proposed changes not applied
 
 These change the car's behaviour, so they need team approval and car tests
 before use. They are listed in priority order.
 
-1. F-01: 10 ms barcode and line sampling from a cyclic handler; re-run SYS-01 and SYS-02.
-1. F-17: stop on persistent line loss (distance since either sensor last saw black); measure the track's longest edge-free stretch first.
-2. F-02 and F-03: junction event in telemetry; bench test of the course junction; then SYS-03.
-3. F-06: fault detail or bitmask in telemetry (version 5 frame).
-4. F-08: arm the watchdog after one car run.
-5. F-04: two-point hump calibration; then SYS-04 with a flat lap.
-6. F-05: beam-corrected width; then SYS-06.
-7. F-09, F-15, F-16: re-measure barcode white; move S4 constants to a header; show the letter table on the dashboard.
+The team decided on 2026-11-25 to keep the submitted firmware identical to
+the demonstrated image. Each change below is worked out in
+[post_demo_proposals.md](post_demo_proposals.md) with its root cause,
+design, alternatives, risks and acceptance test.
+
+1. P1 (F-01): 10 ms sampling from a cyclic handler; SYS-01, SYS-02.
+2. P2 (F-18): stray-mark window check; SYS-02.
+3. P3 (F-02, F-03): junction event in telemetry, then a bench test of the course junction; SYS-03.
+4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
+5. P5 (F-04): two-point hump calibration and a flat lap; SYS-04.
+6. P6 (F-05): measured beam allowance; SYS-06.
+7. P7 (F-08): watchdog fed only when every critical task has checked in.
+8. P8 (F-06): version 5 frame with fault detail and a junction bit.
+9. F-09, F-15, F-16: re-measure barcode white; move S4 constants to a header; show the letter table on the dashboard.

@@ -27,7 +27,7 @@ passes, is not enough on its own.
 
 | MR | Brief wording | Final requirement(s) | System test | Status (section 4) |
 |---|---|---|---|---|
-| MR1 | Follow a line track autonomously | FR1, FR2 | SYS-01, SYS-09 | Pass (SYS-01); full course not passed |
+| MR1 | Follow a line track autonomously | FR1, FR2 | SYS-01, SYS-09 | Pass on the track (SYS-01); FR2's 10 ms sampling not met; full course not passed |
 | MR2 | Detect and decode barcodes | FR3 | SYS-02 | Partial |
 | MR3 | Execute barcode commands (left, right, straight, U-turn) | FR4 | SYS-03 | Partial |
 | MR4 | Detect humps | FR5 | SYS-04 | Pass (detection) |
@@ -86,7 +86,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Tests | S2-U57 to U59, U73 (host); S3 host checks (782); S3-H01, H02, H04; SYS-01 |
 | Criterion | 3 laps, no wheel leaves the track, no STOP before the lift |
 | Result | SYS-01 **Pass** on 2026-11-20 (3 laps of 2 min 8 s to 2 min 15 s). Demo: followed the line in every attempt |
-| Status | **Pass** |
+| Status | **Partial**: line following passed on the car (SYS-01), but the requirement's 10 ms sampling is not met: the loop runs every 20 ms (F-01, proposal P1) |
 | Limitations | The requirement says sensors are read every 10 ms; the loop actually runs every 20 ms because of the 10 ms kernel tick ([review](software_quality_review.md) F-01). A line report still goes out at once when the position changes. Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
 
 ### FR3 — decode Code 39 barcodes
@@ -96,10 +96,10 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Decode single-letter Code 39 in either direction while following; reject anything that is not exactly one letter; at 40 mm/s, at least 4 of 5 passes per course barcode and never a wrong letter |
 | Owner / design | S3; S2 d25 (soften curves while reading) |
 | Source | `subsystem3/s3_barcode.c` `s3_barcode_update()`; `subsystem3/s3_scan.c` `s3_scan_poll()`; `subsystem3/s3_bar.c` `s3_bar_decode()`; `subsystem3/s3_code39.c` |
-| Tests | S3 host checks including S3-U02 (post-demo); S3 bar-drive runs 2026-11-17; SYS-02 |
+| Tests | S3 host checks including S3-U02 and S3-U03 (post-demo); S3 bar-drive runs 2026-11-17; SYS-02 |
 | Criterion | ≥ 4 of 5 passes per barcode, no wrong letter |
 | Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes |
-| Status | **Partial**: decoding works and never gave a wrong letter, but did not reach 4 of 5 |
+| Status | **Partial**: decoding works and never gave a wrong letter on the car, but did not reach 4 of 5; on the host a 20 ms noise blip inside the code can give a wrong letter (F-18, known defect, proposal P2) |
 | Limitations | Bar timings have 20 ms resolution (F-01), coarse for small prints. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
 
 ### FR4 — carry out the barcode command at the next junction
@@ -109,7 +109,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Hold LEFT, RIGHT, STRAIGHT or U-TURN for up to 60 s; act at the next confirmed junction with encoder-based turns; an unmapped letter never turns |
 | Owner / design | S2, S3; S2 d26, d27; S1 d6 (letters set over MQTT) |
 | Source | `subsystem2/nav_control.c` `nav_control_stage()`, `nav_control_step()`; `subsystem2/task_controller.c` `nav_receive()`, `nav_update()`; `subsystem2/line_control.c` (junction confirmation); `subsystem3/s3_nav.c` `s3_nav_command()`, `s3_nav_set_letter()` |
-| Tests | S2-U58, U74 to U77, U79 (host); INT (letters over MQTT, 2026-11-23); SYS-03 |
+| Tests | S2-U58, U74 to U77, U79, U80 (host); INT (letters over MQTT, 2026-11-23); SYS-03 |
 | Criterion | Commanded branch taken in all 12 runs (3 per command) |
 | Result | 2026-11-17 (`85bdf28`): one physical right turn. 2026-11-23: F mapped to LEFT, NAVIGATE then FOLLOW. Demo practice: U-turn after barcode F. Demo assessed runs: RIGHT decoded but no NAVIGATE |
 | Status | **Partial**: each turn type except STRAIGHT has worked at least once; the 12-run criterion was never run |
@@ -148,11 +148,11 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | After the wheels are still, one result (CLEAR, PLAN, NO_ROUTE, FAULT, CANCELLED); width within ±20 mm or ±5% and centre offset only when both edges are seen; nearest point within ±20 mm |
 | Owner / design | S5; S5 d4, d5; S2 d11, d17, d18, d22 |
 | Source | `subsystem5/src/scan_engine.c` `scan_engine_process()`; `subsystem5/src/scan_profile.c` `scan_profile_make()`; `subsystem5/src/bypass_plan.c` `bypass_plan_make_fine()` |
-| Tests | S5-U15, U23, U26, U59 to U63, U67 (host); S5-U47 to U49; SYS-06 |
+| Tests | S5-U15, U23, U26, U59 to U63, U67, U72 (host); S5-U47 to U49; SYS-06 |
 | Criterion | As the requirement |
 | Result | Nearest point within 20 mm on 3/3 (SYS-05 runs). Width: shape never valid on 2026-11-20; demo practice widths 219 to 327 mm and assessed raw widths 166 to 332 mm for a 150 or 200 mm box |
 | Status | **Fail** (width, centre offset); nearest point and side **Pass** |
-| Limitations | The effective half-beam is about 21° (S2 d18), so the box is "seen" past its edges and the width is overstated. Planning does not use the width |
+| Limitations | The effective half-beam is about 21° (S2 d18), so the box is "seen" past its edges and the width is overstated; with the mission's 10° allowance a 150 mm box reads 246 mm in synthetic geometry (S5-U72). Even ideal rays are limited to about ±23 mm per edge by the 5° spacing at 240 mm. Planning does not use the width (proposal P6) |
 
 ### FR8 — bypass without contact and rejoin the original line
 
@@ -304,7 +304,7 @@ table shows the rest.
 
 | Level | Count and where | Latest result |
 |---|---|---|
-| Unit (host) | S1-U04 to U07; S2 51 cases; S3 782 checks; S4 36 cases; S5 47 cases + telemetry view | All pass (2026-11-25, [log](../testing/host/logs/2026-11-25_host-tests-and-coverage.txt)) |
+| Unit (host) | S1-U04 to U07; S2 52 cases; S3 784 checks; S4 37 cases; S5 48 cases + telemetry view | All pass, with one known defect reported (F-18) (2026-11-25, [log](../testing/host/logs/2026-11-25_host-tests-final2.txt)) |
 | Unit (target) | The same plus the target-only cases (for example S2-U01 to U19, S2-U37, U39, U71, U72) in the `TEST=1` image | Builds (2026-11-25); last on-target run 2026-11-17 (incomplete) |
 | Hardware | S1-H01 to H03, S2-H01 to H11, S3-H01 to H06, S4-H01 to H11, S5-U46 to U50 | Mixed; see each log |
 | Integration | INT-04 to INT-07, letters over MQTT | Pass |
@@ -317,11 +317,11 @@ table shows the rest.
 |---|---|
 | White-box | Branch coverage of the host-built application code: 78.0% (89.7% of lines) |
 | Black-box | SYS-01 to SYS-11; INT tests |
-| Boundary | S5-U04, U05 (range limits); S4-U36 (lift at 299 and 300 mg); S4-U41 (6 mm floor); S2-U79 (phase limit ±1 ms) |
+| Boundary | S5-U04, U05 (range limits); S4-U36 (lift at 299 and 300 mg); S4-U41 (6 mm floor); S4-U42 (1 mg steps, no jump over 1 mm); S2-U79, U80 (phase and hold limits ±1 ms) |
 | Negative | S1-U04 (malformed commands); S3 invalid patterns; S5-U06, U07; S2-U33 |
-| Fault injection (host) | S4-U08, U11 (invalid and stale IMU); S5-U21, U24 (bad echo); S2-U29 to U31 (stall, timeout, encoder) |
+| Fault injection (host) | S4-U08, U11 (invalid and stale IMU); S5-U21, U24 (bad echo); S2-U29 to U31 (stall, timeout, encoder); S3-U03 (noise blip, broken frames) |
 | State transition | S2-U41 to U52 (controller statechart); S2-U20 to U32 (motion statechart) |
-| Regression | `make -C testing/host` before each commit; mission UF2 hash compared after test-only changes |
+| Regression | `make -C testing/host` before each commit (a crashed test now fails the run, F-19); mission UF2 hash compared after every test-, comment- or build-only change |
 
 ### Coverage figures (host, 2026-11-25)
 
@@ -364,12 +364,15 @@ fill it in afterwards.
 | Gap | Effect | Next step |
 |---|---|---|
 | SYS-09 never passed | No proof of a full autonomous course | Full-course runs with the console captured |
-| SYS-02 below 4 of 5 | Barcode reliability not shown | 5 passes per print with sensor height and print condition recorded |
+| SYS-02 below 4 of 5 | Barcode reliability not shown | 5 passes per print with sensor height and print condition recorded; 10 ms sampling first ([P1](post_demo_proposals.md)) |
+| A 20 ms noise blip inside a frame can give a wrong letter (F-18, S3-U03 known defect) | "Never a wrong letter" is shown only on the recorded captures, not for all inputs | Stray-mark length check, prototyped on the host ([P2](post_demo_proposals.md)) |
+| FR2 sampling at 20 ms, not 10 ms (F-01) | FR2 not met as written | [P1](post_demo_proposals.md), then re-measure bar durations |
+| A car fully off the line reads as centred (F-17) | Line loss is not detected, so FR11's line-loss STOP cannot trigger | Sensor layout change ([P4](post_demo_proposals.md)) |
 | SYS-03 12-run set never run | Turn reliability not shown | 3 runs per command, console captured |
 | SYS-04 flat lap not run | False humps on a flat lap not excluded | One flat lap |
-| SYS-06 width fails | MR7 shape not met | Re-tune the beam allowance or add a measured width correction |
-| NFR3 fault bitmask not implemented | Simultaneous faults not visible | Tribunal 2 Entries 11 and 19 |
-| Watchdog off (`S2_WATCHDOG` 0) | A stalled task is not reset | Arm it after a car run (Tribunal 2 Entry 4) |
+| SYS-06 width fails | MR7 shape not met | Measured width correction or a larger beam allowance ([P6](post_demo_proposals.md)); geometry checked by S5-U72 |
+| NFR3 fault bitmask not implemented | Simultaneous faults not visible | [P8](post_demo_proposals.md); Tribunal 2 Entries 11 and 19 |
+| Watchdog off (`S2_WATCHDOG` 0) | A stalled task is not reset | Per-task check-in, then arm it after a car run ([P7](post_demo_proposals.md), Tribunal 2 Entry 4) |
 | On-target `TEST=1` run last completed 2026-11-17 | Target-only unit tests not re-run on the v4 code | Run the `TEST=1` image |
 
 ## 9. Assessment considerations from the brief
@@ -392,3 +395,59 @@ against each, with where the evidence is:
 
 Completion time: SYS-01 laps took 2 min 8 s to 2 min 15 s at 40 mm/s; no
 full-course time exists.
+
+## 10. Requirement and design quality (Lecture 5)
+
+Lecture 5 asks that each requirement is a "shall" statement with a
+tolerance, can be verified by a test, is traceable, and says *what* the
+system must do rather than *how*. It also asks for IDs on design boxes and
+arrows, and for sequence diagrams and statecharts. This section checks the
+final requirements against those rules. The requirement wording and the
+acceptance criteria in section 4 are left unchanged; the suggested wording
+below is for a future revision only.
+
+### Requirement review
+
+| ID | Verifiable with a tolerance? | Prescribes design? | Issue | Suggested wording |
+|---|---|---|---|---|
+| FR1 | Yes (one START, no touch, SYS-09) | No | — | — |
+| FR2 | Partly: "follow" has no measured limit | Yes: sensor count, adaptive thresholds and "every 10 ms" are design choices | Our only open FR2 item (10 ms) is a design detail, not a mission need | "The car shall stay on the 18 mm line through curves, crossings and humps for a full lap at 40 mm/s, with a line report at least every 30 ms." Move 10 ms sampling to the design (P1) |
+| FR3 | Yes (4 of 5, no wrong letter) | No | "Never a wrong letter" cannot be proved by testing alone; F-18 shows an input that breaks it | Keep, and add "on the five course prints" to bound the test |
+| FR4 | Partly: no limit on how late the turn may start | Yes: "encoder-based" | Turn accuracy sits in NFR4 | "...shall start the held turn within 100 mm of the junction" (value to be agreed) |
+| FR5 | Yes (±2 mm, flat lap) | No | — | — |
+| FR6 | Yes (250 mm, missing echo unsafe) | Yes: "≥ 65 ms between triggers" comes from the HC-SR04 datasheet (≥ 60 ms cycle) | A design constraint inside a requirement | Move the trigger gap to the design (section 6 of the architecture) |
+| FR7 | Yes (±20 mm or ±5%) | No | — | — |
+| FR8 | Partly: "aim for 50 mm" cannot pass or fail | No | — | "...with no contact and at least 30 mm clearance" (value to be agreed) |
+| FR9 | No time limit in FR9 itself | Yes: "urgent event flag" | The limit is in NFR1 (20 ms) | "A local or remote STOP shall turn the motors off within 20 ms of being received" |
+| FR10 | Yes (rate from NFR2; invalid never shown as a reading) | No | — | — |
+| FR11 | Yes (each latch and recovery step is observable) | No | — | — |
+| FR12 | No time limit | No | A lift detected after 10 s would still pass | "...shall latch STOP within 200 ms of a lift" (value to be agreed) |
+| NFR1 | Yes (20 ms) | Yes: 10 ms period, event flags | Acceptable as a stated design constraint | — |
+| NFR2 | Yes (1 s, 5 s, ≥ 95%) | No | — | — |
+| NFR3 | Partly: "where appropriate" cannot be checked | Yes: bitmask, packing | Judged by analysis ([data_widths.md](data_widths.md)), not by test | "Each field shall use no more bits than its valid range and resolution need" |
+| NFR4 | Yes (±20 mm, ±5°, ±10°) | No | — | — |
+| NFR5 | Partly: no time limit to READY | No | — | "...shall reach READY within 5 s of power-on" (value to be agreed) |
+| NFR6 | Yes (inspection) | Yes, by intent: a platform constraint from the brief | — | — |
+
+The values marked "to be agreed" are proposals, not measured results.
+
+### Requirement to design element
+
+The boxes are named as in the [software structure](final_architecture.md#2-software-structure)
+diagram; the arrows carry the interface IDs from `TEAM.md` section 5.
+`motion_q` and `safety_flags` are internal to subsystem 2 and have no IF
+number.
+
+| Requirement | Design boxes | Interfaces (arrows) | Diagram |
+|---|---|---|---|
+| FR1, FR11 | BTN, WIFI, CTRL, MC | IF-08, IF-09, `motion_q` | Controller statechart (architecture section 4) |
+| FR2 | IR, S3, CTRL, MC | IF-06, `motion_q` | Mode statechart (section 4) |
+| FR3, FR4 | BC, S3, CTRL, MC | IF-21, `motion_q` | Barcode-to-turn sequence (section 5) |
+| FR5 | IMU, S4, CTRL, WIFI | IF-14, IF-17, IF-18, IF-10 | Hump-to-telemetry sequence (section 5) |
+| FR6, FR7, FR8 | US, SERVO, S5, CTRL, MC | IF-11, IF-12, IF-13, IF-20 | Obstacle-to-bypass sequence (section 5) |
+| FR9 | BTN, WIFI, CTRL, MC | IF-08, `safety_flags` | Controller statechart |
+| FR10, NFR2 | CTRL, WIFI, DASH | IF-10, IF-18, IF-20 | Hump-to-telemetry sequence |
+| FR12 | IMU, S4, CTRL | IF-19 | Controller statechart |
+| NFR1 | MC, CTRL | `safety_flags`, `motion_q` | RTOS task table (section 3) |
+| NFR3 | WIFI | IF-10 | [data_widths.md](data_widths.md) |
+

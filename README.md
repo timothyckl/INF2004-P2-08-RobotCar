@@ -38,6 +38,7 @@ failures, is kept in the test logs.
 | Requirements → design → code → tests → results | [docs/requirements_traceability.md](docs/requirements_traceability.md) |
 | Architecture, RTOS tasks, state machines, sensors, timers, efficiency, edge computing | [docs/final_architecture.md](docs/final_architecture.md) |
 | Code and logic review, defects and proposals | [docs/software_quality_review.md](docs/software_quality_review.md) |
+| Proposed fixes after the demo (not in the demo firmware) | [docs/post_demo_proposals.md](docs/post_demo_proposals.md) |
 | Tribunal 1 and 2 closure, fault handling | [docs/tribunal_closure.md](docs/tribunal_closure.md) |
 | BARR-C:2018 compliance and static analysis | [docs/barr_c_compliance.md](docs/barr_c_compliance.md) |
 | Data bit widths and memory | [docs/data_widths.md](docs/data_widths.md) |
@@ -57,6 +58,7 @@ failures, is kept in the test logs.
 | W3.3 ADC | 12-bit line and barcode sensing with adaptive thresholds and hysteresis |
 | W4.1 Embedded OS | µT-Kernel tasks, priorities, mutexes with priority inheritance, event flags, message buffers |
 | W4.2 State machines | Vehicle Controller and Motion Control statecharts, tested on the host |
+| Lecture 5 Requirements and design | Requirement review (shall, tolerance, verifiable, no design in the requirement) and requirement-to-box/arrow IDs ([traceability](docs/requirements_traceability.md) §10); sequence diagrams and statecharts ([architecture](docs/final_architecture.md) §4, §5) |
 | Lecture 6 Traceability and testing | [traceability](docs/requirements_traceability.md); unit, integration, system, boundary, negative and fault-injection tests; coverage |
 | W9 Sensor fusion | Encoder speed gates IMU pitch; encoder travel times the junction step; line sensors confirm the end of a bypass (no formal filter) |
 | W10 Optimisations | No floating point, packed 31-byte frame, measured memory ([data widths](docs/data_widths.md)) |

@@ -290,6 +290,14 @@ table.
 | Low latency for safety | STOP from a local source reaches the motors in under 1 ms (S2-H11); a network round trip would add an unbounded delay |
 | Low bandwidth | Raw data (ADC samples at 50 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 31-byte summary per second leaves it |
 | Safe degradation | Losing WiFi clears the `link up` flag and nothing else (Tribunal 2 Entry 20) |
+| Privacy and exposure | No camera or location data exists; only run state and summary values leave the car, and the broker runs on the team laptop over a private hotspot. Credentials stay in the untracked `config/wifi_secrets.h` |
+| Working within resource limits | 264 KB SRAM and one core, so processing is integer-only and fixed-size: about 2 KB application RAM, no heap, no floating point (section 8) |
+
+**Cost of processing at the edge.** Every algorithm must fit the Pico's
+timing and memory. The 20 ms sampling limit (F-01) and the
+fixed-size bar buffer of the barcode decoder are direct results; a laptop
+could have run a heavier decoder, but only with network delay and the risk
+of losing the link mid-run.
 
 ## 10. Changes from the design review
 

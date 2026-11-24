@@ -36,7 +36,7 @@ and shifts where appropriate."
 | Risk | Tribunal 1 concern | Final position | Evidence | Status |
 |---|---|---|---|---|
 | R1 WiFi reconnection affects control timing | Reconnection might starve control | Motion Control runs from a 10 ms cyclic handler at priority 15. WiFi (priority 4) is above it in the kernel, but every application exchange with it is non-blocking (`TMO_POL`) | SYS-01: the car kept following with the link lost for over 4 min; S1-H03 | **Closed on observation**; control-loop jitter under reconnection was not measured |
-| R2 Barcode timings wrong or encoder counts lost on a shared GPIO handler | Interrupt load; "fall back to 1 kHz timer polling if needed" | Encoders and ECHO use the shared dispatcher with short ISRs. The barcode is polled, not interrupt-driven. **The poll runs every 20 ms, not 10 ms** (all 953 logged bar durations are 20 ms multiples) | [software review](software_quality_review.md) F-01; S2-H03 (encoder counts) | **Open**: the 20 ms polling that Tribunal 1 warned about is what was built; small prints are affected |
+| R2 Barcode timings wrong or encoder counts lost on a shared GPIO handler | Interrupt load; "fall back to 1 kHz timer polling if needed" | Encoders and ECHO use the shared dispatcher with short ISRs. The barcode is polled, not interrupt-driven. **The poll runs every 20 ms, not 10 ms** (all 953 logged bar durations are 20 ms multiples) | [software review](software_quality_review.md) F-01; S2-H03 (encoder counts) | **Open**: the 20 ms polling that Tribunal 1 warned about is what was built; small prints are affected, and one 20 ms blip can turn a code into a wrong letter (F-18). Proposals P1 and P2 |
 | R3 Unstable power | Motors and servo might reset the board | Power-bank supply; HC-SR04 on 3V3 (S5 d13); a 0.5 s ultrasonic allowance after power-on (S5 d12) | SYS-11 (9 of 10 cold boots reached the broker; one unexplained); no reset seen in the demo-day logs apart from the operator's restarts | **Partly closed**; supply voltage under load was never measured |
 | R4 Inconsistent data formats between subsystems | Different widths or units | One authoritative layout per interface in `TEAM.md` section 5 and the headers; record sizes checked by S2-U39 | INT-04 to INT-07 | **Closed** |
 | R5 Inaccurate hump measurement from too few bits | Precision loss | 8 bits of whole mm is finer than the measurement error (±2 mm) | S4-H08, demo readings | **Closed** (the error comes from the method, not the bit width; [review](software_quality_review.md) F-04) |
@@ -140,7 +140,8 @@ the latch-to-PWM-off part is measured (S2-H11, worst 952 µs).
 
 | Failure | Why it is not detected | Proposal (not applied) |
 |---|---|---|
-| Car fully off the line | Two sensors straddle the tape, so "both white" also means centred | Track distance since either sensor last saw black; stop after a limit longer than the longest straight gap (needs a track measurement) |
+| Car fully off the line | Two sensors straddle the tape, so "both white" also means centred | A centre sensor (P4); a distance rule alone would also fire on a long centred straight |
+| A noise blip turns a barcode into a different letter (F-18) | Not detected: the corrupted capture decodes cleanly | Stray-mark window check (P2), prototype in the S3 logs |
 | Controller or motion task stalls | Watchdog not armed | Arm `S2_WATCHDOG` after one car run (Entry 4) |
 | IMU fault while driving | `task_imu.c` recovers locally and does not raise a flag | Raise an IMU-fault flag; gate START on IMU ready (Entries 9, 16) |
 | Simultaneous faults | One fault class in telemetry | Fault bitmask in a version 5 frame (Entries 11, 19) |

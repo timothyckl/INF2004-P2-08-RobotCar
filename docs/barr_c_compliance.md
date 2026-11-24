@@ -20,7 +20,7 @@ expressions sit inside chapter 1 (1.4 parentheses, 1.6 casts) and chapter 8
 
 | Method | Scope | Output |
 |---|---|---|
-| `tools/barr_c_report.py` (written for this review; report only) | All 128 files: line width, tabs, trailing space, forbidden keywords, braces, constant position, include guards, end-of-file comment, function length, variable naming, uncommented casts | [2026-11-25_barr-c-report.txt](../testing/host/logs/2026-11-25_barr-c-report.txt) |
+| `tools/barr_c_report.py` (written for this review; report only; [first run](../testing/host/logs/2026-11-25_barr-c-report.txt), [after the cast comments](../testing/host/logs/2026-11-25_barr-c-report-2.txt)) | All 128 files: line width, tabs, trailing space, forbidden keywords, braces, constant position, include guards, end-of-file comment, function length, variable naming, uncommented casts | [2026-11-25_barr-c-report.txt](../testing/host/logs/2026-11-25_barr-c-report.txt) |
 | `tools/check_subsystem5_barr_c.py` (enforcing, run by every build) | Subsystem 5, 46 files | "BARR-C check passed" |
 | Strict compile with the target compiler (`testing/host/target_static_check.py`): `-Wall -Wextra -Wconversion -Wsign-conversion -Wshadow -Wmissing-prototypes -Wswitch-default -Wnull-dereference` and others | 49 production `.c` files | 0 warnings in application code |
 | Build flags (S2 d34) | All application objects | Built with `-Wall -Wextra -Wconversion -Wsign-conversion -Wshadow -Werror` |
@@ -48,7 +48,7 @@ Non-compliant: not met. Not verified: not fully checked.
 | 1.3b | Left brace on its own line | Compliant | 0 | — |
 | 1.4a, b | Parenthesise to show order; operands of `&&` and `\|\|` in brackets | Compliant (review) | `-Wparentheses` clean; review of the files read for the software review | Not counted by script |
 | 1.5a, b | Avoid unclear abbreviations; keep a project abbreviations table | **Compliant from 2026-11-25** | Section 4 of this report is that table | Previously missing |
-| 1.6a | A comment on every cast saying why it is safe | **Non-compliant** | 479 casts with no comment on their line | Open since S2 d30. The strict compile (`-Wconversion`, `-Wsign-conversion`) shows no implicit conversion, so each cast is deliberate, but its range argument is not written down |
+| 1.6a | Each cast has an associated comment showing it is safe for every possible value | **Partial** | Production code: every **narrowing** cast (to `uint8_t`, `uint16_t`, `int16_t`, `int8_t`, `char`) now has a range comment (added 2026-11-25, `032437c`, comments only, UF2 byte-identical). 268 casts have an associated comment; 210 do not, all widening, same-width, `tm_printf`-argument or handle casts (see below). Test code: 43 without | The rule asks for an associated comment, not one on the same line, so the 2026-11-25 report counts a range comment in the same paragraph or earlier in the same function. The 210 remaining are covered by the class justification in section 3a, a recorded deviation rather than 210 identical comments |
 | 1.7a, b | No `auto`, no `register` | Compliant | 0, 0 | — |
 | 1.7c | Avoid `goto` | Compliant | 0 | — |
 | 1.7d | Avoid `continue` (preferred practice) | **Deviation** | 7 (`drv_encoder.c` 2, `drv_gpio_irq.c` 1, `s3_follow.c` 3, `task_imu.c` 1) | Each skips to the next poll period in a tested loop (S2 d30) |
@@ -108,11 +108,11 @@ Non-compliant: not met. Not verified: not fully checked.
 | Rule | In our words | Status | Count / note |
 |---|---|---|---|
 | 7.1a–d | No keyword or library names, no leading underscore, at most 31 characters | Compliant (review) | `test_pass_` in `TEST_INIT` has a trailing, not leading, underscore |
-| 7.1e | Names at least 3 characters, including loop counters | **Partial** | 66 short names (mostly `i` 19, `id` 10, `v` 6) |
+| 7.1e | Names at least 3 characters, including loop counters | **Partial** | 66 short names: 39 in production code, 27 in tests (mostly `i`, `id`, `v`) | Not renamed after the demo: a mass rename across five owners' files is a large diff for no behaviour change |
 | 7.1f, h | Lower case with underscores | Compliant (review) | — |
 | 7.1j | Globals start with `g` | **Deviation** | The interface objects (`controller_flags`, `safety_flags`, `remote_q`, `line_q`, `scan_q`, `nav_q`, `motion_q`) keep their agreed design names (S2 d30); all other file-scope variables use `g_` |
 | 7.1k | Pointers start with `p` | Partial | 7 exceptions, all name or string tables (`names`, `reasons`, `name`) |
-| 7.1m | Booleans start with `b` | **Partial** | 100 local Booleans without `b_` (for example `valid`, `ok`, `accepted`); structure members and globals mostly comply (`b_valid`, `gb_us_overrun`) |
+| 7.1m | Booleans start with `b` | **Partial** | 100 local Booleans without `b_`: 77 in production code, 23 in tests (for example `valid`, `ok`, `accepted`); structure members and globals mostly comply (`b_valid`, `gb_us_overrun`) | As 7.1e |
 | 7.2a | Initialise every variable before use | Compliant | `-Wall` (`-Wmaybe-uninitialized`) and `-fanalyzer` report none |
 | 7.2c | File-scope variables grouped at the top | Compliant (review) | — |
 
@@ -141,6 +141,31 @@ handle that separately:
 | Urgent events | Several tasks | Controller | Kernel event-flag bits (set and cleared atomically by the kernel) |
 | Barcode letter table (`s3_nav.c`) | WiFi task | S3 loop | Single-byte `volatile` entries; a read can never be torn (see the review, F-13) |
 
+## 3a. Casts left without a per-cast comment (rule 1.6a deviation)
+
+The checker (`tools/barr_c_report.py`, [2026-11-25 output](../testing/host/logs/2026-11-25_barr-c-report-2.txt))
+classifies the 210 production casts that still have no associated comment.
+None of them can lose information, so we justify them as classes:
+
+| Class | About | Why it is safe for every value |
+|---|---|---|
+| Widening or same-width (`int32_t`, `int64_t`, `uint32_t`, `UW` from a narrower or equal type) | 150 | The destination holds every value of the source; used to make the arithmetic width explicit before a multiply or subtraction, as rule 5.3 and `-Wconversion` require |
+| `INT`/`UINT`/`UW` arguments to `tm_printf` | 97 (overlaps the row above) | Matches the argument to the `%d`/`%u` conversion; the value is printed, never used again |
+| Function pointers and kernel handles (`FP`, `ID`) | 7 | Required by the µT-Kernel call signature (task and handler entry points) |
+
+The `(UB *)` casts on `tm_printf` format strings change only the pointer
+type of a string literal (char to unsigned char), as the kernel's console
+interface requires.
+
+**Checker changes (2026-11-25).** The first version counted only a comment
+on the same line, which overstated the problem (479). It now accepts a
+comment in the same paragraph, or a comment earlier in the same function
+that argues the range (words such as "fits", "at most", "wraps",
+"saturated", "checked"), and reports production and test code separately.
+It is still a text-pattern tool: it can miss a cast split over lines and
+cannot judge whether a comment's argument is correct, so the narrowing
+casts were also reviewed by hand.
+
 ## 4. Project abbreviations (rule 1.5b)
 
 | Abbreviation | Meaning | Abbreviation | Meaning |
@@ -167,13 +192,15 @@ handle that separately:
 | Status | Rules |
 |---|---|
 | Compliant | 1.1c, 1.1d, 1.2a, 1.3a, 1.3b, 1.4, 1.5 (from this report), 1.7a–c, 1.8a, 1.8c, 2.1, 3.1, 3.4, 3.5a, 3.6, 4.2, 4.3, 4.4, 5.1, 5.3–5.6, 6.1, 6.5, 7.1a–d, 7.1f–h, 7.2, 8.1–8.6 |
-| Partial | 1.8b, 2.2, 6.3, 6.4a, 7.1e, 7.1k, 7.1m |
+| Partial | 1.6a, 1.8b, 2.2, 6.3, 6.4a, 7.1e, 7.1k, 7.1m |
 | Deviation (agreed) | 1.1a, 1.7d, 4.1, 5.2a, 6.2a, 7.1j |
-| Non-compliant | 1.6a (comments on casts) |
+| Non-compliant | None found by the checks above; this is not a claim of full compliance |
 | Not verified | 3.2, 3.3 |
 
-The largest open item is 1.6a. Adding a range comment to each of the
-479 casts, and renaming the local Booleans and short loop counters (7.1e,
-7.1m), changes no behaviour and can be done mechanically, but each file
-would then need its host tests and a rebuild with a checksum comparison.
-We list it as the next clean-up rather than doing it after the demo.
+After the demo we added a range comment to every narrowing cast in the
+production code and proved the change harmless by rebuilding: the mission
+UF2 stayed byte-identical. The largest open items are now the naming rules
+7.1e and 7.1m (39 short names and 77 Booleans without `b_` in production
+code). Renaming them changes no behaviour and could be verified the same
+way, but it touches most files of all five subsystems, so we list it as
+the next clean-up rather than doing it after the assessment.
