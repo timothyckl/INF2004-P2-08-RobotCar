@@ -323,6 +323,7 @@ These change the car's behaviour, so they need team approval and car tests
 before use. They are listed in priority order.
 
 1. F-01: 10 ms barcode and line sampling from a cyclic handler; re-run SYS-01 and SYS-02.
+1. F-17: stop on persistent line loss (distance since either sensor last saw black); measure the track's longest edge-free stretch first.
 2. F-02 and F-03: junction event in telemetry; bench test of the course junction; then SYS-03.
 3. F-06: fault detail or bitmask in telemetry (version 5 frame).
 4. F-08: arm the watchdog after one car run.

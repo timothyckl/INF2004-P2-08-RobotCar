@@ -203,8 +203,8 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Tests | S2-U25 to U32, U41, U42, U47 to U49, U78 (host); INT-05 |
 | Criterion | Each fault latches STOP; recovery needs RESET then START |
 | Result | Host tests pass. INT-05 **Pass**. Demo: four motion faults and one scan fault each latched STOP; each cleared only after a RESET from the dashboard or a GP20 press (dashboard logs) |
-| Status | **Pass** (paths observed on the car); fault injection on the car not done |
-| Limitations | The fault detail is not in telemetry |
+| Status | **Partial**: the fault paths were observed on the car, but line loss is not fully detected (F-17); fault injection on the car not done |
+| Limitations | The fault detail is not in telemetry. A car that runs fully off the line reads as centred, so "persistent line loss" is caught only as a stale report or an over-long crossing or exit ([review](software_quality_review.md) F-17) |
 
 ### FR12 — stop when lifted
 

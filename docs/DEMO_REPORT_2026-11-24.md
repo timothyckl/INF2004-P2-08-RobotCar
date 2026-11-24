@@ -92,6 +92,16 @@ lifted print, a change in sensor height, or the car slowing or turning over
 the code changes the measured widths. These are plausible causes of the
 missed reads; the demo logs do not show which one applied.
 
+Since the demo we found two code-level factors (see the
+[software review](software_quality_review.md), F-01 and F-09). The barcode
+is sampled every 20 ms, not the intended 10 ms: every one of the 324 bar
+durations in the demo-day console log is a multiple of 20 ms. That is
+fine for the large print but coarse for the small print, whose narrow
+spaces read 20 to 80 ms. Also, the barcode white limits were measured
+before the sensor was lowered. Host tests (S3-U02) show the decoder itself
+copes with a steady speed change of 0.4 to 2.5 times across one code and
+never turns one misread element into a wrong letter.
+
 **Earlier evidence.**
 
 - 17 Nov, `8232e75`: [4/4 F reads while driving](../testing/subsystem3/logs/2026-11-17_s3-bar-drive-5.txt).
@@ -125,7 +135,13 @@ the controller confirms a junction (both front sensors on black) after the
 command is held ([`task_controller.c`](../app_program/subsystem2/task_controller.c),
 [`nav_control.c`](../app_program/subsystem2/nav_control.c)). The junction
 and hold messages go only to the USB console, which was not captured, so we
-cannot say why no turn started. The two short repeat runs ended with a
+cannot say why no turn started. One clue is in the telemetry: in the 1 Hz frames
+after each RIGHT decode the line position never read BOTH (both sensors on
+black), while BOTH frames appear elsewhere in the logs. Frames are 1 s
+apart, so this suggests but does not prove that no junction was confirmed.
+Junction confirmation needs both front sensors on black for 100 ms; a
+branch that leaves on one side only would read as a curve (review F-02).
+The shape of the demo junction was not recorded. The two short repeat runs ended with a
 pick-up stop 3–5 s after the decode, before the car reached a junction.
 
 **Earlier evidence.**

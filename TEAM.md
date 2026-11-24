@@ -182,6 +182,9 @@ the tasks the mission image creates (S2 decision 28).
 | 5 | 20–21 | obstacle_scan – 20 – any |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
+The core column applies only to a dual-core build (`SMP=1`). Since S2
+decision 33 the mission is built with `SMP=0`, so every task runs on the
+one core and the affinity is ignored (`app_start_task()`).
 
 ## 5. Interfaces between subsystems
 
