@@ -118,6 +118,20 @@ class DescribeTest(unittest.TestCase):
         self.assertIsNone(d["stop_cause_name"])   # not latched
 
 
+class SubscriptionsTest(unittest.TestCase):
+    def test_heartbeat_under_prefix_is_not_subscribed_twice(self):
+        self.assertEqual(server.subscriptions("p2-08/car", "p2-08/car/heartbeat"),
+                         [("p2-08/car/#", 0)])
+
+    def test_heartbeat_elsewhere_is_added(self):
+        self.assertEqual(server.subscriptions("p2-08/car", "robot/heartbeat"),
+                         [("p2-08/car/#", 0), ("robot/heartbeat", 0)])
+
+    def test_similar_prefix_is_not_covered(self):
+        self.assertEqual(server.subscriptions("p2-08/car", "p2-08/car2/hb"),
+                         [("p2-08/car/#", 0), ("p2-08/car2/hb", 0)])
+
+
 class ChangesTest(unittest.TestCase):
     def d(self, **kw):
         return server.describe(decoder.parse(frame(**kw)))

@@ -93,6 +93,19 @@ def check_letters(table: Any) -> str | None:
     return None
 
 
+def subscriptions(prefix: str, heartbeat: str) -> list[tuple[str, int]]:
+    """Topics to subscribe to, each message once.
+
+    The heartbeat topic is usually <prefix>/heartbeat, which <prefix>/#
+    already covers; subscribing to it again makes the broker deliver every
+    heartbeat twice (seen in the 2026-11-24 logs).
+    """
+    topics = [(f"{prefix}/#", 0)]
+    if not heartbeat.startswith(f"{prefix}/"):
+        topics.append((heartbeat, 0))
+    return topics
+
+
 def restarted(previous: int | None, text: str) -> tuple[int | None, bool]:
     """Heartbeat count, and whether it shows a car restart.
 
@@ -260,8 +273,8 @@ class Bridge:
             self.store.event(f"broker {self.args.broker}:{self.args.port} "
                              f"{'connected' if ok else f'refused ({reason})'}")
         if ok:
-            client.subscribe([(f"{self.args.prefix}/#", 0),
-                              (self.args.heartbeat, 0)])
+            client.subscribe(subscriptions(self.args.prefix,
+                                           self.args.heartbeat))
 
     def _on_disconnect(self, client, userdata, flags, reason, props) -> None:
         with self.store.lock:
