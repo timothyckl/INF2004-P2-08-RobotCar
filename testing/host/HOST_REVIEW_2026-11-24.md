@@ -1,6 +1,6 @@
 # 24 November 2026 — host regression review
 
-Two runs of the existing host suites (`make -C testing/host`, C99,
+Three runs of the existing host suites (`make -C testing/host`, C99,
 `-Wall -Wextra -Werror -Wshadow -pedantic`; S1 and S3 add `-Wconversion`,
 S1 also `-Wsign-conversion`). All three are software-only checks after the
 demo.
