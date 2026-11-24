@@ -51,6 +51,7 @@ maintainability or documentation.
 | F-14 | Tests | Six tests ran but were not defined in any test log | Low | **Applied** (`ad2b48c`) |
 | F-15 | S4 tests | Mission hump settings repeated in a test | Low | Proposal |
 | F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Proposal |
+| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Proposal (needs a track measurement) |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -128,6 +129,20 @@ command was held. The junction and hold messages are console-only. In the
 practice session, the same logic completed a U-turn (13:42:33 to 13:42:50).
 *Proposal:* add a "junction confirmed" event to telemetry (one flag bit),
 and repeat SYS-03 with the console captured.
+
+**F-17 (High, proposal) — line loss not detected.** The two front sensors
+straddle the 18 mm tape, so both white is the normal "centred" reading
+(S2 d21 makes the same point for the bypass align). If the car leaves the
+line completely, both sensors also read white, and `line_control.c` keeps
+commanding straight. The checks that do stop the car cover a stale or
+invalid report (500 ms), a crossing longer than 1.5 s and a junction exit
+longer than 2.5 s, but not a car that has simply run off. FR11 asks for
+persistent line loss to latch STOP, so this is a gap against our own
+requirement. In practice curve holding (`CTRL_LINE_*_HOLD_MS`) keeps the
+car turning after a sensor sees black, which is why SYS-01 passed.
+*Proposal:* track the distance since either sensor last saw black and
+latch STOP when it exceeds the longest straight stretch with no edge
+contact (to be measured on the track).
 
 **F-08 (Medium, proposal) — watchdog off.** `S2_WATCHDOG` defaults to 0, so
 the hardware watchdog (`drv_watchdog.c`, tested in S2-H05) is not armed in
