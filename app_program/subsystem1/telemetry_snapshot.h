@@ -40,7 +40,8 @@ typedef struct
                                    motion_valid */
     uint16_t forward_mm;        /* ultrasonic, 20..4000; forward_valid */
     uint16_t nearest_mm;        /* nearest obstacle ray; profile_valid */
-    uint16_t width_mm;          /* observed span;  shape_valid */
+    uint16_t width_mm;          /* observed span;  shape_valid, or the
+                                   unrefined raw span; width_raw */
     int16_t  centre_offset_mm;  /* left positive;  shape_valid */
     uint8_t  state;             /* S2_SYS_* */
     uint8_t  mode;              /* S2_MODE_* */
@@ -49,6 +50,10 @@ typedef struct
     uint8_t  scan_result;       /* SCAN_TELEMETRY_* result */
     uint8_t  bypass_side;       /* SCAN_TELEMETRY_SIDE_* */
     uint8_t  hump_max_mm;       /* run maximum, saturated; hump_valid */
+    uint8_t  hump_last_mm;      /* last completed hump, saturated;
+                                   hump_last_valid */
+    uint8_t  hump_count;        /* humps this run, saturates at 255;
+                                   0 when S4 status is unavailable */
     char     barcode;           /* last letter, 'A'..'Z'; barcode_valid */
     uint8_t  barcode_command;   /* S2_NAV_*; barcode_valid */
     uint8_t  barcode_count;     /* letters decoded, wraps; barcode_valid */
@@ -64,6 +69,9 @@ typedef struct
     bool     profile_valid;
     bool     shape_valid;
     bool     barcode_valid;     /* a letter was decoded since power-up */
+    bool     hump_last_valid;
+    bool     width_raw;         /* width_mm is the raw span (an edge is
+                                   missing); ignored when shape_valid */
 } telemetry_encoder_snapshot_t;
 
 #endif /* TELEMETRY_SNAPSHOT_H */

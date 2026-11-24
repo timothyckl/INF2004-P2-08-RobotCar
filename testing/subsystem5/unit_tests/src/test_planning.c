@@ -450,6 +450,9 @@ test_planning_profile (test_interface_api_t const * p_api)
             && (106u == plan.profile.left_extent_mm)
             && (71u == plan.profile.right_extent_mm)
             && (177u == plan.profile.observed_width_mm)
+            /* Raw span: left 410 mm at 25 deg (173) + right 410 mm at
+               20 deg (140), with no beam allowance. */
+            && (313u == plan.profile.raw_width_mm)
             && (17 == plan.profile.centre_offset_mm));
 }
 
@@ -480,6 +483,9 @@ test_planning_partial_profile (test_interface_api_t const * p_api)
                                  && (!plan.profile.b_left_edge)
                                  && (!plan.profile.b_shape_estimated)
                                  && (0u == plan.profile.observed_width_mm)
+                                 /* Raw span still given: left 410 mm at
+                                    15 deg (106) + right 140. */
+                                 && (246u == plan.profile.raw_width_mm)
                                  && (0 == plan.profile.centre_offset_mm);
 
     bypass_plan_config_t invalid_config = g_planning_config;

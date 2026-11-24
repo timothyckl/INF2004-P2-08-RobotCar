@@ -92,6 +92,12 @@ scan_telemetry_get (scan_telemetry_t * p_out)
                         snapshot.plan.profile.centre_offset_mm;
                     view.flags |= SCAN_TELEMETRY_SHAPE_ESTIMATE;
                 }
+                else
+                {
+                    view.observed_width_mm =
+                        snapshot.plan.profile.raw_width_mm;
+                    view.flags |= SCAN_TELEMETRY_WIDTH_RAW;
+                }
             }
 
             if (SCAN_TASK_RESULT_PLAN == snapshot.result)

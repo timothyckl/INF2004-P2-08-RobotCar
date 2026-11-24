@@ -67,6 +67,7 @@ static bool s4_test_lift_tilt(void);
 static bool s4_test_lift_once(void);
 static bool s4_test_lift_config_checked(void);
 static bool s4_test_lift_raw_tilt(void);
+static bool s4_test_hump_count(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -150,6 +151,8 @@ subsystem4_test (void)
                "zero lift thresholds or samples are rejected");
     TEST_CHECK("S4-U39", s4_test_lift_raw_tilt(),
                "held unaveraged tilt is a lift, a two-sample jolt is not");
+    TEST_CHECK("S4-U40", s4_test_hump_count(),
+               "hump count and last height survive recovery, not a new run");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -438,6 +441,36 @@ s4_test_new_run_clears_max (void)
 
     return ((!context.result.b_maximum_height_valid) &&
             (0u == context.result.maximum_height_mm));
+}
+
+static bool
+s4_test_hump_count (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_counted;
+    bool b_kept;
+
+    s4_test_calibrate(&context, 0u);
+    (void) s4_test_hump(&context, &time_us, S4_TEST_WHEEL_10MM_PITCH_MG,
+                        S4_TEST_WHEEL_10MM_ROLL_MG, true);
+    (void) s4_test_hump(&context, &time_us, (S4_TEST_WHEEL_10MM_PITCH_MG / 2),
+                        (S4_TEST_WHEEL_10MM_ROLL_MG / 2), true);
+    b_counted = (2u == context.result.hump_count) &&
+                context.result.b_current_height_valid &&
+                (context.result.current_height_mm <
+                 context.result.maximum_height_mm);
+
+    s4_terrain_request_recovery(&context);
+    b_kept = (2u == context.result.hump_count) &&
+             context.result.b_current_height_valid &&
+             (context.result.current_height_mm <
+              context.result.maximum_height_mm);
+
+    s4_terrain_start_new_run(&context);
+
+    return (b_counted && b_kept && (0u == context.result.hump_count) &&
+            (!context.result.b_current_height_valid));
 }
 
 static bool

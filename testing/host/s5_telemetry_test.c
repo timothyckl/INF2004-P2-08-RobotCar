@@ -73,7 +73,8 @@ main (void)
                         && (0u != (view.flags
                                    & SCAN_TELEMETRY_SHAPE_ESTIMATE))
                         && (0u != (view.flags
-                                   & SCAN_TELEMETRY_CLEARANCE_EST));
+                                   & SCAN_TELEMETRY_CLEARANCE_EST))
+                        && (0u == (view.flags & SCAN_TELEMETRY_WIDTH_RAW));
 
     g_snapshot.verdict = SCAN_TELEMETRY_STALE;
     g_snapshot.result = SCAN_TASK_RESULT_NONE;
@@ -97,13 +98,16 @@ main (void)
 
     g_snapshot.result = SCAN_TASK_RESULT_NO_ROUTE;
     g_snapshot.plan.profile.b_shape_estimated = false;
+    g_snapshot.plan.profile.raw_width_mm = 520u;
 
     bool const b_unknown = scan_telemetry_get(&view)
                            && (0u != (view.flags
                                       & SCAN_TELEMETRY_PROFILE_SEEN))
                            && (0u == (view.flags
                                       & SCAN_TELEMETRY_SHAPE_ESTIMATE))
-                           && (0u == view.observed_width_mm)
+                           && (0u != (view.flags
+                                      & SCAN_TELEMETRY_WIDTH_RAW))
+                           && (520u == view.observed_width_mm)
                            && (SCAN_TELEMETRY_SIDE_NONE == view.bypass_side)
                            && (0u == view.estimated_min_clearance_mm);
 

@@ -54,12 +54,17 @@ function render(s) {
     set("linetext", line === null ? "no fresh line report" : line);
 
     set("hump", t.hump_valid ? `${t.hump_max_mm} mm` : DASH);
+    set("humplast", t.hump_last_valid ? `${t.hump_last_mm} mm` : DASH);
+    // Older frames (version 3) have no count.
+    set("humpcount", t.version >= 4 ? `${t.hump_count}` : DASH);
 
     set("fwd", t.forward_valid ? `${t.forward_mm} mm` : DASH);
     set("scan", t.scan_result ?
         `${t.scan_name}${t.bypass_side ? ` (bypass ${t.side_name})` : ""}` : "none");
     set("near", t.profile_valid ? `${t.nearest_mm} mm` : DASH);
-    set("width", t.shape_valid ? `${t.width_mm} mm` : DASH);
+    // A raw width is shown even though an edge is missing; it overstates.
+    set("width", t.shape_valid ? `${t.width_mm} mm`
+        : t.width_raw ? `${t.width_mm} mm (raw, edge missing)` : DASH);
     set("centre", t.shape_valid ? `${t.centre_offset_mm} mm` : DASH);
   }
   history = s.speeds;

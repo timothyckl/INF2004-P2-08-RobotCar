@@ -27,6 +27,7 @@ size_t telemetry_encoder_encode (
         (capacity >= TELEMETRY_ENCODER_SIZE))
     {
         const telemetry_encoder_snapshot_t * const p_s = p_snapshot;
+        bool const b_width_raw = p_s->width_raw && (!p_s->shape_valid);
         uint8_t const flags0 = (uint8_t)(
             flag_if(p_s->distance_valid, TELEMETRY_ENCODER_DISTANCE_VALID)
             | flag_if(p_s->stopped, TELEMETRY_ENCODER_STOPPED)
@@ -34,12 +35,15 @@ size_t telemetry_encoder_encode (
             | flag_if(p_s->stop_latched, TELEMETRY_ENCODER_STOP_LATCHED)
             | flag_if(p_s->motion_valid, TELEMETRY_ENCODER_MOTION_VALID)
             | flag_if(p_s->line_fresh, TELEMETRY_ENCODER_LINE_FRESH)
-            | flag_if(p_s->hump_valid, TELEMETRY_ENCODER_HUMP_VALID));
+            | flag_if(p_s->hump_valid, TELEMETRY_ENCODER_HUMP_VALID)
+            | flag_if(p_s->hump_last_valid,
+                      TELEMETRY_ENCODER_HUMP_LAST_VALID));
         uint8_t const flags1 = (uint8_t)(
             flag_if(p_s->forward_valid, TELEMETRY_ENCODER_FORWARD_VALID)
             | flag_if(p_s->profile_valid, TELEMETRY_ENCODER_PROFILE_VALID)
             | flag_if(p_s->shape_valid, TELEMETRY_ENCODER_SHAPE_VALID)
-            | flag_if(p_s->barcode_valid, TELEMETRY_ENCODER_BARCODE_VALID));
+            | flag_if(p_s->barcode_valid, TELEMETRY_ENCODER_BARCODE_VALID)
+            | flag_if(b_width_raw, TELEMETRY_ENCODER_WIDTH_RAW));
 
         p_output[0] = TELEMETRY_ENCODER_VERSION;
         p_output[1] = flags0;
@@ -62,7 +66,8 @@ size_t telemetry_encoder_encode (
         put_u16(&p_output[20],
                 (uint16_t)(p_s->profile_valid ? p_s->nearest_mm : 0u));
         put_u16(&p_output[22],
-                (uint16_t)(p_s->shape_valid ? p_s->width_mm : 0u));
+                (uint16_t)((p_s->shape_valid || b_width_raw)
+                           ? p_s->width_mm : 0u));
         put_s16(&p_output[24],
                 (int16_t)(p_s->shape_valid ? p_s->centre_offset_mm : 0));
         p_output[26] = (uint8_t)(p_s->hump_valid ? p_s->hump_max_mm : 0u);
@@ -75,6 +80,9 @@ size_t telemetry_encoder_encode (
                        0u)
             | (uint8_t)((p_s->barcode_valid
                          ? (p_s->barcode_count & 0x0fu) : 0u) << 4u));
+        p_output[29] = (uint8_t)(p_s->hump_last_valid
+                                 ? p_s->hump_last_mm : 0u);
+        p_output[30] = p_s->hump_count;
         written = TELEMETRY_ENCODER_SIZE;
     }
 

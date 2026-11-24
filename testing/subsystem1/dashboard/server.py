@@ -1,4 +1,4 @@
-"""Local MQTT dashboard for the P2-08 robot car (telemetry versions 2, 3).
+"""Local MQTT dashboard for the P2-08 robot car (telemetry versions 2-4).
 
 Subscribes to the car's topics, decodes telemetry with the shared reference
 decoder (../decode_telemetry_v2.py), records every message to a JSON-lines
@@ -53,9 +53,9 @@ TYPES = {".html": "text/html; charset=utf-8",
 # flags0 / flags1 bits (telemetry_encoder.h)
 F0 = {"distance_valid": 0x01, "stopped": 0x02, "link_up": 0x04,
       "stop_latched": 0x08, "motion_valid": 0x10, "line_fresh": 0x20,
-      "hump_valid": 0x40}
+      "hump_valid": 0x40, "hump_last_valid": 0x80}
 F1 = {"forward_valid": 0x01, "profile_valid": 0x02, "shape_valid": 0x04,
-      "barcode_valid": 0x08}
+      "barcode_valid": 0x08, "width_raw": 0x10}
 
 
 def describe(fields: dict[str, Any]) -> dict[str, Any]:
@@ -130,6 +130,9 @@ def changes(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if new["scan_result"] != old["scan_result"] and new["scan_result"] != 0:
         side = f" side {new['side_name']}" if new["bypass_side"] else ""
         events.append(f"scan result: {new['scan_name']}{side}")
+    if new["hump_count"] > old["hump_count"] and new["hump_last_valid"]:
+        events.append(f"hump {new['hump_count']} measured: "
+                      f"{new['hump_last_mm']} mm")
     if new["hump_valid"] and new["hump_max_mm"] > old["hump_max_mm"]:
         events.append(f"highest hump now {new['hump_max_mm']} mm")
     return events

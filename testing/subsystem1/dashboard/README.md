@@ -14,8 +14,8 @@ Fields whose validity flag is clear are shown as "—", not as zero.
 | Motion (S2) | left/right wheel speed, distance, heading, last 60 s of wheel speeds | telemetry |
 | Line & barcode (S3) | which front sensor is on black; last barcode letter, its command, letters read | telemetry (barcode: version 3) |
 | Barcode letters | which letter means left, right, straight and U-turn; Send to car, A–D (fills in the boot letters) | command topic (S1 decision 6) |
-| Terrain (S4) | highest hump of the run | telemetry |
-| Obstacle (S5) | forward range, last scan result and bypass side, nearest point, width, centre offset | telemetry |
+| Terrain (S4) | highest hump of the run, last hump, humps measured | telemetry (last hump and count: version 4) |
+| Obstacle (S5) | forward range, last scan result and bypass side, nearest point, width (a raw width, marked "raw, edge missing", when an edge was not found), centre offset | telemetry (raw width: version 4) |
 | Events | state, mode (with the barcode command on NAVIGATE), fault, STOP and its cause, each barcode read, scan and hump changes, commands sent, broker link | derived |
 | Link | good/bad frames, heartbeat, the car's telemetry counters, session log file | heartbeat, stats |
 

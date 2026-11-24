@@ -235,6 +235,58 @@ after a simulated `hb 0`. On the car on 2026-11-23 (system test log):
 with LEFT set to F, `F` decoded as LEFT and the car took the left branch,
 and the table was re-sent after a restart. One junction only.
 
+### 7. Telemetry frame version 4: last hump, hump count, raw width (2026-11-24)
+
+Approved by Dalton on the integration branch; also changes subsystems 2, 4
+and 5. First written as "host-tested only; not yet run on the car".
+Correction (2026-11-24, evening): this version was built at 14:17
+(`make NET=lwip MQTT=1 S3_NAV_F=0 -j8`, single core, image SHA-256
+`8cf2c419…416bf3f`) and flashed for the assessed demo runs; the dashboard
+log of 14:17 to 15:03 carries version 4 frames. Tag
+`demo-2026-11-24-flashed` marks the source; see
+[the demo report](DEMO_REPORT_2026-11-24.md).
+
+**Problem.** For the demo the dashboard should show the obstacle width
+even when it is not confirmed, and the last hump's height and the number
+of humps measured. Version 3 sent only the run's highest hump, and a
+width only when both obstacle edges were found (SYS-06 still reports no
+width).
+
+**Decision.** Version 4 is version 3 with two bytes appended (31 bytes).
+Bytes 0–28 keep their version 3 meanings.
+
+| Byte / bit | Field | Range | Source |
+|---|---|---|---|
+| flags0 bit 7 | last hump valid | — | S4 `b_current_height_valid` |
+| flags1 bit 4 | width raw | — | S5 `SCAN_TELEMETRY_WIDTH_RAW` |
+| 29 | `hump_last_mm` | 0–255 mm, saturated like the maximum | S4 `current_height_mm` |
+| 30 | `hump_count` | 0–255, saturates | S4 `hump_count` (new) |
+
+- **Raw width.** When a scan profile exists but an edge is missing, S5
+  now fills `observed_width_mm` with `raw_width_mm`: on each side, the
+  widest lateral reach of any ray within the obstacle depth, with no edge,
+  gap or beam check. It overstates the span (no beam allowance) and is for
+  display only; nothing in S2 or S5 acts on it. Each side is at most
+  2828 mm, so the sum fits `uint16_t`. Width raw is never set together
+  with shape valid; the centre offset stays 0 with a raw width.
+- **Hump count and last height.** S4 counts completed humps per run,
+  saturating at 255. The count and the last height survive a pick-up
+  recalibration, as the maximum already did; `s4_terrain_start_new_run()`
+  clears all three. The count is sent as 0 when S4's status is busy.
+- **Concurrency.** Unchanged: the new fields travel in the same S4 result
+  copy and S5 view, each taken under its provider's lock, and S2 never
+  nests locks (`robot_read_telemetry()`).
+- **Decoders.** `decode_telemetry_v2.py` and the dashboard read versions
+  2–4. The dashboard shows the raw width with "(raw, edge missing)", adds
+  Last hump and Humps measured, and logs "hump N measured: X mm".
+
+**Tests.** S1-U05 (version 4 golden frame; width raw only without a
+shape; last hump guarded by its flag), S4-U40 (count and last height
+across recovery and a new run), S5-U62/U63 (raw span with and without
+both edges), the S5 telemetry view test and the dashboard unit tests pass
+on the host. S2-U71/U72 are updated but run only in the `TEST=1` image,
+which builds without warnings, as does the mission image.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins

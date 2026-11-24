@@ -144,6 +144,7 @@ s4_terrain_start_new_run (s4_terrain_context_t * p_context)
         p_context->result.maximum_height_mm = 0u;
         p_context->result.b_current_height_valid = false;
         p_context->result.b_maximum_height_valid = false;
+        p_context->result.hump_count = 0u;
         p_context->result.hump_contact = S4_HUMP_CONTACT_NONE;
     }
 }
@@ -213,15 +214,18 @@ static void
 s4_calibration_reset (s4_terrain_context_t * p_context)
 {
     s4_terrain_config_t config = p_context->config;
-    uint16_t maximum_height_mm = p_context->result.maximum_height_mm;
-    bool b_maximum_height_valid =
-        p_context->result.b_maximum_height_valid;
+    s4_terrain_result_t const kept = p_context->result;
 
+    /* The run's hump results survive recalibration (a pick-up recovery);
+     * only s4_terrain_start_new_run() clears them. */
     *p_context = (s4_terrain_context_t) {0};
     p_context->config = config;
     p_context->result.state = S4_TERRAIN_STATE_CALIBRATING;
-    p_context->result.maximum_height_mm = maximum_height_mm;
-    p_context->result.b_maximum_height_valid = b_maximum_height_valid;
+    p_context->result.current_height_mm = kept.current_height_mm;
+    p_context->result.b_current_height_valid = kept.b_current_height_valid;
+    p_context->result.maximum_height_mm = kept.maximum_height_mm;
+    p_context->result.b_maximum_height_valid = kept.b_maximum_height_valid;
+    p_context->result.hump_count = kept.hump_count;
     p_context->calibration_min_x = INT16_MAX;
     p_context->calibration_min_y = INT16_MAX;
     p_context->calibration_min_z = INT16_MAX;
@@ -553,6 +557,11 @@ s4_hump_complete (s4_terrain_context_t * p_context)
     p_context->result.current_height_mm = height_mm;
     p_context->result.b_current_height_valid = true;
     p_context->result.hump_contact = p_context->peak_contact;
+
+    if (p_context->result.hump_count < UINT8_MAX)
+    {
+        p_context->result.hump_count++;
+    }
 
     if ((!p_context->result.b_maximum_height_valid) ||
         (height_mm > p_context->result.maximum_height_mm))
