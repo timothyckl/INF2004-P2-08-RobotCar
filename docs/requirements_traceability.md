@@ -371,3 +371,24 @@ fill it in afterwards.
 | NFR3 fault bitmask not implemented | Simultaneous faults not visible | Tribunal 2 Entries 11 and 19 |
 | Watchdog off (`S2_WATCHDOG` 0) | A stalled task is not reset | Arm it after a car run (Tribunal 2 Entry 4) |
 | On-target `TEST=1` run last completed 2026-11-17 | Target-only unit tests not re-run on the v4 code | Run the `TEST=1` image |
+
+## 9. Assessment considerations from the brief
+
+The brief (page 11) lists what teams are assessed on. Our honest position
+against each, with where the evidence is:
+
+| Consideration | What we can show | Status | Main gap |
+|---|---|---|---|
+| Successful completion of mission objectives | Each mission element worked on the car at least once (sections 2 and 4) | Partial | No full-course run (SYS-09); no turn in the assessed runs |
+| Navigation accuracy | Straight 500 mm worst +10 mm; 90° turns inside ±5°; U-turn inside ±10° (S2-H10, small samples) | Partial | Few runs per motion; angles judged by eye |
+| Obstacle avoidance effectiveness | SYS-07 3/3; demo attempt 3 with no contact | Pass on the formal test | Attempts 1 and 2 of the demo did not complete the bypass |
+| Barcode recognition reliability | Never a wrong letter; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01) |
+| Hump measurement capability | Every hump detected; within ±2 mm on every recorded run | Partial | 6 mm minimum reading; no flat lap |
+| System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08) |
+| Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; [review](software_quality_review.md) | Strong | Cast comments (BARR-C 1.6a); long functions |
+| Resource efficiency | No floating point; 2 KB application RAM; 31-byte frame; [data widths](data_widths.md) | Strong | Power not measured |
+| Team integration quality | 14 active interfaces (IF-06 to IF-21) in `TEAM.md` section 5; INT-04 to INT-07 pass; one mission image | Strong | — |
+| Demonstration performance | [Demo report](DEMO_REPORT_2026-11-24.md) | Partial | See the report |
+
+Completion time: SYS-01 laps took 2 min 8 s to 2 min 15 s at 40 mm/s; no
+full-course time exists.
