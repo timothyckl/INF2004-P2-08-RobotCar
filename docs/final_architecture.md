@@ -30,43 +30,64 @@ refuses `CRASH_REPORT=1` and a UART console; the console is USB.
 
 ```mermaid
 flowchart LR
-  subgraph Sensors
-    IR[Front IR x2<br/>ADC0/1]
-    BC[Barcode IR<br/>ADC2]
-    ENC[Encoders x2<br/>GPIO IRQ]
-    IMU[LSM303DLHC<br/>I2C1]
-    US[HC-SR04 + servo]
-    BTN[GP20 button]
+  subgraph SEN["Sensors and inputs"]
+    direction TB
+    IR["Front IR x2<br/>ADC0, ADC1"]
+    BC["Barcode IR<br/>ADC2"]
+    IMU["LSM303DLHC<br/>I2C1"]
+    US["HC-SR04<br/>GP4, GP5"]
+    ENC["Encoders x2<br/>GPIO interrupts"]
+    BTN["GP20 button"]
   end
-  subgraph Tasks
-    S3[S3 line and barcode loop<br/>initial task, pri 1]
-    CTRL[Vehicle Controller<br/>pri 14]
-    MC[Motion Control<br/>pri 15, 10 ms cyclic]
-    S4[IMU and terrain<br/>pri 18]
-    S5[Obstacle scan<br/>pri 20]
-    WIFI[WiFi and MQTT<br/>kernel task, pri 4]
+  subgraph SNS["Sensing tasks"]
+    direction TB
+    S3["S3 line and barcode loop<br/>priority 1"]
+    S4["S4 IMU and terrain<br/>priority 18"]
+    S5["S5 obstacle scan<br/>priority 20"]
+  end
+  subgraph DEC["Decision"]
+    CTRL["Vehicle Controller<br/>priority 14"]
+  end
+  subgraph ACT["Actuation"]
+    direction TB
+    MC["Motion Control<br/>priority 15, 10 ms cyclic"]
+    MOT["Motors<br/>PWM 20 kHz"]
+    SERVO["SG90 servo<br/>PWM 50 Hz"]
+  end
+  subgraph NET["Monitoring"]
+    direction TB
+    WIFI["WiFi and MQTT<br/>kernel task, priority 4"]
+    DASH["Laptop dashboard"]
   end
   IR --> S3
   BC --> S3
-  S3 -- "line_q (line report)" --> CTRL
-  S3 -- "nav_q (letter, command)" --> CTRL
-  ENC --> MC
-  MC -- "motion status (mutex)" --> CTRL
-  CTRL -- "motion_q (move, turn, speed)" --> MC
-  CTRL -- "safety_flags (STOP)" --> MC
-  MC --> MOT[Motors PWM]
   IMU --> S4
-  S4 -- "CTRL_FLG_PICKUP" --> CTRL
-  S4 -- "terrain result (mutex)" --> CTRL
   US --> S5
-  CTRL -- "scan_q (request, authorise)" --> S5
-  S5 -- "CTRL_FLG_HAZARD / SCAN_FAULT" --> CTRL
-  S5 -- "scan status (mutex)" --> CTRL
+  ENC --> MC
   BTN --> CTRL
-  WIFI -- "CTRL_FLG_REMOTE_STOP" --> CTRL
-  WIFI -- "remote_q (START, RESET)" --> CTRL
-  CTRL -- "robot state snapshot (mutex)" --> WIFI
+  S3 -->|"line_q: line report"| CTRL
+  S3 -->|"nav_q: letter, command"| CTRL
+  S4 -.->|"PICKUP flag"| CTRL
+  S5 -.->|"HAZARD, SCAN_FAULT flags"| CTRL
+  S5 -->|"plan and status (mutex)"| CTRL
+  CTRL -->|"scan_q: request, authorise"| S5
+  CTRL -->|"motion_q: move, turn, speed"| MC
+  CTRL -.->|"safety_flags: STOP"| MC
+  MC -->|"status (mutex)"| CTRL
+  MC --> MOT
+  S5 --> SERVO
+  WIFI -.->|"REMOTE_STOP flag"| CTRL
+  WIFI -->|"remote_q: START, RESET"| CTRL
+  WIFI -->|"letter table"| S3
+  CTRL -->|"telemetry snapshot (mutexes)"| WIFI
+  WIFI <-->|"MQTT"| DASH
 ```
+
+Solid arrows are message buffers or data read under a mutex; dashed arrows
+are kernel event flags, used for every urgent stop. Not drawn, to keep the
+diagram readable: S4 and S5 read the run mode and S4 reads the wheel speed
+(IF-14, IF-17), and the telemetry snapshot also reads the S4 and S5 results
+under their own mutexes (`robot_state.c`).
 
 **Rules that hold across the system** (checked in the
 [software review](software_quality_review.md)):
@@ -130,7 +151,7 @@ stateDiagram-v2
   INITIALISING --> READY: Motion Control healthy
   INITIALISING --> FAULT: not healthy within 3 s
   READY --> RUNNING: START [wheels still, motion healthy]
-  RUNNING --> STOPPED: button, remote STOP, pick-up, line stop, scan no-route, bypass failed
+  RUNNING --> STOPPED: button, remote STOP, pick-up, line stop, no route, bypass failed
   RUNNING --> FAULT: motion fault, scan fault, delivery failure
   STOPPED --> READY: RESET [wheels still]
   FAULT --> INITIALISING: RESET [wheels still]
@@ -144,14 +165,14 @@ Inside RUNNING the controller has a mode, sent in telemetry:
 
 ```mermaid
 stateDiagram-v2
-  [*] --> FOLLOW
-  FOLLOW --> SCAN: HAZARD (forward range < 250 mm, or invalid/stale)
+  [*] --> FOLLOW: START
+  FOLLOW --> SCAN: HAZARD, range below 250 mm or invalid
   SCAN --> FOLLOW: result CLEAR
   SCAN --> BYPASS: result PLAN
   BYPASS --> REACQUIRE: plan segments done
-  REACQUIRE --> FOLLOW: line seen for 100 ms and aligned
+  REACQUIRE --> FOLLOW: line seen 100 ms, aligned
   FOLLOW --> NAVIGATE: held command and confirmed junction
-  NAVIGATE --> FOLLOW: on the new line
+  NAVIGATE --> FOLLOW: stopped on the new line
 ```
 
 A NO_ROUTE or FAULT scan result, a failed bypass or reacquisition, and a
@@ -167,15 +188,15 @@ sequenceDiagram
   participant S3 as S3 loop
   participant C as Vehicle Controller
   participant M as Motion Control
-  S3->>S3: capture runs; decode Code 39 (s3_scan_poll)
-  S3->>C: nav_q {letter, command}
-  C->>C: nav_receive: validate, hold command (60 s)
+  S3->>S3: capture bar runs, decode Code 39
+  S3->>C: nav_q: letter and command
+  C->>C: validate, hold the command for up to 60 s
   S3->>C: line_q: BOTH_BLACK reports
-  C->>C: line_control: 100 ms of BOTH_BLACK = junction
-  C->>M: STOP, then MOVE (axle onto junction)
-  C->>M: TURN (spin until the line is seen)
-  M-->>C: DONE / FAULT
-  C->>C: SETTLE, then FOLLOW
+  C->>C: BOTH_BLACK for 100 ms confirms a junction
+  C->>M: STOP, then MOVE the axle onto the junction
+  C->>M: TURN until the line is seen
+  M-->>C: DONE or FAULT
+  C->>C: settle, then FOLLOW
 ```
 
 ### Obstacle to bypass and line recovery
@@ -185,16 +206,16 @@ sequenceDiagram
   participant S5 as Obstacle scan
   participant C as Vehicle Controller
   participant M as Motion Control
-  S5->>C: CTRL_FLG_HAZARD
+  S5->>C: HAZARD flag
   C->>M: STOP
-  C->>S5: scan_q REQUEST (id)
-  M-->>C: wheels still
-  C->>S5: STOP_CONFIRM, AUTHORISE (id)
-  S5->>S5: coarse 15° scan, fine 5° edges, median of 3
-  S5-->>C: status: PLAN + bypass_plan_t (or CLEAR / NO_ROUTE / FAULT)
-  C->>M: plan segments (turn, move, look)
+  C->>S5: scan_q: REQUEST with an ID
+  M-->>C: both wheels still
+  C->>S5: STOP_CONFIRM and AUTHORISE for that ID
+  S5->>S5: coarse 15 degree scan, fine 5 degree edges, median of 3
+  S5-->>C: PLAN with a bypass plan, or CLEAR, NO_ROUTE, FAULT
+  C->>M: plan segments: turn, move, look
   C->>M: search for the line, stop, align
-  C->>C: REACQUIRE to FOLLOW
+  C->>C: REACQUIRE, then FOLLOW
 ```
 
 ### Hump to telemetry
@@ -202,13 +223,14 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   participant I as IMU task
-  participant C as Vehicle Controller
   participant W as WiFi task
-  I->>I: 100 Hz samples; tilt average; height from contact geometry
-  I->>I: rise >= 6 mm, then level < 2 mm: hump complete, round to mm
-  I->>I: update last, maximum, count (mutex)
-  W->>C: robot_read_telemetry (each provider under its own mutex)
-  W->>W: encode 31-byte frame; publish every 1 s
+  participant D as Dashboard
+  I->>I: 100 Hz samples, tilt average, height from contact geometry
+  I->>I: rise of 6 mm then level: hump complete, rounded to mm
+  I->>I: update last, highest and count under the S4 mutex
+  W->>I: read the S4 result without waiting
+  W->>W: encode the 31-byte frame
+  W->>D: publish once per second over MQTT
 ```
 
 ## 6. Sensors: accuracy and limits

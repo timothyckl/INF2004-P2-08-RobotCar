@@ -4,9 +4,9 @@ Group **P2-8**. Ownership below comes from `docs/AAI08_Design_Review.pdf`
 and `docs/AAI08_PostTri1.pdf`. The latter records subsequent design decisions
 and outstanding validation.
 
-The firmware still runs the starter examples. Pin, task, interface and object
-entries marked *example* describe that code, not the planned robot subsystems.
-Update them as each implementation replaces the example. Keep this file current
+The starter examples (producer, consumer, LED task) were removed on
+2026-11-20 (S2 decision 29). Entries still marked *example* or *retired*
+are kept as history of what the template provided. Keep this file current
 so five people can work in one firmware image without resource conflicts.
 
 A **subsystem** is one student's part of the product, with its own folder.
@@ -124,9 +124,10 @@ several peripherals (one owning task each, or one task owning all of them).
 Every other task, in the same subsystem or another one, asks the owning task
 through a kernel object (section 5) and never touches that peripheral itself.
 
-*Why:* this port runs tasks on both cores at the same time. If two tasks
-drive the same I2C or UART block at once, their transfers get mixed up, and
-the drivers have no locking to stop it.
+*Why:* the drivers have no locking. On the dual-core build (`SMP=1`) two
+tasks can drive the same I2C or UART block at the same time; on the
+single-core mission build (S2 decision 33) a higher-priority task can still
+pre-empt a transfer half-way. Either way the transfers get mixed up.
 
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|

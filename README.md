@@ -225,9 +225,8 @@ subfolders, is compiled automatically.
   every subsystem's `subsystemN_init()` (create kernel objects), then every
   `subsystemN_start()` (start tasks). Read its comments first.
 - **One folder per student:** `app_program/subsystem1/` … `subsystem5/`.
-  Each holds that subsystem's implementation. Some starter examples
-  remain until their replacements are integrated; `TEAM.md` sections 4 to 6
-  mark them.
+  Each holds that subsystem's implementation. The course's starter
+  examples were removed on 2026-11-20 (S2 decision 29).
 - `subsystemN.h` is that subsystem's public interface: the object IDs and
   data formats the other subsystems may use.
 - `app.h` holds the definitions shared by the whole team.

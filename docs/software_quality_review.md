@@ -192,9 +192,11 @@ delay takes two ticks. Every one of the 953 bar durations logged on the car
 (629 on 2026-11-17, 324 on demo day) lies within 1 ms of a multiple of
 20 ms. Bar timings therefore have a resolution of 20 ms, which is 0.8 mm at
 40 mm/s. For the large print (narrow runs 120 to 220 ms) that is a 9% to
-17% error, which the decoder tolerates. For the small print, the team
-measured narrow spaces of 20 to 80 ms, that is one to four samples, so one
-sample more or less changes a narrow space by 25% to 100%. FR2's "every
+17% error, which the decoder tolerates. In the demo-day
+console log (small and large prints together), 99 of the 324 logged runs
+are under 100 ms and 30 last only one or two samples (19 to 39 ms); for
+those, one sample more or less changes the run by 50% to 100%, enough to
+turn a narrow element into a wide one. FR2's "every
 10 ms" is also not met in practice. A line report still goes out as soon
 as the position changes; only the repeat of an unchanged position comes
 every 40 ms instead of 30 ms, well inside the 100 ms freshness and 500 ms

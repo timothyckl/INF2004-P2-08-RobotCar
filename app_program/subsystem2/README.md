@@ -283,13 +283,16 @@ slower than these tests.
   following runs at 40 mm/s (`CTRL_LINE_BASE_MM_S`).
 - Move does not slow down near the target, so overshoot depends on braking.
 - Turns use encoder odometry only (the IMU has no gyroscope), so wheel slip
-  shows up directly as angle error. The track width was set by eye.
+  shows up directly as angle error. The effective track width came from
+  S2-H08 and was rescaled with the wheel circumference in S2 decision 31;
+  turn angles in S2-H10 were judged by eye.
 - The encoder decoder uses the current A/B levels when both A edge bits were
   latched before the shared interrupt runs. It recovers the direction and
   counts the pair as two steps. More than one coalesced pair may undercount,
   so interrupt load still requires physical validation.
 - S2-U37, S2-U39 and S2-U40 (revised for telemetry version 3) have passed on
-  the host only, not yet on the Pico W.
+  the host only, not yet on the Pico W. Telemetry is version 4 since
+  2026-11-24 (S1 decision 7); S2-U71 covers the new hump fields.
 
 ## Test evidence
 

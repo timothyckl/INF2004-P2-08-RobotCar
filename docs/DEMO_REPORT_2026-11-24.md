@@ -30,10 +30,12 @@ source is commit `a41c19c`, tag `demo-2026-11-24-flashed`. A clean rebuild of
 that source (`make -B`, 2026-11-25) produces the same checksum. The tag
 `demo-2026-11-24` (`4a53c23`) marks the image planned the day before; the
 practice session's version 3 frames are consistent with a rebuild of it for
-the hotspot's broker address. The only difference between the two is the
-version 4 telemetry (two extra bytes: last hump, hump count, raw width);
-line following, barcode, navigation, terrain and obstacle logic are the
-same.
+the hotspot's broker address. Between the two images, S1 decision 7 added
+two telemetry bytes: the subsystem 4 code now also counts humps and keeps
+the last one, and subsystem 5 now fills in a raw width when an edge is
+missing, for display only. No line-following, barcode, navigation, hump
+detection or obstacle-planning decision changed
+([`git diff 4a53c23 a41c19c`](https://github.com/timothyckl/INF2004-P2-08-RobotCar/compare/4a53c23...a41c19c)).
 
 ## 2. Timeline of the assessed attempts
 
@@ -96,8 +98,8 @@ Since the demo we found two code-level factors (see the
 [software review](software_quality_review.md), F-01 and F-09). The barcode
 is sampled every 20 ms, not the intended 10 ms: every one of the 324 bar
 durations in the demo-day console log is a multiple of 20 ms. That is
-fine for the large print but coarse for the small print, whose narrow
-spaces read 20 to 80 ms. Also, the barcode white limits were measured
+fine for the large print but coarse for the small print: 99 of the 324
+logged runs were under 100 ms, and 30 lasted only one or two samples. Also, the barcode white limits were measured
 before the sensor was lowered. Host tests (S3-U02) show the decoder itself
 copes with a steady speed change of 0.4 to 2.5 times across one code and
 never turns one misread element into a wrong letter.
@@ -141,8 +143,9 @@ black), while BOTH frames appear elsewhere in the logs. Frames are 1 s
 apart, so this suggests but does not prove that no junction was confirmed.
 Junction confirmation needs both front sensors on black for 100 ms; a
 branch that leaves on one side only would read as a curve (review F-02).
-The shape of the demo junction was not recorded. The two short repeat runs ended with a
-pick-up stop 3–5 s after the decode, before the car reached a junction.
+The shape of the demo junction was not recorded. The two short repeat runs
+ended with a pick-up stop 3 to 5 s after the decode, so they were too short
+to show a turn either way.
 
 **Earlier evidence.**
 

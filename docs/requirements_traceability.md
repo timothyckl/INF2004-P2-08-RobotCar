@@ -87,7 +87,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Criterion | 3 laps, no wheel leaves the track, no STOP before the lift |
 | Result | SYS-01 **Pass** on 2026-11-20 (3 laps of 2 min 8 s to 2 min 15 s). Demo: followed the line in every attempt |
 | Status | **Pass** |
-| Limitations | Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
+| Limitations | The requirement says sensors are read every 10 ms; the loop actually runs every 20 ms because of the 10 ms kernel tick ([review](software_quality_review.md) F-01). A line report still goes out at once when the position changes. Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
 
 ### FR3 — decode Code 39 barcodes
 
@@ -100,7 +100,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Criterion | ≥ 4 of 5 passes per barcode, no wrong letter |
 | Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes |
 | Status | **Partial**: decoding works and never gave a wrong letter, but did not reach 4 of 5 |
-| Limitations | Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
+| Limitations | Bar timings have 20 ms resolution (F-01), coarse for small prints. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
 
 ### FR4 — carry out the barcode command at the next junction
 
