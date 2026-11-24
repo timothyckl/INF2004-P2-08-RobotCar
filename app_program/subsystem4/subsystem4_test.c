@@ -68,6 +68,7 @@ static bool s4_test_lift_once(void);
 static bool s4_test_lift_config_checked(void);
 static bool s4_test_lift_raw_tilt(void);
 static bool s4_test_hump_count(void);
+static bool s4_test_hump_floor(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -153,6 +154,8 @@ subsystem4_test (void)
                "held unaveraged tilt is a lift, a two-sample jolt is not");
     TEST_CHECK("S4-U40", s4_test_hump_count(),
                "hump count and last height survive recovery, not a new run");
+    TEST_CHECK("S4-U41", s4_test_hump_floor(),
+               "mission rise and scale: no hump reads below 6 mm");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -471,6 +474,59 @@ s4_test_hump_count (void)
 
     return (b_counted && b_kept && (0u == context.result.hump_count) &&
             (!context.result.b_current_height_valid));
+}
+
+/*
+ * S4-U41: with the mission's hump settings (task_imu.c: S4_RISE_UM 6000,
+ * S4_HEIGHT_SCALE_PERMILLE 851), sweep a held both-wheel tilt from 1 to
+ * 200 mg forward. Every completed hump must read at least 6 mm, the
+ * lowest must read exactly 6 mm, and an ideal 5 mm step (57 mg, about
+ * 4.3 mm after scaling) must not be a hump. The values are repeated here
+ * because task_imu.c keeps them private; change both together.
+ */
+static bool
+s4_test_hump_floor (void)
+{
+    s4_terrain_config_t config = s4_test_config();
+    uint16_t lowest_mm = UINT16_MAX;
+    bool b_below = false;
+    bool b_five_mm_hump = true;
+
+    config.rise_um = 6000u;
+    config.height_scale_permille = 851u;
+
+    for (int16_t pitch_mg = 1; pitch_mg <= 200; pitch_mg++)
+    {
+        s4_terrain_context_t context;
+        uint32_t time_us = 0u;
+        bool b_complete;
+
+        s4_terrain_init(&context, &config);
+        for (uint16_t index = 0u; index < config.calibration_samples;
+             index++)
+        {
+            s4_test_feed(&context, 0, 0, time_us, true);
+            time_us += S4_TEST_SAMPLE_PERIOD_US;
+        }
+
+        b_complete = s4_test_hump(&context, &time_us, (int16_t) -pitch_mg,
+                                  0, true)
+                     && context.result.b_current_height_valid;
+
+        if (b_complete)
+        {
+            uint16_t const height_mm = context.result.current_height_mm;
+
+            lowest_mm = (height_mm < lowest_mm) ? height_mm : lowest_mm;
+            b_below = b_below || (height_mm < 6u);
+        }
+        if (57 == pitch_mg)
+        {
+            b_five_mm_hump = b_complete;
+        }
+    }
+
+    return ((6u == lowest_mm) && (!b_below) && (!b_five_mm_hump));
 }
 
 static bool

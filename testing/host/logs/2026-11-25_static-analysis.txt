@@ -1,0 +1,10 @@
+# python3 testing/host/target_static_check.py, 2026-11-25 00:13 +0800, firmware source of a41c19c (only test files changed since)
+arm-none-eabi-gcc (Arm GNU Toolchain 15.3.Rel1 (Build arm-15.149)) 15.3.1 20260627
+compiler: arm-none-eabi-gcc
+files: 49 application .c files (test files excluded)
+
+== strict warnings: 0 in application code, 117 in third-party headers
+
+== gcc -fanalyzer: 1 in application code, 0 in third-party headers
+  app_program/subsystem3/s3_nav.c:45: buffer overflow [CWE-787]
+exit status 0

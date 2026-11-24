@@ -13,6 +13,7 @@ bool test_nav_control_hold(void);       /* S2-U74 */
 bool test_nav_control_turn(void);       /* S2-U75 */
 bool test_nav_control_uturn(void);      /* S2-U76 */
 bool test_nav_control_fail(void);       /* S2-U77 */
+bool test_nav_control_phase_limits(void); /* S2-U79 */
 
 #endif
 

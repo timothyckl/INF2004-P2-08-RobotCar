@@ -915,6 +915,8 @@ EXPORT void subsystem2_test (void)
                "U-turn counts past 180 degrees, ignores a side branch");
     TEST_CHECK("S2-U77", test_nav_control_fail(),
                "junction turn fails on overshoot, rejection, slow stop");
+    TEST_CHECK("S2-U79", test_nav_control_phase_limits(),
+               "junction step and settle fail at the phase limit");
 
 #if S2_HW_TEST
     hw_test();

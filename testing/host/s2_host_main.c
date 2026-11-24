@@ -78,6 +78,7 @@ static host_case_t const g_cases[] =
     {"S2-U75", test_nav_control_turn},
     {"S2-U76", test_nav_control_uturn},
     {"S2-U77", test_nav_control_fail},
+    {"S2-U79", test_nav_control_phase_limits},
 };
 
 int
