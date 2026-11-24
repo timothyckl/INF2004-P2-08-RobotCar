@@ -250,6 +250,7 @@ static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
 {
     s3_capture_t prefix = *p_capture;
     s3_capture_t suffix = *p_capture;
+    /* count is 24..29 on this path, so count - 20 is 4..9. */
     uint8_t const suffix_start =
         (uint8_t)(p_capture->count - S3_SCAN_CORE_RUNS);
     char prefix_symbol = '\0';

@@ -315,6 +315,7 @@ static int16_t
 s4_lsm303_decode_axis (uint8_t low_byte,
                        uint8_t high_byte)
 {
+    /* Two bytes make a 16-bit word: high << 8 is at most 0xFF00. */
     uint16_t raw_word = ((uint16_t) high_byte << 8u) | low_byte;
     int32_t signed_word = raw_word;
 

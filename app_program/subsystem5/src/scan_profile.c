@@ -276,6 +276,8 @@ scan_profile_ray (uint16_t const * p_distances, bool b_left, uint32_t step)
 static uint16_t
 scan_profile_lateral (uint32_t range_mm, uint32_t step)
 {
+    /* range_mm <= 4000 and sin <= 707 per mille, so the result is at most
+       2828 mm. */
     return ((0u == step) ? 0u
             : (uint16_t)((range_mm * g_profile_sin_permille[step - 1u])
                          / 1000u));

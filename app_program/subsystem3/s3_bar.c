@@ -115,6 +115,8 @@ static bool s3_bar_pattern(uint32_t const * p_runs, uint32_t narrow_max,
 
 static uint8_t s3_bar_pattern_distance(uint16_t first, uint16_t second)
 {
+    /* Patterns are 9-bit, so the XOR and its shifts stay below 512 and the
+       distance is at most 9. */
     uint16_t differences = (uint16_t)(first ^ second);
     uint8_t distance = 0U;
 

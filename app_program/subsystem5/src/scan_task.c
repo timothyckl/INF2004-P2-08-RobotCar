@@ -394,6 +394,8 @@ obstacle_scan_task (INT stacd, void * p_exinf)
         SYSTIM tim;
 
         g_work.captured_ms = (tk_get_tim(&tim) >= E_OK) ? tim.lo : 0u;
+        /* verdict is a forward_monitor verdict (0..3) and flags an OR of
+           single-bit masks, inside uint8_t; age is clamped below. */
         g_work.verdict     = (uint8_t) verdict;
         g_work.forward_mm  = g_monitor.b_is_valid ? g_monitor.distance_mm
                                                   : 0u;

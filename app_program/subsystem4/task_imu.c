@@ -245,6 +245,7 @@ s4_watch_add (ID task_id,
         g_s4_watch_list[count].task_id = task_id;
         g_s4_watch_list[count].p_loops = p_loops;
         g_s4_watch_list[count].p_name = p_name;
+        /* count is below S4_WATCH_MAX (3) here, so count + 1 fits uint8_t. */
         g_s4_watch_count = (uint8_t) (count + 1u);
     }
 }
@@ -466,6 +467,7 @@ s4_sample_to_vehicle (s4_terrain_sample_t * p_sample)
     int16_t sensor_x_mg = p_sample->acceleration_x_mg;
     int16_t sensor_y_mg = p_sample->acceleration_y_mg;
 
+    /* -2047..2048 mg: negating a 12-bit value fits int16_t. */
     p_sample->acceleration_x_mg = (int16_t) -sensor_y_mg;
     p_sample->acceleration_y_mg = sensor_x_mg;
 }

@@ -70,6 +70,7 @@ bool command_parser_parse_assign (const void * p_payload, size_t length,
         if (valid)
         {
             *p_route  = route;
+            /* p_bytes[2] was checked to be 'A'..'Z' above, so it fits char. */
             *p_letter = (char) p_bytes[2];
         }
     }

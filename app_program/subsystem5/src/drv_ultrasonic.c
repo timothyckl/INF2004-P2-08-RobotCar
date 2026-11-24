@@ -125,6 +125,7 @@ drv_ultrasonic_isr (uint32_t gpio, uint32_t events, uint32_t now_us)
     }
     else
     {
+        /* The level is 0 or 1. */
         g_us_edge_high[head] =
             (uint8_t) ((0u != (in_w(GPIO_IN) & (1u << DRV_US_ECHO_PIN)))
                        ? 1u : 0u);

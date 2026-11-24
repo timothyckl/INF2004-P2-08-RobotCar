@@ -211,6 +211,8 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
                 p_m->x_um         = 0;
                 p_m->y_um         = 0;
                 p_m->heading_mdeg = 0;
+                /* run_id wraps at 256 by design; consumers only test for a
+                   change. */
                 p_m->run_id       = (uint8_t)(p_m->run_id + 1u);
                 emit(p_m, p_out, MOTION_EVT_DONE, 0u, id);
             }
@@ -307,6 +309,8 @@ motion_get_status_logic (motion_t const * p_m, motion_status_t * p_status)
                             + counts_mm(p_m, p_m->tot_r)) / 2;
 
     p_status->travel_mm    = (int32_t)travel;
+    /* clamp32() limits each value to int16_t; state is a motion_state_t
+       (0..6) and the flags are two single-bit masks, inside uint8_t. */
     p_status->x_mm         = (int16_t)clamp32(p_m->x_um / UM_PER_MM,
                                               INT16_MIN, INT16_MAX);
     p_status->y_mm         = (int16_t)clamp32(p_m->y_um / UM_PER_MM,
@@ -417,6 +421,7 @@ note_result (motion_t * p_m, uint8_t type, uint8_t reason, uint16_t id)
 static void
 enter_fault (motion_t * p_m, uint8_t reason, motion_output_t * p_out)
 {
+    /* motion_state_t values are 0..6, inside uint8_t. */
     p_out->fault_state    = (uint8_t)p_m->state;
     p_out->fault_reason   = reason;
     p_out->fault_duty_l   = p_m->duty_l;

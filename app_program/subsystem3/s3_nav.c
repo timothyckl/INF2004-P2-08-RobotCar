@@ -21,6 +21,8 @@ s3_command_t s3_nav_command(char symbol)
 
     if ((symbol >= 'A') && (symbol <= 'Z'))
     {
+        /* symbol is 'A'..'Z' here, so the index is 0..25; map entries are
+           s3_command_t values 0..4. */
         command = (s3_command_t)g_s3_nav_map[(uint8_t)(symbol - 'A')];
     }
 
@@ -35,6 +37,8 @@ bool s3_nav_set_letter(s3_command_t command, char letter)
 
     if (valid)
     {
+        /* command is S3_NAV_LEFT..S3_NAV_UTURN (checked above) and letter
+           'A'..'Z', so both casts below are in range. */
         for (uint8_t index = 0U; index < S3_NAV_LETTERS; index++)
         {
             if ((uint8_t)command == g_s3_nav_map[index])

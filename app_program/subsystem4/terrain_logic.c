@@ -394,6 +394,7 @@ s4_average_add (s4_terrain_context_t * p_context,
     p_context->average_y_mg[index] = lateral_mg;
     p_context->average_sum_x_mg += forward_mg;
     p_context->average_sum_y_mg += lateral_mg;
+    /* index < length <= S4_AVERAGE_MAX_SAMPLES (16), so index + 1 fits. */
     p_context->average_index =
         ((uint8_t) (index + 1u) >= length) ? 0u : (uint8_t) (index + 1u);
 

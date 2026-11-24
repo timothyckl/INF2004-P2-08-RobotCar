@@ -28,6 +28,12 @@ size_t telemetry_encoder_encode (
     {
         const telemetry_encoder_snapshot_t * const p_s = p_snapshot;
         bool const b_width_raw = p_s->width_raw && (!p_s->shape_valid);
+        /* Narrowing casts in this function: each flag word is an OR of single-
+           bit masks below 0x100; each field keeps the range of its snapshot
+           member (telemetry_snapshot.h): distances are already uint16_t,
+           speeds are within +/-400 mm/s, heading +/-18000 cdeg and centre
+           offset +/-4000 mm, all inside int16_t, and hump heights are
+           saturated at 255 by S2. */
         uint8_t const flags0 = (uint8_t)(
             flag_if(p_s->distance_valid, TELEMETRY_ENCODER_DISTANCE_VALID)
             | flag_if(p_s->stopped, TELEMETRY_ENCODER_STOPPED)
@@ -97,6 +103,7 @@ static uint8_t pack_codes (uint8_t low, uint8_t high)
     uint8_t const hi = (high > TELEMETRY_SNAPSHOT_CODE_MAX)
                        ? TELEMETRY_SNAPSHOT_CODE_INVALID : high;
 
+    /* lo and hi are at most 15 (clamped above), so hi << 4 is at most 0xF0. */
     return (uint8_t)(lo | (uint8_t)(hi << 4u));
 }
 
@@ -107,6 +114,7 @@ static uint8_t pack_barcode (char letter, uint8_t command)
                          ? (uint8_t)(letter - 'A') : LETTER_INVALID;
     uint8_t const cmd  = (command > COMMAND_MAX) ? COMMAND_INVALID : command;
 
+    /* code is at most 31 and cmd at most 7, so the byte is at most 0xFF. */
     return (uint8_t)(code | (uint8_t)(cmd << 5u));
 }
 
@@ -125,6 +133,7 @@ static void put_s16 (uint8_t * p_out, int16_t value)
 
 static void put_u32 (uint8_t * p_out, uint32_t value)
 {
+    /* The masks keep each byte within 0..0xFF. */
     p_out[0] = (uint8_t)(value & UINT32_C(0xff));
     p_out[1] = (uint8_t)((value >> 8u) & UINT32_C(0xff));
     p_out[2] = (uint8_t)((value >> 16u) & UINT32_C(0xff));

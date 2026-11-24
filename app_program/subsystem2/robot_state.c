@@ -222,6 +222,7 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
     p_out->captured_ms    = p_state->captured_ms;
     p_out->distance_valid = b_known && (d >= 0)
                             && (d <= S2_DISTANCE_MAX_MM);
+    /* d is saturated at S2_DISTANCE_MAX_MM (65535) before the cast. */
     p_out->distance_mm    = (!b_known || (d < 0)) ? 0u
                             : ((d > S2_DISTANCE_MAX_MM)
                                ? (uint16_t)S2_DISTANCE_MAX_MM

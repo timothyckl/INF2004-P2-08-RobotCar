@@ -45,6 +45,9 @@ def strip(source: str) -> str:
     return "".join(out)
 
 
+RANGE_WORDS = re.compile(
+    r"fits?\b|at most|below|within|wraps?|saturat|clamp|mask|checked|"
+    r"overflow|range|cannot|bounded|limit", re.I)
 CONTROL_ON_ONE_LINE = re.compile(
     r"^\s*(?:if|while|for)\s*\(.*\)\s*[^\s{;].*;\s*$")
 BRACE_SAME_LINE = re.compile(
@@ -70,6 +73,7 @@ def check(path: Path, counts: Counter, where: dict) -> None:
     raw = path.read_text(encoding="utf-8", errors="replace")
     code = strip(raw)
     rel = path.relative_to(ROOT).as_posix()
+    is_test = ("test" in path.name)
     raw_lines, lines = raw.split("\n"), code.split("\n")
 
     def hit(rule: str, line_no: int) -> None:
@@ -83,7 +87,12 @@ def check(path: Path, counts: Counter, where: dict) -> None:
             hit("3.5a tab character", no)
         if line.rstrip("\r") != line.rstrip("\r").rstrip():
             hit("3.6 trailing white space", no)
+    func_start = [None]
+    depth_now = 0
     for no, line in enumerate(lines, 1):
+        if (0 == depth_now) and ("{" in line):
+            func_start[0] = max(0, no - 6)  # include the header comment
+        depth_now += line.count("{") - line.count("}")
         for word, rule in (("auto", "1.7a auto"), ("register", "1.7b register"),
                            ("goto", "1.7c goto"),
                            ("continue", "1.7d continue (preferred practice)")):
@@ -100,17 +109,41 @@ def check(path: Path, counts: Counter, where: dict) -> None:
             hit("8.6a constant on the right of == or !=", no)
         for match in DECL_BOOL.finditer(line):
             if not match.group(1).startswith(("b_", "gb_")):
-                hit("7.1m bool variable not named b_...", no)
+                hit("7.1m bool variable not named b_... ("
+                    + ("test" if is_test else "production") + ")", no)
         for match in DECL_POINTER.finditer(line):
             if not match.group(1).startswith(("p_", "pp_", "gp_")):
                 hit("7.1k pointer variable not named p_...", no)
         for match in DECL_ANY.finditer(line):
             if len(match.group(1)) < 3:
-                hit("7.1e variable name under 3 characters", no)
-        if CAST.search(line):
-            comment = raw_lines[no - 1]
-            if "/*" not in comment and "//" not in comment:
-                counts["1.6a cast without a comment on its line"] += 1
+                hit("7.1e variable name under 3 characters ("
+                    + ("test" if is_test else "production") + ")", no)
+        for match in CAST.finditer(line):
+            text = match.group(0)
+            if re.match(r"\(\s*(const\s+)?UB\s*(const\s*)?\*", text):
+                # tm_printf() takes UB *; the cast only changes the pointer
+                # type of a string literal (char to unsigned char).
+                counts["1.6a cast to UB * for tm_printf (interface-required)"] += 1
+                continue
+            # Associated comment: on the line, or in the same paragraph
+            # above it (back to the previous blank line, at most 25 lines).
+            start = no - 1
+            while (start > 0) and (no - start < 25) \
+                    and raw_lines[start - 1].strip():
+                start -= 1
+            nearby = "\n".join(raw_lines[start:no])
+            # Or a comment earlier in the same function that argues the
+            # range (fits, at most, wraps, saturated, checked, ...).
+            body = "\n".join(raw_lines[func_start[0]:no]) \
+                if func_start[0] is not None else ""
+            ranged = any(RANGE_WORDS.search(c)
+                         for c in re.findall(r"/\*.*?\*/", body, re.S))
+            kind = "test" if is_test else "production"
+            if ("/*" in nearby) or ("*/" in nearby) or ranged:
+                counts[f"1.6a cast with an associated comment ({kind})"] += 1
+            else:
+                counts[f"1.6a cast with no associated comment ({kind})"] += 1
+                where[f"1.6a no comment ({kind})"].append(f"{rel}:{no}")
     if path.suffix == ".h":
         guard = re.search(r"#ifndef\s+(\w+)\s*\n\s*#define\s+\1", raw)
         if not guard:

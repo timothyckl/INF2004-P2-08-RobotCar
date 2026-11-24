@@ -112,6 +112,8 @@ s3_ir_adaptive_classify (s3_ir_adaptive_t * p_state, uint16_t sample,
     {
         uint16_t const difference = sample - p_state->filtered;
 
+        /* difference is below the 12-bit ADC range, so the step fits uint16_t
+           and moves filtered towards sample without passing it. */
         p_state->filtered += (uint16_t)((difference + 1u)
                                        / S3_IR_FILTER_DIVISOR);
     }
@@ -119,6 +121,7 @@ s3_ir_adaptive_classify (s3_ir_adaptive_t * p_state, uint16_t sample,
     {
         uint16_t const difference = p_state->filtered - sample;
 
+        /* As above, in the other direction. */
         p_state->filtered -= (uint16_t)((difference + 1u)
                                        / S3_IR_FILTER_DIVISOR);
     }
@@ -201,6 +204,7 @@ s3_ir_adaptive_strength (s3_ir_adaptive_t const * p_state,
             uint32_t const scaled = ((uint32_t)difference * UINT32_C(100))
                                   + ((uint32_t)span / UINT32_C(2));
 
+            /* difference < span here, so the quotient is 0..100. */
             strength = (uint8_t)(scaled / (uint32_t)span);
         }
     }
