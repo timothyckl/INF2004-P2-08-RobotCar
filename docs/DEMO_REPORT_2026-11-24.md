@@ -282,10 +282,12 @@ functional system few hrs before the demo", uploaded by our team member
 Khang.
 
 This is our backup evidence that the integrated system worked on the car
-shortly before the assessment. It was recorded before the demo, so it shows
-what the system could do, not the assessed attempts or their readings. Its
-recording time, firmware build and timestamps of individual features have
-not been added; see [videos/README.md](../videos/README.md).
+shortly before the assessment. The video is unlisted, so anyone with the
+link can watch it. It was recorded before the demo, so it is supporting
+evidence of what the system could do (MR1–MR10), not a record of the
+assessed attempts: their results and readings come from the telemetry logs
+in section 1. The firmware build is not shown in the video. It is listed in
+the [video index](../videos/README.md).
 
 ## 8. Follow-up tests (not yet run)
 
