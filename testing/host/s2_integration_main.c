@@ -195,6 +195,12 @@ app_start_task (FP entry, PRI pri, UW prc, const char * p_name)
     return (1);
 }
 
+void
+app_stack_report (void)
+{
+    /* The pooled stacks exist only on the target (app_main.c). */
+}
+
 ER
 scan_task_get (scan_task_status_t * p_status)
 {

@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include "task_health.h"
+#include "../app_stack.h"
 
 /*
  * S2-U81 (post-demo, 2026-11-25): s2_health_evaluate() on synthetic
@@ -73,6 +74,39 @@ test_task_health_evaluate (void)
                == s2_health_evaluate(records, S2_HEALTH_LIMIT_MS - 99u));
 
     return (b_ok && (0u == s2_health_evaluate(NULL, 0u)));
+}
+
+/*
+ * S2-U83 (post-demo, 2026-11-26, review F-24): the stack high-water scan
+ * (app_stack.c). A painted stack is wholly unused; a task that wrote the
+ * top 100 words leaves the rest; one write near the bottom marks all
+ * above it as used, as a deep call would; a fully used stack is 0; NULL
+ * is 0 and painting NULL does nothing.
+ */
+bool
+test_app_stack_high_water (void)
+{
+    uint32_t words[544];        /* 2176 bytes, one pooled stack */
+    bool b_ok;
+
+    app_stack_paint(words, 544u);
+    b_ok = (2176u == app_stack_unused_bytes(words, 544u));
+
+    for (uint32_t idx = 444u; idx < 544u; idx++)
+    {
+        words[idx] = idx;       /* the top 100 words used */
+    }
+    b_ok = b_ok && ((444u * 4u) == app_stack_unused_bytes(words, 544u));
+
+    words[10] = 0u;             /* a deep call reached word 10 */
+    b_ok = b_ok && (40u == app_stack_unused_bytes(words, 544u));
+
+    words[0] = 0u;
+    b_ok = b_ok && (0u == app_stack_unused_bytes(words, 544u))
+           && (0u == app_stack_unused_bytes(NULL, 544u));
+    app_stack_paint(NULL, 544u);
+
+    return (b_ok);
 }
 
 #endif /* APP_TEST */

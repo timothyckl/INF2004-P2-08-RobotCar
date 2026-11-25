@@ -612,6 +612,38 @@ test_motion_params (void)
             && (MOTION_IDLE == motion_state(&p_s->m)));
 }
 
+/* S2-U84 (post-demo, 2026-11-26, review F-21): motion_init() refuses a
+   move tolerance above the largest distance (32767 mm) and a turn
+   tolerance above the largest angle (MOTION_TURN_MAX_MDEG); both at the
+   limit are accepted; a refused set leaves the model unchanged. */
+bool
+test_motion_tolerance_limits (void)
+{
+    motion_t m;
+    motion_t const before = {0};
+    motion_cfg_t cfg = g_cfg;
+    bool b_ok;
+
+    /* The limits are positive (32767 and 360000), so the uint32_t casts
+       keep their values; one more is still far below UINT32_MAX. */
+    m = before;
+    cfg.move_tol_mm = (uint32_t)INT16_MAX;
+    cfg.turn_tol_mdeg = (uint32_t)MOTION_TURN_MAX_MDEG;
+    b_ok = motion_init(&m, &cfg);
+
+    m = before;
+    cfg.move_tol_mm = (uint32_t)INT16_MAX + 1u;
+    b_ok = b_ok && (!motion_init(&m, &cfg))
+           && (MOTION_INIT == m.state) && (0u == m.cfg.move_tol_mm);
+
+    cfg.move_tol_mm = g_cfg.move_tol_mm;
+    cfg.turn_tol_mdeg = (uint32_t)MOTION_TURN_MAX_MDEG + 1u;
+    b_ok = b_ok && (!motion_init(&m, &cfg));
+
+    cfg.turn_tol_mdeg = UINT32_MAX;     /* would be negative as int32_t */
+    return (b_ok && (!motion_init(&m, &cfg)));
+}
+
 bool
 test_motion_odometry (void)
 {

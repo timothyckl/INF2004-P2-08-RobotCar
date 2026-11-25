@@ -10,6 +10,7 @@
 #if APP_TEST
 
 bool test_task_health_evaluate(void);   /* S2-U81 */
+bool test_app_stack_high_water(void);   /* S2-U83 */
 
 #endif
 

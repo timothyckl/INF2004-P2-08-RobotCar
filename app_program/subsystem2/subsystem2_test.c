@@ -966,6 +966,10 @@ EXPORT void subsystem2_test (void)
                "task liveness: limits, unseen tasks, clock wrap");
     TEST_CHECK("S2-U82", test_motion_health_guard(),
                "a stalled task faults Motion Control, motors off");
+    TEST_CHECK("S2-U83", test_app_stack_high_water(),
+               "stack high-water scan: painted words left at the bottom");
+    TEST_CHECK("S2-U84", test_motion_tolerance_limits(),
+               "motion_init refuses tolerances above the largest goal");
 
 #if S2_HW_TEST
     hw_test();

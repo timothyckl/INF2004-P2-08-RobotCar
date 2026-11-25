@@ -109,6 +109,10 @@ section 6.2).
   Decreases, STOP and Fault are immediate; a sign change passes through 0. It
   is applied before the stall check, so stall timing starts only once the
   ramped duty reaches the stall level.
+- Stack marks (review F-24): every task started by `app_start_task()` runs
+  on a painted stack from a static pool (`app_main.c`); at the end of a run
+  (`run_summary()`, on a pick-up) `app_stack_report()` prints how much of
+  each was never used.
 - Duty cap: the mission image limits duty to 20% of full scale
   (`MC_CONTROL_DUTY_MAX`), as in every car run so far.
 - Task liveness (decision 37, every mission image): the controller, the S3

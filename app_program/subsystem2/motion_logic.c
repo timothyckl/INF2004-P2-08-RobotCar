@@ -82,6 +82,12 @@ motion_init (motion_t * p_m, motion_cfg_t const * p_cfg)
         || (p_cfg->speed_window < 1u)
         || (p_cfg->speed_window > MOTION_WINDOW_MAX)
         || (p_cfg->speed_max_mm_s <= 0) || (p_cfg->duty_step_max <= 0)
+        /* F-21: a tolerance can be no larger than the largest goal its
+           command carries (an int16_t distance; MOTION_TURN_MAX_MDEG), or
+           every move would end at once; both bounds are far below
+           INT32_MAX, so control() casts them to int32_t safely. */
+        || (p_cfg->move_tol_mm > (uint32_t)INT16_MAX)
+        || (p_cfg->turn_tol_mdeg > (uint32_t)MOTION_TURN_MAX_MDEG)
         || (!pid_init(&fresh.pid_l, &p_cfg->pid))
         || (!pid_init(&fresh.pid_r, &p_cfg->pid))
         || (!pid_init(&fresh.pid_diff, &p_cfg->straight_pid)))
@@ -727,8 +733,8 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
             corr       = clamp32(corr, -p_m->speed, p_m->speed);
             /* The mean of two int32_t values, summed in 64 bits, lies between
-               them, so it fits int32_t. The tolerances are build-time
-               constants (MC_MOVE_TOL_MM 5, MC_TURN_TOL_MDEG 2000), far below
+               them, so it fits int32_t. motion_init() limits the tolerances
+               to 32767 mm and MOTION_TURN_MAX_MDEG (F-21), far below
                INT32_MAX. */
             progress   = (int32_t)(((int64_t)mm_l + mm_r) / 2);
             done_at    = abs32(p_m->goal) - (int32_t)p_m->cfg.move_tol_mm;

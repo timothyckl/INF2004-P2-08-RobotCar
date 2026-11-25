@@ -110,10 +110,14 @@ of its static RAM; the network stack, USB and kernel make up the rest.
 | Initial task stack (runs `s3_follow_run()`) | 4 096 |
 | Message-buffer memory (motion_q 160, remote_q 32, line_q 72, scan_q 96, nav_q 32) | 392 |
 
-**Stack use (static estimate, 2026-11-25).** GCC `-fstack-usage` with the
-call graph gives the deepest chain of application frames from each task:
-S3 loop 1,872 of 4,096 bytes; controller 1,016, motion 768, IMU 632 and
-obstacle scan 392 of 2,048 bytes each. Every frame is fixed in size (no
+**Stack use (static estimate, 2026-11-26, `tools/stack_estimate.py`).**
+GCC `-fstack-usage` with the call graph gives the deepest chain of
+application frames from each task: S3 loop 1,928 of 4,096 bytes;
+controller 1,000, motion 800, IMU 632 and obstacle scan 392 of 2,176
+bytes each (2,048 + the kernel's 128; 2026-11-25: 1,872, 1,016, 768, 632,
+392). Since 2026-11-26 those four stacks come from a painted static pool
+(about 10.9 KB of `.bss`, which the kernel heap no longer gives them) and
+their high-water marks are printed at the end of a run (review F-24). Every frame is fixed in size (no
 variable-length arrays). Kernel, SDK and `tm_printf` frames are not in the
 figure; `app.h` allows about 1 KB for `tm_printf`, which leaves the
 controller the smallest margin (about 400 bytes). This is a calculation,

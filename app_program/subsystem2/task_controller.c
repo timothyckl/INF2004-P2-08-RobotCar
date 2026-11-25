@@ -761,6 +761,7 @@ run_summary (void)
                   (UINT)summary.hump_max_mm,
                   summary.b_hump_valid ? "" : " (none)");
     }
+    app_stack_report();     /* stack high-water marks (review F-24) */
 }
 
 #if CTRL_BUTTON

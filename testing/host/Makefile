@@ -37,6 +37,7 @@ S2_SRC  := $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/test_nav_control.c \
            $(APP)/subsystem2/task_health.c \
            $(APP)/subsystem2/test_task_health.c \
+           $(APP)/app_stack.c \
            s2_host_main.c
 
 S1_SRC  := $(APP)/subsystem1/command_parser.c \

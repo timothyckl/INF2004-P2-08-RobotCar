@@ -83,6 +83,8 @@ static host_case_t const g_cases[] =
     {"S2-U80", test_nav_control_hold_window},
     {"S2-U81", test_task_health_evaluate},
     {"S2-U82", test_motion_health_guard},
+    {"S2-U83", test_app_stack_high_water},
+    {"S2-U84", test_motion_tolerance_limits},
 };
 
 int

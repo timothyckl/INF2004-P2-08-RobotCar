@@ -1,0 +1,23 @@
+# Static stack estimate, 2026-11-26 00:18 +0800, mission build flags, main at 42573f6 plus the F-21/F-24 change
+# Tool: tools/stack_estimate.py (recompiles every app_program file with -fstack-usage -fcallgraph-info=su; image untouched)
+# Static stack estimate (application frames only; kernel, SDK,
+# tm_printf, memcpy, memset and interrupt frames not counted)
+s3_follow_run: 1928 bytes via s3_follow_run 600 > s3_barcode_update 24 > s3_scan_poll 24 > s3_scan_decode_31 320 > s3_scan_decode_partial 568 > s3_scan_decode_frame.part.0 328 > s3_bar_decode 64
+controller_task: 1000 bytes via controller_task 608 > run_summary 72 > robot_read_telemetry 104 > scan_telemetry_get 200 > scan_task_get 16
+motion_task: 800 bytes via motion_task 272 > motion_init 512 > pid_init 16
+s4_imu_task: 632 bytes via s4_imu_task 496 > s4_lsm303_open 72 > s4_lsm303_read_identity 64
+obstacle_scan_task: 392 bytes via obstacle_scan_task 272 > scan_engine_process 40 > scan_engine_complete 56 > scan_engine_fail 24
+# largest single frames
+   608  controller_task
+   600  s3_follow_run
+   568  s3_scan_decode_partial
+   512  motion_init
+   496  s4_imu_task
+   328  s3_scan_decode_frame.part.0
+   320  s3_scan_decode_31
+   272  obstacle_scan_task
+   272  motion_task
+   200  scan_telemetry_get
+
+# Before (2026-11-25, 74518bc, testing/host/logs/2026-11-25_stack-usage.txt): s3_follow_run 1872, controller_task 1016, motion_task 768, s4_imu_task 632, obstacle_scan_task 392
+# Task stacks: initial task 4096 bytes (runs s3_follow_run; not in the pool, so not in app_stack_report); controller, motion, IMU and scan tasks TASK_STACK_SIZE 2048 + DEFAULT_SYS_STKSZ 128 = 2176 bytes each, now from the painted pool (app_main.c) and reported at the end of a run by app_stack_report().

@@ -36,6 +36,7 @@
  */
 
 #include "app.h"
+#include "app_stack.h"
 #include "subsystem3/s3_follow.h"
 
 #ifndef S3_HARDWARE_TEST
@@ -49,6 +50,30 @@
 #ifndef S2_CAL_TEST
 #define S2_CAL_TEST 0
 #endif
+
+/*
+ * Task stacks (review F-24). Each task gets a stack from this static pool,
+ * painted before it starts, so app_stack_report() can show how much of it
+ * was ever used. A pool stack is the size the kernel would allocate:
+ * TASK_STACK_SIZE plus its DEFAULT_SYS_STKSZ (128 bytes on the Cortex-M0+),
+ * rounded to 8 (the kernel's rule). The mission creates four tasks, five
+ * with S4_RAW_LOG; if the pool runs out the kernel allocates as before and
+ * that task is not reported.
+ */
+#define APP_STACK_TASKS     5u
+#define APP_STACK_BYTES     ((((TASK_STACK_SIZE + DEFAULT_SYS_STKSZ) + 7u) \
+                              / 8u) * 8u)
+
+typedef struct
+{
+    const char * p_name;
+    uint32_t *   p_words;   /* lowest address of the stack */
+} app_stack_slot_t;
+
+/* uint64_t elements give the 8-byte alignment AAPCS needs for a stack. */
+static uint64_t         g_app_stack[APP_STACK_TASKS][APP_STACK_BYTES / 8u];
+static app_stack_slot_t g_app_slot[APP_STACK_TASKS];
+static uint32_t         g_app_slots_used = 0u;
 
 /*
  * Create and start one task (declared in app.h for every subsystem).
@@ -65,6 +90,27 @@ EXPORT ID app_start_task (FP entry, PRI pri, UW prc, const char *p_name)
     ctsk.stksz   = TASK_STACK_SIZE; /* kernel allocates the stack */
     ctsk.tskatr  = TA_HLNG          /* written in a high-level language (C) */
                  | TA_RNG3;              /* runs at user protection level */
+    if (g_app_slots_used < APP_STACK_TASKS)
+    {
+        /* A painted stack from the pool; the kernel takes all of it, so
+           stksz is the whole buffer. The array is uint64_t only for
+           alignment: viewing it as uint32_t words keeps every address in
+           the same object. APP_STACK_BYTES (2176) fits INT. */
+        uint32_t * const p_words =
+            (uint32_t *)(void *)g_app_stack[g_app_slots_used];
+
+        app_stack_paint(p_words, APP_STACK_BYTES / 4u);
+        ctsk.tskatr |= TA_USERBUF;
+        ctsk.bufptr  = p_words;
+        ctsk.stksz   = (INT)APP_STACK_BYTES;
+        g_app_slot[g_app_slots_used].p_name  = p_name;
+        g_app_slot[g_app_slots_used].p_words = p_words;
+        g_app_slots_used++;
+    }
+    else
+    {
+        tm_printf((UB*)"stack pool full: %s not reported\n", p_name);
+    }
 #if TK_SUPPORT_SMP
     if (0 != prc)
     {
@@ -166,6 +212,25 @@ EXPORT INT usermain (void)
     /* Sleep forever.  Returning from usermain() would shut down. */
     tk_slp_tsk(TMO_FEVR);
     return 0;
+}
+
+/*
+ * Print the high-water mark of every pooled task stack: the bytes at the
+ * bottom never written since the task was created (review F-24). The
+ * scan reads at most 5 x 2176 bytes and writes nothing.
+ */
+EXPORT void app_stack_report (void)
+{
+    for (uint32_t idx = 0u; idx < g_app_slots_used; idx++)
+    {
+        uint32_t const unused = app_stack_unused_bytes(
+            g_app_slot[idx].p_words, APP_STACK_BYTES / 4u);
+
+        /* Byte counts are at most 2176, which UINT holds. */
+        tm_printf((UB*)"stack %s: %u of %u bytes never used\n",
+                  (UB*)g_app_slot[idx].p_name, (UINT)unused,
+                  (UINT)APP_STACK_BYTES);
+    }
 }
 
 /* End of file. */

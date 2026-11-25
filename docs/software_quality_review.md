@@ -60,10 +60,10 @@ maintainability or documentation.
 | F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | **Applied** (S3 d9): blip repaired; car test pending |
 | F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
 | F-20 | S3 | `s3_nav_stage()` and `s3_nav_take()` held a command a second time, but nothing in the mission called them | Low | **Applied**: removed (mission UF2 unchanged) |
-| F-21 | S2 | `motion_init()` does not range-check the move and turn tolerances before they are cast to `int32_t` | Low | Safe today (build-time constants 5 and 2000); proposal |
+| F-21 | S2 | `motion_init()` does not range-check the move and turn tolerances before they are cast to `int32_t` | Low | **Applied**: refused above the largest goal (S2-U84) |
 | F-22 | S4 | The `S4_RAW_LOG` stall print passed a `UW` to `%lx` | Low | **Applied** (`268e044`; debug builds only) |
 | F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
-| F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | Proposal: measure on the car |
+| F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | **Applied** (instrument): painted stacks, high-water printed at run end; car run pending |
 | F-25 | S3 | A capture missing two runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases) | Medium | Open: known defect in S3-U04; no safe repair (S3 d9) |
 | F-26 | S4 | The IMU task polls with `tk_dly_tsk(10)` (really 20 ms), so samples arrive 20 or 30 ms apart | Low | Kept: the averaging windows were tuned on it |
 
@@ -186,27 +186,30 @@ controller while driving: motors off at 500 to 510 ms. *Still pending:*
 one car run with `S2_WATCHDOG=1` before it is armed by default, and the
 limits are not measured on the car.
 
-**F-21 (Low, proposal) — tolerances not range-checked.** Reading every
-cast for BARR-C 1.6a found that `control()` in `motion_logic.c` casts the
-`uint32_t` tolerances `move_tol_mm` and `turn_tol_mdeg` to `int32_t`, and
-`motion_init()` checks the other settings but not these. A value above
-`INT32_MAX` would be converted in an implementation-defined way. Today
-they are the build-time constants `MC_MOVE_TOL_MM` (5) and
-`MC_TURN_TOL_MDEG` (2000), so the cast is safe and its comment says so.
-*Proposal:* reject tolerances above, say, 10,000 in `motion_init()`, with
-a host test. It changes code, so it waits for the next firmware change.
+**F-21 (Low, applied) — tolerances not range-checked.** `control()` in
+`motion_logic.c` casts the `uint32_t` tolerances `move_tol_mm` and
+`turn_tol_mdeg` to `int32_t`, and `motion_init()` did not check them. It
+now refuses a move tolerance above the largest distance a command carries
+(32,767 mm) and a turn tolerance above `MOTION_TURN_MAX_MDEG`: anything
+larger would end every move at once, and both limits are far below
+`INT32_MAX`, so the casts are safe by construction (S2-U84).
 
-**F-24 (Medium, proposal) — stack margin not measured.** A static estimate
-(GCC `-fstack-usage` and call graph on the mission build,
-[log](../testing/host/logs/2026-11-25_stack-usage.txt)) puts the deepest
-application chain at 1,016 bytes in the controller task and 1,872 bytes
-in the S3 loop. Kernel, SDK and `tm_printf` frames are not included;
-`app.h` allows about 1 KB for `tm_printf`, so the controller's 2,048-byte
-stack may have only about 400 bytes spare. No overflow has been seen on
-the car; the S3 loop's stack was raised from 1 KB to 4 KB after a real
-overflow on 2026-11-17 (S3 test log), so the risk is not theoretical. *Proposal:* fill each stack with a known pattern at start-up
-and print the unused depth after a full SYS-01 lap; raise
-`TASK_STACK_SIZE` if any margin is under 25%.
+**F-24 (Medium, applied as an instrument) — stack margin not measured.**
+A static estimate ([log](../testing/host/logs/2026-11-26_stack-usage.txt),
+now reproducible with `tools/stack_estimate.py`) puts the deepest
+application chains at 1,928 bytes in the S3 loop, 1,000 in the controller,
+800 in Motion Control, 632 in the IMU task and 392 in the scan task, with
+the kernel, SDK and `tm_printf` frames not counted. The controller's
+2,176-byte stack may have only a few hundred bytes spare once `tm_printf`
+(about 1 KB) is added. *Applied:* `app_start_task()` now gives the four
+(five with `S4_RAW_LOG`) application tasks stacks from a static pool of
+the same size the kernel allocated, painted with a known word before they
+start; `app_stack_report()` prints how much of each was never used, at
+the end of every run (`run_summary()`, on a pick-up). The scan is host-
+tested (S2-U83). *Pending:* a car run to read the marks; raise
+`TASK_STACK_SIZE` if any margin is under 25%. The S3 loop runs in the
+initial task, whose 4 KB stack the kernel sets up, so it is not in the
+report; its static estimate is under half of it.
 
 **F-10 (Low, applied) — command age during a bypass.** The 60 s hold
 counted from the decode, so a scan and bypass used it up while the car
@@ -473,7 +476,9 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `26842cc` | F-04 (part), F-15: hump detection on the uncalibrated height, FOLLOW only; calibration offset and fitting tool; settings in `s4_config.h`; S4 replay tool (S4 d17) | **Yes**: detection starts at 6 mm of measured height (was 7.05 mm) and not during junction turns. Car test pending (calibration, SYS-04) | S4 38/38 and S4-U44 (six logged drives give the car's own readings, no new hump); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f04.txt), [analysis](../testing/subsystem4/logs/2026-11-25_s4-replay-analysis.txt)) |
 | `7c040f9` | F-08 (part): task check-ins and a liveness guard on Motion Control; watchdog fed only while healthy; `S2_WATCHDOG` make option (S2 d37) | **Yes**: a task stalled past its limit stops the motors (Fault). Watchdog still off by default. Car test pending | S2 54/54, integration 27/27, two mutations caught; every build incl. `S2_WATCHDOG=1` 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f08.txt)) |
 | `24aaf7a` | F-05 re-assessed: width accuracy and confirmation blocked on car data (no firmware change) | None | Synthetic sweep ([log](../testing/subsystem5/logs/2026-11-26_s5-width-feasibility.txt)) |
-| (F-06 commit) | F-06: telemetry version 5 (fault detail, held command, junction count) end to end: firmware, decoder, dashboard (S1 d8) | **Yes**: 32-byte frame. Car test pending (SYS-08) | S1 4/4, dashboard 27/27, integration 30/30 incl. INT-16 ([log](../testing/host/logs/2026-11-26_verify-f06.txt)) |
+| `df78bdc` | F-06: telemetry version 5 (fault detail, held command, junction count) end to end: firmware, decoder, dashboard (S1 d8) | **Yes**: 32-byte frame. Car test pending (SYS-08) | S1 4/4, dashboard 27/27, integration 30/30 incl. INT-16 ([log](../testing/host/logs/2026-11-26_verify-f06.txt)) |
+| `42573f6` | F-17 re-assessed from the logs; centre-sensor wiring checked against the datasheets (no firmware change) | None | [analysis](../testing/system/logs/2026-11-26_line-loss-analysis.txt) |
+| (F-24 commit) | F-21: tolerance limits in `motion_init()`; F-24: painted task stacks and a high-water report at run end; `tools/stack_estimate.py` | **Yes**: task stacks come from a static pool (same size); a run summary also prints stack marks | S2 56/56 (S2-U83, U84); all suites and builds 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f24.txt)) |
 
 ## 10. Proposed changes not applied
 
@@ -491,5 +496,4 @@ records the decision to apply post-demo changes.)
 7. P7 (F-08): one car run with `S2_WATCHDOG=1`, then arm it by default.
 9. F-09, F-16: re-measure barcode white; show the letter table on the dashboard.
 10. P9 (SYS-09): a staged plan to a full course in one run, now that F-01, F-03, F-06 and F-18 are applied.
-11. F-21: range-check the motion tolerances in `motion_init()`.
-12. F-24: measure the stack high-water marks on the car.
+12. F-24: read the stack high-water marks (`stack ...` lines) after a car run.

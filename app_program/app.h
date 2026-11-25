@@ -31,6 +31,10 @@
    0 for "any core".  Defined in app_main.c. */
 IMPORT ID app_start_task(FP entry, PRI pri, UW prc, const char *p_name);
 
+/* Print each task's stack high-water mark: bytes never used of its
+   stack (review F-24, app_stack.h). Defined in app_main.c. */
+IMPORT void app_stack_report(void);
+
 /* ---------------------------------------------------------------------
  *  Every subsystem provides these.  usermain() calls ALL the _init()
  *  functions first and only then ALL the _start() functions, so every
