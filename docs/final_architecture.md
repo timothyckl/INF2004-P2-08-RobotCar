@@ -113,7 +113,7 @@ flowchart LR
   S4["S4 terrain result<br/>under the S4 mutex"]
   S5["S5 scan status and telemetry<br/>under the S5 mutex"]
   RS["robot_state.c<br/>telemetry snapshot"]
-  WIFI["WiFi task<br/>32-byte frame"]
+  WIFI["WiFi task<br/>34-byte frame"]
 
   MC -->|"motion_get_status()"| CTRL
   MC -->|"motion_get_status() IF-17"| S4
@@ -295,7 +295,7 @@ sequenceDiagram
   R->>I: subsystem4_get_status() (IF-18), lock tried without waiting
   I-->>R: last, highest, count and valid flags
   R-->>W: telemetry snapshot
-  W->>W: encode the 32-byte version 5 frame
+  W->>W: encode the 34-byte version 6 frame
   W->>D: MQTT publish, binary
 ```
 
@@ -337,9 +337,9 @@ have.
 |---|---|---|
 | Flash | Application 48,024 bytes of 374,410 in the image (12.8%) | `-O2`, `-ffunction-sections -fdata-sections` with `-Wl,--gc-sections` (unused code removed) |
 | Static RAM | Application 2,017 bytes; whole image 80,120 bytes (30% of 264 KB) | Fixed buffers; the application never calls `malloc` or `free` |
-| Stacks | 4 × 2,048 bytes for application tasks; initial task 4,096. Static estimate of the deepest application call chain (GCC `-fstack-usage` and call graph, [log](../testing/host/logs/2026-11-25_stack-usage.txt)): S3 loop 1,872, controller 1,016, motion 768, IMU 632, scan 392 bytes, not counting kernel, SDK or `tm_printf` frames | Sized for `tm_printf` (about 1 KB, `app.h`) and the barcode decoder's copies. The controller has the least margin: its 632-byte frame plus a `tm_printf` call leaves roughly 400 bytes; no run-time high-water mark has been measured (review F-24) |
+| Stacks | 4 × 2,048 bytes for application tasks; initial task 4,096. Static estimate of the deepest application call chain (GCC `-fstack-usage` and call graph, `tools/stack_estimate.py`, [log](../testing/host/logs/2026-11-26_verify-motion-class.txt)): S3 loop 1,928, controller 1,008, motion 800, IMU 688, scan 392 bytes, not counting kernel, SDK or `tm_printf` frames | Sized for `tm_printf` (about 1 KB, `app.h`) and the barcode decoder's copies. The controller has the least margin: its 632-byte frame plus a `tm_printf` call leaves roughly 400 bytes; no run-time high-water mark has been measured (review F-24) |
 | Processing | No floating point; integer and fixed-point units (µm, mg, mdeg, per mille); a sine table for scan geometry | The Cortex-M0+ has no FPU |
-| Communication | 32-byte binary frame per second (about 256 bit/s; version 5 since 2026-11-26, 31 bytes in the demo); commands as short text | Compact, versioned, decoded by the dashboard |
+| Communication | 34-byte binary frame per second (about 272 bit/s; version 6, 31 bytes in the demo); commands as short text | Compact, versioned, decoded by the dashboard |
 | Power | Not measured. Tasks block between periods; WiFi power save is off by choice (S1 d4) to keep latency low | — |
 
 Details and the bit-level analysis are in [data_widths.md](data_widths.md).
@@ -355,7 +355,7 @@ table.
 | Autonomy | Line following, barcode decoding, hump measurement, obstacle scanning and bypass planning all run locally |
 | No dependence on the network | The car kept following for over 4 minutes with the link lost (SYS-01, 2026-11-20) |
 | Low latency for safety | STOP from a local source reaches the motors in under 1 ms (S2-H11); a network round trip would add an unbounded delay |
-| Low bandwidth | Raw data (ADC samples at 100 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 32-byte summary per second leaves it |
+| Low bandwidth | Raw data (ADC samples at 100 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 34-byte summary per second leaves it |
 | Safe degradation | Losing WiFi clears the `link up` flag and nothing else (Tribunal 2 Entry 20) |
 | Privacy and exposure | No camera or location data exists; only run state and summary values leave the car, and the broker runs on the team laptop over a private hotspot. Credentials stay in the untracked `config/wifi_secrets.h` |
 | Working within resource limits | 264 KB SRAM and one core, so processing is integer-only and fixed-size: about 2 KB application RAM, no heap, no floating point (section 8) |

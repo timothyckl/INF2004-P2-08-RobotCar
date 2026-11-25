@@ -303,9 +303,9 @@ slower than these tests.
   counts the pair as two steps. More than one coalesced pair may undercount,
   so interrupt load still requires physical validation.
 - S2-U37, S2-U39 and S2-U40 (revised for telemetry version 3) have passed on
-  the host only, not yet on the Pico W. Telemetry is version 5 since
-  2026-11-26 (S1 decision 8); S2-U71 covers the hump fields and INT-16 the
-  fault detail, held command and junction count.
+  the host only, not yet on the Pico W. Telemetry is version 6 (S1
+  decisions 8 and 9); S2-U71 covers the hump fields, INT-16 the fault
+  detail, held command and junction count, and INT-31 the S4 motion class.
 
 ## Test evidence
 

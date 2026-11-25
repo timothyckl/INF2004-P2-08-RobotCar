@@ -164,7 +164,7 @@ typedef struct
 } sim_gate_t;
 
 /* S4 motion classification on the real Motion Control status, as the IMU
-   task does every sample (S4 decision 20); its result is S4's IF-18. */
+   task does every sample (S4 decision 18); its result is S4's IF-18. */
 typedef struct
 {
     s4_speed_gate_t        gate;

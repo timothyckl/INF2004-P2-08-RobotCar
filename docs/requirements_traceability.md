@@ -246,7 +246,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Minimum bits for every field; packed where appropriate; compact binary MQTT; validity flags; independent faults as one bit each in a shared bitmask; race-free shared data |
 | Source | `subsystem1/telemetry_encoder.c`; interface records in `subsystem2/subsystem2.h`; [data_widths.md](data_widths.md) |
 | Tests | S1-U05; S2-U39 (record sizes); analysis in [data_widths.md](data_widths.md) |
-| Result | 32-byte binary frame (version 5) with validity flags and sized fields. One 4-bit fault class plus, since S1 decision 8, the 3-bit motion fault detail; the independent fault bitmask is **not implemented** (Tribunal 2 Entries 11, 19) |
+| Result | 34-byte binary frame (version 6) with validity flags and sized fields. One 4-bit fault class plus, since S1 decision 8, the 3-bit motion fault detail; the independent fault bitmask is **not implemented** (Tribunal 2 Entries 11, 19) |
 | Status | **Partial** |
 
 ### NFR4 — motion accuracy
@@ -293,8 +293,8 @@ table shows the rest.
 | 3 | Junction detection | Yes: both sensors black for 100 ms | `line_control.c`; S2-U58 | Partial (see FR4 limits) |
 | 3 | Sensor calibration | Adaptive white baseline, fixed margins | `s3_ir.c`, `s3_barcode.c` | Barcode levels not re-measured after the sensor was lowered |
 | 4 | Tilt, hump, peak, collision (impact), pick-up | Yes | `terrain_logic.c`; S4 host cases | See FR5, FR12 |
-| 4 | Motion classification (stationary, accelerating, turning, climbing, descending) | Partly: stationary calibration, pitch ignored while accelerating, hump rise and level | `terrain_logic.c` | No separate classification output |
-| 4 | Turn-rate monitoring | **No**. The LSM303DLHC has an accelerometer and a magnetometer but no gyroscope. The magnetometer is configured and its identity checked (S4-H01) but not used for heading; its interference test S4-H10 was not run. Turn angles come from the wheel encoders | — | Not implemented |
+| 4 | Motion classification (stationary, accelerating, turning, climbing, descending, impact) and motion event reporting | Yes: eight states and unknown, debounced; console, IF-18 and telemetry version 6 (S4 d18, S1 d9) | `s4_motion_class.c`; S4-U47 to U50, INT-31 | Software-verified; not yet run on the car |
+| 4 | Turn-rate monitoring | Yes, estimated from the wheel encoders: (right - left) / track, in telemetry at 2 deg/s. The LSM303DLHC has no gyroscope; the magnetometer is not used (interference test S4-H10 not run) | `s4_motion_yaw_ddeg_s()`; S4-U48, INT-31 | Software-verified; encoder-estimated, not an IMU measurement |
 | 5 | Coarse scan, fine scan, profile, planning, line recovery | Yes: coarse 15° steps then 5° fine readings round each edge | `scan_engine.c`, `scan_profile.c`, `bypass_plan.c`; S5-U26, U59 | See FR7, FR8 |
 | 5 | Reverse and reattempt | Reverse before the first turn when too close | `bypass_plan.c`; S5-U64 | Host only |
 
@@ -304,10 +304,10 @@ table shows the rest.
 
 | Level | Count and where | Latest result |
 |---|---|---|
-| Unit (host) | S1-U04 to U07; S2 56 cases; S3 787 checks; S4 40 cases plus S4-U44 (replay of 6 car logs); S5 48 cases + telemetry view; dashboard 27 | All pass; no known defect reported (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
+| Unit (host) | S1-U04 to U07; S2 56 cases; S3 787 checks; S4 44 cases plus S4-U44 (replay of 6 car logs); S5 48 cases + telemetry view; dashboard 29 | All pass; no known defect reported (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
 | Unit (target) | The same plus the target-only cases (for example S2-U01 to U19, S2-U37, U39, U71, U72) in the `TEST=1` image | Builds (2026-11-25); last on-target run 2026-11-17 (incomplete) |
 | Hardware | S1-H01 to H03, S2-H01 to H11, S3-H01 to H06, S4-H01 to H11, S5-U46 to U50 | Mixed; see each log |
-| Integration | INT-04 to INT-07, letters over MQTT (car); INT-08 to INT-30, the real Vehicle Controller with S1, S3, S4 and S5 interfaces on a kernel model (host; 60 checks) | Pass (car, before the demo); 60/60 (host, 2026-11-26; simulated, not a car run) |
+| Integration | INT-04 to INT-07, letters over MQTT (car); INT-08 to INT-31, the real Vehicle Controller with S1, S3, S4 and S5 interfaces on a kernel model (host; 64 checks) | Pass (car, before the demo); 64/64 (host, 2026-11-26; simulated, not a car run) |
 | System | SYS-01 to SYS-11 | See section 4 |
 | Acceptance | The assessed demonstration | [demo report](DEMO_REPORT_2026-11-24.md) |
 
@@ -395,7 +395,7 @@ against each, with where the evidence is:
 | Hump measurement capability | A hump detected on every assessed attempt (crossing count not checked); within our ±2 mm criterion on every recorded run | Partial | 6 mm minimum reading; no flat lap |
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; a failing or crashing host test fails the build; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08); stack margins calculated, not measured (F-24) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |
-| Resource efficiency | No floating point; about 2 KB application RAM; 32-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |
+| Resource efficiency | No floating point; about 2 KB application RAM; 34-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |
 | Team integration quality | 15 active interfaces (IF-06 to IF-22) in `TEAM.md` section 5; INT-04 to INT-07 pass on the car; INT-08 to INT-16 pass on the host; one mission image | Strong | — |
 | Demonstration performance | [Demo report](DEMO_REPORT_2026-11-24.md) | Partial | See the report |
 

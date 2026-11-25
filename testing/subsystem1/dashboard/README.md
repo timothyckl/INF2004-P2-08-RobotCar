@@ -11,7 +11,7 @@ Fields whose validity flag is clear are shown as "—", not as zero.
 | Panel | Contents | Source |
 |---|---|---|
 | Header | broker link, frame age, state, mode, fault (with the motion fault detail, version 5), STOP latched and its cause; START / STOP / RESET buttons | telemetry, command topic |
-| Motion (S2) | left/right wheel speed, distance, heading, last 60 s of wheel speeds | telemetry |
+| Motion (S2, S4) | left/right wheel speed, distance, heading, last 60 s of wheel speeds; S4 motion class and encoder-estimated yaw rate | telemetry (motion class and yaw: version 6) |
 | Line & barcode (S3) | which front sensor is on black; last barcode letter, its command, letters read; command held for the next junction and junctions confirmed | telemetry (barcode: version 3; held and junctions: version 5) |
 | Barcode letters | which letter means left, right, straight and U-turn; Send to car, A–D (fills in the boot letters) | command topic (S1 decision 6) |
 | Terrain (S4) | highest hump of the run, last hump, humps measured | telemetry (last hump and count: version 4) |

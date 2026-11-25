@@ -18,19 +18,34 @@ not measured.
 
 | Data | Packed now? | Size now | Minimum (calculated) |
 |---|---|---|---|
-| Telemetry frame v5 (MQTT, since 2026-11-26, S1 decision 8) | **Yes**, masks and shifts | 32 bytes per frame | 30 bytes (same method: two 12-bit pairs left byte-aligned) |
+| Telemetry frame v6 (MQTT, S1 decision 9) | **Yes**, masks and shifts | 34 bytes per frame | 31.5 bytes (same method: two 12-bit pairs left byte-aligned) |
+| Telemetry frame v5 (S1 decision 8) | **Yes** | 32 bytes | 30 bytes |
 | Telemetry frame v4 (the demo, 2026-11-24, S1 decision 7) | **Yes** | 31 bytes | 29 bytes |
-| Same data unpacked (`telemetry_encoder_snapshot_t`) | reference | 48 bytes (44 in v3) | — |
+| Same data unpacked (`telemetry_encoder_snapshot_t`) | reference | 56 bytes (52 in v5, 48 in v4, 44 in v3) | — |
 | Telemetry frame v3 (MQTT, until 2026-11-24) | **Yes** | 29 bytes | 27 bytes |
 | Interface queue records (IF-06, 09, 11, 21, motion_q) | No, whole-byte fields | 8 to 16 bytes each, 392 bytes of queue memory | about 300 bytes of queue memory |
 | `s2_robot_state_t` (shared state) | No | 32 bytes | 21 bytes |
 | Barcode capture (`s3_capture_t`) | No | 264 bytes (on the initial task's stack) | 136 bytes with 16-bit ms runs |
 
-The telemetry frame, the only data sent off the car, is packed: 32 bytes
-against 52 for the same fields in their C types, 38% smaller (version 4:
-31 against 48; version 3: 29 against 44). The internal
+The telemetry frame, the only data sent off the car, is packed: 34 bytes
+against 56 for the same fields in their C types, 39% smaller (version 5:
+32 against 52; version 4: 31 against 48; version 3: 29 against 44). The internal
 records keep whole-byte fields; packing all of them would save about 220
 bytes of RAM in total (below).
+
+## Telemetry frame version 6 (34 bytes)
+
+Version 6 (S1 decision 9) is version 5 with two bytes appended; bytes 0 to
+31 keep their meanings.
+
+| Byte, bits | Field | Range | Bits needed | Bits used |
+|---|---|---|---|---|
+| 32, 0-3 | motion class (S4 decision 18) | `S4_MOTION_*` 0..8 | 4 | 4 |
+| 32, 4-7 | zero | — | 0 | 4 |
+| 33 | encoder yaw rate, 2 deg/s per count | ±127 counts, saturated | 8 | 8 |
+
+Four bits are the fewest for nine states, and eight bits at 2 deg/s cover
+every commanded manoeuvre with margin. The two bytes add 16 bit/s.
 
 ## Telemetry frame version 5 (32 bytes)
 

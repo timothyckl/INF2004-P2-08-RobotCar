@@ -86,7 +86,7 @@
 #define S4_PITCH_DV_MM_S            15
 #define S4_PITCH_HOLD_SAMPLES       8u
 
-/* Motion classification (decision 20, observational, provisional):
+/* Motion classification (decision 18, observational, provisional):
  * - stationary: both wheels at or below Motion Control's stillness limit
  *   (MC_STILL_MM_S, motion_config.h; task_imu.c checks they match);
  * - turning: encoder yaw rate of at least 8 deg/s. Line correction differs

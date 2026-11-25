@@ -328,6 +328,41 @@ then 1 junction, then detail 7 after a stalled task), dashboard tests (v5
 fields, events, the car's golden frame decodes; v4 frames raise no v5
 events). Car test pending: SYS-08 with a forced fault and a junction.
 
+### 9. Telemetry version 6: motion class and encoder yaw rate (2026-11-26)
+
+Approved by the team on 2026-11-26. Later firmware revision; verified on
+the host only.
+
+**Problem.** S4 decision 18 adds a motion class and an encoder-estimated
+yaw rate; without them in the frame, motion event reporting is visible only
+on the USB console, not on the dashboard.
+
+**Decision.** Version 6 is version 5 with two bytes appended (34 bytes):
+
+| Byte, bits | Field | Range | Source |
+|---|---|---|---|
+| 32, 0-3 | motion class | `S4_MOTION_*` 0..8, 0 unknown; above 14 sent as 15 | `s4_terrain_result_t.motion_class` (IF-18) |
+| 32, 4-7 | zero | — | — |
+| 33 | encoder yaw rate, `int8_t`, 2 deg/s per count, left positive; 0 while the class is unknown | ±127 counts (±254 deg/s); the 30 mm/s spins are about 29 deg/s | `s4_terrain_result_t.yaw_rate_ddeg_s` |
+
+Two deg/s steps resolve the 8 deg/s turning limit and every manoeuvre the
+controller commands; only a spin near the 400 mm/s speed limit (385 deg/s)
+would saturate. Bytes 0 to 31 are unchanged, so version 2 to 5 decoders
+still read them, and the decoder and dashboard read every version by its
+length and version byte. The frame is two bytes (16 bit/s) longer.
+
+**Producers.** The IMU task writes the class and yaw into its published
+result each sample; `robot_read_telemetry()` copies them into the snapshot
+(56 bytes, was 52), unknown when S4's status is busy; `telemetry_encoder.c`
+packs bytes 32 and 33.
+
+**Verification.** S1-U05 (version 6 golden frame; class clamp; yaw
+rounding, saturation and zero while unknown), INT-16 (version 6 from the
+real controller state) and INT-31 (the real classifier's class and yaw in
+the frame), dashboard tests (version 6 golden frame, version 5 still read,
+wrong lengths rejected) ([log](../testing/host/logs/2026-11-26_verify-motion-class.txt)). Car test pending:
+SYS-08.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins
@@ -2175,6 +2210,59 @@ S4-U43 (offset only on the reading; boundaries; floor at 0; invalid offset
 refused), S4-U44 (replay of the six logged drives). Car test pending: the
 calibration procedure in `app_program/subsystem4/README.md`, then SYS-04
 with a flat lap and a junction turn.
+
+### 18. Motion classification and encoder yaw rate (2026-11-26)
+
+Approved by the team on 2026-11-26. Later firmware revision; verified on
+the host only.
+
+**Problem.** The brief's Buddy 4 tasks include motion classification
+(stationary, accelerating, turning, climbing, descending, sudden impact),
+turn-rate monitoring and motion event reporting. Subsystem 4 reported only
+its terrain states and events.
+
+**Decision.** A pure module, `s4_motion_class.c`, classifies each IMU
+sample from inputs already present: Motion Control's wheel speeds (IF-17,
+read for the pitch gate), the terrain state and the impact event. It is
+observational: it commands nothing and leaves hump, impact and lift
+detection unchanged.
+
+| Priority | State | Condition | Source of the limit |
+|---|---|---|---|
+| 1 | unknown | no snapshot, or one older than 50 ms | the terrain logic's sample gap |
+| 2 | impact | impact event; held 3 samples | the confirmation count |
+| 3 | climbing / descending | on a hump; descending once more than 4 mm below the peak | the detector's rise-level band (6 - 2 mm) |
+| 4 | turning | \|encoder yaw\| at least 8 deg/s | above line correction (3.9 deg/s), below curves (14.4) and spins (29) |
+| 5 | stationary | both wheels at most 10 mm/s | Motion Control's `MC_STILL_MM_S` (checked at compile time) |
+| 6 | accelerating / braking | the pitch gate's window: mean speed changed by more than 15 mm/s between samples, plus 8 samples | decision 8 |
+| 7 | cruising | otherwise | — |
+
+A new state is taken after 3 samples of the same candidate; unknown and
+impact are taken at once. The yaw rate is (right - left) / track (119 mm),
+left positive as Motion Control's heading, in 0.1 deg/s. It is estimated
+from the wheel encoders: the LSM303DLHC has no gyroscope, and the
+magnetometer is not used, because motor interference is not measured
+(S4-H10). The pitch gate's arithmetic moved into `s4_speed_gate_step()`, so
+both use one rule; its behaviour is unchanged, except that a new run is now
+recognised after a failed snapshot read as well.
+
+Reported on the console on each change (`s4: motion turning (encoder yaw
+-28.9 deg/s)`), in IF-18 and in telemetry version 6 (S1 decision 9).
+
+**Limits.** Starting to follow at 40 mm/s stays under the 15 mm/s gate and
+reads as cruising; a STOP from line speed is still within a sample or two
+and reads as stationary. Turning and the speed states are from the
+encoders, so wheel slip reads as motion. The thresholds are derived from
+existing settings, not measured as classification criteria.
+
+**Verification** (host, [log](../testing/host/logs/2026-11-26_verify-motion-class.txt)). S4-U47 (speed gate),
+S4-U48 (yaw geometry and saturation), S4-U49 (every state, boundaries,
+priorities), S4-U50 (debounce, impact hold, stale and invalid input);
+INT-31 runs the real classifier on the real Motion Control status through
+a straight run, a junction turn and a bypass. Six mutations each fail a
+test. The car-log replay (S4-U44) is unchanged. Cost: 1,300 bytes of flash,
+8 bytes of RAM, 56 bytes more on the IMU task's deepest stack path. Car
+test pending: one run with the console captured.
 
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 

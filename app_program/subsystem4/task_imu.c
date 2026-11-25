@@ -11,7 +11,7 @@
 #include "s4_motion_class.h"
 
 /* The classifier's stillness limit must stay Motion Control's (decision
- * 20): a compile-time check, as s4_config.h cannot include motion_config.h
+ * 18): a compile-time check, as s4_config.h cannot include motion_config.h
  * on the host. */
 typedef char s4_still_matches_mc_t
     [(S4_MOTION_STILL_MM_S == MC_STILL_MM_S) ? 1 : -1];
@@ -351,7 +351,7 @@ s4_motion_read (s4_motion_t * p_motion,
 }
 
 /*
- * Motion classification (decision 20), observational only: one step per
+ * Motion classification (decision 18), observational only: one step per
  * sample, after the terrain logic; the state and the encoder yaw rate go
  * into the published result (IF-18) and a change is printed.
  */

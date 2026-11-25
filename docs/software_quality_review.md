@@ -21,7 +21,7 @@ in the firmware.
 |---|---|---|
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
-| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 56/56, S3 787 checks (no known defect), S4 40/40 plus S4-U44 (replay of 6 car logs), S5 48/48, controller integration 60/60 (INT-08 to INT-30), dashboard 27/27 (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
+| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 56/56, S3 787 checks (no known defect), S4 44/44 plus S4-U44 (replay of 6 car logs), S5 48/48, controller integration 64/64 (INT-08 to INT-31), dashboard 27/27 (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
 | Line and branch coverage | `testing/host/coverage.sh` | 84.5% of lines, 73.9% of branches over 33 host-built files (2026-11-26, [log](../testing/host/logs/2026-11-26_coverage.txt)). The 6 newly measured files include `task_controller.c` (61%) and `s2_bridge.c` (53%), now built by the integration suite. The same 27 files as on 2026-11-25: 90.7% of lines, 78.9% of branches (was 89.7% and 78.0%) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
@@ -79,8 +79,8 @@ RESET go through `remote_q`, and telemetry is read as a snapshot
 (`robot_read_telemetry()`) under a mutex with `TMO_POL`, so a slow network
 can never block a control task. `command_parser.c` parses commands with a
 fixed buffer and rejects anything malformed (S1-U04, 100% line coverage).
-`telemetry_encoder.c` packs a fixed 32-byte binary frame (version 5 since
-2026-11-26; version 4, 31 bytes, in the demo) with
+`telemetry_encoder.c` packs a fixed 34-byte binary frame (version 6;
+version 4, 31 bytes, in the demo) with
 validity flags, so the dashboard shows "—" rather than a stale or invalid
 value. WiFi rejoins every 5 s and MQTT reconnects every 3 s; a reconnection
 never restarts motion (S2-U52, S1-H03).
@@ -512,6 +512,8 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `09990f9` | F-25 at 25 runs: a kept run under 50 ms rejects a 24 to 26-run capture (S3 d12); S3-U07 now a check, S3-U08 | **Yes**: which damaged captures decode (rejected, not misread). Car test pending | S3 787 checks, 0 failures; +48 bytes; 4 mutations caught ([log](../testing/subsystem3/logs/2026-11-26_s3-f25-25run.txt)) |
 | `9c5d7f5` | F-27: a check-in after the guard's clock read is fresh, not a stall (S2 d38); S2-U81 extended | **Yes**: no false task fault from a preempted guard | S2 56/56, integration unchanged; +4 bytes ([log](../testing/host/logs/2026-11-26_verify-f27.txt)) |
 | `1d31f8c` | INT-25 to INT-27: STOP and a task fault during a junction turn; 60 s centred straight | None (tests only) | Integration 54/54; 3 mutations caught ([log](../testing/host/logs/2026-11-26_int-turn-stop-mutations.txt)) |
+| `2468513` | Sensor-fault safety: INT-28 to INT-30 (invalid or stale range, silent scan, silent looks), S4-U46 (invalid samples mid-hump); section 10 outcomes | None (tests only) | Integration 60/60; 5 mutations caught ([log](../testing/host/logs/2026-11-26_sensor-fault-safety.txt)) |
+| `938db26` | S4 motion classification and encoder yaw rate (S4 d18); telemetry version 6, 34 bytes (S1 d9); INT-31, S4-U47 to U50 | **Yes**: new console lines, IF-18 fields and two frame bytes; observational only | S4 44, integration 64, dashboard 29; 11 builds, 0 warnings; +1,300 bytes flash, +8 bytes RAM; 6 mutations caught ([log](../testing/host/logs/2026-11-26_verify-motion-class.txt)) |
 
 ## 10. Outstanding Engineering Limitations
 

@@ -528,7 +528,7 @@ s4_test_invalid_mid_hump (void)
 }
 
 /*
- * S4-U47 (2026-11-26, decision 20): the mean-speed gate the pitch gate and
+ * S4-U47 (2026-11-26, decision 18): the mean-speed gate the pitch gate and
  * the motion classifier share, with the mission settings (15 mm/s, hold
  * 8). The first sample is not steady; a change above 15 mm/s opens a
  * window of 9 unsteady samples (the change and 8 held) with its direction,

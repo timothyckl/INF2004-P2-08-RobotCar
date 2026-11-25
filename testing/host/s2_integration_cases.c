@@ -1057,7 +1057,7 @@ int_30_look_silent (void)
               "no look answers in BYPASS: STOP latched, still, box clear");
 }
 
-/* INT-31 (S2 -> S4 -> S1, S4 decision 20, telemetry version 6): the real
+/* INT-31 (S2 -> S4 -> S1, S4 decision 18, telemetry version 6): the real
    S4 motion classifier on the real Motion Control status through a whole
    run, and its result in the real telemetry frame. Straight: stationary
    before START, then cruising, never turning (the ramp to 40 mm/s stays
