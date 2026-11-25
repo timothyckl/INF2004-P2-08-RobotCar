@@ -15,10 +15,11 @@
  * owned by the Line Sensor task and still require S3 hardware validation. */
 #define TEST_BAR_RUN_MAX_US     800000U
 #define TEST_BAR_QUIET_US       700000U
+/* S3_BARCODE_RUN_MIN_US in s3_barcode.c (F-25, S3 decision 12). */
+#define TEST_BAR_RUN_MIN_US     50000U
 
 static unsigned int g_checks = 0U;
 static unsigned int g_failures = 0U;
-static unsigned int g_known = 0U;
 
 static void check(bool passed, char const * p_name)
 {
@@ -27,23 +28,6 @@ static void check(bool passed, char const * p_name)
     {
         ++g_failures;
         printf("FAIL: %s\n", p_name);
-    }
-}
-
-/* A property the firmware is known not to meet yet, recorded with its
- * finding ID (docs/software_quality_review.md). It is reported on every
- * run but does not fail the suite; if the firmware is corrected it
- * reports FIXED so that it can become an ordinary check. */
-static void known_defect(bool passed, char const * p_id, char const * p_name)
-{
-    if (passed)
-    {
-        printf("FIXED (%s): %s\n", p_id, p_name);
-    }
-    else
-    {
-        ++g_known;
-        printf("KNOWN DEFECT (%s): %s\n", p_id, p_name);
     }
 }
 
@@ -313,6 +297,7 @@ static void test_pipeline(void)
 static s3_scan_cfg_t scan_cfg(void)
 {
     s3_scan_cfg_t cfg = {TEST_BAR_RUN_MAX_US, TEST_BAR_QUIET_US,
+                         TEST_BAR_RUN_MIN_US,
                          S3_CODE39_SENTINEL, g_s3_code39_alphabet,
                          S3_CODE39_SYMBOL_COUNT};
 
@@ -876,11 +861,11 @@ static uint8_t cut_and_blip(uint32_t * p_out, uint32_t const * p_runs,
  *    pausing on it, as recorded on 2026-11-17; inside this test's 800 ms
  *    run and 700 ms quiet limits) still decodes: the check must not
  *    reject a damaged end that is not shifted;
- *  - KNOWN DEFECT F-25 (25 runs): with 6 runs cut and a blip, only 5 runs
- *    of the damaged end are seen. A shift at the start end then changes
- *    one element, and the recorded 25-run Z (S3-U01) disagrees with the
- *    sentinel in two, so the two cannot be told apart and these captures
- *    are not checked.
+ *  - 6 runs cut and a blip (25 runs): only 5 runs of the damaged end are
+ *    seen, too few to check it (a shift at the start end changes one
+ *    element, the recorded 25-run Z disagrees in two). Since S3 decision
+ *    12 a kept run under 50 ms rejects such a capture, so it is never a
+ *    wrong letter either; S3 decision 11 alone gave 1208 wrong here.
  */
 static void test_scan_damaged_end(void)
 {
@@ -980,8 +965,156 @@ static void test_scan_damaged_end(void)
     check(0U == wrong_27_29,
           "27- or 29-run capture with a cut end and a blip is never wrong");
     check(b_paused_ok, "a pause on one sentinel run still decodes");
-    known_defect(0U == wrong_25, "F-25",
-                 "25-run capture with a cut end and a blip is never wrong");
+    check(0U == wrong_25,
+          "25-run capture with a cut end and a blip is never wrong (F-25)");
+}
+
+/*
+ * S3-U08: 25-run captures, where the damaged end is too short to check
+ * (F-25, S3 decision 12; post-demo, 2026-11-26). Over A..Z, each capture
+ * with a blip also fed in reverse:
+ *  - 6 runs cut from either end plus a blip of 10, 20, 30 or 40 ms (the
+ *    recorded noise was 19..40 ms) at 1/4, 1/2 or 3/4 of any kept run,
+ *    with narrow elements of 60, 100 or 150 ms (2.5:1): never a wrong
+ *    letter;
+ *  - 4 runs cut and no blip, at the same three scales: always decoded;
+ *  - the recorded 25-run Z (S3-U01) with every run moved by -10, 0 or
+ *    +10 ms (one sample), 600 fixed pseudo-random cases: always Z. A
+ *    limit relative to the capture's own narrow width instead of a fixed
+ *    one decoded only 1360 to 2385 of 5000 such cases (2026-11-26 log);
+ *  - a narrow element blurred to 25 ms in a 25-run capture is decoded
+ *    right or rejected, never wrong. It cannot be told from a 20 ms blip.
+ */
+static void test_scan_short_end(void)
+{
+    static uint32_t const narrows_us[3] = {60000U, 100000U, 150000U};
+    static uint32_t const blips_us[4] = {10000U, 20000U, 30000U, 40000U};
+    static uint32_t const at_permille[3] = {250U, 500U, 750U};
+    static uint32_t const z_runs[25] =
+    {
+        100000U, 360000U, 80000U, 120000U, 300000U,
+        120000U, 280000U, 140000U, 60000U, 160000U,
+        60000U, 320000U, 300000U, 100000U, 300000U,
+        120000U, 80000U, 120000U, 80000U, 120000U,
+        100000U, 200000U, 660000U, 20000U, 560000U
+    };
+    s3_scan_t scan;
+    uint32_t now = 80000000U;
+    uint32_t seed = 12345U;
+    unsigned int wrong = 0U;
+    unsigned int cases = 0U;
+    bool b_cut_ok = true;
+    bool b_z_ok = true;
+    bool b_blur_never_wrong = true;
+
+    s3_scan_init(&scan);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        char const letter = g_s3_code39_alphabet[idx].symbol;
+
+        for (uint8_t scale = 0U; scale < 3U; ++scale)
+        {
+            uint32_t runs[S3_BAR_FRAME_RUNS];
+            uint32_t noisy[S3_BAR_FRAME_RUNS + 2U];
+            uint32_t reversed[S3_BAR_FRAME_RUNS + 2U];
+            char symbol = '\0';
+
+            (void)make_runs(runs, S3_CODE39_SENTINEL,
+                            g_s3_code39_alphabet[idx].pattern,
+                            S3_CODE39_SENTINEL, narrows_us[scale],
+                            (narrows_us[scale] * 5U) / 2U);
+
+            for (uint8_t side = 0U; side < 2U; ++side)
+            {
+                uint8_t const first = (0U == side) ? 0U : 4U;
+
+                symbol = '\0';
+                b_cut_ok = b_cut_ok
+                    && (S3_SCAN_DECODED == feed_runs_us(
+                            &scan, &runs[first], S3_BAR_FRAME_RUNS - 4U,
+                            &now, &symbol))
+                    && (letter == symbol);
+
+                for (uint8_t split = 0U;
+                     split < (S3_BAR_FRAME_RUNS - 6U); ++split)
+                {
+                    for (uint8_t at = 0U; at < 3U; ++at)
+                    {
+                        for (uint8_t blip = 0U; blip < 4U; ++blip)
+                        {
+                            uint8_t const count = cut_and_blip(
+                                noisy, runs, 6U, (1U == side), split,
+                                at_permille[at], blips_us[blip]);
+
+                            for (uint8_t run = 0U; run < count; ++run)
+                            {
+                                reversed[run] = noisy[count - 1U - run];
+                            }
+                            symbol = '\0';
+                            wrong += ((S3_SCAN_DECODED == feed_runs_us(
+                                          &scan, noisy, count, &now,
+                                          &symbol))
+                                      && (letter != symbol)) ? 1U : 0U;
+                            symbol = '\0';
+                            wrong += ((S3_SCAN_DECODED == feed_runs_us(
+                                          &scan, reversed, count, &now,
+                                          &symbol))
+                                      && (letter != symbol)) ? 1U : 0U;
+                            cases += 2U;
+                        }
+                    }
+                }
+            }
+
+            /* A narrow element of a 25-run capture blurred to 25 ms. */
+            for (uint8_t pos = 0U; pos < (S3_BAR_FRAME_RUNS - 4U); ++pos)
+            {
+                uint32_t const saved = runs[pos];
+
+                if (narrows_us[scale] == saved)
+                {
+                    runs[pos] = 25000U;
+                    symbol = '\0';
+                    b_blur_never_wrong = b_blur_never_wrong
+                        && ((S3_SCAN_DECODED != feed_runs_us(
+                                &scan, runs, S3_BAR_FRAME_RUNS - 4U,
+                                &now, &symbol))
+                            || (letter == symbol));
+                    runs[pos] = saved;
+                }
+            }
+        }
+    }
+
+    for (uint16_t trial = 0U; trial < 600U; ++trial)
+    {
+        uint32_t jittered[25];
+        char symbol = '\0';
+
+        for (uint8_t run = 0U; run < 25U; ++run)
+        {
+            uint8_t const source = (0U == (trial & 1U)) ? run
+                                                        : (uint8_t)(24U - run);
+
+            /* A fixed linear congruential sequence: -10, 0 or +10 ms. */
+            seed = (seed * 1103515245U) + 12345U;
+            jittered[run] = (z_runs[source] - 10000U)
+                            + (((seed >> 16U) % 3U) * 10000U);
+        }
+        b_z_ok = b_z_ok
+            && (S3_SCAN_DECODED == feed_runs_us(&scan, jittered, 25U, &now,
+                                                &symbol))
+            && ('Z' == symbol);
+    }
+
+    printf("25-run captures with a blip: %u wrong of %u cases\n", wrong,
+           cases);
+    check(0U == wrong,
+          "a 25-run capture with a 10..40 ms blip is never wrong (F-25)");
+    check(b_cut_ok, "a 25-run capture without a blip decodes at 60..150 ms");
+    check(b_z_ok, "the recorded 25-run Z within one sample decodes");
+    check(b_blur_never_wrong,
+          "a 25 ms element in a 25-run capture is never wrong");
 }
 
 /* Car captures of barcode F, 2026-11-17 (logs/2026-11-17_s3-bar-drive-4):
@@ -1543,9 +1676,9 @@ int main(void)
     test_scan_noise();
     test_scan_extra_marks();
     test_scan_damaged_end();
+    test_scan_short_end();
     test_scan_replay();
-    printf("%u checks, %u failures, %u known defects\n", g_checks, g_failures,
-           g_known);
+    printf("%u checks, %u failures\n", g_checks, g_failures);
     return (0U == g_failures) ? 0 : 1;
 }
 

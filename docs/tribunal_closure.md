@@ -134,7 +134,7 @@ current firmware can notice the failure at all.
 | Expired and repeated remote commands | S2-U50 | Pass |
 | Malformed line reports | S2-U57 | Pass |
 | Corrupted barcode element, speed change within a code | S3-U02 | Pass |
-| Noise blip or stray mark in a barcode (post-demo, F-18 fix) | S3-U03, U04, U05, U07 | Pass; one double fault remains for 25-run captures (F-25) |
+| Noise blip or stray mark in a barcode (post-demo, F-18 fix) | S3-U03, U04, U05, U07, U08 | Pass on the host; a damaged end plus a blip is rejected, not misread (F-25, S3 decisions 11 and 12) |
 | Junction manoeuvre with no response or no stop | S2-U77, U79 | Pass |
 
 These prove the logic responds correctly to the injected input. They do
@@ -146,7 +146,7 @@ the latch-to-PWM-off part is measured (S2-H11, worst 952 µs).
 | Failure | Why it is not detected | Correction and status |
 |---|---|---|
 | Car fully off the line | Two sensors straddle the tape, so "both white" also means centred | A centre sensor (P4); a distance rule alone would also fire on a long centred straight |
-| A noise blip turns a barcode into a different letter (F-18) | In the demo firmware the corrupted capture decoded cleanly | **Fixed after the demo** (S3 decision 9): in a 31-run capture the shortest run decides between a stray mark and a blip, and a blip is repaired (S3-U03). A capture with a damaged end *and* a blip could still give a wrong letter (F-25); since 2026-11-26 the damaged end is checked (S3 decision 11), which leaves this only for 25-run captures (S3-U07 known defect). Car test not possible: the robot has been returned |
+| A noise blip turns a barcode into a different letter (F-18) | In the demo firmware the corrupted capture decoded cleanly | **Fixed after the demo** (S3 decision 9): in a 31-run capture the shortest run decides between a stray mark and a blip, and a blip is repaired (S3-U03). A capture with a damaged end *and* a blip could still give a wrong letter (F-25); since 2026-11-26 the damaged end is checked (S3 decision 11) and, where too little of it was seen (25 runs), a kept run under 50 ms rejects the capture (decision 12). Host-verified; car test pending |
 | Controller, S3 loop or IMU task stalls | Before the demo: watchdog off, and only Motion Control fed it | **Applied after the demo** (S2 d37): check-ins and a liveness guard on Motion Control; the watchdog is fed only while all are healthy. Arming the watchdog by default awaits one car run |
 | Stack overflow in a task | No high-water check; the controller's static margin is about 400 bytes once `tm_printf` is counted | Measure the high-water marks on the car (review F-24) |
 | IMU fault while driving | `task_imu.c` recovers locally and does not raise a flag | Raise an IMU-fault flag; gate START on IMU ready (Entries 9, 16) |

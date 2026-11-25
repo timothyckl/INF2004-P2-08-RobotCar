@@ -64,7 +64,7 @@ maintainability or documentation.
 | F-22 | S4 | The `S4_RAW_LOG` stall print passed a `UW` to `%lx` | Low | **Applied** (`268e044`; debug builds only) |
 | F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
 | F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | **Applied** (instrument): painted stacks, high-water printed at run end; car run pending |
-| F-25 | S3 | A capture missing runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases in S3-U04; 3,624 in a wider sweep) | Medium | **Applied** for 27 and 29 runs (S3 d11): 0 wrong; open for 25 runs (1,208 synthetic cases), known defect in S3-U07 |
+| F-25 | S3 | A capture missing runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases in S3-U04; 3,624 in a wider sweep) | Medium | **Applied** (S3 d11 for 27 and 29 runs, d12 for 25 runs): 0 wrong in S3-U04, U07 and U08; host-verified, car test pending |
 | F-26 | S4 | The IMU task polls with `tk_dly_tsk(10)` (really 20 ms), so samples arrive 20 or 30 ms apart | Low | Kept: the averaging windows were tuned on it |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
@@ -268,14 +268,14 @@ code it is a blip and the element it split is rebuilt. Over 4,524 cases
 and no rejection, and the 19 logged car captures replay unchanged
 (S3-U05). Car test pending ([log](../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)).
 
-**F-25 (Medium, applied for 27 and 29 runs) — damaged end plus a blip.**
+**F-25 (Medium, applied) — damaged end plus a blip.**
 Found while fixing F-18. A capture that has lost runs at one end is read by
 the 24 to 29-run fallback, which copies the intact sentinel over the
 damaged end. A blip in the kept 20 runs shifts the payload by a bar and a
 space, and every one of the 39 wrong letters in S3-U04 (of 702) came from
 that shifted payload matching another letter exactly; a wider sweep gave
-3,624. Finding the blip by its length was tried first and rejected (63 of
-468 blurred-element frames became wrong letters). *Applied* (S3 decision
+3,624. Repairing the blip by its length was tried first and rejected (63
+of 468 blurred-element frames became wrong letters). *Applied* (S3 decision
 11, 2026-11-26): the runs seen at the damaged end must agree with the
 copied sentinel in all but one element, at the frame's boundary or at each
 end's own. In a 27- or 29-run capture a shift always breaks that, while the
@@ -283,8 +283,17 @@ recorded damaged ends (a pause on the closing bar) pass. Wrong letters at
 27 and 29 runs fell from 2,416 to 0 with no other fault class changed.
 A 25-run capture shows only five runs of the damaged end, too few to tell a
 shift from real damage (the recorded 25-run Z disagrees in two), so 1,208
-synthetic wrong letters remain there: F-25 stays a known defect for 25 runs
-(S3-U07). Host evidence only; the robot has been returned.
+synthetic wrong letters remained there. *Applied* (S3 decision 12): in a
+24- to 26-run capture every kept run must last at least 50 ms; the blip
+that shifted them is one of them, recorded noise lasted 19 to 40 ms and the
+shortest recorded element 60 ms. The capture is rejected, not repaired.
+Wrong letters at 25 runs fell from 1,208 to 0 (S3-U07) and S3-U08 finds
+none in 86,112 cases with blips of 10 to 40 ms; the recorded Z decodes with
+one sample of error on every run, which limits relative to the capture's
+own narrow width did not achieve (1,360 and 2,385 of 5,000). Cost: 25-run
+captures with an element under 50 ms are rejected; a noise pulse of 50 ms
+or more is indistinguishable from an element. Host evidence only
+([log](../testing/subsystem3/logs/2026-11-26_s3-f25-25run.txt)).
 
 **F-01 (High, applied) — 20 ms sampling.** `s3_follow_run()` looped with
 `tk_dly_tsk(10)`. µT-Kernel adds one tick to every delay, so on the 10 ms

@@ -9,7 +9,10 @@
  * sentinel, gap, one symbol, gap, sentinel (29 runs). A bounded fallback
  * accepts 24--29 captured runs when one intact end still supplies a
  * sentinel, both gaps and the complete payload; only the damaged terminal
- * sentinel is reconstructed. A 31-run capture has one extra bar and space:
+ * sentinel is reconstructed; the runs seen at the damaged end must agree
+ * with it (27 to 29 runs), or, when too few were seen to check (24 to 26
+ * runs), every kept run must be at least run_min_us (F-25). A 31-run
+ * capture has one extra bar and space:
  * if its shortest run is at either end it is a stray mark and is dropped;
  * if it is inside the code it is a noise blip and the split element is
  * rebuilt (F-18). Reads are tried forwards, then reversed. The sentinel and
@@ -40,6 +43,9 @@ typedef struct
 {
     uint32_t            run_max_us;     /* longest single run accepted */
     uint32_t            quiet_us;       /* white this long ends a capture */
+    uint32_t            run_min_us;     /* shorter is noise, not an element:
+                                           only checked where a 24..26-run
+                                           capture's damaged end cannot be */
     uint16_t            sentinel;       /* 9-element pattern, bit 8 first */
     s3_symbol_t const * p_symbols;
     uint8_t             symbol_count;

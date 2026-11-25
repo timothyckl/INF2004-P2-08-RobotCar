@@ -46,10 +46,20 @@
 #define S3_BARCODE_ACTIVE_RUNS      3U
 #define S3_BARCODE_ACTIVE_MIN_US    60000U
 
+/*
+ * F-25 (S3 decision 12): in a 24..26-run capture, whose damaged end is too
+ * short to check, a kept run under 50 ms is taken as noise and the
+ * capture is rejected. Recorded noise lasted 19..40 ms (2026-11-17); the
+ * shortest recorded code element is 60 ms (the 25-run Z, S3-U01), which
+ * stays above the limit with one 10 ms sample of error.
+ */
+#define S3_BARCODE_RUN_MIN_US       50000U
+
 static s3_scan_cfg_t const g_s3_barcode_scan_cfg =
 {
     S3_BARCODE_RUN_MAX_US,
     S3_BARCODE_QUIET_US,
+    S3_BARCODE_RUN_MIN_US,
     S3_CODE39_SENTINEL,
     g_s3_code39_alphabet,
     S3_CODE39_SYMBOL_COUNT

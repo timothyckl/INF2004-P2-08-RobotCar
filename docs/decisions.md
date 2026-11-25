@@ -1728,9 +1728,57 @@ correctly are now rejected as well. Cost: +452 bytes of flash, no RAM,
 **Remaining.** A 25-run capture (six runs lost and a blip) can still give
 a wrong letter (1,208 of 15,600 such synthetic cases): F-25 stays a known
 defect for 25 runs only, reported by S3-U07. The remedy is fewer blips
-(sensor height) and fewer lost runs, not decoding.
+(sensor height) and fewer lost runs, not decoding. *Resolved in software
+by decision 12.*
 
 Car test: not possible (robot returned).
+
+### 12. Short runs reject a 24 to 26-run capture (F-25 at 25 runs, 2026-11-26)
+
+Recorded by Khang on 2026-11-26; approval by Edmund (S3) to be confirmed.
+Post-demo change: host evidence only.
+
+**Problem.** After decision 11 a 25-run capture (six runs lost and a blip)
+could still give a wrong letter: 1,208 of 15,600 cases in S3-U07. Only five
+runs of the damaged end are seen, too few for the end check to see a shift.
+
+**Evidence used.** The blip that shifted the kept 20 runs is itself one of
+them, and it lasts as long as the noise. Noise at the sensor edge lasted
+19 to 40 ms on 2026-11-17; the shortest element in any recorded capture is
+59 to 60 ms (the 25-run Z, and one run on 2026-11-17).
+
+**Decision.** In a 24- to 26-run capture, every one of the 20 kept runs
+must last at least `run_min_us`, 50 ms in the firmware
+(`S3_BARCODE_RUN_MIN_US`); otherwise that side of the fallback is rejected.
+27- to 29-run captures keep decision 11's end check and are unchanged. The
+limit is a new `s3_scan_cfg_t` field; `s3_scan.c` stays free of time
+constants.
+
+**Rejected alternatives.** Limits relative to the capture's own narrow
+width (the shortest kept run at least half the median, or half the mean
+narrow run) also removed every wrong letter, but the recorded Z sits on or
+near those limits: with each run moved by one 10 ms sample it decoded in
+only 1,360 or 2,385 of 5,000 cases, against 5,000 with the fixed limit. At
+a third of the median, 172 wrong letters remained with 60 ms elements.
+Repairing the short run, as decision 9 does for 31 runs, was rejected in
+decision 9 itself (63 of 468 blurred frames became wrong letters).
+
+**Result** (host, [log](../testing/subsystem3/logs/2026-11-26_s3-f25-25run.txt)).
+No wrong letter at 25 runs: S3-U07 1,208 to 0; new S3-U08 0 of 86,112
+cases (blips of 10 to 40 ms, elements of 60 to 150 ms). The recorded Z
+decodes in all 600 one-sample variants of S3-U08, and the 19 replayed car
+captures are unchanged. Every fault class outside 24 to 26 runs is
+unchanged. Cost: +48 bytes of flash, no RAM, no extra stack.
+
+**Remaining.** A 25-run capture is now rejected, not guessed, when it has
+an element shorter than 50 ms: a narrow element blurred to 25 ms (it cannot
+be told from a 20 ms blip), or a print passed fast enough that a narrow
+element lasts under 50 ms (2.5 times faster than any recorded pass). A
+noise pulse of 50 ms or more looks like a real element, and no rule on
+these runs can separate the two. The limit assumes the line-follow speed
+of about 40 mm/s.
+
+Car test: not done.
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 

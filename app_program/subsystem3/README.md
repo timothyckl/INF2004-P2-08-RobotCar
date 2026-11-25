@@ -174,7 +174,7 @@ one misread element and speed changes (S3-U02), noise blips and broken
 frames (S3-U03), stray marks and double faults (S3-U04), and a replay of
 the 19 captures logged on the car through `s3_barcode_update()` (S3-U05).
 On macOS or Linux, `make -C testing/host s3` runs the same cases. The
-summary line counts passed checks, failures and known defects.
+summary line counts passed checks and failures.
 
 F-18 (fixed after the demo, S3 decision 9): in the demonstrated firmware a
 single 20 ms blip inside the code gave a wrong letter in 25 of 234
@@ -188,10 +188,19 @@ wrong letter (F-25: 39 of 702 cases in S3-U04). Since 2026-11-26 (S3
 decision 11) the runs seen at the damaged end must agree with the sentinel
 copied over them in all but one element; this removes every such wrong
 letter at 27 and 29 runs (2,416 in S3-U07) and leaves the recorded car
-captures unchanged. S3-U07 reports **one known defect, F-25 at 25 runs**:
-five runs of the damaged end are too few to tell a shift from real damage,
-so 1,208 synthetic cases still decode wrongly
-([log](../../testing/subsystem3/logs/2026-11-26_s3-f25-fix.txt)).
+captures unchanged ([log](../../testing/subsystem3/logs/2026-11-26_s3-f25-fix.txt)).
+A 25-run capture shows only five runs of the damaged end, too few for that
+check, so since S3 decision 12 every one of its 20 kept runs must last at
+least 50 ms (`S3_BARCODE_RUN_MIN_US`): the blip that shifted them is one of
+them, and recorded noise lasted 19 to 40 ms while the shortest recorded
+element is 60 ms. S3-U07's 1,208 wrong letters at 25 runs fall to 0, and
+S3-U08 finds none in 86,112 cases (blips of 10 to 40 ms, elements of 60 to
+150 ms) while the recorded 25-run Z decodes with one sample of error on
+every run ([log](../../testing/subsystem3/logs/2026-11-26_s3-f25-25run.txt)).
+The cost is rejection, never a wrong letter: a 25-run capture with an
+element under 50 ms (a blurred narrow element, or a pass more than about
+2.5 times faster than recorded) is not decoded, and a noise pulse of 50 ms
+or more cannot be told from a real element.
 The host tests do not verify wiring, optical distance,
 surface contrast, ambient light, sampling timing, line following, motor
 behaviour or the printed course barcodes.

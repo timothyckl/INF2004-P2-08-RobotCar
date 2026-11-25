@@ -20,7 +20,10 @@
  * disagree in at least two elements, whatever the letter, once at least
  * 7 of its runs are seen (a 27- or 29-run capture). With 5 seen runs a
  * shift at the start end changes only one element, and the recorded
- * 25-run Z disagrees in two, so a 25-run capture is not checked.
+ * 25-run Z disagrees in two, so a 25-run capture's end is not checked.
+ * Instead every one of its 20 kept runs must last at least run_min_us:
+ * a blip that shifted them leaves a run as short as the blip itself
+ * (S3 decision 12).
  */
 #define S3_SCAN_END_MISMATCH_MAX 1U
 #define S3_SCAN_END_CHECK_RUNS   7U
@@ -37,6 +40,8 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
 static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
                                    s3_scan_cfg_t const * p_cfg,
                                    char * p_symbol);
+static bool s3_scan_core_kept(uint32_t const * p_core, uint8_t seen,
+                              uint32_t run_min_us);
 static bool s3_scan_threshold(uint32_t const * p_runs, uint8_t count,
                               uint32_t * p_narrow_max, uint32_t * p_widest);
 static uint8_t s3_scan_mismatches(uint32_t const * p_seen,
@@ -320,11 +325,15 @@ static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
                                      &p_capture->runs[S3_SCAN_CORE_RUNS],
                                      &prefix.runs[S3_SCAN_CORE_RUNS],
                                      suffix_start)
+                  && s3_scan_core_kept(&p_capture->runs[0], suffix_start,
+                                       p_cfg->run_min_us)
                   && s3_scan_decode_frame(&prefix, p_cfg, &prefix_symbol);
     b_suffix_ok = s3_scan_end_agrees(&suffix, &p_capture->runs[0],
                                      &suffix.runs[S3_BAR_ELEMENTS
                                                   - suffix_start],
                                      suffix_start)
+                  && s3_scan_core_kept(&p_capture->runs[suffix_start],
+                                       suffix_start, p_cfg->run_min_us)
                   && s3_scan_decode_frame(&suffix, p_cfg, &suffix_symbol);
 
     if (b_prefix_ok && b_suffix_ok && (prefix_symbol != suffix_symbol))
@@ -415,6 +424,27 @@ static bool s3_scan_end_agrees(s3_capture_t const * p_frame,
                                frame_max) <= S3_SCAN_END_MISMATCH_MAX)
            || (s3_scan_mismatches(p_seen, p_copied, length, seen_max,
                                   copied_max) <= S3_SCAN_END_MISMATCH_MAX);
+}
+
+/* Whether the 20 kept runs at p_core can be trusted. From
+ * S3_SCAN_END_CHECK_RUNS seen runs of the damaged end, s3_scan_end_agrees()
+ * finds a shift; with fewer, a kept run shorter than run_min_us may be a
+ * blip that shifted them, so the capture is rejected, not guessed (F-25,
+ * S3 decision 12). */
+static bool s3_scan_core_kept(uint32_t const * p_core, uint8_t seen,
+                              uint32_t run_min_us)
+{
+    bool b_kept = true;
+
+    if (seen < S3_SCAN_END_CHECK_RUNS)
+    {
+        for (uint8_t idx = 0U; b_kept && (idx < S3_SCAN_CORE_RUNS); ++idx)
+        {
+            b_kept = (p_core[idx] >= run_min_us);
+        }
+    }
+
+    return b_kept;
 }
 
 /** End of file. */

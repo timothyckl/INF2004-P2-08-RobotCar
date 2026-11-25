@@ -25,7 +25,7 @@ a row says otherwise. The demo evidence is unchanged.
 | Mission requirement | Result | Evidence |
 |---|---|---|
 | Line following | Pass: 3 laps (SYS-01). The demo loop sampled every 20 ms, not the required 10 ms (F-01); post-demo: 10 ms cyclic period, car test pending | [system test log](testing/system/TEST_LOG.md) |
-| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; a damaged end plus a blip is checked since 2026-11-26 (F-25), leaving one double fault at 25 runs; not tested on the car | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; a damaged end plus a blip (F-25) is rejected rather than misread since 2026-11-26 (S3 decisions 11 and 12); host-verified only, not tested on the car | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
 | Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion). Post-demo: the detection threshold is back at the intended 6 mm (S4 d17); calibration for small humps needs the car | D-03 |
 | Obstacle detection | Pass (SYS-05) | system test log |
