@@ -1,0 +1,52 @@
+# Sensor-fault safety sweep (INT-28..INT-30, S4-U46), 2026-11-26. Host only: gcc 15.2.0 (MSYS2 UCRT64).
+# Production modules under test: forward_monitor.c, scan_control.c, bypass_control.c, task_controller.c, motion_logic.c (INT); terrain_logic.c (S4-U46).
+# No production code changed: every scenario already ended in the designed safe behaviour.
+
+## make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] subsystem2 SUMMARY 56 passed, 0 failed
+787 checks, 0 failures
+[TEST] S4-U46 PASS  invalid samples mid-hump: fault, no hump or lift, run maximum and count kept
+[TEST] subsystem4 SUMMARY 40 passed, 0 failed
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] INT-28 PASS  invalid echoes
+[HOST] INT-28 PASS  readings back: following resumes
+[HOST] INT-28 PASS  stale (no readings)
+[HOST] INT-28 PASS  readings back: following resumes
+[HOST] INT-29 PASS  no scan answer: wheels still, STOP (scan) after 20 s
+[HOST] INT-30 PASS  no look answers in BYPASS: STOP latched, still, box clear
+[HOST] s2 integration SUMMARY 60 passed, 0 failed
+[HOST] all suites passed
+
+## mutations (each restored afterwards; each must fail the suite)
+== mutation: invalid forward reading treated as safe
+suite exit status 2
+[HOST] INT-28 FAIL  invalid echoes
+[HOST] s2 integration SUMMARY 59 passed, 1 failed
+== mutation: stale forward reading treated as safe
+suite exit status 2
+[HOST] INT-28 FAIL  stale (no readings)
+[HOST] s2 integration SUMMARY 59 passed, 1 failed
+== mutation: scan authorised before the wheels are still
+suite exit status 2
+[HOST] INT-11 FAIL  scan authorised once, only with the wheels still
+[HOST] INT-14 FAIL  no route: STOP latched with cause scan
+[HOST] INT-21 FAIL  150 x 200 mm box: scan, bypass, reacquire, follow; >= 50 mm
+[HOST] INT-21 FAIL  200 x 150 mm box: scan, bypass, reacquire, follow; >= 50 mm
+[HOST] INT-24 FAIL  bypass: detection only in FOLLOW, off while settling
+[HOST] INT-28 FAIL  invalid echoes
+[HOST] INT-28 FAIL  stale (no readings)
+[HOST] INT-29 FAIL  no scan answer: wheels still, STOP (scan) after 20 s
+[HOST] s2 integration SUMMARY 52 passed, 8 failed
+== mutation: no scan time limit
+suite exit status 2
+[HOST] INT-29 FAIL  no scan answer: wheels still, STOP (scan) after 20 s
+[HOST] s2 integration SUMMARY 59 passed, 1 failed
+== mutation: bypass waits for ever for a look
+suite exit status 2
+[HOST] INT-30 FAIL  no look answers in BYPASS: STOP latched, still, box clear
+[HOST] s2 integration SUMMARY 59 passed, 1 failed
+TEST=1 and TEST=1 S4_HW_TEST=1 target builds (arm-none-eabi-gcc 15.2.1) with S4-U46: exit 0, 0 warnings

@@ -95,6 +95,9 @@ EXPORT ID motion_q = 0;
 #define SIM_LOOK_MS         300u    /* one side look (model) */
 #define SIM_HAZARD_MM       250u    /* g_task_hazard_mm */
 #define SIM_FRESH_US        150000u /* g_task_fresh_us */
+#define SIM_FWD_OK          0u      /* forward readings as the geometry */
+#define SIM_FWD_INVALID     1u      /* every reading invalid */
+#define SIM_FWD_SILENT      2u      /* no readings: the last one goes stale */
 #define SIM_CLEAR_MM        500u    /* g_task_clear_mm */
 #define SIM_RANGE_MM        4000.0  /* no echo: beyond range */
 
@@ -181,6 +184,9 @@ typedef struct
     uint32_t      scan_answer_ms;
     bool          b_still_at_authorise; /* stop-before-scan held */
     uint32_t      authorise_count;
+    uint32_t      authorise_moving; /* AUTHORISE sent with wheels moving */
+    uint8_t       fwd_fault;        /* SIM_FWD_*: forward sensor fault */
+    bool          b_scan_mute;      /* S5 never answers scans or looks */
     uint32_t      navigate_periods; /* periods seen in NAVIGATE */
     uint32_t      scan_periods;     /* periods seen in SCAN */
     int32_t       max_speed_after_stop;
@@ -747,6 +753,10 @@ sim_s5_period (void)
             g_sim.scan_since_ms = g_sim.now_ms;
             g_sim.b_still_at_authorise = motion_stop_confirmed();
             g_sim.authorise_count++;
+            if (!g_sim.b_still_at_authorise)
+            {
+                g_sim.authorise_moving++;
+            }
         }
         else if ((S2_SCAN_LOOK == cmd.kind) && g_sim.box.b_on)
         {
@@ -769,7 +779,7 @@ sim_s5_period (void)
         }
     }
 
-    if (g_sim.b_scan_authorised
+    if (g_sim.b_scan_authorised && (!g_sim.b_scan_mute)
         && ((g_sim.now_ms - g_sim.scan_since_ms) >= SIM_SCAN_MS))
     {
         g_sim.scan_answer_id = g_sim.scan_request;
@@ -829,7 +839,8 @@ sim_box_period (void)
         p_box->min_clear_mm = clear_mm;
     }
 
-    if (p_box->b_look_pending && (g_sim.now_ms >= p_box->look_due_ms))
+    if (p_box->b_look_pending && (!g_sim.b_scan_mute)
+        && (g_sim.now_ms >= p_box->look_due_ms))
     {
         p_box->look_mm = (uint16_t)lround(sim_ray_mm(p_box->look_angle));
         p_box->look_result = SCAN_TASK_LOOK_DONE;
@@ -847,8 +858,20 @@ sim_box_period (void)
 
         p_box->next_fwd_ms = g_sim.now_ms + SIM_FWD_PERIOD_MS;
         p_box->forward_mm = (uint16_t)lround(sim_ray_mm(0));
-        forward_monitor_sample(&p_box->monitor, true, p_box->forward_mm,
-                               now_us);
+        if (SIM_FWD_INVALID == g_sim.fwd_fault)
+        {
+            /* No echo, or one out of range: scan_task.c samples invalid. */
+            forward_monitor_sample(&p_box->monitor, false, 0u, now_us);
+        }
+        else if (SIM_FWD_OK == g_sim.fwd_fault)
+        {
+            forward_monitor_sample(&p_box->monitor, true,
+                                   p_box->forward_mm, now_us);
+        }
+        else
+        {
+            /* SIM_FWD_SILENT: no sample at all, so the last one ages. */
+        }
         p_box->b_hazard = (FORWARD_MONITOR_SAFE
                            != forward_monitor_check(&p_box->monitor, &cfg,
                                                     now_us));

@@ -28,6 +28,9 @@ static void int_24_terrain_gate (void);
 static void int_25_stop_in_turn (void);
 static void int_26_fault_in_turn (void);
 static void int_27_long_straight (void);
+static void int_28_forward_fault (uint8_t fault, char const * p_name);
+static void int_29_scan_silent (void);
+static void int_30_look_silent (void);
 static bool int_start_turn (uint8_t command);
 static bool int_bypass_mission (int32_t width_mm, int32_t depth_mm,
                                 char const * p_name);
@@ -65,6 +68,10 @@ s2_integration_cases (void)
     int_25_stop_in_turn();
     int_26_fault_in_turn();
     int_27_long_straight();
+    int_28_forward_fault(SIM_FWD_INVALID, "invalid echoes");
+    int_28_forward_fault(SIM_FWD_SILENT, "stale (no readings)");
+    int_29_scan_silent();
+    int_30_look_silent();
 }
 
 /* INT-08 (S1 -> S2): MQTT STOP through the bridge latches STOP at once;
@@ -959,6 +966,92 @@ int_start_turn (uint8_t command)
     sim_run_ms(1000u);
 
     return (b_navigating && sim_navigating());
+}
+
+/* INT-28 (S5 sensor -> S2, 2026-11-26): forward readings that are invalid
+   (no echo) or stop arriving (stale) while following, with no obstacle
+   within 4 m. The real forward monitor reports them as not safe, which
+   the controller treats as a hazard: it stops, scans with the wheels
+   still, and resumes only on S5's CLEAR, so the car never drives on
+   uncertain range for longer than one reading. Over 15 s of fault it
+   moves less than 100 mm; when readings return it follows normally. */
+static void
+int_28_forward_fault (uint8_t fault, char const * p_name)
+{
+    int32_t x_before;
+    int32_t x_after;
+    bool b_ok;
+
+    sim_init(&g_straight);
+    sim_place_box(4000, 150, 200);
+    sim_start();
+    sim_run_ms(2000u);
+    b_ok = sim_following() && (0u == g_sim.authorise_count);
+
+    g_sim.fwd_fault = fault;
+    x_before = sim_x_mm();
+    sim_run_ms(15000u);
+    x_after = sim_x_mm();
+    sim_check(b_ok && sim_running() && (g_sim.authorise_count >= 1u)
+              && (0u == g_sim.authorise_moving)
+              && ((x_after - x_before) < 100), "INT-28", p_name);
+
+    g_sim.fwd_fault = SIM_FWD_OK;
+    (void)sim_run_until(sim_following, SIM_SCAN_MS + 2000u);
+    x_before = sim_x_mm();
+    sim_run_ms(5000u);
+    sim_check(sim_following() && ((sim_x_mm() - x_before) > 150), "INT-28",
+              "readings back: following resumes");
+}
+
+/* INT-29 (S2 <-> S5, 2026-11-26): a hazard at 0.8 m and a scan that S5
+   never answers. The wheels stay still from the stop before the scan,
+   and after the controller's 20 s scan limit STOP latches with cause
+   scan; the car never moves on without a result. */
+static void
+int_29_scan_silent (void)
+{
+    sim_track_t const track = {0, false, false, true, 800,
+                               SCAN_TASK_RESULT_CLEAR};
+    bool b_still = true;
+    bool b_stopped;
+
+    sim_init(&track);
+    g_sim.b_scan_mute = true;
+    sim_start();
+    (void)sim_run_until(int_wheels_still, 60000u);
+    for (uint32_t elapsed = 0u; elapsed < 21000u; elapsed += SIM_PERIOD_MS)
+    {
+        sim_step();
+        b_still = b_still && int_wheels_still();
+    }
+    b_stopped = int_stopped_latched(S2_STOP_SCAN);
+    sim_check(g_sim.b_still_at_authorise && b_still && b_stopped
+              && (0u == g_sim.authorise_moving), "INT-29",
+              "no scan answer: wheels still, STOP (scan) after 20 s");
+}
+
+/* INT-30 (S2 <-> S5 during BYPASS, 2026-11-26): the demo obstacle; once
+   the bypass has started, S5 stops answering side looks. The bypass must
+   not drive on without them: the car ends stopped with STOP latched,
+   never reaches the box and is still. */
+static void
+int_30_look_silent (void)
+{
+    s2_robot_state_t state;
+    bool b_ok;
+
+    sim_init(&g_straight);
+    sim_place_box(900, 150, 200);
+    sim_start();
+    b_ok = sim_run_until(int_in_bypass, 120000u);
+    g_sim.b_scan_mute = true;
+    sim_run_ms(60000u);
+    sim_state(&state);
+    sim_check(b_ok && int_wheels_still()
+              && (0u != (state.flags & S2_RS_STOP_LATCHED))
+              && (g_sim.box.min_clear_mm >= 50.0), "INT-30",
+              "no look answers in BYPASS: STOP latched, still, box clear");
 }
 
 /* End of file. */

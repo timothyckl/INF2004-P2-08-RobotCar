@@ -21,7 +21,7 @@ in the firmware.
 |---|---|---|
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
-| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 56/56, S3 787 checks (no known defect), S4 39/39 plus S4-U44 (replay of 6 car logs), S5 48/48, controller integration 54/54 (INT-08 to INT-27), dashboard 27/27 (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
+| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 56/56, S3 787 checks (no known defect), S4 40/40 plus S4-U44 (replay of 6 car logs), S5 48/48, controller integration 60/60 (INT-08 to INT-30), dashboard 27/27 (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
 | Line and branch coverage | `testing/host/coverage.sh` | 84.5% of lines, 73.9% of branches over 33 host-built files (2026-11-26, [log](../testing/host/logs/2026-11-26_coverage.txt)). The 6 newly measured files include `task_controller.c` (61%) and `s2_bridge.c` (53%), now built by the integration suite. The same 27 files as on 2026-11-25: 90.7% of lines, 78.9% of branches (was 89.7% and 78.0%) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
@@ -41,22 +41,22 @@ maintainability or documentation.
 | ID | Subsystem | Finding | Severity | Status |
 |---|---|---|---|---|
 | F-01 | S3 | The barcode and line loop samples every **20 ms**, not 10 ms | High | **Applied** (S3 d10): 10 ms cyclic handler; car test pending |
-| F-02 | S2 | A junction is recognised only when **both** front sensors are black, so a one-sided branch reads as a curve | High | Proposal (needs a car test) |
+| F-02 | S2 | A junction is recognised only when **both** front sensors are black, so a one-sided branch reads as a curve | High | Mitigated; limitation (junction geometry unknown) |
 | F-03 | S2 | No turn started after RIGHT was decoded on demo day | High | One cause found and **applied** (S2 d36): the 60 s hold expired at the obstacle; car test pending |
-| F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | **Partly applied** (S4 d17): detection threshold fixed; calibration needs the car |
-| F-05 | S5 | Obstacle width is overstated by the ultrasonic beam (SYS-06) | Medium | Explained; proposal |
+| F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | **Partly applied** (S4 d17); limitation: calibration data |
+| F-05 | S5 | Obstacle width is overstated by the ultrasonic beam (SYS-06) | Medium | Mitigated; limitation: beam calibration |
 | F-06 | S1/S2 | Telemetry carries one fault class; the detail behind the four demo motion faults was lost | Medium | **Applied** (S1 d8): version 5 frame; car test pending |
 | F-07 | Build | Subsystems 1 to 4 were built with no warning flags | Medium | **Applied** (S2 d34) |
-| F-08 | S2 | Watchdog off in the mission image | Medium | **Partly applied** (S2 d37): liveness guard on; watchdog armed only with `S2_WATCHDOG=1` until a car run |
-| F-09 | S3 | Barcode white limits measured at the old sensor height; baseline pinned at its upper limit on demo day | Low | Proposal |
+| F-08 | S2 | Watchdog off in the mission image | Medium | Mitigated: liveness guard always on (S2 d37, d38); hardware watchdog default pending a car run |
+| F-09 | S3 | Barcode white limits measured at the old sensor height; baseline pinned at its upper limit on demo day | Low | Limitation: calibration data |
 | F-10 | S2 | A held barcode command keeps ageing during a scan and bypass | Low | **Applied** with F-03: no time limit (S2 d36) |
 | F-11 | Tools | Dashboard received every heartbeat twice | Low | **Applied** (`47a7147`) |
 | F-12 | S3 | `-fanalyzer` reports an out-of-bounds write in `s3_nav.c` | — | False positive |
 | F-13 | S3 | The letter table can change while the S3 loop reads it | Low | Safe by design; documented |
 | F-14 | Tests | Six tests ran but were not defined in any test log | Low | **Applied** (`ad2b48c`) |
 | F-15 | S4 tests | Mission hump settings repeated in a test | Low | **Applied** (S4 d17): `s4_config.h` |
-| F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Proposal |
-| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Blocked: needs a centre sensor (P4, hardware approval); no safe software rule |
+| F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Limitation: process (letter table check before START) |
+| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Mitigated; limitation: sensor observability (centre sensor needed) |
 | F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | **Applied** (S3 d9): blip repaired; car test pending |
 | F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
 | F-20 | S3 | `s3_nav_stage()` and `s3_nav_take()` held a command a second time, but nothing in the mission called them | Low | **Applied**: removed (mission UF2 unchanged) |
@@ -66,7 +66,7 @@ maintainability or documentation.
 | F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | **Applied** (instrument): painted stacks, high-water printed at run end; car run pending |
 | F-25 | S3 | A capture missing runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases in S3-U04; 3,624 in a wider sweep) | Medium | **Applied** (S3 d11 for 27 and 29 runs, d12 for 25 runs): 0 wrong in S3-U04, U07 and U08; host-verified, car test pending |
 | F-27 | S2 | The liveness guard can read a check-in made after its clock read (a higher-priority task preempting Motion Control) as 2^32 ms old and latch a false task fault | Medium | **Applied** (S2 d38): such an age counts as fresh; S2-U81 extended; host-verified |
-| F-26 | S4 | The IMU task polls with `tk_dly_tsk(10)` (really 20 ms), so samples arrive 20 or 30 ms apart | Low | Kept: the averaging windows were tuned on it |
+| F-26 | S4 | The IMU task polls with `tk_dly_tsk(10)` (really 20 ms), so samples arrive 20 or 30 ms apart | Low | Justified design choice (timing the windows were tuned on) |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -515,23 +515,28 @@ be set over MQTT, and the scan and bypass work from measurements.
 
 ## 10. Outstanding Engineering Limitations
 
-These are existing design, measurement and verification limitations;
-none was introduced by the refinements in section 9, which correct
-separate defects. Each needs a measurement, a calibration, a hardware
-change or a car run that software alone cannot supply. Software mitigation
-is kept where it is safe (curve holding, conservative bypass planning, the
-liveness guard). The demonstrated image (`a41c19c`, UF2 SHA-256
-`8cf2c419…`) contains none of the section 9 refinements.
+Each open finding has one of four outcomes: **corrected** (fixed and
+software-verified), **mitigated** (the limitation remains, the behaviour is
+shown to be safe), **justified design choice**, or **engineering
+limitation** (needs a measurement, calibration, hardware change or car run,
+with an acceptance criterion). None was introduced by the refinements in
+section 9. The demonstrated image (`a41c19c`, UF2 SHA-256 `8cf2c419…`)
+contains none of the section 9 refinements.
 
-| Limitation | Technical cause | Current mitigation | Outstanding requirement | Evidence |
-|---|---|---|---|---|
-| Junction recognition (F-02, P3) | A branch leaving on one side covers only one front sensor, which reads as a curve | A held command waits for the next confirmed junction (S2 d36) | Course junction geometry measured; then a rule only if needed | INT-10, INT-11; SYS-03 not run |
-| Line loss (F-17, P4) | Both sensors white is both "centred" and "off the line" | Curve holding; stale and invalid reports latch STOP | A centre sensor (hardware modification) | INT-09, INT-27; line-loss analysis log |
-| Obstacle width (F-05, P6) | The effective beam (about 21°) is wider than the allowance and varies between stops | Planning uses the clearance profile, not the width; conservative bypass | Beam measured on the car to set the allowance | S5-U72; width feasibility log; SYS-06 not met |
-| Hump calibration (F-04, P5) | One reference height cannot separate gain from offset | Detection on the uncalibrated height, FOLLOW only | Reference humps of 5, 10 and 15 mm and a flat lap | S4-U41 to U44; S4-H08 |
-| IMU timing (F-26) | `tk_dly_tsk(10)` lasts 20 or 30 ms | Each sample is time-stamped; windows tuned on this timing | A car run before changing the period | S4-H08 log |
-| Watchdog (F-08, P7) | A wrong limit could reset the car mid-run | Liveness guard always on (S2 d37, d38); watchdog a make option | One armed car run | S2-U81, U82; INT-15, INT-26 |
-| Full course (SYS-09, P9) | Depends on every element in one run | Each element tested separately | Three full-course runs | Demo report; system test log |
+| Finding | Outcome | Technical justification | Acceptance criterion |
+|---|---|---|---|
+| F-02 one-sided junctions (P3) | Mitigated; engineering limitation | A branch on one side covers one front sensor, which reads as a curve. A rule using a held command would turn at the first long curve after a barcode, so none is added. A held command waits for the next confirmed junction (S2 d36; INT-10, INT-11) | Course junction measured on the bench (SYS-03: 3 runs per command) |
+| F-17 car fully off the line (P4) | Mitigated; engineering limitation (sensor observability) | Both sensors white is both "centred" and "off the line"; correct following shows over 1.1 m of both-white. Stale or invalid reports latch STOP (INT-09); a long straight never stops falsely (INT-27) | Centre sensor fitted; STOP within 200 ms (value to be agreed) of leaving the line, 5 of 5, no false stop in 3 SYS-01 laps |
+| F-05 obstacle width (P6) | Mitigated; engineering limitation (calibration) | The effective beam (about 21°) is wider than the allowance and varies between stops. A shape is reported only when both edges pass the contiguity checks; planning uses the clearance profile, not the width. Uncertain or missing range readings stop the car for a scan before it moves on (INT-28 to INT-30) | Beam measured at 200, 250 and 300 mm; SYS-06 within ±20 mm, both box faces |
+| F-04 hump calibration (P5) | Engineering limitation (calibration data) | One reference height cannot separate gain from offset; detection uses the uncalibrated height, so calibration cannot cause false humps. Invalid samples mid-hump fault without a false hump or lift (S4-U46) | SYS-04 within ±2 mm at 5, 10 and 15 mm, and no hump on a flat lap |
+| F-09 barcode white limits | Engineering limitation (calibration data) | The limits bound only the adaptive white baseline; black reads far above the 584 threshold seen on demo day, so decoding was not limited by them | Re-measure white at the current sensor height; SYS-02 5 passes per print |
+| F-26 IMU timing | Justified design choice | Each sample carries its own time; the 16-sample average, settle and 3-sample confirmation were tuned and replayed (S4-U44) on 20 or 30 ms spacing. A cyclic poll would change those windows without new data | None in software; any change of period needs a car run and a new replay |
+| F-08 watchdog (P7) | Mitigated (software-verified); hardware activation pending | The liveness guard is on in every mission image and stops the motors when a task stalls (S2 d37, d38; S2-U81, U82; INT-15, INT-26). Only the hardware watchdog default stays off | One SYS-01 run with `S2_WATCHDOG=1`: no reset and no `health:` line; a forced stall resets the board |
+| F-24 stack margin | Mitigated; measurement pending | Stacks are painted and the unused depth is printed at run end (S2-U83); the static estimate leaves about 400 bytes on the controller | `stack ...` lines after a SYS-01 lap show unused stack on every task, compared with the static estimate |
+| F-12 analyser report | Justified (false positive) | The index is `letter - 'A'` after a check for `'A'..'Z'` | None |
+| F-13 letter table update | Justified design choice | One-byte writes; a letter read during an update maps to its old or new command, or to none, never an invalid one | None |
+| F-16 letter table entry | Engineering limitation (process) | The table was entered wrongly on demo day; the firmware cannot know the intended mapping | Letter table shown on the dashboard and checked before START |
+| SYS-09 full course (P9) | Engineering limitation (verification) | Each element passes on its own; a run needs all of them at once. Simulated missions (INT-17 to INT-30) are software validation only | SYS-09: the whole course after one START, three runs |
 
 The proposals below give the detail of each.
 

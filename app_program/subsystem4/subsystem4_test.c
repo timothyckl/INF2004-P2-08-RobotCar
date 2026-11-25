@@ -40,6 +40,7 @@ static bool s4_test_calibration_fault(void);
 static bool s4_test_rejects_spike(void);
 static bool s4_test_detects_hump(void);
 static bool s4_test_invalid_limit(void);
+static bool s4_test_invalid_mid_hump(void);
 static bool s4_test_invalid_streak_clears(void);
 static bool s4_test_time_wrap(void);
 static bool s4_test_stale_fault(void);
@@ -171,6 +172,9 @@ subsystem4_test (void)
     TEST_CHECK("S4-U45", s4_test_detect_gate(),
                "detection gate: on after the settle count of FOLLOW only; "
                "any other sample reloads it");
+    TEST_CHECK("S4-U46", s4_test_invalid_mid_hump(),
+               "invalid samples mid-hump: fault, no hump or lift, run "
+               "maximum and count kept");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -444,6 +448,51 @@ s4_test_recovery_retains_max (void)
     return ((S4_TERRAIN_STATE_CALIBRATING == context.result.state) &&
             context.result.b_maximum_height_valid &&
             (10u == context.result.maximum_height_mm));
+}
+
+/*
+ * S4-U46 (2026-11-26): invalid samples in the middle of a hump. After one
+ * complete 10 mm hump, a second hump is half crossed and the sensor then
+ * gives invalid samples up to the invalid limit. The terrain logic must
+ * enter FAULT (sensor) without reporting the partial hump, a lift or an
+ * impact, and keep the run maximum (10 mm) and the count (1); the Vehicle
+ * Controller acts only on a lift (IF-19), so the car is not stopped.
+ */
+static bool
+s4_test_invalid_mid_hump (void)
+{
+    s4_terrain_context_t context;
+    s4_terrain_sample_t const invalid = {.b_valid = false};
+    uint32_t time_us = 30000u;
+    uint8_t events = 0u;
+    bool b_first;
+
+    s4_test_calibrate(&context, 0u);
+    b_first = s4_test_hump(&context, &time_us, S4_TEST_WHEEL_10MM_PITCH_MG,
+                           S4_TEST_WHEEL_10MM_ROLL_MG, true);
+
+    for (uint8_t index = 0u; index < (S4_TEST_HUMP_SAMPLES / 2u); index++)
+    {
+        time_us += S4_TEST_SAMPLE_PERIOD_US;
+        s4_test_feed(&context, S4_TEST_WHEEL_10MM_PITCH_MG,
+                     S4_TEST_WHEEL_10MM_ROLL_MG, time_us, true);
+        events = (uint8_t)(events | context.result.events);
+    }
+    for (uint8_t index = 0u; index < context.config.invalid_limit; index++)
+    {
+        s4_terrain_process(&context, &invalid, true);
+        events = (uint8_t)(events | context.result.events);
+    }
+
+    return (b_first
+            && (S4_TERRAIN_STATE_FAULT == context.result.state)
+            && (S4_TERRAIN_FAULT_SENSOR == context.result.fault)
+            && (0u == (events & (S4_TERRAIN_EVENT_HUMP_COMPLETE
+                                 | S4_TERRAIN_EVENT_LIFT
+                                 | S4_TERRAIN_EVENT_IMPACT)))
+            && context.result.b_maximum_height_valid
+            && (10u == context.result.maximum_height_mm)
+            && (1u == context.result.hump_count));
 }
 
 static bool
