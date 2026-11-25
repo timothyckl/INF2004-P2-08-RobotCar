@@ -11,6 +11,19 @@
 /* One stray mark (a bar and a space) beside the code, as seen on the car
  * on 2026-11-17 (testing/subsystem3/TEST_LOG.md). */
 #define S3_SCAN_STRAY_RUNS       2U
+/*
+ * Check of the damaged end in the 24..29-run fallback (F-25, S3 d11).
+ * The runs seen at that end must agree with the sentinel copied over
+ * them in all but one element: a real damaged end (the recorded 1.5 s
+ * pause on the closing bar) disagrees in one. A blip inside the kept 20
+ * runs shifts the payload by a bar and a space and makes the seen end
+ * disagree in at least two elements, whatever the letter, once at least
+ * 7 of its runs are seen (a 27- or 29-run capture). With 5 seen runs a
+ * shift at the start end changes only one element, and the recorded
+ * 25-run Z disagrees in two, so a 25-run capture is not checked.
+ */
+#define S3_SCAN_END_MISMATCH_MAX 1U
+#define S3_SCAN_END_CHECK_RUNS   7U
 
 static bool s3_scan_decode(s3_capture_t const * p_capture,
                            s3_scan_cfg_t const * p_cfg, char * p_symbol);
@@ -24,6 +37,14 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
 static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
                                    s3_scan_cfg_t const * p_cfg,
                                    char * p_symbol);
+static bool s3_scan_threshold(uint32_t const * p_runs, uint8_t count,
+                              uint32_t * p_narrow_max, uint32_t * p_widest);
+static uint8_t s3_scan_mismatches(uint32_t const * p_seen,
+                                  uint32_t const * p_copied, uint8_t length,
+                                  uint32_t seen_max, uint32_t copied_max);
+static bool s3_scan_end_agrees(s3_capture_t const * p_frame,
+                               uint32_t const * p_seen,
+                               uint32_t const * p_copied, uint8_t length);
 
 void s3_scan_init(s3_scan_t * p_scan)
 {
@@ -221,7 +242,7 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
                                  s3_scan_cfg_t const * p_cfg,
                                  char * p_symbol)
 {
-    uint32_t narrowest = UINT32_MAX;
+    uint32_t narrow_max = 0U;
     uint32_t widest = 0U;
     bool b_decoded = false;
 
@@ -230,20 +251,9 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
         return false;
     }
 
-    for (uint8_t idx = 0U; idx < p_capture->count; ++idx)
+    if (s3_scan_threshold(p_capture->runs, p_capture->count, &narrow_max,
+                          &widest))
     {
-        uint32_t const run = p_capture->runs[idx];
-
-        narrowest = (run < narrowest) ? run : narrowest;
-        widest = (run > widest) ? run : widest;
-    }
-
-    /* Widened products cannot overflow for runs below 2^31 us. */
-    if (((uint64_t)widest * S3_SCAN_CONTRAST_DEN)
-        >= ((uint64_t)narrowest * S3_SCAN_CONTRAST_NUM))
-    {
-        uint32_t const narrow_max = (uint32_t)(((uint64_t)narrowest + widest)
-                                               / 2U);
         s3_capture_t reversed = *p_capture;
 
         b_decoded = s3_bar_decode(p_capture, narrow_max, narrow_max + 1U,
@@ -302,8 +312,20 @@ static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
     }
     suffix.count = S3_BAR_FRAME_RUNS;
 
-    b_prefix_ok = s3_scan_decode_frame(&prefix, p_cfg, &prefix_symbol);
-    b_suffix_ok = s3_scan_decode_frame(&suffix, p_cfg, &suffix_symbol);
+    /* The runs seen at the damaged end must agree with the sentinel
+     * copied over them (F-25): the end's first runs for the prefix; for
+     * the suffix, its last runs, which are the copied sentinel's last
+     * elements. count - 20 (4..9) runs were seen there. */
+    b_prefix_ok = s3_scan_end_agrees(&prefix,
+                                     &p_capture->runs[S3_SCAN_CORE_RUNS],
+                                     &prefix.runs[S3_SCAN_CORE_RUNS],
+                                     suffix_start)
+                  && s3_scan_decode_frame(&prefix, p_cfg, &prefix_symbol);
+    b_suffix_ok = s3_scan_end_agrees(&suffix, &p_capture->runs[0],
+                                     &suffix.runs[S3_BAR_ELEMENTS
+                                                  - suffix_start],
+                                     suffix_start)
+                  && s3_scan_decode_frame(&suffix, p_cfg, &suffix_symbol);
 
     if (b_prefix_ok && b_suffix_ok && (prefix_symbol != suffix_symbol))
     {
@@ -316,6 +338,83 @@ static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
     }
 
     return false;
+}
+
+/* The narrow/wide boundary of count runs: halfway between the narrowest
+ * and the widest. False if they are too close to tell apart. */
+static bool s3_scan_threshold(uint32_t const * p_runs, uint8_t count,
+                              uint32_t * p_narrow_max, uint32_t * p_widest)
+{
+    uint32_t narrowest = UINT32_MAX;
+    uint32_t widest = 0U;
+    bool b_contrast;
+
+    for (uint8_t idx = 0U; idx < count; ++idx)
+    {
+        uint32_t const run = p_runs[idx];
+
+        narrowest = (run < narrowest) ? run : narrowest;
+        widest = (run > widest) ? run : widest;
+    }
+
+    /* Widened products cannot overflow for runs below 2^31 us. */
+    b_contrast = ((uint64_t)widest * S3_SCAN_CONTRAST_DEN)
+                 >= ((uint64_t)narrowest * S3_SCAN_CONTRAST_NUM);
+    /* The mean of two uint32_t values fits uint32_t. */
+    *p_narrow_max = (uint32_t)(((uint64_t)narrowest + widest) / 2U);
+    *p_widest = widest;
+
+    return b_contrast;
+}
+
+/* Elements of p_seen and p_copied (length each) that differ in class at
+ * the boundaries seen_max and copied_max. */
+static uint8_t s3_scan_mismatches(uint32_t const * p_seen,
+                                  uint32_t const * p_copied, uint8_t length,
+                                  uint32_t seen_max, uint32_t copied_max)
+{
+    uint8_t mismatches = 0U;
+
+    for (uint8_t idx = 0U; idx < length; ++idx)
+    {
+        if ((p_seen[idx] > seen_max) != (p_copied[idx] > copied_max))
+        {
+            /* At most 9 runs, so the count fits uint8_t. */
+            mismatches = (uint8_t)(mismatches + 1U);
+        }
+    }
+
+    return mismatches;
+}
+
+/* Whether the length runs seen at a damaged end (p_seen) agree with the
+ * sentinel elements copied over them in the repaired frame p_frame
+ * (p_copied), in all but S3_SCAN_END_MISMATCH_MAX elements. Agreement is
+ * taken at the frame's boundary (one stretched run, such as a pause) or
+ * at each end's own boundary (a change of speed along the code). */
+static bool s3_scan_end_agrees(s3_capture_t const * p_frame,
+                               uint32_t const * p_seen,
+                               uint32_t const * p_copied, uint8_t length)
+{
+    uint32_t frame_max = 0U;
+    uint32_t seen_max = 0U;
+    uint32_t copied_max = 0U;
+    uint32_t widest = 0U;
+
+    if (length < S3_SCAN_END_CHECK_RUNS)
+    {
+        return true;
+    }
+
+    (void)s3_scan_threshold(p_frame->runs, p_frame->count, &frame_max,
+                            &widest);
+    (void)s3_scan_threshold(p_seen, length, &seen_max, &widest);
+    (void)s3_scan_threshold(p_copied, length, &copied_max, &widest);
+
+    return (s3_scan_mismatches(p_seen, p_copied, length, frame_max,
+                               frame_max) <= S3_SCAN_END_MISMATCH_MAX)
+           || (s3_scan_mismatches(p_seen, p_copied, length, seen_max,
+                                  copied_max) <= S3_SCAN_END_MISMATCH_MAX);
 }
 
 /** End of file. */

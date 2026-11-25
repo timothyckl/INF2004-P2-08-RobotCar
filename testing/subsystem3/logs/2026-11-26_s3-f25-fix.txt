@@ -1,0 +1,178 @@
+# F-25 analysis and fix, 2026-11-26 (S3 decision 11). Host only, synthetic
+# captures; no car test (the robot has been returned).
+#
+# Root cause (instrumented decode of the 39 wrong cases of S3-U04): all 39
+# came from the 24..29-run fallback's PREFIX frame. A blip in runs 7..14
+# shifts the payload by one bar and space; the fallback copies the intact
+# start sentinel over the damaged end and never compares it with the runs
+# actually seen there, and the shifted payload matched another letter
+# exactly (C->P, E->S, F->T, J->Q ...). The 1-element payload tolerance is
+# not the cause: with it set to 0 the 39 stay (and S3 check "one misread
+# element can be corrected" fails).
+#
+# Sweep (one-off program, all 26 letters, every capture also reversed,
+# 100/250 ms print unless stated): counts of right letters, rejections and
+# WRONG letters per fault class. "cut k + blip": k runs cut from one end
+# plus a 10 or 20 ms blip at 1/4, 1/2 or 3/4 of any remaining run.
+# Variants of the damaged-end check (applied when at least MINSEEN runs of
+# that end were seen; 1 disagreeing element allowed):
+#   MODE 0: no check (decoder before this change)
+#   MODE 1: elements classed at the repaired frame's boundary
+#   MODE 2: each end classed at its own boundary
+#   MODE 3: agree under either (chosen)
+#
+# First sweep (cuts 2 and 4):
+== MODE 0 MINSEEN 9
+clean 2:1/2.5:1/3:1              ok   156  rejected     0  WRONG    0
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+one blip 10/20ms                 ok  9048  rejected     0  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2/4 + blip               ok  5416  rejected  9568  WRONG 1240
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+two blips                        ok     0  rejected  3900  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2/4 + blip             ok  5584  rejected  9464  WRONG 1176
+== MODE 1 MINSEEN 9
+clean 2:1/2.5:1/3:1              ok   156  rejected     0  WRONG    0
+speed ramp 0.3x..3.5x            ok    54  rejected   258  WRONG    0
+one blip 10/20ms                 ok  9048  rejected     0  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2/4 + blip               ok  2656  rejected 12948  WRONG  620
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+two blips                        ok     0  rejected  3900  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2/4 + blip             ok  3156  rejected 12480  WRONG  588
+== MODE 2 MINSEEN 9
+clean 2:1/2.5:1/3:1              ok   156  rejected     0  WRONG    0
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+one blip 10/20ms                 ok  9048  rejected     0  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2/4 + blip               ok  2604  rejected 13000  WRONG  620
+end run paused x5/x15            ok     0  rejected   936  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+two blips                        ok     0  rejected  3900  WRONG    0
+paused end + ramp                ok     0  rejected   312  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2/4 + blip             ok  3208  rejected 12428  WRONG  588
+== MODE 3 MINSEEN 9
+clean 2:1/2.5:1/3:1              ok   156  rejected     0  WRONG    0
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+one blip 10/20ms                 ok  9048  rejected     0  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2/4 + blip               ok  2656  rejected 12948  WRONG  620
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+two blips                        ok     0  rejected  3900  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2/4 + blip             ok  3208  rejected 12428  WRONG  588
+== MODE 3 MINSEEN 4
+clean 2:1/2.5:1/3:1              ok   156  rejected     0  WRONG    0
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+one blip 10/20ms                 ok  9048  rejected     0  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2/4 + blip               ok  1196  rejected 15028  WRONG    0
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+two blips                        ok     0  rejected  3900  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2/4 + blip             ok   936  rejected 15288  WRONG    0
+== MODE 1 MINSEEN 4
+clean 2:1/2.5:1/3:1              ok   156  rejected     0  WRONG    0
+speed ramp 0.3x..3.5x            ok    54  rejected   258  WRONG    0
+one blip 10/20ms                 ok  9048  rejected     0  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2/4 + blip               ok  1144  rejected 15080  WRONG    0
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+two blips                        ok     0  rejected  3900  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2/4 + blip             ok   884  rejected 15340  WRONG    0
+
+# Second sweep (cuts 2..8; captures are always odd, so the fallback
+# sees 25, 27 or 29 runs, i.e. 5, 7 or 9 runs of the damaged end):
+== MODE 0 MINSEEN 9
+  wrong at 25 runs: 1208
+  wrong at 27 runs: 1208
+  wrong at 29 runs: 1208
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2..8 + blip              ok  7188  rejected 20904  WRONG 1860
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2..8 + blip            ok  7440  rejected 20748  WRONG 1764
+== MODE 3 MINSEEN 9
+  wrong at 25 runs: 1208
+  wrong at 27 runs: 1208
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2..8 + blip              ok  4428  rejected 24284  WRONG 1240
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2..8 + blip            ok  5064  rejected 23712  WRONG 1176
+== MODE 3 MINSEEN 7
+  wrong at 25 runs: 1208
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2..8 + blip              ok  2968  rejected 26364  WRONG  620
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2..8 + blip            ok  2792  rejected 26572  WRONG  588
+== MODE 3 MINSEEN 6
+  wrong at 25 runs: 1208
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2..8 + blip              ok  2968  rejected 26364  WRONG  620
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2..8 + blip            ok  2792  rejected 26572  WRONG  588
+== MODE 3 MINSEEN 5
+  wrong at 25 runs: 588
+speed ramp 0.3x..3.5x            ok   128  rejected   184  WRONG    0
+end cut 2..10 runs               ok   104  rejected   156  WRONG    0
+end cut 2..8 + blip              ok  1612  rejected 28340  WRONG    0
+end run paused x5/x15            ok   936  rejected     0  WRONG    0
+blur: narrow x0.25 / wide x0.6   ok  1352  rejected   156  WRONG    0
+paused end + ramp                ok    54  rejected   258  WRONG    0
+start cut 2..10 runs             ok   104  rejected   156  WRONG    0
+start cut 2..8 + blip            ok  2636  rejected 26728  WRONG  588
+
+# Choice: MODE 3 with MINSEEN 7 (S3_SCAN_END_CHECK_RUNS).
+# - MODE 1 alone loses speed-ramp decodes (128 -> 54); MODE 2 alone
+#   rejects every paused end (936 -> 0) and the recorded 1.5 s pause
+#   capture (S3 check "recorded pass with a 1.5 s pause on the closing bar
+#   is F"). MODE 3 keeps both.
+# - MINSEEN 4 or 5 also rejects the recorded 25-run Z capture (S3 checks
+#   "decode 25-run Z with damaged trailing sentinel" and "... in reverse"):
+#   its real damaged end disagrees with the sentinel in 2 of 5 elements,
+#   as many as a shift does, and at the start end a shift changes only 1
+#   of 5. MINSEEN 6 and 7 give identical results (no 26-run capture).
+# - Result: wrong letters at 27 and 29 runs 2416 -> 0; at 25 runs 1208 stay
+#   (known defect F-25, narrowed). Right letters in the cut+blip classes
+#   fall (14628 -> 5760): double-fault captures the old decoder happened to
+#   read right are now rejected with those it read wrong. Every other class
+#   (clean, ramp, single blip, plain cuts, pauses, blur, two blips) is
+#   unchanged.
+#
+# Suite (make -C testing/host s3):
+#   new decoder: 782 checks, 0 failures, 1 known defect (F-25, 25 runs)
+#   old decoder: 782 checks, 2 failures (S3-U04 39/702 wrong, S3-U07 2416
+#   wrong at 27/29 runs)
+#   S3-U05: 19 car captures replayed, 2 decoded, none wrong (unchanged)
+# Target: mission build 0 warnings; text 376158 -> 376610 (+452 bytes);
+# stack estimate s3_follow_run 1928 -> 1936 bytes; strict check 0
+# application warnings.

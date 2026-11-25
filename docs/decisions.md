@@ -1629,7 +1629,9 @@ repair to 26 to 29-run captures (a damaged end plus a blip, F-25) was
 tried and rejected: such a capture cannot be told from a valid frame with
 one short element, and the repair turned 63 of 468 blurred-element frames
 into wrong letters. F-25 stays a known defect in S3-U04
-([log](../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)).
+([log](../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)); on
+2026-11-26 it was fixed for 27- and 29-run captures by checking the
+damaged end instead (decision 11).
 
 Car test pending: SYS-02 with both prints.
 
@@ -1681,6 +1683,54 @@ Cost: +292 bytes of flash, 24 bytes more kernel memory for `line_q`.
 
 Car test pending: SYS-01 (3 laps), SYS-02 (both prints, bar durations
 should become multiples of 10 ms) and the `s3 loop:` line (overruns 0).
+
+### 11. The damaged end of a 25 to 29-run capture is checked (F-25, 2026-11-26)
+
+Approved by Dalton on 2026-11-26 (S2 decision 35). Post-demo change, made
+after the robot was returned: host evidence only.
+
+**Problem.** A capture that has lost runs at one end is decoded by the
+fallback, which keeps the 20 runs at the intact end and copies the intact
+sentinel over the damaged one. If the capture also holds a noise blip, the
+kept runs are shifted by a bar and a space, and the shifted payload can be
+another letter exactly. Instrumenting the 39 wrong letters of S3-U04 showed
+that every one came this way: a blip in runs 7 to 14, with the copied
+sentinel never compared with the runs actually seen at the damaged end. A
+wider sweep (every blip position, 10 and 20 ms blips, both directions,
+2 to 8 runs cut) gave 3,624 wrong letters with the decoder of decision 9.
+The one-element payload tolerance is not the cause: with it removed, the
+39 remain.
+
+**Decision.** The runs seen at the damaged end must agree with the copied
+sentinel elements, narrow or wide, in all but one element. An element
+agrees if it does so at the repaired frame's boundary (a single long run,
+such as the car pausing on a bar) or at each end's own boundary (a speed
+change along the code). The check applies when at least 7 runs of the end
+were seen, that is to 27- and 29-run captures. There a shift always makes
+at least two elements disagree, whatever the letter, while the recorded
+damaged end (the 1.5 s pause on the closing bar of F) disagrees in one.
+
+**Rejected alternatives.** Classing at the frame's boundary only loses
+decodes under a speed change (128 to 54 in the sweep); at each end's own
+boundary only rejects every paused end, including the recorded F. Checking
+25-run captures as well rejects the recorded 25-run Z, whose real damaged
+end disagrees in two of five elements, as many as a shift does; at the
+start end a shift changes only one of five.
+
+**Result** (host, [log](../testing/subsystem3/logs/2026-11-26_s3-f25-fix.txt)).
+Wrong letters at 27 and 29 runs: 2,416 to 0 (S3-U07); S3-U04's 39 of 702
+to 0. Clean, speed-change, single-blip, cut-only, paused, blurred and
+two-blip captures are unchanged, and so are the 19 replayed car captures
+(S3-U05). Double-fault captures that the old decoder happened to read
+correctly are now rejected as well. Cost: +452 bytes of flash, no RAM,
+8 bytes more on the S3 loop's deepest stack path.
+
+**Remaining.** A 25-run capture (six runs lost and a blip) can still give
+a wrong letter (1,208 of 15,600 such synthetic cases): F-25 stays a known
+defect for 25 runs only, reported by S3-U07. The remedy is fewer blips
+(sensor height) and fewer lost runs, not decoding.
+
+Car test: not possible (robot returned).
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 

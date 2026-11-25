@@ -755,11 +755,10 @@ static void test_scan_noise(void)
  *    from a code bar; it must be rejected or decoded right, never wrong;
  *  - a stray mark together with one code element shorter than the mark
  *    (a blurred narrow space, 25 ms) must never give a wrong letter;
- *  - KNOWN DEFECT F-25: a capture missing two runs at one end (a damaged
- *    sentinel, handled by the 24..29-run fallback) that also holds a 20 ms
- *    blip can give a wrong letter. A 29-run capture cannot tell such a
- *    blip from a genuine short element, and repairing it turned blurred
- *    narrow elements into wrong letters (63 of 468), so it is not repaired.
+ *  - a capture missing two runs at one end (a damaged sentinel, handled
+ *    by the 24..29-run fallback) that also holds a 20 ms blip must never
+ *    give a wrong letter. Before F-25 was fixed (S3 d11), 39 of these 702
+ *    cases did; the fallback now checks the damaged end (S3-U07).
  */
 static void test_scan_extra_marks(void)
 {
@@ -848,8 +847,141 @@ static void test_scan_extra_marks(void)
     printf("damaged end plus blip: %u of %u cases gave a wrong letter\n",
            compound_wrong,
            (unsigned int)(S3_CODE39_SYMBOL_COUNT * (S3_BAR_FRAME_RUNS - 2U)));
-    known_defect(0U == compound_wrong, "F-25",
-                 "a blip in a capture with a damaged end is never wrong");
+    check(0U == compound_wrong,
+          "a blip in a capture with a damaged end is never wrong (F-25)");
+}
+
+/* Cut the first (b_start) or last cut runs of a 29-run frame and add a
+ * blip_us blip at_permille of the way into run split of what is left.
+ * Returns the run count (31 - cut). */
+static uint8_t cut_and_blip(uint32_t * p_out, uint32_t const * p_runs,
+                            uint8_t cut, bool b_start, uint8_t split,
+                            uint32_t at_permille, uint32_t blip_us)
+{
+    uint8_t const first = b_start ? cut : 0U;
+
+    return add_blip(p_out, &p_runs[first],
+                    (uint8_t)(S3_BAR_FRAME_RUNS - cut), split, at_permille,
+                    blip_us);
+}
+
+/*
+ * S3-U07: the damaged-end check of the 25..29-run fallback (F-25, S3 d11;
+ * post-demo, 2026-11-26). Over A..Z with a 2.5:1 print (100 ms narrow,
+ * 250 ms wide), each capture also fed in reverse:
+ *  - 2 or 4 runs cut from either end plus a 10 or 20 ms blip at 1/4, 1/2
+ *    or 3/4 of any remaining run (27 or 29 runs): never a wrong letter.
+ *    The demo decoder gave 2416 wrong letters here;
+ *  - a frame with one run of either sentinel held for 600 ms (the car
+ *    pausing on it, as recorded on 2026-11-17; inside this test's 800 ms
+ *    run and 700 ms quiet limits) still decodes: the check must not
+ *    reject a damaged end that is not shifted;
+ *  - KNOWN DEFECT F-25 (25 runs): with 6 runs cut and a blip, only 5 runs
+ *    of the damaged end are seen. A shift at the start end then changes
+ *    one element, and the recorded 25-run Z (S3-U01) disagrees with the
+ *    sentinel in two, so the two cannot be told apart and these captures
+ *    are not checked.
+ */
+static void test_scan_damaged_end(void)
+{
+    static uint32_t const at_permille[3] = {250U, 500U, 750U};
+    static uint32_t const blips_us[2] = {10000U, 20000U};
+    s3_scan_t scan;
+    uint32_t now = 60000000U;
+    unsigned int wrong_27_29 = 0U;
+    unsigned int wrong_25 = 0U;
+    unsigned int cases = 0U;
+    bool b_paused_ok = true;
+
+    s3_scan_init(&scan);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        char const letter = g_s3_code39_alphabet[idx].symbol;
+        uint32_t runs[S3_BAR_FRAME_RUNS];
+        uint32_t noisy[S3_BAR_FRAME_RUNS + 2U];
+        uint32_t reversed[S3_BAR_FRAME_RUNS + 2U];
+
+        (void)make_runs(runs, S3_CODE39_SENTINEL,
+                        g_s3_code39_alphabet[idx].pattern,
+                        S3_CODE39_SENTINEL, 100000U, 250000U);
+
+        for (uint8_t cut = 2U; cut <= 6U; cut = (uint8_t)(cut + 2U))
+        {
+            for (uint8_t side = 0U; side < 2U; ++side)
+            {
+                for (uint8_t split = 0U;
+                     split < (S3_BAR_FRAME_RUNS - cut); ++split)
+                {
+                    for (uint8_t at = 0U; at < 3U; ++at)
+                    {
+                        for (uint8_t blip = 0U; blip < 2U; ++blip)
+                        {
+                            uint8_t const count = cut_and_blip(
+                                noisy, runs, cut, (1U == side), split,
+                                at_permille[at], blips_us[blip]);
+                            char symbol = '\0';
+                            s3_scan_result_t result;
+                            unsigned int wrong = 0U;
+
+                            for (uint8_t run = 0U; run < count; ++run)
+                            {
+                                reversed[run] = noisy[count - 1U - run];
+                            }
+                            result = feed_runs_us(&scan, noisy, count, &now,
+                                                  &symbol);
+                            wrong += ((S3_SCAN_DECODED == result)
+                                      && (letter != symbol)) ? 1U : 0U;
+                            symbol = '\0';
+                            result = feed_runs_us(&scan, reversed, count,
+                                                  &now, &symbol);
+                            wrong += ((S3_SCAN_DECODED == result)
+                                      && (letter != symbol)) ? 1U : 0U;
+                            cases += 2U;
+                            if (6U == cut)
+                            {
+                                wrong_25 += wrong;
+                            }
+                            else
+                            {
+                                wrong_27_29 += wrong;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /* The car pausing on one run of either sentinel. */
+        for (uint8_t element = 0U; element < (2U * S3_BAR_ELEMENTS);
+             ++element)
+        {
+            /* Elements 0..8 are the opening sentinel's runs, 9..17 the
+               closing one's (runs 20..28). */
+            uint8_t const run = (element < S3_BAR_ELEMENTS) ? element
+                : (uint8_t)(element + (S3_BAR_FRAME_RUNS
+                                       - (2U * S3_BAR_ELEMENTS)));
+
+            uint32_t paused[S3_BAR_FRAME_RUNS];
+            char symbol = '\0';
+
+            for (uint8_t copy = 0U; copy < S3_BAR_FRAME_RUNS; ++copy)
+            {
+                paused[copy] = runs[copy];
+            }
+            paused[run] = 600000U;
+            b_paused_ok = b_paused_ok
+                && (S3_SCAN_DECODED == feed_runs_us(
+                        &scan, paused, S3_BAR_FRAME_RUNS, &now, &symbol))
+                && (letter == symbol);
+        }
+    }
+    printf("damaged end plus blip, 27 or 29 runs: %u wrong; 25 runs: %u "
+           "wrong; %u cases\n", wrong_27_29, wrong_25, cases);
+    check(0U == wrong_27_29,
+          "27- or 29-run capture with a cut end and a blip is never wrong");
+    check(b_paused_ok, "a pause on one sentinel run still decodes");
+    known_defect(0U == wrong_25, "F-25",
+                 "25-run capture with a cut end and a blip is never wrong");
 }
 
 /* Car captures of barcode F, 2026-11-17 (logs/2026-11-17_s3-bar-drive-4):
@@ -1410,6 +1542,7 @@ int main(void)
     test_scan_robustness();
     test_scan_noise();
     test_scan_extra_marks();
+    test_scan_damaged_end();
     test_scan_replay();
     printf("%u checks, %u failures, %u known defects\n", g_checks, g_failures,
            g_known);

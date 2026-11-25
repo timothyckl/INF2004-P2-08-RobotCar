@@ -183,11 +183,15 @@ error rate, and no wrong letter was seen on the car. S3-U03 now checks
 10 ms and 20 ms blips at three places in every run of every letter (4,524
 cases): none gives a wrong letter and none is rejected.
 
-S3-U04 reports **one known defect, F-25**: a capture that has lost two runs
-at one end *and* holds a blip can still give a wrong letter (39 of 702
-synthetic cases). A 29-run capture cannot tell such a blip from a genuine
-short element, and repairing it made blurred narrow elements decode wrongly,
-so it is left as it is ([log](../../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)).
+A capture that has lost runs at one end *and* holds a blip could give a
+wrong letter (F-25: 39 of 702 cases in S3-U04). Since 2026-11-26 (S3
+decision 11) the runs seen at the damaged end must agree with the sentinel
+copied over them in all but one element; this removes every such wrong
+letter at 27 and 29 runs (2,416 in S3-U07) and leaves the recorded car
+captures unchanged. S3-U07 reports **one known defect, F-25 at 25 runs**:
+five runs of the damaged end are too few to tell a shift from real damage,
+so 1,208 synthetic cases still decode wrongly
+([log](../../testing/subsystem3/logs/2026-11-26_s3-f25-fix.txt)).
 The host tests do not verify wiring, optical distance,
 surface contrast, ambient light, sampling timing, line following, motor
 behaviour or the printed course barcodes.
@@ -201,7 +205,8 @@ behaviour or the printed course barcodes.
 - `s3_scan` frames captures from timestamped side-sensor edges, derives the
   narrow/wide boundary from each capture, and decodes forwards then reversed.
   A 24--29 run capture is accepted when one intact end supplies a
-  sentinel, both gaps and the full payload. A 31-run capture has one extra
+  sentinel, both gaps and the full payload, and, from 27 runs, the runs
+  seen at the damaged end agree with that sentinel in all but one element. A 31-run capture has one extra
   bar and space: if its shortest run is at either end it is a stray mark
   and is dropped; if it is inside the code it is a noise blip, and the
   element it split is rebuilt from the blip and its two neighbours (F-18).
