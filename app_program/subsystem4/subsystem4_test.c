@@ -41,6 +41,11 @@ static bool s4_test_rejects_spike(void);
 static bool s4_test_detects_hump(void);
 static bool s4_test_invalid_limit(void);
 static bool s4_test_invalid_mid_hump(void);
+static bool s4_test_speed_gate(void);
+static void s4_test_run_late(INT * p_pass, INT * p_fail);
+static bool s4_test_yaw_rate(void);
+static bool s4_test_motion_states(void);
+static bool s4_test_motion_debounce(void);
 static bool s4_test_invalid_streak_clears(void);
 static bool s4_test_time_wrap(void);
 static bool s4_test_stale_fault(void);
@@ -172,9 +177,7 @@ subsystem4_test (void)
     TEST_CHECK("S4-U45", s4_test_detect_gate(),
                "detection gate: on after the settle count of FOLLOW only; "
                "any other sample reloads it");
-    TEST_CHECK("S4-U46", s4_test_invalid_mid_hump(),
-               "invalid samples mid-hump: fault, no hump or lift, run "
-               "maximum and count kept");
+    s4_test_run_late(&test_pass_, &test_fail_);
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -450,6 +453,33 @@ s4_test_recovery_retains_max (void)
             (10u == context.result.maximum_height_mm));
 }
 
+/* S4-U46 to U50 (2026-11-26): run with their own counters, which are then
+   added to the runner's, so that subsystem4_test() stays under 100 lines
+   (BARR-C 6.2a). */
+static void
+s4_test_run_late (INT * p_pass, INT * p_fail)
+{
+    TEST_INIT();
+
+    TEST_CHECK("S4-U46", s4_test_invalid_mid_hump(),
+               "invalid samples mid-hump: fault, no hump or lift, run "
+               "maximum and count kept");
+    TEST_CHECK("S4-U47", s4_test_speed_gate(),
+               "speed gate: over 15 mm/s opens a 9-sample window with its "
+               "direction; a failed read keeps it");
+    TEST_CHECK("S4-U48", s4_test_yaw_rate(),
+               "encoder yaw: (right - left) / track, left positive, "
+               "rounded, saturated");
+    TEST_CHECK("S4-U49", s4_test_motion_states(),
+               "motion class: every state, its boundary and the priority "
+               "order");
+    TEST_CHECK("S4-U50", s4_test_motion_debounce(),
+               "motion class: 3-sample debounce, impact held, unknown at "
+               "once on stale or missing input");
+    *p_pass += test_pass_;
+    *p_fail += test_fail_;
+}
+
 /*
  * S4-U46 (2026-11-26): invalid samples in the middle of a hump. After one
  * complete 10 mm hump, a second hump is half crossed and the sensor then
@@ -476,11 +506,13 @@ s4_test_invalid_mid_hump (void)
         time_us += S4_TEST_SAMPLE_PERIOD_US;
         s4_test_feed(&context, S4_TEST_WHEEL_10MM_PITCH_MG,
                      S4_TEST_WHEEL_10MM_ROLL_MG, time_us, true);
+        /* Both are uint8_t event masks, so the OR fits uint8_t. */
         events = (uint8_t)(events | context.result.events);
     }
     for (uint8_t index = 0u; index < context.config.invalid_limit; index++)
     {
         s4_terrain_process(&context, &invalid, true);
+        /* Both are uint8_t event masks, so the OR fits uint8_t. */
         events = (uint8_t)(events | context.result.events);
     }
 
@@ -493,6 +525,258 @@ s4_test_invalid_mid_hump (void)
             && context.result.b_maximum_height_valid
             && (10u == context.result.maximum_height_mm)
             && (1u == context.result.hump_count));
+}
+
+/*
+ * S4-U47 (2026-11-26, decision 20): the mean-speed gate the pitch gate and
+ * the motion classifier share, with the mission settings (15 mm/s, hold
+ * 8). The first sample is not steady; a change above 15 mm/s opens a
+ * window of 9 unsteady samples (the change and 8 held) with its direction,
+ * exactly 15 mm/s does not; a failed read keeps the window untouched and
+ * makes the next sample unsteady, as the pitch gate did before the gate
+ * was shared.
+ */
+static bool
+s4_test_speed_gate (void)
+{
+    s4_speed_gate_t gate = {0};
+    bool b_ok = !s4_speed_gate_step(&gate, 0, S4_PITCH_DV_MM_S,
+                                    S4_PITCH_HOLD_SAMPLES);
+    uint8_t unsteady = 0u;
+
+    b_ok = b_ok && s4_speed_gate_step(&gate, 15, S4_PITCH_DV_MM_S,
+                                      S4_PITCH_HOLD_SAMPLES)
+           && (0 == gate.direction);
+    b_ok = b_ok && (!s4_speed_gate_step(&gate, 31, S4_PITCH_DV_MM_S,
+                                        S4_PITCH_HOLD_SAMPLES))
+           && (1 == gate.direction);
+    unsteady = 1u;
+    while (!s4_speed_gate_step(&gate, 31, S4_PITCH_DV_MM_S,
+                               S4_PITCH_HOLD_SAMPLES)
+           && (unsteady < 20u))
+    {
+        unsteady++;
+        b_ok = b_ok && (1 == gate.direction);
+    }
+    b_ok = b_ok && ((S4_PITCH_HOLD_SAMPLES + 1u) == unsteady)
+           && (0 == gate.direction);
+
+    b_ok = b_ok && (!s4_speed_gate_step(&gate, 0, S4_PITCH_DV_MM_S,
+                                        S4_PITCH_HOLD_SAMPLES))
+           && (-1 == gate.direction);
+    s4_speed_gate_reset(&gate);
+    b_ok = b_ok && (!s4_speed_gate_step(&gate, 0, S4_PITCH_DV_MM_S,
+                                        S4_PITCH_HOLD_SAMPLES))
+           && (S4_PITCH_HOLD_SAMPLES == gate.hold)
+           && (!s4_speed_gate_step(NULL, 0, S4_PITCH_DV_MM_S,
+                                   S4_PITCH_HOLD_SAMPLES));
+
+    return (b_ok);
+}
+
+/*
+ * S4-U48: the encoder yaw rate in 0.1 deg/s on the 119 mm track. A spin
+ * at 30 mm/s each way is 60 / 119 rad/s = 28.89 deg/s; left positive (the
+ * right wheel faster), right negative; the 8 mm/s line correction is 3.9
+ * deg/s; a zero track gives 0; the widest difference saturates.
+ */
+static bool
+s4_test_yaw_rate (void)
+{
+    return ((289 == s4_motion_yaw_ddeg_s(-30, 30, S4_TRACK_MM))
+            && (-289 == s4_motion_yaw_ddeg_s(30, -30, S4_TRACK_MM))
+            && (39 == s4_motion_yaw_ddeg_s(32, 40, S4_TRACK_MM))
+            && (0 == s4_motion_yaw_ddeg_s(40, 40, S4_TRACK_MM))
+            && (0 == s4_motion_yaw_ddeg_s(-30, 30, 0u))
+            && (INT16_MAX == s4_motion_yaw_ddeg_s(INT16_MIN, INT16_MAX,
+                                                  S4_TRACK_MM))
+            && (INT16_MIN == s4_motion_yaw_ddeg_s(INT16_MAX, INT16_MIN,
+                                                  S4_TRACK_MM)));
+}
+
+/* Whether two strings are equal (no <string.h>: on the target it clashes
+   with the kernel's size_t). */
+static bool
+s4_test_text_is (char const * p_expected, char const * p_text)
+{
+    uint8_t index = 0u;
+
+    while ((p_expected[index] == p_text[index])
+           && ('\0' != p_expected[index]) && (index < UINT8_MAX))
+    {
+        index++;
+    }
+
+    return (p_expected[index] == p_text[index]);
+}
+
+/* Steps the classifier n times with one input; returns the state. */
+static s4_motion_class_t
+s4_test_class_run (s4_motion_classifier_t * p_class,
+                   s4_motion_input_t const * p_input, uint8_t count)
+{
+    s4_motion_class_config_t const config = s4_motion_config_mission();
+    s4_motion_class_t state = S4_MOTION_UNKNOWN;
+
+    for (uint8_t index = 0u; index < count; index++)
+    {
+        state = s4_motion_class_step(p_class, &config, p_input);
+    }
+
+    return (state);
+}
+
+/* The state that input settles to from a fresh classifier. */
+static s4_motion_class_t
+s4_test_class_of (s4_motion_input_t const * p_input)
+{
+    s4_motion_classifier_t cls;
+
+    s4_motion_class_init(&cls);
+    return (s4_test_class_run(&cls, p_input, S4_CONFIRMATION_SAMPLES));
+}
+
+/* Valid, fresh, level, cruising at the line speed. */
+static s4_motion_input_t
+s4_test_class_input (void)
+{
+    s4_motion_input_t input = {0};
+
+    input.left_mm_s = 40;
+    input.right_mm_s = 40;
+    input.b_motion_valid = true;
+    input.b_terrain_valid = true;
+    return (input);
+}
+
+/*
+ * S4-U49: every state with the mission settings, at its boundaries, and
+ * the priority order (impact, hump, turning, stationary, speed change,
+ * cruising).
+ */
+static bool
+s4_test_motion_states (void)
+{
+    s4_motion_input_t input = s4_test_class_input();
+    bool b_ok = (S4_MOTION_CRUISING == s4_test_class_of(&input));
+
+    /* Stationary: both wheels at most 10 mm/s; 11 is moving. (10 against
+       -10 mm/s is a slow spin, 9.6 deg/s, so turning.) */
+    input.left_mm_s = -10;
+    input.right_mm_s = -10;
+    b_ok = b_ok && (S4_MOTION_STATIONARY == s4_test_class_of(&input));
+    input.left_mm_s = 10;
+    input.right_mm_s = 10;
+    b_ok = b_ok && (S4_MOTION_STATIONARY == s4_test_class_of(&input));
+    input.right_mm_s = -10;
+    b_ok = b_ok && (S4_MOTION_TURNING == s4_test_class_of(&input));
+    input.right_mm_s = 11;
+    b_ok = b_ok && (S4_MOTION_CRUISING == s4_test_class_of(&input));
+
+    /* Turning from 8 deg/s: 32/48 mm/s is 7.7 deg/s, 32/49 is 8.2. */
+    input.left_mm_s = 32;
+    input.right_mm_s = 48;
+    b_ok = b_ok && (S4_MOTION_CRUISING == s4_test_class_of(&input));
+    input.right_mm_s = 49;
+    b_ok = b_ok && (S4_MOTION_TURNING == s4_test_class_of(&input));
+    input.left_mm_s = 49;
+    input.right_mm_s = 32;
+    b_ok = b_ok && (S4_MOTION_TURNING == s4_test_class_of(&input));
+    /* A spin on the spot is turning, not stationary. */
+    input.left_mm_s = -30;
+    input.right_mm_s = 30;
+    b_ok = b_ok && (S4_MOTION_TURNING == s4_test_class_of(&input));
+
+    /* Speed change: accelerating, braking; still wheels stay stationary. */
+    input = s4_test_class_input();
+    input.speed_change = 1;
+    b_ok = b_ok && (S4_MOTION_ACCELERATING == s4_test_class_of(&input));
+    input.speed_change = -1;
+    b_ok = b_ok && (S4_MOTION_BRAKING == s4_test_class_of(&input));
+    input.left_mm_s = 0;
+    input.right_mm_s = 0;
+    b_ok = b_ok && (S4_MOTION_STATIONARY == s4_test_class_of(&input));
+
+    /* On a hump: climbing at the peak and within the 4 mm band below it,
+       descending further down; the hump outranks turning. */
+    input = s4_test_class_input();
+    input.b_on_hump = true;
+    input.peak_um = 11000;
+    input.height_um = 11000;
+    b_ok = b_ok && (S4_MOTION_CLIMBING == s4_test_class_of(&input));
+    input.height_um = 7000;
+    b_ok = b_ok && (S4_MOTION_CLIMBING == s4_test_class_of(&input));
+    input.height_um = 6999;
+    b_ok = b_ok && (S4_MOTION_DESCENDING == s4_test_class_of(&input));
+    input.left_mm_s = -30;
+    input.right_mm_s = 30;
+    b_ok = b_ok && (S4_MOTION_DESCENDING == s4_test_class_of(&input));
+
+    /* Impact outranks the hump; neither counts without valid terrain. */
+    input.b_impact = true;
+    b_ok = b_ok && (S4_MOTION_IMPACT == s4_test_class_of(&input));
+    input.b_terrain_valid = false;
+    b_ok = b_ok && (S4_MOTION_TURNING == s4_test_class_of(&input));
+
+    return (b_ok
+            && s4_test_text_is("turning",
+                               s4_motion_class_name(S4_MOTION_TURNING))
+            && s4_test_text_is("?",
+                               s4_motion_class_name(S4_MOTION_CLASS_COUNT)));
+}
+
+/*
+ * S4-U50: a new state needs 3 samples in a row; a candidate that changes
+ * restarts the count. Impact is taken at once and held 3 samples. A
+ * missing or stale (over 50 ms) Motion Control snapshot gives unknown at
+ * once with a zero yaw rate; so do a NULL input and a zero debounce.
+ */
+static bool
+s4_test_motion_debounce (void)
+{
+    s4_motion_class_config_t config = s4_motion_config_mission();
+    s4_motion_classifier_t cls;
+    s4_motion_input_t input = s4_test_class_input();
+    s4_motion_input_t turn = s4_test_class_input();
+    bool b_ok;
+
+    turn.right_mm_s = 60;
+    s4_motion_class_init(&cls);
+    b_ok = (S4_MOTION_CRUISING == s4_test_class_run(&cls, &input, 3u));
+    b_ok = b_ok && (S4_MOTION_CRUISING == s4_test_class_run(&cls, &turn, 2u));
+    b_ok = b_ok && (S4_MOTION_CRUISING == s4_test_class_run(&cls, &input, 1u));
+    b_ok = b_ok && (S4_MOTION_CRUISING == s4_test_class_run(&cls, &turn, 2u));
+    b_ok = b_ok && (S4_MOTION_TURNING == s4_test_class_run(&cls, &turn, 1u))
+           && (cls.yaw_ddeg_s > 0);
+
+    input.b_impact = true;
+    b_ok = b_ok && (S4_MOTION_IMPACT == s4_test_class_run(&cls, &input, 1u));
+    input.b_impact = false;
+    b_ok = b_ok && (S4_MOTION_IMPACT == s4_test_class_run(&cls, &input, 2u))
+           && (S4_MOTION_IMPACT == s4_test_class_run(&cls, &input, 2u))
+           && (S4_MOTION_CRUISING == s4_test_class_run(&cls, &input, 1u));
+
+    input.age_ms = 51u;
+    b_ok = b_ok && (S4_MOTION_UNKNOWN == s4_test_class_run(&cls, &turn, 0u))
+           && (S4_MOTION_UNKNOWN == s4_test_class_run(&cls, &input, 1u))
+           && (0 == cls.yaw_ddeg_s);
+    input.age_ms = 50u;
+    b_ok = b_ok && (S4_MOTION_UNKNOWN == s4_test_class_run(&cls, &input, 2u))
+           && (S4_MOTION_CRUISING == s4_test_class_run(&cls, &input, 1u));
+    input.b_motion_valid = false;
+    b_ok = b_ok && (S4_MOTION_UNKNOWN == s4_test_class_run(&cls, &input, 1u));
+
+    config.confirm_samples = 0u;
+    b_ok = b_ok
+           && (S4_MOTION_UNKNOWN == s4_motion_class_step(&cls, &config, &turn))
+           && (S4_MOTION_UNKNOWN == s4_motion_class_step(&cls, NULL, &turn))
+           && (S4_MOTION_UNKNOWN
+               == s4_motion_class_step(NULL, &config, &input));
+    config = s4_motion_config_mission();
+    b_ok = b_ok
+           && (S4_MOTION_UNKNOWN == s4_motion_class_step(&cls, &config, NULL));
+
+    return (b_ok);
 }
 
 static bool

@@ -7,13 +7,14 @@
 #include "../subsystem2/motion_api.h"   /* motion_get_status (IF-17) */
 #include "../subsystem2/subsystem2.h"   /* s2_get_robot_state (IF-14) */
 #include "../subsystem2/task_health.h"  /* liveness (S2 decision 37) */
+#include "../subsystem2/motion_config.h" /* MC_STILL_MM_S */
+#include "s4_motion_class.h"
 
-/* Forward acceleration reads as pitch (200 mg, 17 mm of caster height,
- * when Motion Control ramps to speed). Pitch is ignored while the mean
- * wheel speed changes by more than this between samples, and for a hold
- * time after (provisional). */
-#define S4_PITCH_DV_MM_S            15
-#define S4_PITCH_HOLD_SAMPLES       8u
+/* The classifier's stillness limit must stay Motion Control's (decision
+ * 20): a compile-time check, as s4_config.h cannot include motion_config.h
+ * on the host. */
+typedef char s4_still_matches_mc_t
+    [(S4_MOTION_STILL_MM_S == MC_STILL_MM_S) ? 1 : -1];
 
 
 #if S4_RAW_LOG
@@ -45,13 +46,17 @@ static void s4_mark_sensor_error(s4_terrain_context_t * p_context,
                                  uint32_t capture_time_us);
 static void s4_sample_to_vehicle(s4_terrain_sample_t * p_sample);
 
-/* Motion Control snapshot from the previous sample (IF-17). */
+/* Motion Control snapshot (IF-17): the mean-speed gate across samples,
+   and this sample's wheel speeds for the motion classifier. */
 typedef struct
 {
-    int32_t speed_mm_s;
-    uint8_t run_id;
-    uint8_t pitch_hold;
-    bool    b_have_previous;
+    s4_speed_gate_t gate;
+    uint32_t        age_ms;
+    int16_t         left_mm_s;
+    int16_t         right_mm_s;
+    uint8_t         run_id;
+    bool            b_have_run;
+    bool            b_valid;    /* this sample's snapshot was read */
 } s4_motion_t;
 
 static bool s4_motion_read(s4_motion_t * p_motion,
@@ -65,6 +70,9 @@ static void s4_raw_log(s4_terrain_sample_t const * p_vehicle,
 #endif
 static void s4_report_events(s4_terrain_result_t const * p_result,
                              uint32_t calibration_start_us);
+static void s4_classify(s4_motion_classifier_t * p_class,
+                        s4_motion_t const * p_motion,
+                        s4_terrain_context_t * p_terrain);
 
 void
 s4_imu_task (INT start_code,
@@ -76,6 +84,7 @@ s4_imu_task (INT start_code,
     s4_terrain_sample_t sample = {0};
     uint32_t calibration_start_us = 0u;
     s4_motion_t motion = {0};
+    s4_motion_classifier_t motion_class;
     bool b_pitch_valid = false;
     bool b_detect_enabled = false;
     uint8_t settle = S4_SETTLE_SAMPLES;
@@ -86,6 +95,7 @@ s4_imu_task (INT start_code,
 
     s4_lsm303_init(&driver);
     s4_terrain_init(&terrain, &config);
+    s4_motion_class_init(&motion_class);
     (void) s4_status_publish(&terrain.result);
 
     for (;;)
@@ -130,6 +140,7 @@ s4_imu_task (INT start_code,
             s4_raw_log(&sample, &terrain.result, b_pitch_valid,
                        b_detect_enabled);
 #endif
+            s4_classify(&motion_class, &motion, &terrain);
             S4_DIAG_STAGE(6u);
             s4_report_events(&terrain.result, calibration_start_us);
             S4_DIAG_STAGE(7u);
@@ -276,6 +287,9 @@ s4_mark_sensor_error (s4_terrain_context_t * p_context,
         .b_valid = false
     };
 
+    p_context->result.motion_class = S4_MOTION_UNKNOWN;
+    p_context->result.yaw_rate_ddeg_s = 0;
+
     for (uint8_t index = 0u;
          (index < S4_INVALID_SAMPLE_LIMIT) &&
          (S4_TERRAIN_STATE_FAULT != p_context->result.state);
@@ -297,52 +311,89 @@ s4_motion_read (s4_motion_t * p_motion,
                 s4_terrain_context_t * p_terrain)
 {
     motion_status_t current;
+    SYSTIM now = {0};
     bool b_pitch_valid = false;
 
-    if (E_OK != motion_get_status(&current))
+    p_motion->b_valid = (E_OK == motion_get_status(&current))
+                        && (E_OK == tk_get_tim(&now));
+    if (!p_motion->b_valid)
     {
-        p_motion->b_have_previous = false;
+        s4_speed_gate_reset(&p_motion->gate);
     }
     else
     {
         /* Widening: the wheel speeds are int16_t, so their sum fits int32_t
            without overflow and the mean lies between them. */
-        int32_t speed_mm_s = ((int32_t) current.left_mm_s +
-                              (int32_t) current.right_mm_s) / 2;
+        int32_t const speed_mm_s = ((int32_t) current.left_mm_s +
+                                    (int32_t) current.right_mm_s) / 2;
 
-        if (p_motion->b_have_previous)
+        if (p_motion->b_have_run && (current.run_id != p_motion->run_id))
         {
-            int32_t change_mm_s = speed_mm_s - p_motion->speed_mm_s;
-
-            if (current.run_id != p_motion->run_id)
-            {
-                s4_terrain_start_new_run(p_terrain);
-                /* run_id is uint8_t, which UINT holds. */
-                tm_printf((UB *) "s4: new run %u; hump maximum cleared\n",
-                          (UINT) current.run_id);
-            }
-
-            if ((change_mm_s > S4_PITCH_DV_MM_S) ||
-                (change_mm_s < -S4_PITCH_DV_MM_S))
-            {
-                p_motion->pitch_hold = S4_PITCH_HOLD_SAMPLES;
-            }
-            else if (p_motion->pitch_hold > 0u)
-            {
-                p_motion->pitch_hold--;
-            }
-            else
-            {
-                b_pitch_valid = true;
-            }
+            s4_terrain_start_new_run(p_terrain);
+            /* run_id is uint8_t, which UINT holds. */
+            tm_printf((UB *) "s4: new run %u; hump maximum cleared\n",
+                      (UINT) current.run_id);
         }
 
-        p_motion->speed_mm_s = speed_mm_s;
+        b_pitch_valid = s4_speed_gate_step(&p_motion->gate, speed_mm_s,
+                                           S4_PITCH_DV_MM_S,
+                                           S4_PITCH_HOLD_SAMPLES);
+        /* now.lo is the 32-bit ms word (UW): the modulo 2^32 difference
+           is the snapshot's age, wrap-safe. */
+        p_motion->age_ms = (uint32_t) now.lo - current.captured_ms;
+        p_motion->left_mm_s = current.left_mm_s;
+        p_motion->right_mm_s = current.right_mm_s;
         p_motion->run_id = current.run_id;
-        p_motion->b_have_previous = true;
+        p_motion->b_have_run = true;
     }
 
     return (b_pitch_valid);
+}
+
+/*
+ * Motion classification (decision 20), observational only: one step per
+ * sample, after the terrain logic; the state and the encoder yaw rate go
+ * into the published result (IF-18) and a change is printed.
+ */
+static void
+s4_classify (s4_motion_classifier_t * p_class,
+             s4_motion_t const * p_motion,
+             s4_terrain_context_t * p_terrain)
+{
+    s4_motion_class_config_t const config = s4_motion_config_mission();
+    s4_terrain_result_t * const p_result = &p_terrain->result;
+    s4_motion_class_t const previous = p_class->state;
+    s4_motion_input_t const input =
+    {
+        .left_mm_s = p_motion->left_mm_s,
+        .right_mm_s = p_motion->right_mm_s,
+        .age_ms = p_motion->age_ms,
+        .b_motion_valid = p_motion->b_valid,
+        .speed_change = p_motion->gate.direction,
+        .b_terrain_valid =
+            (S4_TERRAIN_STATE_MONITORING == p_result->state) ||
+            (S4_TERRAIN_STATE_ON_HUMP == p_result->state),
+        .b_on_hump = (S4_TERRAIN_STATE_ON_HUMP == p_result->state),
+        .height_um = p_terrain->height_um,
+        .peak_um = p_terrain->peak_height_um,
+        .b_impact = (0u != (p_result->events & S4_TERRAIN_EVENT_IMPACT))
+    };
+    s4_motion_class_t const state =
+        s4_motion_class_step(p_class, &config, &input);
+
+    p_result->motion_class = state;
+    p_result->yaw_rate_ddeg_s = p_class->yaw_ddeg_s;
+    if (state != previous)
+    {
+        /* Widening: yaw is int16_t, so its magnitude fits int32_t and,
+           at most 32768, UINT. */
+        int32_t const yaw = p_class->yaw_ddeg_s;
+        int32_t const size = (yaw < 0) ? -yaw : yaw;
+
+        tm_printf((UB *) "s4: motion %s (encoder yaw %s%u.%u deg/s)\n",
+                  s4_motion_class_name(state), (yaw < 0) ? "-" : "",
+                  (UINT) (size / 10), (UINT) (size % 10));
+    }
 }
 
 /*

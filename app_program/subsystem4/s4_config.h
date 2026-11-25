@@ -11,6 +11,7 @@
 #define S4_CONFIG_H
 
 #include "terrain_logic.h"
+#include "s4_motion_class.h"
 
 /* About 1.5 s at the measured 29 ms per sample; the mean of 50 samples
  * with about 5 mg of noise is within about 1 mg. */
@@ -77,8 +78,39 @@
  * it. */
 #define S4_SETTLE_SAMPLES           32u
 
+/* Forward acceleration reads as pitch (200 mg, 17 mm of caster height,
+ * when Motion Control ramps to speed; decision 8). Pitch is ignored while
+ * the mean wheel speed changes by more than this between samples, and for
+ * a hold time after (provisional). The same window is the motion
+ * classifier's accelerating or braking. */
+#define S4_PITCH_DV_MM_S            15
+#define S4_PITCH_HOLD_SAMPLES       8u
+
+/* Motion classification (decision 20, observational, provisional):
+ * - stationary: both wheels at or below Motion Control's stillness limit
+ *   (MC_STILL_MM_S, motion_config.h; task_imu.c checks they match);
+ * - turning: encoder yaw rate of at least 8 deg/s. Line correction differs
+ *   the wheels by at most 8 mm/s (40 against 32 mm/s, S3 decision 4),
+ *   3.9 deg/s on the 119 mm track; a sustained curve (35 against 5 mm/s)
+ *   is 14.4 deg/s, and the junction and bypass spins (30 mm/s each way,
+ *   CTRL_BYPASS_SPIN_MM_S) about 29 deg/s;
+ * - accelerating or braking: the pitch gate's window above. Starting to
+ *   follow at 40 mm/s changes the mean speed by less than 15 mm/s per
+ *   sample and reads as cruising; a STOP from line speed is still within
+ *   a sample or two and reads as stationary;
+ * - descending: on a hump, more than the detector's own hysteresis band
+ *   (S4_RISE_UM - S4_LEVEL_UM) below the peak;
+ * - unknown: the Motion Control snapshot is older than the terrain logic's
+ *   sample gap (S4_MAX_SAMPLE_GAP_MS);
+ * - a new state is taken after S4_CONFIRMATION_SAMPLES samples. */
+#define S4_MOTION_STILL_MM_S        10u
+#define S4_MOTION_TURN_DDEG_S       80u
+
 /** The terrain settings the mission image runs with. */
 s4_terrain_config_t s4_config_mission(void);
+
+/** The motion-classification settings the mission image runs with. */
+s4_motion_class_config_t s4_motion_config_mission(void);
 
 #endif /* S4_CONFIG_H */
 

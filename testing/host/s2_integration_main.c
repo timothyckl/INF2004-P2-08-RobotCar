@@ -57,6 +57,7 @@
 #include "../../app_program/subsystem3/s3_nav.h"
 #include "../../app_program/subsystem4/subsystem4.h"
 #include "../../app_program/subsystem4/s4_config.h"
+#include "../../app_program/subsystem4/s4_motion_class.h"
 #include "../../app_program/subsystem5/include/scan_telemetry.h"
 #include "../../app_program/subsystem5/include/bypass_plan.h"
 #include "../../app_program/subsystem5/include/forward_monitor.h"
@@ -162,6 +163,19 @@ typedef struct
     uint32_t follow_on;         /* of those, with detection on */
 } sim_gate_t;
 
+/* S4 motion classification on the real Motion Control status, as the IMU
+   task does every sample (S4 decision 20); its result is S4's IF-18. */
+typedef struct
+{
+    s4_speed_gate_t        gate;
+    s4_motion_classifier_t cls;
+    s4_terrain_result_t    result;      /* returned by subsystem4_get_status */
+    uint16_t               seen[8];     /* per S2_MODE_*: bit per S4_MOTION_* */
+    uint32_t               samples;
+    int16_t                yaw_min;     /* while classified turning */
+    int16_t                yaw_max;
+} sim_class_t;
+
 typedef struct
 {
     motion_t      motion;
@@ -198,6 +212,7 @@ typedef struct
     bool          b_flag_seen;      /* barcode-active flag reported */
     sim_box_t     box;
     sim_gate_t    gate;
+    sim_class_t   s4;
 } sim_t;
 
 static sim_t g_sim;
@@ -231,6 +246,7 @@ static unsigned int g_failed = 0u;
 
 static void sim_check (bool b_ok, char const * p_id, char const * p_name);
 static void sim_init (sim_track_t const * p_track);
+static void sim_s4_classify (s2_robot_state_t const * p_state);
 static void sim_step (void);
 static void sim_run_ms (uint32_t duration_ms);
 static bool sim_run_until (bool (*p_done)(void), uint32_t limit_ms);
@@ -332,10 +348,49 @@ scan_telemetry_get (scan_telemetry_t * p_out)
 ER
 subsystem4_get_status (s4_terrain_result_t * p_result)
 {
-    s4_terrain_result_t const zero = {0};
-
-    *p_result = zero;
+    *p_result = g_sim.s4.result;
     return (E_OK);
+}
+
+/* One IMU sample of S4's motion classification (task_imu.c s4_classify),
+   on the real Motion Control status; terrain is monitoring and level (no
+   hump or impact is modelled here: the S4 unit tests cover them). */
+static void
+sim_s4_classify (s2_robot_state_t const * p_state)
+{
+    s4_motion_class_config_t const cfg = s4_motion_config_mission();
+    motion_status_t status;
+    s4_motion_input_t input = {0};
+    s4_motion_class_t state;
+
+    (void)motion_get_status(&status);
+    (void)s4_speed_gate_step(&g_sim.s4.gate,
+                             ((int32_t)status.left_mm_s
+                              + (int32_t)status.right_mm_s) / 2,
+                             S4_PITCH_DV_MM_S, S4_PITCH_HOLD_SAMPLES);
+    input.left_mm_s = status.left_mm_s;
+    input.right_mm_s = status.right_mm_s;
+    input.age_ms = g_sim.now_ms - status.captured_ms;
+    input.b_motion_valid = true;
+    input.speed_change = g_sim.s4.gate.direction;
+    input.b_terrain_valid = true;
+    state = s4_motion_class_step(&g_sim.s4.cls, &cfg, &input);
+    g_sim.s4.result.state = S4_TERRAIN_STATE_MONITORING;
+    g_sim.s4.result.motion_class = state;
+    g_sim.s4.result.yaw_rate_ddeg_s = g_sim.s4.cls.yaw_ddeg_s;
+    if (p_state->mode < 8u)
+    {
+        g_sim.s4.seen[p_state->mode] = (uint16_t)(g_sim.s4.seen[p_state->mode]
+                                                  | (1u << state));
+    }
+    if (S4_MOTION_TURNING == state)
+    {
+        g_sim.s4.yaw_min = (g_sim.s4.cls.yaw_ddeg_s < g_sim.s4.yaw_min)
+                           ? g_sim.s4.cls.yaw_ddeg_s : g_sim.s4.yaw_min;
+        g_sim.s4.yaw_max = (g_sim.s4.cls.yaw_ddeg_s > g_sim.s4.yaw_max)
+                           ? g_sim.s4.cls.yaw_ddeg_s : g_sim.s4.yaw_max;
+    }
+    g_sim.s4.samples++;
 }
 
 /* ------------------------------------------------------------------------
@@ -436,6 +491,7 @@ sim_step (void)
             g_sim.gate.follow_on++;
         }
         g_sim.gate.follow_samples += b_following ? 1u : 0u;
+        sim_s4_classify(&gate_state);
     }
 
     if (!g_sim.b_controller_blocked)

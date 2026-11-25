@@ -112,6 +112,10 @@ typedef struct
                                              saturates at 255 */
     bool               b_current_height_valid;
     bool               b_maximum_height_valid;
+    uint8_t            motion_class;      /* S4_MOTION_* (s4_motion_class.h),
+                                             set by the IMU task */
+    int16_t            yaw_rate_ddeg_s;   /* encoder-estimated, 0.1 deg/s,
+                                             left positive; 0 if unknown */
 } s4_terrain_result_t;
 
 typedef struct
@@ -142,6 +146,7 @@ typedef struct
     uint32_t            calibration_count;
     uint32_t            hump_start_us;
     int32_t             peak_height_um;
+    int32_t             height_um;      /* uncalibrated, last sample */
     s4_hump_contact_t   peak_contact;
     uint8_t             confirmation_count;
     uint8_t             invalid_count;

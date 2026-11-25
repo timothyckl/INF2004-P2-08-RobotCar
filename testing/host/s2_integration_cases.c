@@ -31,6 +31,8 @@ static void int_27_long_straight (void);
 static void int_28_forward_fault (uint8_t fault, char const * p_name);
 static void int_29_scan_silent (void);
 static void int_30_look_silent (void);
+static void int_31_motion_class (void);
+static bool int_class_seen (uint8_t mode, uint8_t state);
 static bool int_start_turn (uint8_t command);
 static bool int_bypass_mission (int32_t width_mm, int32_t depth_mm,
                                 char const * p_name);
@@ -72,6 +74,7 @@ s2_integration_cases (void)
     int_28_forward_fault(SIM_FWD_SILENT, "stale (no readings)");
     int_29_scan_silent();
     int_30_look_silent();
+    int_31_motion_class();
 }
 
 /* INT-08 (S1 -> S2): MQTT STOP through the bridge latches STOP at once;
@@ -375,7 +378,7 @@ int_15_task_stall (void)
     sim_check(b_ok && sim_following(), "INT-15", "RESET then START runs again");
 }
 
-/* INT-16 (S2 -> S1, telemetry version 5, S1 decision 8): the frame S1
+/* INT-16 (S2 -> S1, telemetry version 6, S1 decisions 8 and 9): the frame S1
    would publish, from the real controller's published state through
    robot_read_telemetry() and the real encoder. Byte 31 shows the command
    held for the junction (bits 3-5), the junction count once it is crossed
@@ -396,10 +399,10 @@ int_16_telemetry_v5 (void)
     }
     (void)s2_nav_submit(S2_NAV_STRAIGHT, 'C', 1u, g_sim.now_ms);
     sim_run_ms(100u);
-    b_ok = int_frame(frame) && (5u == frame[0])
+    b_ok = int_frame(frame) && (TELEMETRY_ENCODER_VERSION == frame[0])
            && (S2_NAV_STRAIGHT == ((frame[31] >> 3) & 7u))
            && (0u == (frame[31] >> 6)) && (0u == (frame[31] & 7u));
-    sim_check(b_ok, "INT-16", "v5 frame: STRAIGHT held, no junction yet");
+    sim_check(b_ok, "INT-16", "v6 frame: STRAIGHT held, no junction yet");
 
     while ((sim_x_mm() < (g_cross.junction_mm + 300)) && sim_running())
     {
@@ -1052,6 +1055,62 @@ int_30_look_silent (void)
               && (0u != (state.flags & S2_RS_STOP_LATCHED))
               && (g_sim.box.min_clear_mm >= 50.0), "INT-30",
               "no look answers in BYPASS: STOP latched, still, box clear");
+}
+
+/* INT-31 (S2 -> S4 -> S1, S4 decision 20, telemetry version 6): the real
+   S4 motion classifier on the real Motion Control status through a whole
+   run, and its result in the real telemetry frame. Straight: stationary
+   before START, then cruising, never turning (the ramp to 40 mm/s stays
+   under the 15 mm/s-per-sample gate). A RIGHT turn at the + junction:
+   turning with a negative (right) encoder yaw rate near the 30 mm/s
+   spin's 29 deg/s, and accelerating and braking on the 200 mm/s step. An
+   obstacle: stationary for the scan; accelerating, braking and turning in
+   BYPASS. Observational only: every other case passes with it running. */
+static void
+int_31_motion_class (void)
+{
+    uint8_t frame[TELEMETRY_ENCODER_SIZE];
+    int32_t heading = 0;
+    uint32_t navigate = 0u;
+    bool b_ok;
+
+    sim_init(&g_straight);
+    sim_run_ms(500u);
+    sim_start();
+    sim_run_ms(10000u);
+    b_ok = int_class_seen(S2_MODE_NONE, S4_MOTION_STATIONARY)
+           && int_class_seen(S2_MODE_FOLLOW, S4_MOTION_CRUISING)
+           && (!int_class_seen(S2_MODE_FOLLOW, S4_MOTION_TURNING))
+           && (S4_MOTION_CRUISING == g_sim.s4.cls.state);
+    sim_check(b_ok, "INT-31",
+              "straight: stationary, then cruising; never turning");
+    b_ok = int_frame(frame) && (S4_MOTION_CRUISING == frame[32])
+           && (abs((int8_t)frame[33] * 20 - g_sim.s4.cls.yaw_ddeg_s) <= 10);
+    sim_check(b_ok, "INT-31", "v6 frame carries the class and yaw rate");
+
+    b_ok = int_turn_to(S2_NAV_RIGHT, &heading, &navigate);
+    sim_check(b_ok && int_class_seen(S2_MODE_NAVIGATE, S4_MOTION_TURNING)
+              && int_class_seen(S2_MODE_NAVIGATE, S4_MOTION_ACCELERATING)
+              && int_class_seen(S2_MODE_NAVIGATE, S4_MOTION_BRAKING)
+              && (g_sim.s4.yaw_min <= -250) && (g_sim.s4.yaw_min >= -400),
+              "INT-31", "RIGHT turn: turning at about -29 deg/s; step "
+                        "accelerating and braking");
+
+    b_ok = int_bypass_mission(150, 200, "motion class run");
+    sim_check(b_ok && int_class_seen(S2_MODE_SCAN, S4_MOTION_STATIONARY)
+              && int_class_seen(S2_MODE_BYPASS, S4_MOTION_ACCELERATING)
+              && int_class_seen(S2_MODE_BYPASS, S4_MOTION_BRAKING)
+              && int_class_seen(S2_MODE_BYPASS, S4_MOTION_TURNING),
+              "INT-31", "obstacle: stationary for the scan; bypass "
+                        "accelerating, braking and turning");
+}
+
+/* Whether the classifier reported state while the controller was in mode. */
+static bool
+int_class_seen (uint8_t mode, uint8_t state)
+{
+    return ((mode < 8u) && (state < 16u)
+            && (0u != (g_sim.s4.seen[mode] & (1u << state))));
 }
 
 /* End of file. */

@@ -33,4 +33,20 @@ s4_config_mission (void)
     return (config);
 }
 
+s4_motion_class_config_t
+s4_motion_config_mission (void)
+{
+    s4_motion_class_config_t const config =
+    {
+        .track_mm = S4_TRACK_MM,
+        .still_mm_s = S4_MOTION_STILL_MM_S,
+        .turn_ddeg_s = S4_MOTION_TURN_DDEG_S,
+        .max_age_ms = S4_MAX_SAMPLE_GAP_MS,
+        .hump_band_um = S4_RISE_UM - S4_LEVEL_UM,
+        .confirm_samples = S4_CONFIRMATION_SAMPLES
+    };
+
+    return (config);
+}
+
 /* End of file. */

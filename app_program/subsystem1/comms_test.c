@@ -99,29 +99,30 @@ bool comms_test_commands (void)
 
 bool comms_test_telemetry (void)
 {
-    /* Every field set; the golden frame is the version 5 layout. Letter
+    /* Every field set; the golden frame is the version 6 layout. Letter
        'Z' (25) with command 4 is 0x99; stop cause 4 with count 0x1f
        (low bits 0xf) is 0xf4. Width raw is set but shape valid wins, so
        flags1 bit 4 stays clear. Version 5 byte 31: motion fault 7 (task),
        held command 2 (RIGHT) and 13 junctions (low bits 1) is
-       7 | 2 << 3 | 1 << 6 = 0x57. */
+       7 | 2 << 3 | 1 << 6 = 0x57. Version 6: motion class 5 (turning)
+       is 0x05; -144.0 deg/s is -72 counts of 2 deg/s, byte 0xb8. */
     static const telemetry_encoder_snapshot_t full =
     {
         UINT32_C(0x12345678), UINT16_C(0xabcd),
         INT16_C(-150), INT16_C(320), INT16_C(-18000),
         UINT16_C(4000), UINT16_C(0x0102), UINT16_C(0x0304), INT16_C(-2),
         3u, 4u, 2u, 1u, 1u, 2u, 255u, 254u, 0x21u,
-        'Z', 4u, 0x1fu, 4u, 7u, 2u, 13u,
+        'Z', 4u, 0x1fu, 4u, 7u, 2u, 13u, 5u, INT16_C(-1440),
         true, true, true, true, true, true, true, true, true, true, true,
         true, true
     };
     static const uint8_t golden[TELEMETRY_ENCODER_SIZE] =
     {
-        5u, 0xffu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
+        6u, 0xffu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
         0x0fu, 0x43u, 0x12u, 0x21u,
         0x6au, 0xffu, 0x40u, 0x01u, 0xb0u, 0xb9u,
         0xa0u, 0x0fu, 0x02u, 0x01u, 0x04u, 0x03u, 0xfeu, 0xffu,
-        0xffu, 0x99u, 0xf4u, 0xfeu, 0x21u, 0x57u
+        0xffu, 0x99u, 0xf4u, 0xfeu, 0x21u, 0x57u, 0x05u, 0xb8u
     };
     telemetry_encoder_snapshot_t snapshot = full;
     uint8_t output[TELEMETRY_ENCODER_SIZE + 1u] = {0u};
@@ -179,6 +180,8 @@ bool comms_test_telemetry (void)
     snapshot.motion_fault   = 0u;
     snapshot.nav_held       = 0u;
     snapshot.junction_count = 0u;
+    snapshot.motion_class   = 0u;
+    snapshot.yaw_ddeg_s     = 0;
     check((TELEMETRY_ENCODER_SIZE ==
                telemetry_encoder_encode(&snapshot, output, sizeof(output))),
           &b_passed);
@@ -204,6 +207,31 @@ bool comms_test_telemetry (void)
     snapshot.motion_fault = 0u;
     snapshot.nav_held = 0u;
     snapshot.junction_count = 0u;
+
+    /* Version 6 bytes 32-33: a class above 14 is 15; the yaw rate rounds
+       half away from zero to 2 deg/s counts and saturates at +/-127; it
+       is 0 while the class is unknown (0). */
+    snapshot.motion_class = 20u;
+    snapshot.yaw_ddeg_s = 10;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x0fu == output[32]) && (0x01u == output[33]), &b_passed);
+    snapshot.motion_class = 2u;
+    snapshot.yaw_ddeg_s = 9;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x02u == output[32]) && (0x00u == output[33]), &b_passed);
+    snapshot.yaw_ddeg_s = -10;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0xffu == output[33]), &b_passed);
+    snapshot.yaw_ddeg_s = INT16_MAX;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x7fu == output[33]), &b_passed);
+    snapshot.yaw_ddeg_s = INT16_MIN;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x81u == output[33]), &b_passed);
+    snapshot.motion_class = 0u;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((0x00u == output[32]) && (0x00u == output[33]), &b_passed);
+    snapshot.yaw_ddeg_s = 0;
 
     /* Single flags land on their own bits. */
     snapshot.b_stopped = true;

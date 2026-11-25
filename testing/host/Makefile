@@ -56,6 +56,7 @@ S3_SRC  := $(APP)/subsystem3/s3_ir.c \
            $(ROOT)/testing/subsystem3/test_main.c
 
 S4_SRC  := $(APP)/subsystem4/terrain_logic.c \
+           $(APP)/subsystem4/s4_motion_class.c \
            $(APP)/subsystem4/s4_config.c \
            $(APP)/subsystem4/drv_lsm303dlhc.c \
            $(APP)/subsystem4/subsystem4_test.c \
@@ -86,7 +87,9 @@ INT_SRC := s2_integration_main.c stubs/kernel_model.c \
            $(APP)/subsystem5/src/bypass_plan.c \
            $(APP)/subsystem5/src/scan_profile.c \
            $(APP)/subsystem5/src/forward_monitor.c \
-           $(APP)/subsystem4/terrain_logic.c
+           $(APP)/subsystem4/terrain_logic.c \
+           $(APP)/subsystem4/s4_motion_class.c \
+           $(APP)/subsystem4/s4_config.c
 
 S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(APP)/subsystem5/src/scan_test_adapter.c \

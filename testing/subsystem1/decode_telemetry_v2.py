@@ -1,4 +1,4 @@
-"""Decode telemetry frames, versions 2 to 5 (S1 decisions 1, 5, 7 and 8).
+"""Decode telemetry frames, versions 2 to 6 (S1 decisions 1, 5, 7, 8, 9).
 
 Reference decoder used to record the 2026-11-17 S1-H01/H02 results; it
 still reads those version 2 logs. Version 3 adds the last barcode letter,
@@ -6,7 +6,9 @@ its command and count, and the cause of a STOP latch. Version 4 adds the
 last hump's height, the hump count and a raw (unconfirmed) width. Version
 5 (post-demo, 2026-11-26) adds a diagnostics byte: the motion fault detail,
 the barcode command held for the next junction and a count of junctions
-confirmed (low 2 bits). The authoritative
+confirmed (low 2 bits). Version 6 adds S4's motion class and the
+encoder-estimated yaw rate (2 deg/s per count; not a gyroscope reading).
+The authoritative
 layout is the comment in app_program/subsystem1/telemetry_encoder.h. The
 file keeps its name because earlier test records cite it.
 
@@ -27,8 +29,9 @@ import struct
 import sys
 
 # Version -> frame length. Version 3 appends bytes 27-28 to version 2,
-# version 4 bytes 29-30 to version 3, version 5 byte 31 to version 4.
-SIZES = {2: 27, 3: 29, 4: 31, 5: 32}
+# version 4 bytes 29-30 to version 3, version 5 byte 31 to version 4,
+# version 6 bytes 32-33 to version 5.
+SIZES = {2: 27, 3: 29, 4: 31, 5: 32, 6: 34}
 
 STATE = {1: "INIT", 2: "READY", 3: "RUNNING", 4: "STOPPED", 5: "FAULT"}
 MODE = {0: "-", 1: "FOLLOW", 2: "NAVIGATE", 3: "SCAN", 4: "BYPASS",
@@ -42,6 +45,10 @@ COMMAND = {0: "none", 1: "LEFT", 2: "RIGHT", 3: "STRAIGHT", 4: "UTURN"}
 # MOTION_FAULT_* (motion_api.h), sent while the fault class is motion.
 MOTION_FAULT = {0: "-", 1: "init", 2: "encoder", 3: "stall", 4: "timeout",
                 5: "stop timeout", 6: "external", 7: "task stalled"}
+# S4_MOTION_* (s4_motion_class.h), version 6; 0 means unknown.
+MOTION_CLASS = {0: "unknown", 1: "stationary", 2: "cruising",
+                3: "accelerating", 4: "braking", 5: "turning",
+                6: "climbing", 7: "descending", 8: "impact"}
 STOP = {0: "-", 1: "start-up", 2: "remote", 3: "button", 4: "pick-up",
         5: "hazard", 6: "line", 7: "scan", 8: "bypass", 9: "junction",
         10: "fault", 11: "script done"}
@@ -74,6 +81,8 @@ def parse(data):
     bc, sc = (data[27], data[28]) if data[0] >= 3 else (0, 0)
     last, count = (data[29], data[30]) if data[0] >= 4 else (0, 0)
     diag = data[31] if data[0] >= 5 else 0
+    motion, yaw = ((data[32] & 15, struct.unpack("<b", data[33:34])[0])
+                   if data[0] >= 6 else (0, 0))
     return {
         "version": data[0],
         "flags0": f0, "flags1": f1, "captured_ms": t, "distance_mm": dist,
@@ -87,6 +96,7 @@ def parse(data):
         "hump_last_mm": last, "hump_count": count,
         "motion_fault": diag & 7, "nav_held": (diag >> 3) & 7,
         "junction_count": diag >> 6,
+        "motion_class": motion, "yaw_deg_s": 2 * yaw,
     }
 
 
@@ -134,6 +144,9 @@ def decode(data, previous_ms):
         held = COMMAND.get(fields["nav_held"], fields["nav_held"])
         text += (f" detail={detail} held={held}"
                  f" junctions={fields['junction_count']}")
+    if fields["version"] >= 6:
+        cls = MOTION_CLASS.get(fields["motion_class"], fields["motion_class"])
+        text += f" motion={cls} yaw_enc={fields['yaw_deg_s']}deg/s"
     return (text, t)
 
 
