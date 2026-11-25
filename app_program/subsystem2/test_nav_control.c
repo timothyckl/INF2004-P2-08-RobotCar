@@ -242,6 +242,17 @@ test_nav_control_fail (void)
                && (!nav_control_init(NULL, &g_cfg))
                && (!nav_control_manoeuvring(NULL));
 
+    /* A STOP (abort) while a command is still held for a junction drops
+       it: the next junction is crossed with no turn. */
+    test_nav_setup(&nav, &in);
+    b_passed = b_passed && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 0u);
+    nav_control_abort(&nav);
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_NONE, 0,
+                                        NAV_CONTROL_OUT_NONE)
+               && (NAV_CONTROL_IDLE == nav.state);
+
     return (b_passed);
 }
 

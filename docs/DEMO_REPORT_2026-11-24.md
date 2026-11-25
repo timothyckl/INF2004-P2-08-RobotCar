@@ -64,7 +64,10 @@ repeat scan requested by the assessor, the team remembers the scan as
 unsuccessful; the log shows O decoded as RIGHT on three short runs after
 attempt 3, but none of them went on to a turn (section 4). We cannot tell
 from the log which of these runs the assessor watched. No wrong letter was
-decoded in the assessed session.
+decoded in the assessed session. Host tests found after the demo that the
+same firmware can give a wrong letter when a single 20 ms noise blip lands
+inside the code (F-18, section 6 of the review); this was not seen on the
+car.
 
 **Practice before the assessment.** The practice log records correct
 decodes of A (LEFT), Q, Z and F, including F at 13:42:33 (line 2512)
@@ -88,8 +91,8 @@ and white with a margin above an adaptive white baseline;
 [`s3_bar.c`](../app_program/subsystem3/s3_bar.c) splits them into narrow and
 wide, and [`s3_code39.c`](../app_program/subsystem3/s3_code39.c) decodes
 Code 39 with start/stop checks. A capture that does not decode is rejected
-rather than guessed, which is why the failures show as no letter, not a
-wrong letter. Because the decoder works on bar *timing*, a wrinkled or
+rather than guessed, which is why the failures on the day showed as no
+letter, not a wrong letter. Because the decoder works on bar *timing*, a wrinkled or
 lifted print, a change in sensor height, or the car slowing or turning over
 the code changes the measured widths. These are plausible causes of the
 missed reads; the demo logs do not show which one applied.
@@ -102,7 +105,10 @@ fine for the large print but coarse for the small print: 99 of the 324
 logged runs were under 100 ms, and 30 lasted only one or two samples. Also, the barcode white limits were measured
 before the sensor was lowered. Host tests (S3-U02) show the decoder itself
 copes with a steady speed change of 0.4 to 2.5 times across one code and
-never turns one misread element into a wrong letter.
+never turns one misread element into a wrong letter. S3-U03 found one input
+it does not handle: a single 20 ms blip inside the code gave a wrong letter
+in 25 of 234 synthetic cases (F-18). That is a count of test cases, not a
+real-world error rate; the fix is proposal P2 and is not in this firmware.
 
 **Earlier evidence.**
 

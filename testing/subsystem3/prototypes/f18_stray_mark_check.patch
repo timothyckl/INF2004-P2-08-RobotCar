@@ -1,0 +1,29 @@
+--- a/app_program/subsystem3/s3_scan.c
++++ b/app_program/subsystem3/s3_scan.c
+@@ -182,14 +182,25 @@
+                                   char * p_symbol)
+ {
+     s3_capture_t window = *p_capture;
++    uint32_t narrowest = UINT32_MAX;
++    /* F-18: the run left out at the far end must be a short stray mark,
++     * not a real bar that a noise blip pushed out of the window. */
++    uint32_t const outer = (0U == offset)
++        ? p_capture->runs[S3_BAR_FRAME_RUNS + S3_SCAN_STRAY_RUNS - 1U]
++        : p_capture->runs[0];
+ 
+     for (uint8_t idx = 0U; idx < S3_BAR_FRAME_RUNS; ++idx)
+     {
+         window.runs[idx] = p_capture->runs[offset + idx];
++        narrowest = (window.runs[idx] < narrowest) ? window.runs[idx]
++                                                   : narrowest;
+     }
+     window.count = S3_BAR_FRAME_RUNS;
+ 
+-    return s3_scan_decode_29(&window, p_cfg, p_symbol);
++    /* Widening to 64 bits: outer is at most UINT32_MAX us, so outer * 2
++     * cannot overflow; it is compared, never stored back. */
++    return ((((uint64_t)outer * 2U) < narrowest)
++            && s3_scan_decode_29(&window, p_cfg, p_symbol));
+ }
+ 
+ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,

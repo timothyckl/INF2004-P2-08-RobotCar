@@ -229,8 +229,6 @@ static void test_barcode(void)
 
 static void test_navigation(void)
 {
-    s3_navigation_t navigation = {0};
-
     check(S3_NAV_LEFT == s3_nav_command('A'), "A maps left");
     check(S3_NAV_RIGHT == s3_nav_command('B'), "B maps right");
     check(S3_NAV_STRAIGHT == s3_nav_command('C'), "C maps straight");
@@ -238,32 +236,6 @@ static void test_navigation(void)
     check(S3_NAV_NONE == s3_nav_command('F'),
           "F is unmapped unless S3_NAV_F is set");
     check(S3_NAV_NONE == s3_nav_command('Z'), "other letters are unmapped");
-    check(!s3_nav_stage(&navigation, 'Z', 1U, 0U), "invalid command");
-    check(s3_nav_stage(&navigation, 'A', 1U, 0U), "stage command");
-    check(!s3_nav_stage(&navigation, 'B', 2U, 0U), "no overwrite");
-    check(S3_NAV_NONE == s3_nav_take(&navigation, false, true, false,
-                                    1U, 100U), "hold before junction");
-    check(S3_NAV_NONE == s3_nav_take(&navigation, false, false, true,
-                                    2U, 100U), "require authority");
-    check(S3_NAV_LEFT == s3_nav_take(&navigation, false, true, true,
-                                    3U, 100U), "junction delivery");
-    check(S3_NAV_NONE == s3_nav_take(&navigation, false, true, true,
-                                    4U, 100U), "one-shot delivery");
-    check(!s3_nav_stage(&navigation, 'A', 1U, 4U), "duplicate scan");
-    check(s3_nav_stage(&navigation, 'B', 2U, 4U), "new scan");
-    check(S3_NAV_NONE == s3_nav_take(&navigation, true, true, true,
-                                    5U, 100U), "STOP cancels");
-    check(!s3_nav_stage(&navigation, 'B', 2U, 6U), "no stopped replay");
-    check(s3_nav_stage(&navigation, 'C', 3U, 6U), "stage before expiry");
-    check(S3_NAV_NONE == s3_nav_take(&navigation, false, true, true,
-                                    107U, 100U), "expired command");
-    check(s3_nav_stage(&navigation, 'D', 4U, UINT32_MAX - 5U),
-          "stage across clock wrap");
-    check(S3_NAV_UTURN == s3_nav_take(&navigation, false, true, true,
-                                     5U, 100U), "age across clock wrap");
-    check(!s3_nav_stage(NULL, 'A', 0U, 0U), "null navigation");
-    check(S3_NAV_NONE == s3_nav_take(NULL, false, true, true, 0U, 1U),
-          "null take");
 
     /* Run-time letters (S1 decision 6). */
     check(s3_nav_set_letter(S3_NAV_LEFT, 'G'), "set G left");
@@ -289,7 +261,6 @@ static void test_navigation(void)
 static void test_pipeline(void)
 {
     s3_capture_t capture = {0};
-    s3_navigation_t navigation = {0};
     s3_symbol_t const symbols[] = {{0x103U, 'A'}};
     char decoded = '\0';
 
@@ -297,16 +268,8 @@ static void test_pipeline(void)
     bool valid = s3_bar_decode(&capture, 150U, 250U, 400U, 0x101U,
                                 symbols, 1U, &decoded);
     check(valid, "pipeline complete barcode");
-    if (valid)
-    {
-        check(s3_nav_stage(&navigation, decoded, 7U, 10U),
-              "pipeline stages decoded symbol");
-    }
-
-    check(S3_NAV_NONE == s3_nav_take(&navigation, false, true, false,
-                                    20U, 100U), "pipeline waits");
-    check(S3_NAV_LEFT == s3_nav_take(&navigation, false, true, true,
-                                    30U, 100U), "pipeline navigation request");
+    check(valid && (S3_NAV_LEFT == s3_nav_command(decoded)),
+          "pipeline decoded letter maps to its command");
 }
 
 static s3_scan_cfg_t scan_cfg(void)

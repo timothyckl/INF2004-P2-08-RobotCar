@@ -1,0 +1,29 @@
+# Removal of unused s3_nav_stage()/s3_nav_take() and F-18 prototype re-check, 2026-11-25 15:31 +0800, main at adaef47 plus the working-tree changes of this commit
+
+## make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] S2-U77 PASS
+[HOST] subsystem2 SUMMARY 52 passed, 0 failed
+noise blip: 25 of 234 payload cases gave a wrong letter
+KNOWN DEFECT (F-18): a noise blip never gives a wrong letter
+765 checks, 0 failures, 1 known defects
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 37 passed, 0 failed
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] all suites passed
+(exit status 0)
+
+## F-18 prototype: git apply testing/subsystem3/prototypes/f18_stray_mark_check.patch; make -C testing/host s3; git checkout app_program/subsystem3/s3_scan.c
+noise blip: 0 of 234 payload cases gave a wrong letter
+FIXED (F-18): a noise blip never gives a wrong letter
+765 checks, 0 failures, 0 known defects
+(exit status 0; s3_scan.c restored: yes)
+
+## clean mission build: make -B NET=lwip MQTT=1 S3_NAV_F=0
+(exit status 0, warnings 0)
+mission UF2 SHA-256: 8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+demo image SHA-256:  8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+s3_nav_stage / s3_nav_take in the ELF: 0 (they were already removed by --gc-sections)

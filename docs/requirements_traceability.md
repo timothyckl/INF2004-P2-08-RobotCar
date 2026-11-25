@@ -83,7 +83,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Follow the 18 mm black line through curves, crossings and humps; two analogue IR sensors with adaptive thresholds sampled every 10 ms; a line report every 30 ms |
 | Owner / design | S3, S2; S3 d3, d4, d8; S2 d8, d25 |
 | Source | `subsystem3/s3_follow.c` `s3_follow_run()`; `subsystem3/s3_ir.c` `s3_ir_adaptive_update()`, `s3_ir_line()`; `subsystem2/line_control.c` `line_control_step()`; `subsystem2/task_controller.c` `line_step()` |
-| Tests | S2-U57 to U59, U73 (host); S3 host checks (782); S3-H01, H02, H04; SYS-01 |
+| Tests | S2-U57 to U59, U73 (host); S3 host checks (765); S3-H01, H02, H04; SYS-01 |
 | Criterion | 3 laps, no wheel leaves the track, no STOP before the lift |
 | Result | SYS-01 **Pass** on 2026-11-20 (3 laps of 2 min 8 s to 2 min 15 s). Demo: followed the line in every attempt |
 | Status | **Partial**: line following passed on the car (SYS-01), but the requirement's 10 ms sampling is not met: the loop runs every 20 ms (F-01, proposal P1) |
@@ -98,7 +98,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Source | `subsystem3/s3_barcode.c` `s3_barcode_update()`; `subsystem3/s3_scan.c` `s3_scan_poll()`; `subsystem3/s3_bar.c` `s3_bar_decode()`; `subsystem3/s3_code39.c` |
 | Tests | S3 host checks including S3-U02 and S3-U03 (post-demo); S3 bar-drive runs 2026-11-17; SYS-02 |
 | Criterion | ≥ 4 of 5 passes per barcode, no wrong letter |
-| Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes |
+| Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes; a single 20 ms blip inside the code gave a wrong letter in 25 of 234 synthetic cases (S3-U03, F-18), and 0 of 234 with the P2 prototype, which is not in the firmware |
 | Status | **Partial**: decoding works and never gave a wrong letter on the car, but did not reach 4 of 5; on the host a 20 ms noise blip inside the code can give a wrong letter (F-18, known defect, proposal P2) |
 | Limitations | Bar timings have 20 ms resolution (F-01), coarse for small prints. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
 
@@ -385,7 +385,7 @@ against each, with where the evidence is:
 | Successful completion of mission objectives | Each mission element worked on the car at least once (sections 2 and 4) | Partial | No full-course run (SYS-09); no turn in the assessed runs |
 | Navigation accuracy | Straight 500 mm worst +10 mm; 90° turns inside ±5°; U-turn inside ±10° (S2-H10, small samples) | Partial | Few runs per motion; angles judged by eye |
 | Obstacle avoidance effectiveness | SYS-07 3/3; demo attempt 3 with no contact | Pass on the formal test | Attempts 1 and 2 of the demo did not complete the bypass |
-| Barcode recognition reliability | Never a wrong letter; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01) |
+| Barcode recognition reliability | No wrong letter seen on the car; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01); a host-found wrong letter from a noise blip (F-18, fix P2 not applied) |
 | Hump measurement capability | Every hump detected; within ±2 mm on every recorded run | Partial | 6 mm minimum reading; no flat lap |
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; [review](software_quality_review.md) | Strong | Cast comments (BARR-C 1.6a); long functions |

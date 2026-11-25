@@ -19,7 +19,7 @@ checksum with the demo image (`8cf2c419…`).
 |---|---|---|
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
-| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 784/784 checks with 1 known defect (F-18), S4 37/37, S5 48/48 (2026-11-25, after the post-demo tests) |
+| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 765 checks passed with 1 known defect (F-18) reported separately, S4 37/37, S5 48/48 (2026-11-25, after the post-demo tests) |
 | Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.2% of branches (27 host-built files) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
@@ -57,6 +57,7 @@ maintainability or documentation.
 | F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Hardware proposal (P4) |
 | F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | Found by S3-U03; prototype fix (P2), not applied |
 | F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
+| F-20 | S3 | `s3_nav_stage()` and `s3_nav_take()` held a command a second time, but nothing in the mission called them | Low | **Applied**: removed (mission UF2 unchanged) |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -187,7 +188,8 @@ stray mark) are handled. A rejected capture never gives a letter, so a
 failure shows as "no letter", which is the safe outcome.
 
 **Host evidence (S3-U02, S3-U03, post-demo).** Over all 26 letters: one
-misread element is always corrected or rejected, never a wrong letter;
+misread element (a bar or space read as the wrong width) is always
+corrected or rejected, never a wrong letter;
 with the speed changing steadily across one code, every letter decodes
 while the last run is 0.4 to 2.5 times the first (2.5:1 print), and no
 wrong letter appears at 0.3 or 3.5 times. Speed variation of the size seen
@@ -202,7 +204,10 @@ letter. Inside the payload this makes a 31-run capture, which the decoder
 treats as a code with a stray mark beside it; one of the two 29-run
 windows it tries is then misaligned and, in 25 of 234 cases, matches a
 different letter exactly. FR3 requires that this never happens, so this is
-a real weakness, though no wrong letter was seen on the car. Turning off
+a real weakness, though no wrong letter was seen on the car. The 25 of
+234 is a count of synthetic cases, one blip in every run of every letter;
+it is not a real-world error rate, which would depend on how often a blip
+occurs on the course. Turning off
 the one-element correction does not help (the matches are exact);
 removing the 31-run path breaks the recorded stray-mark captures of
 2026-11-17. Accepting a 31-run window only when the run it leaves out is
@@ -248,6 +253,19 @@ the WiFi task; `s3_nav_command()` runs in the S3 loop, which has a higher
 priority and can pre-empt it. Each entry is one `volatile` byte, so a read
 is never torn. A read between "clear the old letter" and "set the new one"
 can return NONE for one letter, which is dropped, not acted on wrongly.
+
+**F-20 (Low, applied) — unused second command hold.** `s3_nav.c` had its
+own "stage a command, hand it over at an authorised junction" logic from
+before integration. The mission never called it: the Vehicle Controller
+holds the command in `nav_control.c` (S2 decisions 26 and 27). Two copies
+of the same rule (DRY) invite a fix to the wrong one, and the README
+described the unused copy. Both functions and their type were removed;
+`--gc-sections` had already left them out of the image, so the mission UF2
+is byte-identical. Their 19 host checks went with them; the one property
+not already covered by S2 (a STOP drops a command still waiting for a
+junction) was added to S2-U77 and fails if `nav_control_abort()` stops
+clearing the command
+([log](../testing/host/logs/2026-11-25_s3-nav-cleanup-and-f18-recheck.txt)).
 
 **F-16 (Low, process).** On demo day the table sent at 14:32:51 put O under
 STRAIGHT; it was corrected at 14:48:34. The dashboard sends what is typed.

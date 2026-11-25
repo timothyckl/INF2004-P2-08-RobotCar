@@ -22,6 +22,24 @@ been run on the car.
 | P6 (F-05) | FR7 | Width overstated (SYS-06) | Set the beam allowance from a measured beam, and report width only when both edges are clear | SYS-06 |
 | P7 (F-08) | NFR1, Tri2 Entry 4 | Watchdog off | Arm it, fed only when every critical task has checked in | One run with it armed |
 | P8 (F-06) | FR10, Tri2 Entries 11, 19 | One fault class in telemetry | Version 5 frame: fault detail and a junction bit | Dashboard and SYS-08 |
+| P9 (SYS-09) | FR1, MR1–MR10 | No full course completed in one run | A staged run plan that removes the known blockers first | SYS-09 |
+
+### Cost and what stops each one going in now
+
+"Complexity" counts the code that would change. Costs are worked out from
+the code; only P2 has been built for the target.
+
+| ID | Complexity | Timing, memory, CPU | Host evidence today | What blocks it now |
+|---|---|---|---|---|
+| P1 | Small: one cyclic handler and one semaphore in `s3_follow.c` | Loop runs twice as often; its worst-case time is not measured, so its CPU share is unknown. No new buffers | S3-U02, U03 already sample at 10 ms | Changes line following; needs SYS-01 and SYS-02 on the car |
+| P2 | Small: about 10 lines in one function | Built for the target: +44 bytes flash, 0 bytes RAM. At most 58 extra comparisons, only for a 31-run capture, after the capture has ended | Prototype: 0 of 234 wrong letters, every other S3 check passes | Changes which captures decode; needs SYS-02 on the car |
+| P3 | Step 1 is P8; step 3 is unknown until the bench test | — | S2-U58, U74 to U80 | Junction shape unknown; needs a bench drive with the console captured |
+| P4 | Hardware: one sensor, one ADC input. No free ADC input is left (ADC3/GP29 is the radio), so it needs a digital sensor on a spare GPIO or a multiplexer | One more read per S3 pass | None | Needs new hardware and wiring |
+| P5 | Small in code (two constants and one formula); most of the work is measurement | None | S4-U41, U42 | Needs reference humps and a flat lap on the car |
+| P6 | Medium: allowance value, a validity rule, optional 2.5° fine steps | 2.5° steps add servo moves and echoes: a longer scan | S5-U72 | Needs beam measurements with the real box |
+| P7 | Medium: a check-in word shared by four tasks | One word under the existing mutex; a few instructions per cycle | None | A wrong timeout resets the car mid-run; needs one armed run first (S2 d28) |
+| P8 | Medium: encoder, decoder, dashboard and golden frame | +1 byte per frame (8 bit/s) | S1-U05 pattern | Changes the frame format; dashboard and SYS-08 must be re-run |
+| P9 | Process, no code | — | — | Needs the course and track time |
 
 ## P1 — 10 ms sampling for the line and barcode loop (F-01)
 
@@ -104,7 +122,31 @@ puts a 20 ms run inside the window.
 **Host evidence.** The prototype
 ([log and diff](../testing/subsystem3/logs/2026-11-25_s3-f18-blip-prototype.txt))
 removed all 25 wrong letters, and every other S3 check still passed,
-including the two recorded car captures with a stray mark.
+including the two recorded car captures with a stray mark. It is kept as
+[`f18_stray_mark_check.patch`](../testing/subsystem3/prototypes/f18_stray_mark_check.patch)
+and was re-checked on the final source on 2026-11-25:
+
+```sh
+git apply testing/subsystem3/prototypes/f18_stray_mark_check.patch
+make -C testing/host s3      # 0 of 234, "FIXED (F-18)", 0 known defects
+git checkout app_program/subsystem3/s3_scan.c
+```
+
+**Review of the change.**
+
+- *Correctness.* A stray mark is outside the code and short; a blip moves a
+  real bar out of the window, so the run left out is at least one narrow
+  element long. "Less than half the narrowest run in the window" separates
+  the two with a factor of two of margin.
+- *Overflow.* Runs are `uint32_t` microseconds; `outer` is widened to 64
+  bits before doubling, so the product cannot wrap.
+- *Timing.* The check runs once per 31-run window (two windows at most),
+  after the capture has ended, so it does not touch the sampling path.
+- *Regressions.* A genuine stray mark wider than half a narrow element is
+  now rejected instead of decoded. That gives "no letter", the safe
+  outcome, and the two recorded stray-mark captures still decode.
+- *Not covered.* A blip that splits the sentinel, or two blips, is not
+  tested. The fix only removes the wrong letters S3-U03 found.
 
 | Alternative tried | Result |
 |---|---|
@@ -176,6 +218,16 @@ brief lists three IR sensors for buddy 3). Centre black and both sides
 white then means centred; all three white means lost, and the controller
 can latch STOP with cause line. Until then the limitation stays in the
 fault table.
+
+| Alternative | Why not chosen |
+|---|---|
+| Time-out when neither sensor has seen black for a set distance | Fires on a long straight while the car is correctly centred, the normal case |
+| Use the barcode sensor as a third line sensor | It sits at the side for barcodes and never steers (pin mapping); moving it breaks barcode reading |
+| Wiggle the car to look for the tape | Changes line following on every straight and adds no certainty on curves |
+
+**Acceptance.** On the car: lift-and-place the car 50 mm beside the tape
+while following; STOP with cause line within 200 ms (value to be agreed),
+five times out of five, and no false line-loss stop on three SYS-01 laps.
 
 ## P5 — Hump measurement below 6 mm (F-04)
 
@@ -309,3 +361,24 @@ analysis, not implementation.
 
 **Acceptance.** S1-U05 golden frame for version 5; dashboard tests; SYS-08
 shows the detail on a forced stall.
+
+## P9 — A full course in one run (SYS-09)
+
+**Where it stands.** Every mission element has worked on the car on its
+own (traceability section 2), but no run has finished the whole course.
+On demo day attempt 3 decoded the barcode, bypassed the obstacle three
+times and measured the hump, but did not turn at the junction (section 4
+of the [demo report](DEMO_REPORT_2026-11-24.md)).
+
+**Why it has not been met.** The run depends on every element working in
+one go, so the blockers add up: the junction turn (P3), barcode reads
+below 4 of 5 (P1, P2) and line loss going unnoticed (P4). There is no
+separate root cause to fix.
+
+**Proposed plan.** Apply and car-test P8, then P1 and P2, then do the P3
+bench test, one at a time, each with SYS-01 re-run to show line following
+is unchanged. Then three full-course runs with the console captured and
+the time recorded.
+
+**Acceptance.** SYS-09 as written: the whole course after one START, no
+touching, three runs.

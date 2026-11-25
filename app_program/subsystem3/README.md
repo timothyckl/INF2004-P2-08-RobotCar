@@ -1,4 +1,4 @@
-# Subsystem 3: line sensing and barcode foundation
+# Subsystem 3: line sensing and barcode decoding
 
 Every build uses the agreed pin mapping in `AGENTS.md`, viewed from behind:
 
@@ -9,10 +9,11 @@ Every build uses the agreed pin mapping in `AGENTS.md`, viewed from behind:
 All three sensors have analogue outputs only; their DOUT wires are
 disconnected, and GP6 is unused. Keep the GP28 battery-sense jumper open.
 
-Subsystem 3 never writes motor PWM. In the mission image it
-sends line positions to the Vehicle Controller, and only Motion Control writes
-PWM. The existing consumer task and its mailbox/statistics interfaces remain
-present for the other starter subsystems.
+Subsystem 3 never writes motor PWM. In the mission image it sends line
+positions (IF-06) and decoded letters (IF-21) to the Vehicle Controller,
+and only Motion Control writes PWM. The starter consumer task and its
+mailbox and statistics interfaces were removed on 2026-11-20 (S2 decision
+29).
 
 ## On-car raw input monitor
 
@@ -166,14 +167,22 @@ From the project root, with GCC on `PATH`:
 powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
 ```
 
-These tests cover the adaptive analogue thresholds, filtering, the verified
-four-state steering table, the synthetic barcode/navigation foundation,
-and Code 39 A--Z scan decoding in both travel directions. On macOS or Linux,
-`make -C testing/host s3` runs the same cases. They do not verify
-wiring, optical distance, surface contrast, ambient-light immunity, sampling
-performance, line following, motor behaviour, or the printed course barcode.
+These tests cover the adaptive analogue thresholds, filtering, the
+four-state steering table, the letter-to-command table and Code 39 A--Z
+decoding in both travel directions, including the recorded car captures,
+one misread element and speed changes (S3-U02) and noise blips and broken
+frames (S3-U03). On macOS or Linux, `make -C testing/host s3` runs the same
+cases. The summary line counts passed checks, failures and known defects:
+S3-U03 reports **one known defect, F-18**: a single 20 ms blip inside the
+code gives a wrong letter in 25 of 234 synthetic cases. That is a count of
+test cases, not a real-world error rate, and no wrong letter has been seen
+on the car. The fix is post-demo proposal P2
+([`f18_stray_mark_check.patch`](../../testing/subsystem3/prototypes/f18_stray_mark_check.patch),
+not applied). The host tests do not verify wiring, optical distance,
+surface contrast, ambient light, sampling timing, line following, motor
+behaviour or the printed course barcodes.
 
-## Existing software foundation
+## Modules
 
 - `s3_bar` provides bounded edge capture, timeout handling, and a configurable
   one-symbol decoder. Sentinels and gaps must match exactly; the payload may
@@ -193,13 +202,18 @@ performance, line following, motor behaviour, or the printed course barcode.
 - `s3_scan`, `s3_code39`, the `s3_bar` near-match rule and the barcode
   thresholds were ported from `feature/subsystem3-ir-line-barcode` (commit
   `e6a7027`), where they were measured on 2026-11-11 at about 40 mm/s.
-  They are host-tested on this branch; reads of the printed course barcodes
-  on this car are not yet validated.
+  Printed barcodes were read on this car from 2026-11-17 (`TEST_LOG.md`)
+  and on demo day; reliability stays below 4 of 5 (SYS-02).
+- `s3_nav` maps a decoded letter to LEFT, RIGHT, STRAIGHT, U-TURN or none.
+  It does not hold or time commands: the Vehicle Controller does that in
+  `nav_control.c` (S2 decisions 26 and 27).
 
 ## Barcode reporting in the line-follow image
 
-The mission image reads ADC2/GP28 in the same 10 ms loop as the
-front sensors, so one task owns the ADC and the barcode state. The barcode
+The mission image reads ADC2/GP28 in the same loop as the front sensors,
+so one task owns the ADC and the barcode state. The loop is configured for
+10 ms but runs every 20 ms on the car (`tk_dly_tsk()` rounding, finding
+F-01, proposal P1). The barcode
 never steers; each decoded letter goes to the Vehicle Controller, which
 acts on a mapped command at the next junction (below). Once a capture looks like a barcode (three
 runs of at least 60 ms), each line report carries `S2_LINE_FLAG_BARCODE`
@@ -251,16 +265,3 @@ s3 bar: DECODED F (decoded=1 errors=0)
 [S2] nav: spinning left until a sensor sees the line
 [S2] nav: on the new line; following
 ```
-- `s3_nav` provides the current synthetic A/B/C/D command mapping, duplicate
-  suppression, expiry, STOP cancellation, and controller-authority gating. It
-  contains no motor actions or validated turn angles.
-
-Before barcode integration, confirm the printed symbology and measured timing,
-keep raw edge capture separate from filtered steering samples, and use the
-team's shared GPIO interrupt dispatcher. Barcode state must be task-owned or
-passed through an agreed bounded queue; do not share mutable capture state with
-an ISR or another core without concurrency protection.
-
-Line following should be added only after both front sensors pass the physical
-white/black test. Steering requests must go through the Vehicle Controller;
-only Motion Control may write motor PWM.

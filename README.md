@@ -19,7 +19,7 @@ only tests, tools, the build's warning flags and documentation.
 | Mission requirement | Result | Evidence |
 |---|---|---|
 | Line following | Pass: 3 laps (SYS-01) | [system test log](testing/system/TEST_LOG.md) |
-| Barcode decoding | Partial: works, never a wrong letter, below 4 of 5 passes | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car, but host tests found one input that gives one (F-18) | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
 | Hump detection and highest peak | Detected every time; 6, 6, 7 mm for a 5 mm hump (within ±2 mm) | D-03 |
 | Obstacle detection | Pass (SYS-05) | system test log |
