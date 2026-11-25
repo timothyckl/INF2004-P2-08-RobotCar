@@ -28,74 +28,121 @@ refuses `CRASH_REPORT=1` and a UART console; the console is USB.
 
 ## 2. Software structure
 
+Two diagrams, so that neither is crowded. The first shows the hardware,
+the tasks and every message and urgent signal between them. The second
+shows the data that tasks copy from each other by function call.
+
+**Arrow key (both diagrams).** Labels name the RTOS object or function and
+the interface ID from `TEAM.md` section 5.
+
+| Arrow | Meaning | Timing |
+|---|---|---|
+| Thick `==>` | Message buffer (`tk_snd_mbf`): the sender queues a message, the receiver takes it later | Asynchronous; never blocks the sender (`TMO_POL`) |
+| Dotted `-.->` | Kernel event flag (`tk_set_flg`): one bit, used for urgent signals | Asynchronous; wakes the waiting task at once |
+| Thin `-->` | Function call that copies a snapshot under the owner's mutex. The arrow points the way the data flows, from owner to reader | Synchronous; the lock is tried without waiting (`TMO_POL`) or with a bounded wait |
+| Grey thin arrow | Electrical signal between a pin and a task or driver | GPIO interrupt, ADC read, I2C or PWM |
+
+### 2a. Tasks, messages and hardware
+
 ```mermaid
 flowchart LR
-  subgraph SEN["Sensors and inputs"]
+  subgraph HWIN["Hardware inputs"]
     direction TB
-    IR["Front IR x2<br/>ADC0, ADC1"]
-    BC["Barcode IR<br/>ADC2"]
-    IMU["LSM303DLHC<br/>I2C1"]
-    US["HC-SR04<br/>GP4, GP5"]
-    ENC["Encoders x2<br/>GPIO interrupts"]
-    BTN["GP20 button"]
+    IR["Front IR x2<br/>ADC0 GP26, ADC1 GP27"]
+    BC["Barcode IR<br/>ADC2 GP28"]
+    IMU["LSM303DLHC<br/>I2C1 GP2, GP3"]
+    US["HC-SR04<br/>TRIG GP4, ECHO GP5"]
+    ENC["Encoders x2<br/>GP16/17, GP0/1"]
+    BTN["Button GP20"]
   end
-  subgraph SNS["Sensing tasks"]
+  subgraph TASKS["Sensing tasks"]
     direction TB
     S3["S3 line and barcode loop<br/>priority 1"]
     S4["S4 IMU and terrain<br/>priority 18"]
     S5["S5 obstacle scan<br/>priority 20"]
   end
-  subgraph DEC["Decision"]
-    CTRL["Vehicle Controller<br/>priority 14"]
-  end
-  subgraph ACT["Actuation"]
+  CTRL["Vehicle Controller<br/>priority 14"]
+  MC["Motion Control<br/>priority 15, 10 ms cyclic"]
+  subgraph HWOUT["Hardware outputs"]
     direction TB
-    MC["Motion Control<br/>priority 15, 10 ms cyclic"]
-    MOT["Motors<br/>PWM 20 kHz"]
-    SERVO["SG90 servo<br/>PWM 50 Hz"]
+    MOT["Motors<br/>PWM 20 kHz, GP8-11"]
+    SERVO["SG90 servo<br/>PWM 50 Hz, GP12"]
   end
-  subgraph NET["Monitoring"]
-    direction TB
-    WIFI["WiFi and MQTT<br/>kernel task, priority 4"]
-    DASH["Laptop dashboard"]
-  end
+  WIFI["WiFi and MQTT<br/>kernel task, priority 4"]
+  DASH["Laptop dashboard"]
+
   IR --> S3
   BC --> S3
   IMU --> S4
-  US --> S5
-  ENC --> MC
-  BTN --> CTRL
-  S3 -->|"line_q: line report"| CTRL
-  S3 -->|"nav_q: letter, command"| CTRL
-  S4 -.->|"PICKUP flag"| CTRL
-  S5 -.->|"HAZARD, SCAN_FAULT flags"| CTRL
-  S5 -->|"plan and status (mutex)"| CTRL
-  CTRL -->|"scan_q: request, authorise"| S5
-  CTRL -->|"motion_q: move, turn, speed"| MC
+  US <-->|"TRIG out, ECHO edges in"| S5
+  ENC -->|"edges"| MC
+  BTN -->|"polled"| CTRL
+  S3 ==>|"line_q IF-06"| CTRL
+  S3 ==>|"nav_q IF-21"| CTRL
+  S4 -.->|"PICKUP IF-19"| CTRL
+  S5 -.->|"HAZARD, SCAN_FAULT IF-12"| CTRL
+  CTRL ==>|"scan_q IF-11"| S5
+  CTRL ==>|"motion_q"| MC
   CTRL -.->|"safety_flags: STOP"| MC
-  MC -->|"status (mutex)"| CTRL
+  WIFI -.->|"REMOTE_STOP IF-08"| CTRL
+  WIFI ==>|"remote_q IF-09"| CTRL
   MC --> MOT
   S5 --> SERVO
-  WIFI -.->|"REMOTE_STOP flag"| CTRL
-  WIFI -->|"remote_q: START, RESET"| CTRL
-  WIFI -->|"letter table"| S3
-  CTRL -->|"telemetry snapshot (mutexes)"| WIFI
-  WIFI <-->|"MQTT"| DASH
+  WIFI <-->|"MQTT over WiFi"| DASH
+
+  classDef hw fill:#eeeeee,stroke:#777777,color:#222222
+  classDef task fill:#dde8f6,stroke:#3b6aa0,color:#111111
+  classDef ext fill:#f6eedd,stroke:#a07a3b,color:#111111
+  class IR,BC,IMU,US,ENC,BTN,MOT,SERVO hw
+  class S3,S4,S5,CTRL,MC,WIFI task
+  class DASH ext
+  linkStyle 0,1,2,3,4,5,15,16 stroke:#888888
 ```
 
-Solid arrows are message buffers or data read under a mutex; dashed arrows
-are kernel event flags, used for every urgent stop. Not drawn, to keep the
-diagram readable: S4 and S5 read the run mode and S4 reads the wheel speed
-(IF-14, IF-17), and the telemetry snapshot also reads the S4 and S5 results
-under their own mutexes (`robot_state.c`).
+### 2b. Snapshot reads between tasks
+
+```mermaid
+flowchart LR
+  MC["Motion Control<br/>status under g_status_mtx"]
+  CTRL["Vehicle Controller<br/>robot state under state_mutex"]
+  S3T["S3 letter table<br/>26 one-byte entries"]
+  S4["S4 terrain result<br/>under the S4 mutex"]
+  S5["S5 scan status and telemetry<br/>under the S5 mutex"]
+  RS["robot_state.c<br/>telemetry snapshot"]
+  WIFI["WiFi task<br/>31-byte frame"]
+
+  MC -->|"motion_get_status()"| CTRL
+  MC -->|"motion_get_status() IF-17"| S4
+  CTRL -->|"s2_get_robot_state() IF-14"| S4
+  CTRL -->|"s2_get_robot_state() IF-14"| S5
+  S5 -->|"scan_task_get() IF-13"| CTRL
+  CTRL -->|"run state"| RS
+  S4 -->|"subsystem4_get_status() IF-18"| RS
+  S5 -->|"scan_telemetry_get() IF-20"| RS
+  RS -->|"robot_read_telemetry() IF-10"| WIFI
+  WIFI -->|"s3_nav_set_letter()"| S3T
+
+  classDef task fill:#dde8f6,stroke:#3b6aa0,color:#111111
+  classDef data fill:#e8f3e2,stroke:#4f8a3b,color:#111111
+  class MC,CTRL,S4,S5,WIFI task
+  class S3T,RS data
+```
+
+`robot_state.c` is code, not a task: it runs in the WiFi task when that task
+asks for a frame, and takes each provider's mutex in turn, never two at
+once. The S3 letter table has no mutex: each entry is one byte, written
+only by the WiFi task and read by the S3 loop, so a read is never torn
+(review F-13).
 
 **Rules that hold across the system** (checked in the
 [software review](software_quality_review.md)):
 
 - Only the Vehicle Controller decides movement and recovery. Only Motion
   Control writes motor PWM.
-- STOP is latched; only RESET then START clears it. Urgent stops travel on
-  kernel event flags, never behind a queue.
+- STOP is latched; only RESET then START clears it. A latched STOP reaches
+  Motion Control on an event flag (`safety_flags`), never behind a queue.
+  The stop before a scan is an ordinary `motion_q` command, because it is
+  a planned stop, not a safety stop.
 - The car stops before scanning: Obstacle Scan may move the servo only
   after Motion Control confirms both wheels are still.
 - Network code stays in the kernel WiFi task and `subsystem1/`; losing
@@ -171,15 +218,21 @@ stateDiagram-v2
   SCAN --> BYPASS: result PLAN
   BYPASS --> REACQUIRE: plan segments done
   REACQUIRE --> FOLLOW: line seen 100 ms, aligned
-  FOLLOW --> NAVIGATE: held command and confirmed junction
+  FOLLOW --> NAVIGATE: held LEFT, RIGHT or U-TURN and a confirmed junction
   NAVIGATE --> FOLLOW: stopped on the new line
 ```
 
-A NO_ROUTE or FAULT scan result, a failed bypass or reacquisition, and a
-failed junction manoeuvre all leave RUNNING through a latched STOP. A GP20
+A held STRAIGHT is carried out in FOLLOW: the car crosses the junction
+without stopping. A NO_ROUTE or FAULT scan result, a failed bypass or
+reacquisition, and a failed junction manoeuvre all leave RUNNING through a
+latched STOP. A GP20
 press sends RESET and then START once the car is READY.
 
 ## 5. Main sequences
+
+In these diagrams a solid arrow is a message or flag sent; a function call
+is drawn as a solid arrow to the provider and a dashed arrow back with the
+data it returns.
 
 ### Barcode to turn
 
@@ -189,14 +242,15 @@ sequenceDiagram
   participant C as Vehicle Controller
   participant M as Motion Control
   S3->>S3: capture bar runs, decode Code 39
-  S3->>C: nav_q: letter and command
-  C->>C: validate, hold the command for up to 60 s
-  S3->>C: line_q: BOTH_BLACK reports
+  S3->>C: nav_q (IF-21): letter and command
+  C->>C: hold the command for up to 60 s (nav_control.c)
+  S3->>C: line_q (IF-06): BOTH_BLACK reports
   C->>C: BOTH_BLACK for 100 ms confirms a junction
-  C->>M: STOP, then MOVE the axle onto the junction
-  C->>M: TURN until the line is seen
-  M-->>C: DONE or FAULT
-  C->>C: settle, then FOLLOW
+  C->>M: motion_q: STOP, then MOVE the axle onto the junction
+  C->>M: motion_q: TURN until a sensor sees the new line
+  C->>M: motion_get_status() every cycle
+  M-->>C: DONE, REJECTED or FAULT for that command ID
+  C->>C: stop on the new line, then FOLLOW
 ```
 
 ### Obstacle to bypass and line recovery
@@ -206,15 +260,17 @@ sequenceDiagram
   participant S5 as Obstacle scan
   participant C as Vehicle Controller
   participant M as Motion Control
-  S5->>C: HAZARD flag
-  C->>M: STOP
-  C->>S5: scan_q: REQUEST with an ID
+  S5->>C: controller_flags (IF-12): HAZARD
+  C->>M: motion_q: STOP (a planned stop, not a STOP latch)
+  C->>S5: scan_q (IF-11): REQUEST with an ID
+  C->>M: motion_stop_confirmed()
   M-->>C: both wheels still
-  C->>S5: STOP_CONFIRM and AUTHORISE for that ID
+  C->>S5: scan_q: STOP_CONFIRM and AUTHORISE for that ID
   S5->>S5: coarse 15 degree scan, fine 5 degree edges, median of 3
+  C->>S5: scan_task_get() (IF-13) every cycle
   S5-->>C: PLAN with a bypass plan, or CLEAR, NO_ROUTE, FAULT
-  C->>M: plan segments: turn, move, look
-  C->>M: search for the line, stop, align
+  C->>M: motion_q: plan segments (turn, move, look)
+  C->>M: motion_q: search for the line, stop, align
   C->>C: REACQUIRE, then FOLLOW
 ```
 
@@ -222,15 +278,20 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-  participant I as IMU task
-  participant W as WiFi task
+  participant I as IMU task (S4)
+  participant R as robot_state.c (S2)
+  participant W as WiFi task (S1)
   participant D as Dashboard
-  I->>I: 100 Hz samples, tilt average, height from contact geometry
+  I->>I: read the sensor about every 21 ms (sensor rate 100 Hz)
+  I->>I: tilt average, height from contact geometry
   I->>I: rise of 6 mm then level: hump complete, rounded to mm
-  I->>I: update last, highest and count under the S4 mutex
-  W->>I: read the S4 result without waiting
-  W->>W: encode the 31-byte frame
-  W->>D: publish once per second over MQTT
+  I->>I: store last, highest and count under the S4 mutex
+  W->>R: robot_read_telemetry() (IF-10), once per second
+  R->>I: subsystem4_get_status() (IF-18), lock tried without waiting
+  I-->>R: last, highest, count and valid flags
+  R-->>W: telemetry snapshot
+  W->>W: encode the 31-byte version 4 frame
+  W->>D: MQTT publish, binary
 ```
 
 ## 6. Sensors: accuracy and limits
