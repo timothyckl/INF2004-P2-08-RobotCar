@@ -3,16 +3,16 @@
  * @brief Pure barcode-command policy: act at the next junction.
  *
  * S2 decision 26. A decoded barcode command is held until line following
- * confirms the next junction, however long that takes (S2 decision 36: a
- * time limit expired before the junction on the course twice). A newer
- * command replaces it; abort (STOP, not running) drops it. A scan and
- * bypass do not: the policy is simply not stepped while they run, and
- * line following does not confirm junctions off the line. STRAIGHT then lets the normal crossing
- * proceed. LEFT, RIGHT and UTURN stop the car, step forward so the axle
- * is on the junction (decision 20: the step subtracts the travel since the
- * junction was seen), then spin in place towards the turn until a sensor
- * sees the line (decision 21: black is ignored until the turn is nearly
- * done, and an overshoot fails). Line following then takes over.
+ * confirms the next junction, however long that takes (S2 decision 36: a time
+ * limit expired before the junction on the course twice). A newer command
+ * replaces it; abort (STOP, not running) drops it. A scan and bypass do not:
+ * the policy is simply not stepped while they run, and line following does
+ * not confirm junctions off the line. STRAIGHT then lets the normal crossing
+ * proceed. LEFT, RIGHT and UTURN stop the car, step forward so the axle is on
+ * the junction (decision 20: the step subtracts the travel since the junction
+ * was seen), then spin in place towards the turn until a sensor sees the line
+ * (decision 21: black is ignored until the turn is nearly done, and an
+ * overshoot fails). Line following then takes over.
  *
  * The caller sends each requested action and reports a MOVE's ID with
  * nav_control_sent(); this module touches no kernel object and no motor.

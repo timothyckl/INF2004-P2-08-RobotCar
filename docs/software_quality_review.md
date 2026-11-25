@@ -43,7 +43,7 @@ maintainability or documentation.
 | F-01 | S3 | The barcode and line loop samples every **20 ms**, not 10 ms | High | **Applied** (S3 d10): 10 ms cyclic handler; car test pending |
 | F-02 | S2 | A junction is recognised only when **both** front sensors are black, so a one-sided branch reads as a curve | High | Proposal (needs a car test) |
 | F-03 | S2 | No turn started after RIGHT was decoded on demo day | High | One cause found and **applied** (S2 d36): the 60 s hold expired at the obstacle; car test pending |
-| F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | Explained; proposal |
+| F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | **Partly applied** (S4 d17): detection threshold fixed; calibration needs the car |
 | F-05 | S5 | Obstacle width is overstated by the ultrasonic beam (SYS-06) | Medium | Explained; proposal |
 | F-06 | S1/S2 | Telemetry carries one fault class; the detail behind the four demo motion faults was lost | Medium | Proposal |
 | F-07 | Build | Subsystems 1 to 4 were built with no warning flags | Medium | **Applied** (S2 d34) |
@@ -54,7 +54,7 @@ maintainability or documentation.
 | F-12 | S3 | `-fanalyzer` reports an out-of-bounds write in `s3_nav.c` | — | False positive |
 | F-13 | S3 | The letter table can change while the S3 loop reads it | Low | Safe by design; documented |
 | F-14 | Tests | Six tests ran but were not defined in any test log | Low | **Applied** (`ad2b48c`) |
-| F-15 | S4 tests | Mission hump settings repeated in a test | Low | Proposal |
+| F-15 | S4 tests | Mission hump settings repeated in a test | Low | **Applied** (S4 d17): `s4_config.h` |
 | F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Proposal |
 | F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Hardware proposal (P4) |
 | F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | **Applied** (S3 d9): blip repaired; car test pending |
@@ -65,6 +65,7 @@ maintainability or documentation.
 | F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
 | F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | Proposal: measure on the car |
 | F-25 | S3 | A capture missing two runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases) | Medium | Open: known defect in S3-U04; no safe repair (S3 d9) |
+| F-26 | S4 | The IMU task polls with `tk_dly_tsk(10)` (really 20 ms), so samples arrive 20 or 30 ms apart | Low | Kept: the averaging windows were tuned on it |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -324,23 +325,40 @@ per-contact estimates gives the height. Pitch is ignored while the wheel
 speed changes (acceleration reads as pitch, S4-U27), and hump, impact and
 lift detection run only while the car drives (S4 d12, d14, d16).
 
-**F-04 (Medium, explained) — 6 mm floor.** A hump starts only when the
-scaled height reaches `S4_RISE_UM` (6000 µm, chosen because floor bumps
-read up to about 4 mm, S4 d11) and is rounded to whole millimetres, so the
-lowest possible reading is 6 mm (S4-U41). An ideal 5 mm step scales to
-about 4.3 mm and would not be a hump at all; the demo hump read 6, 6 and
-7 mm, so the car's raw estimate over that hump was about 7 to 8 mm. The 10
-mm hump read 11.75 mm raw on average (S4-H08), which set the 0.851 scale.
-Both points fit a raw reading that is high by a few millimetres rather than
-by a fixed percentage, so a single scale factor cannot correct small humps.
-*Proposal:* two-point calibration (5 mm and 10 mm) giving a scale and an
-offset, then lower the rise threshold only after a flat-lap test shows no
-false humps.
+**F-04 (Medium, partly applied) — 6 mm floor and small humps.** A hump
+starts when its height reaches `S4_RISE_UM` (6 mm, chosen in S4 decision 11
+because floor bumps read up to about 4 mm). Decision 12 then scaled heights
+by 0.851 *before* that comparison, so in the demo firmware a hump really
+started at 7.05 mm of measured height, and the lowest possible reading was
+6 mm (S4-U41). The demo hump read 6, 6 and 7 mm, so its measured peaks were
+7.05 to 8.8 mm: two of three cleared the start by under 0.6 mm. *Applied*
+(S4 decision 17), with evidence from replaying every logged IMU sample
+through `terrain_logic.c` (`testing/subsystem4/replay_raw.c`, which
+reproduces every hump the car logged): detection compares the uncalibrated
+height, so the start is back at 6 mm, and runs only while following,
+because the junction stop and spin read up to 6.6 and 4.7 mm against 4.0 mm
+while following. The readings of the six logged drives are unchanged and
+no new hump appears (S4-U44). *Not yet done:* small humps still read high.
+The data fit a raw reading that is high by a few millimetres more than by a
+fixed percentage, so an offset is needed; the mechanism
+(`height_offset_um`, applied only to the reading) and a fitting tool
+(`fit_hump_calibration.py`) are ready, but the offset stays 0 until
+reference humps of several heights are crossed on the car.
 
-**F-15 (Low) — repeated constants.** `S4_RISE_UM` and
-`S4_HEIGHT_SCALE_PERMILLE` are private to `task_imu.c`, so S4-U41 repeats
-6000 and 851 with a comment. *Proposal:* move them to `subsystem4.h` so the
-test uses the same constants (DRY).
+**F-15 (Low, applied) — repeated constants.** The S4 settings were private
+to `task_imu.c`, so S4-U41 repeated 6000 and 851. They now live in
+`s4_config.h` (`s4_config_mission()`), used by the task, the tests and the
+replay, and the tests derive their expectations from them.
+
+**F-26 (Low, kept) — IMU sample timing.** The IMU task polls with
+`tk_dly_tsk(10)`, which takes 20 ms (as in F-01), against a 50 Hz sensor,
+so samples arrive 20 or 30 ms apart (9,237 and 3,496 gaps in the S4-H08
+gated log). Unlike the S3 loop, nothing is lost: each sample carries its
+own time, and the 16-sample average, the 32-sample settle and the
+3-sample confirmation were tuned on this timing; the replay evidence of
+decision 17 assumes it too. A cyclic 10 ms poll would make the spacing
+regular but would change those windows, so it is not applied without a
+car run.
 
 ## 7. Subsystem 5 — Ultrasonic scan and bypass
 
@@ -420,7 +438,8 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `2fddf92` | F-18: 31-run captures repaired, not searched (S3 d9); S3-U03 extended, S3-U04, S3-U05; `verify_all.sh` | **Yes**: which barcode captures decode. Car test pending (SYS-02) | S3 774 checks, 0 failures, 1 known defect (F-25); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f18.txt)) |
 | `4bec493` | F-01: S3 loop woken by a 10 ms cyclic handler; overruns counted and dropped; filter, baseline step and `line_q` margin kept in time (S3 d10); S3-U06 | **Yes**: S3 samples every 10 ms instead of 20 ms. Car test pending (SYS-01, SYS-02) | S3 779 checks, 0 failures; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f01.txt)) |
 | `f63a20a` | Host integration suite for the Vehicle Controller (INT-08 to INT-14): the real controller with S1, S3, S4 and S5 interfaces on a kernel model; `controller_cycle()` extracted | None (structure only; +216 bytes for the call) | 20 integration checks pass; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-int-harness.txt)) |
-| (F-03 commit) | F-03, F-10: a held barcode command waits for the next junction with no time limit (S2 d36); INT-11 | **Yes**: a command is no longer dropped after 60 s. Car test pending (SYS-03) | S2 52/52; 23 integration checks; INT-11 fails with the limit put back ([mutations](../testing/host/logs/2026-11-25_int-mutations.txt), [log](../testing/host/logs/2026-11-25_verify-f03.txt)) |
+| `b5d380e` | F-03, F-10: a held barcode command waits for the next junction with no time limit (S2 d36); INT-11 | **Yes**: a command is no longer dropped after 60 s. Car test pending (SYS-03) | S2 52/52; 23 integration checks; INT-11 fails with the limit put back ([mutations](../testing/host/logs/2026-11-25_int-mutations.txt), [log](../testing/host/logs/2026-11-25_verify-f03.txt)) |
+| (F-04 commit) | F-04 (part), F-15: hump detection on the uncalibrated height, FOLLOW only; calibration offset and fitting tool; settings in `s4_config.h`; S4 replay tool (S4 d17) | **Yes**: detection starts at 6 mm of measured height (was 7.05 mm) and not during junction turns. Car test pending (calibration, SYS-04) | S4 38/38 and S4-U44 (six logged drives give the car's own readings, no new hump); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f04.txt), [analysis](../testing/subsystem4/logs/2026-11-25_s4-replay-analysis.txt)) |
 
 ## 10. Proposed changes not applied
 
@@ -433,11 +452,11 @@ records the decision to apply post-demo changes.)
 
 3. P3 (F-02): junction event in telemetry, then a bench test of the course junction; SYS-03.
 4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
-5. P5 (F-04): two-point hump calibration and a flat lap; SYS-04.
+5. P5 (F-04): two-point hump calibration on the car (procedure and tool ready) and a flat lap; SYS-04.
 6. P6 (F-05): measured beam allowance; SYS-06.
 7. P7 (F-08): watchdog fed only when every critical task has checked in.
 8. P8 (F-06): version 5 frame with fault detail and a junction bit.
-9. F-09, F-15, F-16: re-measure barcode white; move S4 constants to a header; show the letter table on the dashboard.
+9. F-09, F-16: re-measure barcode white; show the letter table on the dashboard.
 10. P9 (SYS-09): a staged plan to a full course in one run, after P8, P1, P2 and P3.
 11. F-21: range-check the motion tolerances in `motion_init()`.
 12. F-24: measure the stack high-water marks on the car.

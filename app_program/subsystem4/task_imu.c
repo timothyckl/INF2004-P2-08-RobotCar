@@ -3,36 +3,9 @@
  * @brief Periodic IMU sampling and terrain processing task.
  */
 #include "subsystem4_internal.h"
+#include "s4_config.h"
 #include "../subsystem2/motion_api.h"   /* motion_get_status (IF-17) */
 #include "../subsystem2/subsystem2.h"   /* s2_get_robot_state (IF-14) */
-
-/* About 1.5 s at the measured 29 ms per sample; the mean of 50 samples
- * with about 5 mg of noise is within about 1 mg. */
-#define S4_CALIBRATION_SAMPLES      50u
-#define S4_CALIBRATION_SPAN_MG      80u
-#define S4_IMPACT_THRESHOLD_MG      1200u
-#define S4_MAX_SAMPLE_GAP_MS        50u
-#define S4_CONFIRMATION_SAMPLES     3u
-#define S4_INVALID_SAMPLE_LIMIT     3u
-/* A hump not ended within this is dropped (decision 10, provisional): at
- * line-follow speed (about 40 mm/s) a 195 mm hump takes about 5 s. */
-#define S4_MAX_HUMP_MS              12000u
-
-/* Tilt moving average (decision 10): 16 samples, about 470 ms at the
- * measured 29.5 ms per sample while line following. */
-#define S4_AVERAGE_SAMPLES          16u
-
-/* Contact geometry (decision 8). Track: S2 odometry track width (S2
- * decision, 119 mm). Wheelbase: wheel axle to the front ball caster,
- * measured with a ruler (88 mm). */
-#define S4_TRACK_MM                 119u
-#define S4_WHEELBASE_MM             88u
-
-/* Hump hysteresis: a hump starts at 6 mm (decision 11; floor undulations
- * read up to about 4 mm while driving, a 10 mm hump 11 to 12 mm) and ends
- * below 2 mm. Tilt noise at rest is about 10 mg, about 1 mm of height. */
-#define S4_RISE_UM                  6000u
-#define S4_LEVEL_UM                 2000u
 
 /* Forward acceleration reads as pitch (200 mg, 17 mm of caster height,
  * when Motion Control ramps to speed). Pitch is ignored while the mean
@@ -41,31 +14,6 @@
 #define S4_PITCH_DV_MM_S            15
 #define S4_PITCH_HOLD_SAMPLES       8u
 
-/* Hump and impact detection (decisions 12, 14): only while the robot
- * drives (FOLLOW,
- * NAVIGATE, BYPASS or REACQUIRE), and not for this many samples after it
- * starts to (about 0.7 s at 21 ms per sample), which covers the GP20 press
- * and lets the 16-sample average clear it. */
-#define S4_SETTLE_SAMPLES           32u
-
-/* Measured-height correction (decision 12): the 10 mm hump read a mean of
- * 11.75 mm over four crossings (S4-H08), so 10 / 11.75 = 0.851. */
-#define S4_HEIGHT_SCALE_PERMILLE    851u
-
-/* Lift detection (decision 15, provisional), with the hump gate above.
- * In logs/2026-11-16_s4-raw-d14.txt, about 2900 driving samples read at
- * most +106 mg up and 97 mg of averaged tilt; in seven handling episodes
- * a single sample reached +209 to +622 mg up (rarely two in a row), and
- * the averaged tilt 309 to 478 mg in most. 300 mg of tilt is about
- * 17 degrees, or a 36 mm rise under one wheel. The averaged tilt took
- * about 0.5 s to reach it (S4-H11), so an unaveraged tilt of 200 mg held
- * for 3 samples (about 70 ms) also counts: driving jolts, such as leaving
- * the hump, held it for at most 2 in about 3300 samples. */
-#define S4_LIFT_UP_MG               200u
-#define S4_LIFT_SAMPLES             1u
-#define S4_LIFT_TILT_MG             300u
-#define S4_LIFT_RAW_TILT_MG         200u
-#define S4_LIFT_RAW_SAMPLES         3u
 
 #if S4_RAW_LOG
 /* Diagnostic (S4_RAW_LOG only): the loop step the IMU task is in and a
@@ -91,7 +39,6 @@ static volatile uint8_t g_s4_watch_count = 0u;
 #define S4_DIAG_STAGE(stage)    ((void) 0)
 #endif
 
-static s4_terrain_config_t s4_runtime_config(void);
 static uint32_t s4_capture_time_us(void);
 static void s4_mark_sensor_error(s4_terrain_context_t * p_context,
                                  uint32_t capture_time_us);
@@ -124,7 +71,7 @@ s4_imu_task (INT start_code,
 {
     s4_lsm303_driver_t driver;
     s4_terrain_context_t terrain;
-    s4_terrain_config_t config = s4_runtime_config();
+    s4_terrain_config_t config = s4_config_mission();
     s4_terrain_sample_t sample = {0};
     uint32_t calibration_start_us = 0u;
     s4_motion_t motion = {0};
@@ -304,34 +251,6 @@ s4_watch_task (INT start_code,
 }
 #endif
 
-static s4_terrain_config_t
-s4_runtime_config (void)
-{
-    s4_terrain_config_t config =
-    {
-        .calibration_samples = S4_CALIBRATION_SAMPLES,
-        .calibration_span_mg = S4_CALIBRATION_SPAN_MG,
-        .impact_threshold_mg = S4_IMPACT_THRESHOLD_MG,
-        .max_sample_gap_ms = S4_MAX_SAMPLE_GAP_MS,
-        .max_hump_ms = S4_MAX_HUMP_MS,
-        .track_mm = S4_TRACK_MM,
-        .wheelbase_mm = S4_WHEELBASE_MM,
-        .rise_um = S4_RISE_UM,
-        .level_um = S4_LEVEL_UM,
-        .confirmation_samples = S4_CONFIRMATION_SAMPLES,
-        .invalid_limit = S4_INVALID_SAMPLE_LIMIT,
-        .average_samples = S4_AVERAGE_SAMPLES,
-        .height_scale_permille = S4_HEIGHT_SCALE_PERMILLE,
-        .lift_up_mg = S4_LIFT_UP_MG,
-        .lift_tilt_mg = S4_LIFT_TILT_MG,
-        .lift_samples = S4_LIFT_SAMPLES,
-        .lift_raw_tilt_mg = S4_LIFT_RAW_TILT_MG,
-        .lift_raw_samples = S4_LIFT_RAW_SAMPLES
-    };
-
-    return (config);
-}
-
 static uint32_t
 s4_capture_time_us (void)
 {
@@ -424,11 +343,13 @@ s4_motion_read (s4_motion_t * p_motion,
 
 /*
  * Whether hump, impact and lift detection may run this sample (decisions
- * 12, 14 and 16): the robot is Running in FOLLOW or NAVIGATE, and has been
- * for S4_SETTLE_SAMPLES samples. BYPASS and REACQUIRE are excluded: their
- * fast turns read as lifts and humps (decision 16), as SCAN's braking
- * would. *p_settle counts down while driving and is reloaded whenever it
- * is not. A failed state read counts as not driving.
+ * 12, 14, 16 and 17): the robot is Running in FOLLOW, and has been for
+ * S4_SETTLE_SAMPLES samples. BYPASS and REACQUIRE are excluded: their fast
+ * turns read as lifts and humps (decision 16), as SCAN's braking would.
+ * NAVIGATE is excluded too (decision 17): the junction stop and step read
+ * up to 6.6 mm and the spin 4.7 mm in the 2026-11-17 turns, against at
+ * most 4.0 mm while following. *p_settle counts down while driving and is
+ * reloaded whenever it is not. A failed state read counts as not driving.
  */
 static bool
 s4_detect_gate (uint8_t * p_settle)
@@ -440,8 +361,7 @@ s4_detect_gate (uint8_t * p_settle)
     if (E_OK == s2_get_robot_state(&state))
     {
         b_driving = (S2_SYS_RUNNING == state.state) &&
-                    ((S2_MODE_FOLLOW == state.mode) ||
-                     (S2_MODE_NAVIGATE == state.mode));
+                    (S2_MODE_FOLLOW == state.mode);
     }
 
     if (!b_driving)

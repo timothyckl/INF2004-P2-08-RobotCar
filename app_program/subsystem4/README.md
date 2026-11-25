@@ -82,16 +82,24 @@ stands on its left wheel, right wheel (track 119 mm) and front ball caster
 16 samples (about 340–470 ms in recorded mission runs, depending on the
 actual sample interval; decision 10), fix the plane through the
 three contacts; with the lowest on the floor, the hump height is the highest
-contact's rise, scaled by 0.851 to the measured 10 mm hump (decision 12). A
-hump starts at 6 mm (decision 11) and ends below 2 mm, each held for three
-samples, and reports its peak and the contact that crossed it. A hump not ended
-within 12 s is dropped (decision 10). The 10 mm right-wheel hump was measured
-on the car; these settings are not validated across other heights or surfaces.
+contact's rise. A hump starts when that uncalibrated height reaches 6 mm
+(decision 11) and ends below 2 mm, each held for three samples. Its peak is
+then calibrated: times 0.851 (the measured 10 mm hump, decision 12), less an
+offset (0 until a two-point calibration, decision 17), rounded to whole mm and
+never below 0; the reading and the contact that crossed it are reported.
+Calibration applies only to the reading, never to detection, so changing it
+cannot move the detection threshold (it did until 2026-11-25: the 0.851 scale
+had raised the real start to 7.05 mm). A hump not ended within 12 s is dropped
+(decision 10). The 10 mm right-wheel hump was measured on the car; these
+settings are not validated across other heights or surfaces.
 Humps, impacts and lifts are detected only while the robot is Running in
-FOLLOW or NAVIGATE (read with `s2_get_robot_state()`), and not for 32
-samples after it starts to; a hump in progress when that stops is dropped
-(decisions 12 and 16). The obstacle bypass (BYPASS, REACQUIRE) is excluded
-because its fast turns read as lifts and humps. The `S2_CAL_TEST` images do not enter a
+FOLLOW (read with `s2_get_robot_state()`), and not for 32 samples after it
+starts to; a hump in progress when that stops is dropped (decisions 12, 16
+and 17). The obstacle bypass (BYPASS, REACQUIRE) is excluded because its fast
+turns read as lifts and humps; a junction turn (NAVIGATE) because its stop,
+step and spin read up to 6.6 mm (decision 17). A hump crossed during a
+junction turn is therefore not measured, and a lift then is not detected.
+All these settings are in `s4_config.h`, the one place they are defined. The `S2_CAL_TEST` images do not enter a
 driving mode, so they report no humps.
 
 Each sample the task reads Motion Control's snapshot (`motion_get_status()`).
@@ -114,6 +122,32 @@ make -C build_make TEST=1 S4_HW_TEST=1 -j8
 Add `S4_RAW_LOG=1` to print every sample in the vehicle's axes with the
 filtered tilts, pitch gate and state (S4-H02, S4-H03, S4-H07, S4-H08);
 `testing/subsystem4/s4_raw_stats.py` summarises such a log.
+
+`testing/subsystem4/replay_raw.c` feeds such a log back through
+`terrain_logic.c` with any scale, offset and rise, and prints each hump's
+uncalibrated peak beside the readings the car logged (S4-U44 runs it on the
+six logged drives on every host test run).
+
+**Two-point calibration (decision 17), to be done on the car.**
+
+1. Make reference humps of 5, 10 and 15 mm (ruler), each as wide as the
+   course hump, and build `S4_RAW_LOG=1 NET=lwip MQTT=1`.
+2. Cross each one under the right wheel at least five times while following
+   the line, capturing the console to a log per height. Record one lap of
+   the same floor with no hump.
+3. Run
+   `python3 testing/subsystem4/fit_hump_calibration.py <replay> 5:<log5> 10:<log10> 15:<log15> --flat <flatlog>`
+   (`<replay>` built as in `testing/host/Makefile`, target `s4`). It fits
+   peak = gain x true + offset by least squares, prints
+   `S4_HEIGHT_SCALE_PERMILLE` and `S4_HEIGHT_OFFSET_UM`, the worst reading
+   error with them, and the floor's largest bump against the 6 mm rise.
+4. Put the two constants in `s4_config.h`, record the logs and the fit in
+   the test log, and re-run SYS-04.
+
+With today's data (one height) the tool gives a gain-only scale of 866 from
+six unrounded crossings, against 851 from four rounded ones; the difference
+(0.17 mm at 10 mm) is inside the crossing-to-crossing spread (10.8 to
+12.5 mm), so 851 is kept.
 
 The first image includes deterministic terrain and raw-register decoding tests.
 The second also waits for live identity/configuration and stable calibration.

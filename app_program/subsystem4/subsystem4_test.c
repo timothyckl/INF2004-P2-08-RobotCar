@@ -9,6 +9,7 @@
  * pitch, or 114 mg pitch.
  */
 #include "subsystem4_test_internal.h"
+#include "s4_config.h"
 
 #if APP_TEST
 #define S4_TEST_SAMPLE_PERIOD_US    10000u
@@ -70,6 +71,10 @@ static bool s4_test_lift_raw_tilt(void);
 static bool s4_test_hump_count(void);
 static bool s4_test_hump_floor(void);
 static bool s4_test_hump_monotonic(void);
+static bool s4_test_hump_offset(void);
+static void s4_test_calibrate_with(s4_terrain_context_t * p_context,
+                                   s4_terrain_config_t const * p_config,
+                                   uint32_t * p_time_us);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -156,9 +161,12 @@ subsystem4_test (void)
     TEST_CHECK("S4-U40", s4_test_hump_count(),
                "hump count and last height survive recovery, not a new run");
     TEST_CHECK("S4-U41", s4_test_hump_floor(),
-               "mission rise and scale: no hump reads below 6 mm");
+               "mission settings: lowest reading is the rise, calibrated");
     TEST_CHECK("S4-U42", s4_test_hump_monotonic(),
                "reading rises with tilt, at most 1 mm per 1 mg step");
+    TEST_CHECK("S4-U43", s4_test_hump_offset(),
+               "calibration only on the report, detection uncalibrated; "
+               "never below 0; invalid offsets refused");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -480,23 +488,44 @@ s4_test_hump_count (void)
 }
 
 /*
- * S4-U41: with the mission's hump settings (task_imu.c: S4_RISE_UM 6000,
- * S4_HEIGHT_SCALE_PERMILLE 851), sweep a held both-wheel tilt from 1 to
- * 200 mg forward. Every completed hump must read at least 6 mm, the
- * lowest must read exactly 6 mm, and an ideal 5 mm step (57 mg, about
- * 4.3 mm after scaling) must not be a hump. The values are repeated here
- * because task_imu.c keeps them private; change both together.
+ * S4-U41: with the mission's hump settings (s4_config_mission()), sweep a
+ * held caster rise of 1 to 200 mg (1 mg = 88 um at the test wheelbase).
+ * Detection compares the uncalibrated height with the rise (decision 17),
+ * so the first step that is a hump is the first at or above rise_um, and
+ * it reads that height times the scale, less the offset, rounded: with
+ * rise 6000 um, scale 851 and offset 0, 69 mg (6,072 um) reads 5 mm, and
+ * nothing reads lower. An ideal 5 mm step (57 mg, 5,016 um) is below the
+ * rise and is not a hump. Since 2026-11-25 the settings come from
+ * s4_config.h, not a copy (F-15).
  */
 static bool
 s4_test_hump_floor (void)
 {
+    s4_terrain_config_t const mission = s4_config_mission();
     s4_terrain_config_t config = s4_test_config();
+    int32_t first_um = 0;
+    int32_t expected_mm;
     uint16_t lowest_mm = UINT16_MAX;
-    bool b_below = false;
     bool b_five_mm_hump = true;
+    bool b_first_is_lowest = true;
 
-    config.rise_um = 6000u;
-    config.height_scale_permille = 851u;
+    config.rise_um = mission.rise_um;
+    config.height_scale_permille = mission.height_scale_permille;
+    config.height_offset_um = mission.height_offset_um;
+
+    /* The first 1 mg step at or above the rise; then its report. The
+       uint16_t settings widen to int32_t unchanged; 200 mg x 88 mm and
+       17,600 um x 2000 per mille fit int32_t. */
+    for (int32_t pitch_mg = 1; (0 == first_um) && (pitch_mg <= 200);
+         pitch_mg++)
+    {
+        int32_t const rise_um = pitch_mg * (int32_t) config.wheelbase_mm;
+
+        first_um = (rise_um >= (int32_t) config.rise_um) ? rise_um : 0;
+    }
+    expected_mm = ((((first_um * (int32_t) config.height_scale_permille)
+                     / 1000) - (int32_t) config.height_offset_um) + 500)
+                  / 1000;
 
     for (int16_t pitch_mg = 1; pitch_mg <= 200; pitch_mg++)
     {
@@ -504,13 +533,7 @@ s4_test_hump_floor (void)
         uint32_t time_us = 0u;
         bool b_complete;
 
-        s4_terrain_init(&context, &config);
-        for (uint16_t index = 0u; index < config.calibration_samples;
-             index++)
-        {
-            s4_test_feed(&context, 0, 0, time_us, true);
-            time_us += S4_TEST_SAMPLE_PERIOD_US;
-        }
+        s4_test_calibrate_with(&context, &config, &time_us);
 
         /* pitch_mg is 1..200, so its negation fits int16_t. */
         b_complete = s4_test_hump(&context, &time_us, (int16_t) -pitch_mg,
@@ -522,7 +545,12 @@ s4_test_hump_floor (void)
             uint16_t const height_mm = context.result.current_height_mm;
 
             lowest_mm = (height_mm < lowest_mm) ? height_mm : lowest_mm;
-            b_below = b_below || (height_mm < 6u);
+        }
+        if (((int32_t) pitch_mg * (int32_t) config.wheelbase_mm)
+            < (int32_t) config.rise_um)
+        {
+            /* Below the rise: never a hump. */
+            b_first_is_lowest = b_first_is_lowest && (!b_complete);
         }
         if (57 == pitch_mg)
         {
@@ -530,28 +558,35 @@ s4_test_hump_floor (void)
         }
     }
 
-    return ((6u == lowest_mm) && (!b_below) && (!b_five_mm_hump));
+    /* expected_mm is a small positive height (5 mm with today's
+       settings), which uint16_t holds. */
+    return ((0 != first_um) && ((uint16_t) expected_mm == lowest_mm)
+            && b_first_is_lowest
+            && (b_five_mm_hump
+                == ((57 * (int32_t) config.wheelbase_mm)
+                    >= (int32_t) config.rise_um)));
 }
 
 /*
- * S4-U42 (post-demo test, 2026-11-25): with the mission settings (as in
- * S4-U41), sweep a held both-wheel tilt from 90 mg (about 6.7 mm after
- * scaling, just above the 6 mm rise) to 1000 mg. Every step must complete
- * a hump, the
- * reported height must never fall as the tilt rises, and one 1 mg step
- * must never move it by more than 1 mm. A rounding, scaling or overflow
- * error in the integer chain (mg to um, the 851 per mille scale, um to
- * mm) would show as a drop or a jump.
+ * S4-U42 (post-demo test, 2026-11-25): with the mission settings
+ * (s4_config_mission(), as in S4-U41), sweep a held both-wheel tilt from 90
+ * mg (7.9 mm uncalibrated, above the 6 mm rise) to 1000 mg. Every step must
+ * complete a hump, the reported height must never fall as the tilt rises, and
+ * one 1 mg step must never move it by more than 1 mm. A rounding, scaling or
+ * overflow error in the integer chain (mg to um, the 851 per mille scale, um
+ * to mm) would show as a drop or a jump.
  */
 static bool
 s4_test_hump_monotonic (void)
 {
+    s4_terrain_config_t const mission = s4_config_mission();
     s4_terrain_config_t config = s4_test_config();
     uint16_t previous_mm = 0u;
     bool b_ok = true;
 
-    config.rise_um = 6000u;
-    config.height_scale_permille = 851u;
+    config.rise_um = mission.rise_um;
+    config.height_scale_permille = mission.height_scale_permille;
+    config.height_offset_um = mission.height_offset_um;
 
     for (int16_t pitch_mg = 90; b_ok && (pitch_mg <= 1000); pitch_mg++)
     {
@@ -578,6 +613,74 @@ s4_test_hump_monotonic (void)
     }
 
     return (b_ok && (previous_mm > 50u));
+}
+
+/*
+ * S4-U43 (post-demo, 2026-11-25, decision 17): calibration applies only
+ * to the reported peak; detection compares the uncalibrated height. With
+ * rise 6000 um, scale 1000 and offset 3000 um: a held caster rise of
+ * 114 mg (10,032 um) reads 7 mm; 68 mg (5,984 um) is below the rise and
+ * is not a hump, whatever the offset; 69 mg (6,072 um) is, and reads
+ * 3 mm. With the scale at 400 per mille the same 69 mg hump calibrates
+ * below zero and reads 0, never negative. An offset not below the rise
+ * is refused (the configuration is invalid and the state is FAULT).
+ */
+static bool
+s4_test_hump_offset (void)
+{
+    s4_terrain_config_t config = s4_test_config();
+    s4_terrain_config_t bad;
+    s4_terrain_context_t context;
+    uint32_t time_us = 0u;
+    bool b_ten;
+    bool b_below;
+    bool b_above;
+    bool b_floor;
+
+    config.rise_um = 6000u;
+    config.level_um = 4000u;
+    config.height_scale_permille = 1000u;
+    config.height_offset_um = 3000u;
+
+    s4_test_calibrate_with(&context, &config, &time_us);
+    b_ten = s4_test_hump(&context, &time_us, -114, 0, true)
+            && context.result.b_current_height_valid
+            && (7u == context.result.current_height_mm);
+
+    s4_test_calibrate_with(&context, &config, &time_us);
+    b_below = !s4_test_hump(&context, &time_us, -68, 0, true);
+
+    s4_test_calibrate_with(&context, &config, &time_us);
+    b_above = s4_test_hump(&context, &time_us, -69, 0, true)
+              && (3u == context.result.current_height_mm);
+
+    config.height_scale_permille = 400u;
+    s4_test_calibrate_with(&context, &config, &time_us);
+    b_floor = s4_test_hump(&context, &time_us, -69, 0, true)
+              && context.result.b_current_height_valid
+              && (0u == context.result.current_height_mm);
+
+    bad = config;
+    bad.height_offset_um = bad.rise_um;
+    s4_terrain_init(&context, &bad);
+
+    return (b_ten && b_below && b_above && b_floor
+            && (S4_TERRAIN_STATE_FAULT == context.result.state));
+}
+
+/* Initialise with config and feed the calibration samples level. */
+static void
+s4_test_calibrate_with (s4_terrain_context_t * p_context,
+                        s4_terrain_config_t const * p_config,
+                        uint32_t * p_time_us)
+{
+    s4_terrain_init(p_context, p_config);
+    for (uint16_t index = 0u; index < p_config->calibration_samples;
+         index++)
+    {
+        s4_test_feed(p_context, 0, 0, *p_time_us, true);
+        *p_time_us += S4_TEST_SAMPLE_PERIOD_US;
+    }
 }
 
 static bool

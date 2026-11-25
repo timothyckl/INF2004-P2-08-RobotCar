@@ -79,14 +79,18 @@ typedef struct
     uint16_t max_hump_ms;
     uint16_t track_mm;          /* left to right wheel contact */
     uint16_t wheelbase_mm;      /* wheel axle to caster contact */
-    uint16_t rise_um;           /* height that starts a hump */
-    uint16_t level_um;          /* height that ends it */
+    uint16_t rise_um;           /* uncalibrated height that starts a
+                                   hump (decision 17) */
+    uint16_t level_um;          /* uncalibrated height that ends it */
     uint8_t  confirmation_samples;
     uint8_t  invalid_limit;
     uint8_t  average_samples;   /* tilt moving average, 1 to
                                    S4_AVERAGE_MAX_SAMPLES */
-    uint16_t height_scale_permille; /* measured-height correction,
+    uint16_t height_scale_permille; /* reported-height correction,
                                        1000 = none (decision 12) */
+    uint16_t height_offset_um;  /* then subtracted, floored at 0: a
+                                   two-point calibration's offset, 0 =
+                                   none (decision 17); below rise_um */
     uint16_t lift_up_mg;        /* upward acceleration of a lift */
     uint16_t lift_tilt_mg;      /* averaged tilt of a carried car */
     uint8_t  lift_samples;      /* consecutive samples at lift_up_mg */

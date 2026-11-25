@@ -16,7 +16,7 @@ been run on the car.
 |---|---|---|---|---|
 | P3 (F-02) | FR4 | One-sided branches are not junctions (the hold time limit, part of F-03, is fixed) | Junction event in telemetry first; then a bench test of the course junction | SYS-03 |
 | P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor; software alone cannot see it | SYS-01 |
-| P5 (F-04) | FR5 | No hump reads below 6 mm; small humps read high | Two-point calibration, then review the 6 mm rise | SYS-04 with a flat lap |
+| P5 (F-04) | FR5 | Small humps read high (the threshold part is fixed, S4 d17) | Two-point calibration on the car with the prepared tool | SYS-04 with a flat lap |
 | P6 (F-05) | FR7 | Width overstated (SYS-06) | Set the beam allowance from a measured beam, and report width only when both edges are clear | SYS-06 |
 | P7 (F-08) | NFR1, Tri2 Entry 4 | Watchdog off | Arm it, fed only when every critical task has checked in | One run with it armed |
 | P8 (F-06) | FR10, Tri2 Entries 11, 19 | One fault class in telemetry | Version 5 frame: fault detail and a junction bit | Dashboard and SYS-08 |
@@ -31,7 +31,7 @@ the code.
 |---|---|---|---|---|
 | P3 | Step 1 is P8; step 3 is unknown until the bench test | — | S2-U58, U74 to U80 | Junction shape unknown; needs a bench drive with the console captured |
 | P4 | Hardware: one sensor, one ADC input. No free ADC input is left (ADC3/GP29 is the radio), so it needs a digital sensor on a spare GPIO or a multiplexer | One more read per S3 pass | None | Needs new hardware and wiring |
-| P5 | Small in code (two constants and one formula); most of the work is measurement | None | S4-U41, U42 | Needs reference humps and a flat lap on the car |
+| P5 | Code done (offset in `s4_config.h`, tool `fit_hump_calibration.py`); the work left is measurement | None | S4-U41 to U44 | Needs reference humps of 5, 10 and 15 mm and a flat lap on the car |
 | P6 | Medium: allowance value, a validity rule, optional 2.5° fine steps | 2.5° steps add servo moves and echoes: a longer scan | S5-U72 | Needs beam measurements with the real box |
 | P7 | Medium: a check-in word shared by four tasks | One word under the existing mutex; a few instructions per cycle | None | A wrong timeout resets the car mid-run; needs one armed run first (S2 d28) |
 | P8 | Medium: encoder, decoder, dashboard and golden frame | +1 byte per frame (8 bit/s) | S1-U05 pattern | Changes the frame format; dashboard and SYS-08 must be re-run |
@@ -107,42 +107,25 @@ fault table.
 while following; STOP with cause line within 200 ms (value to be agreed),
 five times out of five, and no false line-loss stop on three SYS-01 laps.
 
-## P5 — Hump measurement below 6 mm (F-04)
+## P5 — Hump calibration (F-04)
 
-**Where.** `app_program/subsystem4/task_imu.c` (`S4_RISE_UM` 6000,
-`S4_HEIGHT_SCALE_PERMILLE` 851); `terrain_logic.c` `s4_hump_update()`,
-`s4_hump_complete()`.
+**Done (S4 decision 17).** Detection compares the uncalibrated height, so
+the start is back at the intended 6 mm (the 0.851 scale had raised it to
+7.05 mm), and runs only while following. The settings are in
+`s4_config.h`. A calibration offset is in the code (0 for now), applied only
+to the reading. `testing/subsystem4/replay_raw.c` replays logged samples
+through the terrain logic, and `fit_hump_calibration.py` fits the gain and
+offset; the procedure is in `app_program/subsystem4/README.md`.
 
-**Why 6 mm is the minimum.** A hump starts only when the scaled height
-reaches 6 mm and the result is rounded to whole millimetres (S4-U41). The
-6 mm rise was chosen because the floor reads up to about 4 mm while driving
-(S4 decision 11). An ideal 5 mm step scales to about 4.3 mm and is not a
-hump at all; the demo hump read 6, 6 and 7 mm, so the car's raw estimate
-over it was 7 to 8 mm.
+**Left: the measurement.** Only one reference height (10 mm, six
+crossings, 10.8 to 12.5 mm uncalibrated) has raw logs; the demo's 5 mm
+hump has rounded readings only. One height cannot separate a gain from an
+offset, so no offset is fitted. Cross reference humps of 5, 10 and 15 mm
+at least five times each with `S4_RAW_LOG=1`, record a flat lap, run the
+tool, review the constants, and set them.
 
-**Can 5 mm be measured reliably?** Not with the current margins. Noise at
-rest is about 10 mg, about 1 mm of height, and driving adds floor
-undulations of up to about 4 mm. A 5 mm hump is only about 1 mm above the
-largest floor reading, so lowering the rise to, say, 4 mm would trade
-missed small humps for false humps on the floor.
-
-**Calibration error.** The scale 0.851 comes from one 10 mm hump (11.75 mm
-raw). A 5 mm hump reading 7 to 8 mm raw suggests an offset of a few
-millimetres rather than a fixed percentage. One point cannot separate the
-two.
-
-**Proposed procedure.**
-
-1. Drive over reference humps of 5, 10 and 15 mm (measured with a ruler),
-   five times each; log the raw peak (`S4_RAW_LOG`).
-2. Fit raw = gain × true + offset by least squares; use both in
-   `s4_hump_complete()` (integer µm arithmetic, as now).
-3. Run a flat lap with the same build and record the largest floor peak;
-   set the rise above it with a margin.
-
-**Acceptance.** SYS-04 within ±2 mm on all three heights and no hump on the
-flat lap. Regression: S4-U41 (update its constants with the new rise),
-S4-U42 (monotonic reading), S4-U05, U06, U12 to U14.
+**Acceptance.** SYS-04 within ±2 mm on all three heights, every crossing
+detected, and no hump on the flat lap. Regression: S4-U41 to U44.
 
 ## P6 — Obstacle width (F-05, SYS-06)
 

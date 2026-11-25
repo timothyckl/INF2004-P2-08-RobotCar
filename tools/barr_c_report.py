@@ -143,7 +143,8 @@ def check(path: Path, counts: Counter, where: dict) -> None:
                 counts[f"1.6a cast with an associated comment ({kind})"] += 1
             else:
                 counts[f"1.6a cast with no associated comment ({kind})"] += 1
-                where[f"1.6a no comment ({kind})"].append(f"{rel}:{no}")
+                where[f"1.6a cast with no associated comment ({kind})"] \
+                    .append(f"{rel}:{no}")
     if path.suffix == ".h":
         guard = re.search(r"#ifndef\s+(\w+)\s*\n\s*#define\s+\1", raw)
         if not guard:

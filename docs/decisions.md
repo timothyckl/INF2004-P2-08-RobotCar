@@ -1903,6 +1903,65 @@ already excluded.
 **Tests.** Repeat SYS-05/06/07 (no false pick-up or hump during the
 bypass) and SYS-10 (lifts while following still stop the car).
 
+### 17. Detect on the uncalibrated height, FOLLOW only; two-point calibration prepared (2026-11-25)
+
+Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change;
+revises decisions 11, 12 and 16.
+
+**Problem.** Decision 11 started a hump at 6 mm because floor bumps read up
+to about 4 mm. Decision 12 then scaled heights by 0.851 *before* the
+threshold and kept 6000 um, so a hump really started at 7.05 mm of measured
+height; nobody chose that. The demo's 5 mm hump read 6, 6 and 7 mm, so its
+measured peaks were 7.05 to 8.8 mm: two of the three cleared the start by
+less than 0.6 mm. Calibration also had no offset, though small humps read
+high by more than a scale explains (review F-04).
+
+**Evidence.** `testing/subsystem4/replay_raw.c` replays every IMU sample of
+a `S4_RAW_LOG` console log through `terrain_logic.c`. On the six logged
+drives with the detection gate (61,000 samples) it reproduces every hump
+the car reported (4 + 2) and the car's tilt to within 1 mg. It shows:
+
+| Data (uncalibrated) | Largest | Where |
+|---|---|---|
+| 10 mm hump, six crossings | 10.8 to 12.5 mm | S4-H08 gated run, IF-18 drive |
+| Following, off the hump | 4.0 mm | 2026-11-17 junction drives |
+| Junction stop and step (NAVIGATE) | 6.6 mm | `s3-nav-drive-4`, 1708 s |
+| Junction spin (NAVIGATE) | 4.7 mm | same log, 2020 s |
+| Two larger candidates | 11.5, 12.3 mm | both were the car being picked up; lift detection stopped it |
+
+**Decision.**
+
+- The rise and level thresholds compare the uncalibrated height; the scale
+  and a new offset (`height_offset_um`) apply only to the reported peak:
+  reading = peak x scale - offset, rounded, never below 0. Detection is back
+  at decision 11's 6 mm and can never move again when the calibration does.
+- Detection (humps, impacts, lifts) runs only in FOLLOW: NAVIGATE joins
+  BYPASS, REACQUIRE and SCAN. With NAVIGATE included, the junction stop's
+  6.6 mm would sit 0.6 mm above the restored start. While following, the
+  largest bump is 4.0 mm, a 2.0 mm margin, as decision 11 intended. A hump
+  crossed during a junction turn is not measured, and a lift then is not
+  detected; the course hump is on the line, not at the junction.
+- The settings move to `s4_config.h`/`s4_config.c`, used by the task, the
+  tests and the replay (review F-15).
+- A two-point calibration is prepared but not applied: the offset stays 0
+  and the scale 851 until reference humps of several heights are crossed
+  several times each. `fit_hump_calibration.py` fits gain and offset from
+  such logs and refuses to fit an offset from one height. The demo's
+  5 mm readings cannot be used: no raw log exists, and they are rounded.
+
+**Effect.** On all six logged drives the readings are unchanged (the scale
+is linear in the peak) and no new hump appears (S4-U44). A 5 mm hump that
+reads 6 mm, like the demo's, now clears the start by at least 1 mm instead
+of less than 0.6 mm. Readings below 6 mm are now possible (the first
+detected step reads 5 mm, S4-U41), but the reading is still high for small
+humps until the calibration is done.
+
+**Verification.** S4-U41 (redefined: lowest reading, 5 mm ideal step),
+S4-U43 (offset only on the reading; boundaries; floor at 0; invalid offset
+refused), S4-U44 (replay of the six logged drives). Car test pending: the
+calibration procedure in `app_program/subsystem4/README.md`, then SYS-04
+with a flat lap and a junction turn.
+
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
 ### 1. Test-first approach

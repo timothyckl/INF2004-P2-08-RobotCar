@@ -53,6 +53,7 @@ S3_SRC  := $(APP)/subsystem3/s3_ir.c \
            $(ROOT)/testing/subsystem3/test_main.c
 
 S4_SRC  := $(APP)/subsystem4/terrain_logic.c \
+           $(APP)/subsystem4/s4_config.c \
            $(APP)/subsystem4/drv_lsm303dlhc.c \
            $(APP)/subsystem4/subsystem4_test.c \
            stubs/device_stub.c \
@@ -118,6 +119,10 @@ s4:
 	    cat $(OUT)/s4.txt; exit $$status
 	@grep -q "SUMMARY" $(OUT)/s4.txt
 	@! grep -qE " FAIL " $(OUT)/s4.txt
+	$(CC) $(STRICT) -I$(APP)/subsystem4 -o $(OUT)/s4_replay \
+	    $(ROOT)/testing/subsystem4/replay_raw.c \
+	    $(APP)/subsystem4/terrain_logic.c $(APP)/subsystem4/s4_config.c
+	cd $(ROOT) && python3 testing/subsystem4/replay_check.py $(OUT)/s4_replay
 
 # The S5 runner prints one line per case; any FAIL or BLOCKED fails here.
 s5:
@@ -138,4 +143,5 @@ int:
 
 clean:
 	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic \
-	    $(OUT)/s4_logic $(OUT)/s5_logic $(OUT)/s5_view $(OUT)/s2_int
+	    $(OUT)/s4_logic $(OUT)/s5_logic $(OUT)/s5_view $(OUT)/s2_int \
+	    $(OUT)/s4_replay

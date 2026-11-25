@@ -142,8 +142,9 @@
 /* S2 decision 26: barcode command at the next junction. A held command has
    no time limit (S2 decision 36: 20 s, then 60 s, both expired before the
    junction on the course). UNMEASURED: each stop, step and spin is bounded
-   by 12 s (a 180 + 45 degree spin at about 30 deg/s takes under 8 s). Black is accepted from 30 degrees short of the turn,
-   and 45 degrees past it fails, as for the bypass align (decision 21). */
+   by 12 s (a 180 + 45 degree spin at about 30 deg/s takes under 8 s).
+   Black is accepted from 30 degrees short of the turn, and 45 degrees past
+   it fails, as for the bypass align (decision 21). */
 #define CTRL_NAV_PHASE_MS         12000u
 #define CTRL_NAV_ACCEPT_MDEG      30000
 #define CTRL_NAV_OVER_MDEG        45000

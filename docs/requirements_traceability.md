@@ -119,14 +119,14 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 
 | Item | Detail |
 |---|---|
-| Requirement | After 32 settling samples, detect humps in FOLLOW and NAVIGATE; keep the highest valid height for the run; START clears it; reported maximum within ±2 mm of the tallest hump; no hump on a flat lap |
-| Owner / design | S4; S4 d8, d10, d11, d12, d13, d16; S1 d7 |
-| Source | `subsystem4/terrain_logic.c` `s4_terrain_process()`, `s4_hump_update()`, `s4_hump_complete()`; `subsystem4/task_imu.c`; `subsystem2/robot_state.c` `s2_telemetry_add_hump()` |
-| Tests | S4-U05, U06, U12 to U14, U21, U23 to U33, U40, U41 (host); S4-H07, H08; SYS-04 |
+| Requirement | After 32 settling samples, detect humps while following (FOLLOW only since S4 decision 17); keep the highest valid height for the run; START clears it; reported maximum within ±2 mm of the tallest hump; no hump on a flat lap |
+| Owner / design | S4; S4 d8, d10, d11, d12, d13, d16, d17; S1 d7 |
+| Source | `subsystem4/terrain_logic.c` `s4_terrain_process()`, `s4_hump_update()`, `s4_hump_calibrated_mm()`; `subsystem4/s4_config.h`; `subsystem4/task_imu.c` `s4_detect_gate()`; `subsystem2/robot_state.c` `s2_telemetry_add_hump()` |
+| Tests | S4-U05, U06, U12 to U14, U21, U23 to U33, U40 to U44 (host; U44 replays six logged drives); S4-H07, H08; SYS-04 |
 | Criterion | Highest hump within ±2 mm (team engineering criterion, not the marking scheme); every hump detected; no hump on a flat lap |
-| Result | S4-H08 (2026-11-13): 11, 10, 10, 9 mm for a 10 mm hump. Demo: 6, 6, 7 mm for a 5 mm hump (+1, +1, +2 mm). S4-U41: no hump can read below 6 mm |
+| Result | S4-H08 (2026-11-13): 11, 10, 10, 9 mm for a 10 mm hump. Demo: 6, 6, 7 mm for a 5 mm hump (+1, +1, +2 mm), with the demo firmware, where no hump could read below 6 mm. Post-demo (S4 d17): detection on the uncalibrated height restores the intended 6 mm start (it had become 7.05 mm); replaying the six logged drives gives the same readings and no new hump (S4-U44) |
 | Status | **Partial**: height within ±2 mm on every recorded run; flat lap not run in SYS-04 |
-| Limitations | Minimum reportable height 6 mm. Single-point calibration (10 mm) cannot correct an offset; small humps read high |
+| Limitations | Single-point calibration (10 mm) cannot correct an offset, so small humps still read high; the offset mechanism and fitting tool are ready but need reference humps of several heights on the car. Humps during a junction turn are not measured |
 
 ### FR6 — forward range and stop before contact
 

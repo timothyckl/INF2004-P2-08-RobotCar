@@ -31,6 +31,8 @@ static void s4_hump_update(s4_terrain_context_t * p_context,
                            int32_t height_um,
                            s4_hump_contact_t contact);
 static void s4_hump_complete(s4_terrain_context_t * p_context);
+static uint16_t s4_hump_calibrated_mm(s4_terrain_context_t const * p_context,
+                                      int32_t peak_um);
 static void s4_hump_clear(s4_terrain_context_t * p_context);
 static void s4_lift_update(s4_terrain_context_t * p_context,
                            int32_t forward_mg,
@@ -202,6 +204,7 @@ s4_config_is_valid (s4_terrain_config_t const * p_config)
                   (p_config->height_scale_permille > 0u) &&
                   (p_config->height_scale_permille <=
                    S4_HEIGHT_SCALE_MAX_PERMILLE) &&
+                  (p_config->height_offset_um < p_config->rise_um) &&
                   (p_config->lift_up_mg > 0u) &&
                   (p_config->lift_tilt_mg > 0u) &&
                   (p_config->lift_samples > 0u) &&
@@ -467,13 +470,39 @@ s4_hump_height_um (s4_terrain_context_t const * p_context,
         *p_contact = S4_HUMP_CONTACT_RIGHT;
     }
 
-    /* Scaled to the measured hump (decision 12). The difference is below
-     * 2 x 4096 mg x 65535 mm (about 5.4e8 um), the product fits in
-     * int64_t, and with the scale at most 2000 per mille the quotient is
-     * below 1.1e9, inside int32_t. */
-    return ((int32_t) (((int64_t) (highest_um - lowest_um) *
-                        (int64_t) p_context->config.height_scale_permille) /
-                       1000));
+    /* Uncalibrated: the rise and level thresholds compare this, the
+     * quantity floor noise was measured in (decision 17); the calibration
+     * applies only to the reported peak (s4_hump_calibrated_mm()). */
+    return (highest_um - lowest_um);
+}
+
+/*
+ * Reported height of a hump: the uncalibrated peak times the scale
+ * (decision 12), less the offset (decision 17), rounded to the nearest mm
+ * and never below 0. The peak is below 2 x 4096 mg x 65535 mm (about
+ * 5.4e8 um), so with the scale at most 2000 per mille the product fits
+ * int64_t and the quotient (below 1.1e9) fits int32_t; the offset is a
+ * uint16_t, so the subtraction cannot wrap.
+ */
+static uint16_t
+s4_hump_calibrated_mm (s4_terrain_context_t const * p_context,
+                       int32_t peak_um)
+{
+    int32_t const scaled_um = (int32_t)
+        (((int64_t) peak_um *
+          (int64_t) p_context->config.height_scale_permille) / 1000);
+    int32_t const height_um = scaled_um -
+                              (int32_t) p_context->config.height_offset_um;
+
+    /* height_um is below 1.1e9 um, so the mm value fits uint16_t for any
+       real chassis (a 65 m hump); it is clamped there regardless. */
+    int32_t const height_mm = (height_um > 0)
+                              ? ((height_um + (S4_UM_PER_MM / 2))
+                                 / S4_UM_PER_MM)
+                              : 0;
+
+    return ((height_mm > (int32_t) UINT16_MAX) ? UINT16_MAX
+                                               : (uint16_t) height_mm);
 }
 
 static void
@@ -559,11 +588,8 @@ s4_hump_update (s4_terrain_context_t * p_context,
 static void
 s4_hump_complete (s4_terrain_context_t * p_context)
 {
-    /* Rounded to the nearest mm; the peak is a positive height below
-     * 2 x 4096 mg x 65535 mm, well inside int32_t, and below 65536 mm
-     * for any real chassis. */
-    uint16_t height_mm = (uint16_t)
-        ((p_context->peak_height_um + (S4_UM_PER_MM / 2)) / S4_UM_PER_MM);
+    uint16_t const height_mm =
+        s4_hump_calibrated_mm(p_context, p_context->peak_height_um);
 
     p_context->result.current_height_mm = height_mm;
     p_context->result.b_current_height_valid = true;

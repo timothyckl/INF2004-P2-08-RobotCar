@@ -1,0 +1,286 @@
+# S4 replay analysis for S4 decision 17, 2026-11-25 21:44 +0800, main at b5d380e plus this change
+# Tool: testing/subsystem4/replay_raw.c (terrain_logic.c + s4_config.c, host). Every line is a replay of IMU samples the car logged with S4_RAW_LOG=1.
+
+## 1. Fidelity: mission settings, the gate the car logged (car and replay humps must agree)
+# replay of testing/subsystem4/logs/2026-11-13_s4-h08-gated.txt: scale 851 permille, offset 0 um, rise 6000 um, level 2000 um
+car   hump  11 mm   (under the right wheel (run maximum 11 mm)
+replay hump  11 mm   peak  12509 um at 1420917 ms
+car   hump  10 mm   (under the right wheel (run maximum 10 mm)
+replay hump  10 mm   peak  12069 um at 1456877 ms
+car   hump  10 mm   (under the right wheel (run maximum 10 mm)
+replay hump  10 mm   peak  11805 um at 1482897 ms
+car   hump   9 mm   (under the right wheel (run maximum 9 mm)
+replay hump   9 mm   peak  11163 um at 1506697 ms
+# samples 12740 (tilt differs from the car on 5583; replay faults 0), humps: car 4, replay 4; highest candidate while detecting 12509 um
+
+# replay of testing/subsystem4/logs/2026-11-13_s4-if18.txt: scale 851 permille, offset 0 um, rise 6000 um, level 2000 um
+car   hump   9 mm   (under the right wheel (run maximum 9 mm)
+replay hump   9 mm   peak  10828 um at 1505127 ms
+car   hump   9 mm   (under the right wheel (run maximum 9 mm)
+replay hump   9 mm   peak  10948 um at 1556537 ms
+# samples 22021 (tilt differs from the car on 11200; replay faults 0), humps: car 2, replay 2; highest candidate while detecting 10948 um
+
+# replay of testing/subsystem3/logs/2026-11-17_s3-nav-drive-2.txt: scale 851 permille, offset 0 um, rise 6000 um, level 2000 um
+# samples 30668 (tilt differs from the car on 37; replay faults 0), humps: car 0, replay 0; highest candidate while detecting 12345 um
+
+# replay of testing/subsystem3/logs/2026-11-17_s3-nav-drive-3.txt: scale 851 permille, offset 0 um, rise 6000 um, level 2000 um
+# samples 5576 (tilt differs from the car on 19; replay faults 0), humps: car 0, replay 0; highest candidate while detecting 0 um
+
+# replay of testing/subsystem3/logs/2026-11-17_s3-nav-drive-4.txt: scale 851 permille, offset 0 um, rise 6000 um, level 2000 um
+# samples 32851 (tilt differs from the car on 74; replay faults 1), humps: car 0, replay 0; highest candidate while detecting 11515 um
+
+## 2. Uncalibrated peaks of the 10 mm hump (scale 1000, offset 0)
+replay hump  13 mm   peak  12509 um at 1420917 ms
+replay hump  12 mm   peak  12069 um at 1456877 ms
+replay hump  12 mm   peak  11805 um at 1482897 ms
+replay hump  11 mm   peak  11163 um at 1506697 ms
+replay hump  11 mm   peak  10828 um at 1505127 ms
+replay hump  11 mm   peak  10948 um at 1556537 ms
+
+## 3. Every bump above the 2 mm level (rise 2001 um, uncalibrated): logged gate, then FOLLOW-only gate
+### 2026-11-13_s4-h08-gated.txt, logged gate
+replay hump  13 mm   peak  12509 um at 1420917 ms
+replay hump   2 mm   peak   2380 um at 1434937 ms
+replay hump   2 mm   peak   2414 um at 1435487 ms
+replay hump   3 mm   peak   2859 um at 1436257 ms
+replay hump  12 mm   peak  12069 um at 1456877 ms
+replay hump  12 mm   peak  11805 um at 1482897 ms
+replay hump  11 mm   peak  11163 um at 1506697 ms
+### 2026-11-13_s4-h08-gated.txt, FOLLOW only
+replay hump  13 mm   peak  12509 um at 1420917 ms
+replay hump   2 mm   peak   2380 um at 1434937 ms
+replay hump   2 mm   peak   2414 um at 1435487 ms
+replay hump   3 mm   peak   2859 um at 1436257 ms
+replay hump  12 mm   peak  12069 um at 1456877 ms
+replay hump  12 mm   peak  11805 um at 1482897 ms
+replay hump  11 mm   peak  11163 um at 1506697 ms
+### 2026-11-13_s4-if18.txt, logged gate
+replay hump  11 mm   peak  10828 um at 1505127 ms
+replay hump   4 mm   peak   3688 um at 1549187 ms
+replay hump  11 mm   peak  10948 um at 1556537 ms
+### 2026-11-13_s4-if18.txt, FOLLOW only
+replay hump  11 mm   peak  10828 um at 1505127 ms
+replay hump   4 mm   peak   3688 um at 1549187 ms
+replay hump  11 mm   peak  10948 um at 1556537 ms
+### 2026-11-17_s3-nav-drive-2.txt, logged gate
+replay hump   2 mm   peak   2469 um at 1440797 ms
+replay hump   3 mm   peak   2880 um at 1445177 ms
+replay hump   2 mm   peak   2210 um at 1445897 ms
+replay hump   2 mm   peak   2210 um at 1448957 ms
+replay hump   2 mm   peak   2380 um at 1453097 ms
+replay hump   2 mm   peak   2260 um at 1454657 ms
+replay hump   3 mm   peak   3328 um at 1458317 ms
+replay hump   3 mm   peak   2766 um at 1459057 ms
+replay hump   2 mm   peak   2357 um at 1463317 ms
+replay hump   2 mm   peak   2355 um at 1523397 ms
+replay hump   2 mm   peak   2231 um at 1524357 ms
+replay hump   3 mm   peak   3387 um at 1536477 ms
+replay hump   2 mm   peak   2383 um at 1536897 ms
+replay hump   2 mm   peak   2355 um at 1695167 ms
+replay hump   2 mm   peak   2380 um at 1699907 ms
+replay hump   2 mm   peak   2378 um at 1708227 ms
+replay hump   3 mm   peak   2940 um at 1710107 ms
+replay hump   2 mm   peak   2352 um at 1721807 ms
+replay hump   2 mm   peak   2319 um at 1722487 ms
+replay hump   3 mm   peak   2787 um at 1723137 ms
+replay hump   3 mm   peak   3111 um at 1724367 ms
+replay hump   4 mm   peak   3613 um at 1725807 ms
+replay hump   2 mm   peak   2142 um at 1726397 ms
+replay hump   2 mm   peak   2142 um at 1727247 ms
+replay hump   2 mm   peak   2383 um at 1873627 ms
+replay hump   2 mm   peak   2412 um at 1901047 ms
+replay hump   2 mm   peak   2124 um at 1903687 ms
+replay hump   3 mm   peak   2730 um at 1930567 ms
+replay hump   2 mm   peak   2269 um at 1931707 ms
+replay hump   2 mm   peak   2355 um at 1943327 ms
+replay hump   2 mm   peak   2262 um at 1943837 ms
+replay hump   3 mm   peak   2678 um at 1944827 ms
+replay hump   2 mm   peak   2205 um at 1954087 ms
+replay hump   3 mm   peak   2790 um at 1954887 ms
+replay hump   2 mm   peak   2324 um at 1957107 ms
+replay hump   4 mm   peak   3646 um at 1960307 ms
+### 2026-11-17_s3-nav-drive-2.txt, FOLLOW only
+replay hump   2 mm   peak   2469 um at 1440797 ms
+replay hump   3 mm   peak   2880 um at 1445177 ms
+replay hump   2 mm   peak   2210 um at 1445897 ms
+replay hump   2 mm   peak   2210 um at 1448957 ms
+replay hump   2 mm   peak   2380 um at 1453097 ms
+replay hump   2 mm   peak   2260 um at 1454657 ms
+replay hump   3 mm   peak   3328 um at 1458317 ms
+replay hump   3 mm   peak   2766 um at 1459057 ms
+replay hump   2 mm   peak   2357 um at 1463317 ms
+replay hump   2 mm   peak   2355 um at 1523397 ms
+replay hump   2 mm   peak   2231 um at 1524357 ms
+replay hump   3 mm   peak   3387 um at 1536477 ms
+replay hump   2 mm   peak   2383 um at 1536897 ms
+replay hump   2 mm   peak   2355 um at 1695167 ms
+replay hump   2 mm   peak   2380 um at 1699907 ms
+replay hump   2 mm   peak   2378 um at 1708227 ms
+replay hump   3 mm   peak   2940 um at 1710107 ms
+replay hump   2 mm   peak   2352 um at 1721807 ms
+replay hump   2 mm   peak   2319 um at 1722487 ms
+replay hump   3 mm   peak   2787 um at 1723137 ms
+replay hump   3 mm   peak   3111 um at 1724367 ms
+replay hump   4 mm   peak   3613 um at 1725807 ms
+replay hump   2 mm   peak   2142 um at 1726397 ms
+replay hump   2 mm   peak   2142 um at 1727247 ms
+replay hump   2 mm   peak   2383 um at 1873627 ms
+replay hump   2 mm   peak   2412 um at 1901047 ms
+replay hump   2 mm   peak   2124 um at 1903687 ms
+replay hump   3 mm   peak   2730 um at 1930567 ms
+replay hump   2 mm   peak   2269 um at 1931707 ms
+replay hump   2 mm   peak   2355 um at 1943327 ms
+replay hump   2 mm   peak   2262 um at 1943837 ms
+replay hump   3 mm   peak   2678 um at 1944827 ms
+replay hump   2 mm   peak   2205 um at 1954087 ms
+replay hump   3 mm   peak   2790 um at 1954887 ms
+replay hump   2 mm   peak   2324 um at 1957107 ms
+replay hump   4 mm   peak   3646 um at 1960307 ms
+### 2026-11-17_s3-nav-drive-3.txt, logged gate
+replay hump   2 mm   peak   2407 um at 1436517 ms
+replay hump   3 mm   peak   2528 um at 1436737 ms
+replay hump   3 mm   peak   2759 um at 1449257 ms
+replay hump   3 mm   peak   3346 um at 1450377 ms
+replay hump   2 mm   peak   2498 um at 1451457 ms
+replay hump   3 mm   peak   2914 um at 1452017 ms
+replay hump   2 mm   peak   2062 um at 1458577 ms
+replay hump   2 mm   peak   2350 um at 1459857 ms
+replay hump   2 mm   peak   2469 um at 1460997 ms
+replay hump   2 mm   peak   2347 um at 1462457 ms
+replay hump   3 mm   peak   2557 um at 1463197 ms
+replay hump   2 mm   peak   2143 um at 1463317 ms
+replay hump   2 mm   peak   2145 um at 1463497 ms
+replay hump   3 mm   peak   3491 um at 1466357 ms
+replay hump   3 mm   peak   2583 um at 1466797 ms
+replay hump   2 mm   peak   2295 um at 1467247 ms
+replay hump   3 mm   peak   2795 um at 1469437 ms
+replay hump   2 mm   peak   2443 um at 1477157 ms
+replay hump   2 mm   peak   2324 um at 1478397 ms
+replay hump   4 mm   peak   3965 um at 1487117 ms
+replay hump   3 mm   peak   3235 um at 1487697 ms
+### 2026-11-17_s3-nav-drive-3.txt, FOLLOW only
+replay hump   2 mm   peak   2407 um at 1436517 ms
+replay hump   3 mm   peak   2528 um at 1436737 ms
+replay hump   3 mm   peak   2759 um at 1449257 ms
+replay hump   3 mm   peak   3346 um at 1450377 ms
+replay hump   2 mm   peak   2498 um at 1451457 ms
+replay hump   3 mm   peak   2914 um at 1452017 ms
+replay hump   2 mm   peak   2062 um at 1458577 ms
+replay hump   2 mm   peak   2350 um at 1459857 ms
+replay hump   2 mm   peak   2469 um at 1460997 ms
+replay hump   2 mm   peak   2347 um at 1462457 ms
+replay hump   3 mm   peak   2557 um at 1463197 ms
+replay hump   2 mm   peak   2143 um at 1463317 ms
+replay hump   2 mm   peak   2145 um at 1463497 ms
+replay hump   3 mm   peak   3491 um at 1466357 ms
+replay hump   3 mm   peak   2583 um at 1466797 ms
+replay hump   2 mm   peak   2295 um at 1467247 ms
+replay hump   3 mm   peak   2795 um at 1469437 ms
+replay hump   2 mm   peak   2443 um at 1477157 ms
+replay hump   2 mm   peak   2324 um at 1478397 ms
+replay hump   4 mm   peak   3965 um at 1487117 ms
+replay hump   3 mm   peak   3235 um at 1487697 ms
+### 2026-11-17_s3-nav-drive-4.txt, logged gate
+replay hump   3 mm   peak   2526 um at 1446557 ms
+replay hump   2 mm   peak   2466 um at 1457517 ms
+replay hump   3 mm   peak   2854 um at 1459427 ms
+replay hump   2 mm   peak   2231 um at 1468177 ms
+replay hump   3 mm   peak   2673 um at 1469237 ms
+replay hump   2 mm   peak   2319 um at 1473057 ms
+replay hump   3 mm   peak   2616 um at 1473997 ms
+replay hump   2 mm   peak   2355 um at 1697237 ms
+replay hump   7 mm   peak   6563 um at 1708197 ms
+replay hump   3 mm   peak   3346 um at 1708577 ms
+replay hump   2 mm   peak   2376 um at 1756157 ms
+replay hump   3 mm   peak   3292 um at 1757357 ms
+replay hump   3 mm   peak   2526 um at 1757777 ms
+replay hump   3 mm   peak   2681 um at 1758677 ms
+replay hump   3 mm   peak   2875 um at 1768497 ms
+replay hump   2 mm   peak   2174 um at 1768897 ms
+replay hump   2 mm   peak   2293 um at 1769157 ms
+replay hump   4 mm   peak   3525 um at 1773557 ms
+replay hump   2 mm   peak   2381 um at 1773737 ms
+replay hump   3 mm   peak   2562 um at 1790637 ms
+replay hump   3 mm   peak   2611 um at 1792637 ms
+replay hump   2 mm   peak   2464 um at 1793417 ms
+replay hump   3 mm   peak   3054 um at 1794257 ms
+replay hump   3 mm   peak   3142 um at 1794817 ms
+replay hump   2 mm   peak   2142 um at 1795037 ms
+replay hump   3 mm   peak   2564 um at 1795417 ms
+replay hump   2 mm   peak   2202 um at 1804797 ms
+replay hump   2 mm   peak   2060 um at 1806797 ms
+replay hump   3 mm   peak   2614 um at 1831527 ms
+replay hump   2 mm   peak   2117 um at 1989307 ms
+replay hump   2 mm   peak   2267 um at 1990147 ms
+replay hump   3 mm   peak   3235 um at 2003267 ms
+replay hump   3 mm   peak   2906 um at 2004647 ms
+replay hump   3 mm   peak   2847 um at 2016017 ms
+replay hump   3 mm   peak   2559 um at 2016567 ms
+replay hump   3 mm   peak   2528 um at 2017687 ms
+replay hump   3 mm   peak   2878 um at 2018877 ms
+replay hump   4 mm   peak   4027 um at 2019787 ms
+replay hump   3 mm   peak   3258 um at 2020317 ms
+replay hump   5 mm   peak   4731 um at 2020767 ms
+replay hump   2 mm   peak   2414 um at 2043027 ms
+replay hump   2 mm   peak   2324 um at 2043487 ms
+replay hump   3 mm   peak   2821 um at 2045047 ms
+replay hump   3 mm   peak   3413 um at 2045707 ms
+### 2026-11-17_s3-nav-drive-4.txt, FOLLOW only
+replay hump   3 mm   peak   2526 um at 1446557 ms
+replay hump   2 mm   peak   2466 um at 1457517 ms
+replay hump   3 mm   peak   2854 um at 1459427 ms
+replay hump   2 mm   peak   2231 um at 1468177 ms
+replay hump   3 mm   peak   2673 um at 1469237 ms
+replay hump   2 mm   peak   2319 um at 1473057 ms
+replay hump   3 mm   peak   2616 um at 1473997 ms
+replay hump   2 mm   peak   2355 um at 1697237 ms
+replay hump   2 mm   peak   2376 um at 1756157 ms
+replay hump   3 mm   peak   3292 um at 1757357 ms
+replay hump   3 mm   peak   2526 um at 1757777 ms
+replay hump   3 mm   peak   2681 um at 1758677 ms
+replay hump   3 mm   peak   2875 um at 1768497 ms
+replay hump   2 mm   peak   2174 um at 1768897 ms
+replay hump   2 mm   peak   2293 um at 1769157 ms
+replay hump   4 mm   peak   3525 um at 1773557 ms
+replay hump   2 mm   peak   2381 um at 1773737 ms
+replay hump   3 mm   peak   2562 um at 1790637 ms
+replay hump   3 mm   peak   2611 um at 1792637 ms
+replay hump   2 mm   peak   2464 um at 1793417 ms
+replay hump   3 mm   peak   3054 um at 1794257 ms
+replay hump   3 mm   peak   3142 um at 1794817 ms
+replay hump   2 mm   peak   2142 um at 1795037 ms
+replay hump   3 mm   peak   2564 um at 1795417 ms
+replay hump   2 mm   peak   2202 um at 1804797 ms
+replay hump   2 mm   peak   2060 um at 1806797 ms
+replay hump   3 mm   peak   2614 um at 1831527 ms
+replay hump   2 mm   peak   2117 um at 1989307 ms
+replay hump   2 mm   peak   2267 um at 1990147 ms
+replay hump   3 mm   peak   3235 um at 2003267 ms
+replay hump   3 mm   peak   2906 um at 2004647 ms
+replay hump   3 mm   peak   2847 um at 2016017 ms
+replay hump   3 mm   peak   2559 um at 2016567 ms
+replay hump   3 mm   peak   2528 um at 2017687 ms
+replay hump   3 mm   peak   2878 um at 2018877 ms
+replay hump   2 mm   peak   2414 um at 2043027 ms
+replay hump   2 mm   peak   2324 um at 2043487 ms
+
+Context: 6563 um at 1708197 ms and 4731 um at 2020767 ms (s3-nav-drive-4) follow '[S2] nav: junction; stopping to turn', 'step 127 mm onto the junction', 'spinning left'. The 12345 um (s3-nav-drive-2, 1966427 ms) and 11515 um (s3-nav-drive-4, 1490877 ms) candidates end in '[S2] S4 PICKUP: car lifted' and never complete.
+
+## 4. Humps per log, FOLLOW-only gate: new (6000 um uncalibrated rise) vs the demo's effective threshold (7051 um uncalibrated = 6000 um scaled)
+2026-11-13_s4-h08-gated.txt: new 4, old 4
+2026-11-13_s4-if18.txt: new 2, old 2
+2026-11-17_s3-nav-drive-2.txt: new 0, old 0
+2026-11-17_s3-nav-drive-3.txt: new 0, old 0
+2026-11-17_s3-nav-drive-4.txt: new 0, old 0
+
+## 5. Calibration fit tool on the available data
+crossing   10.0 mm reference  peak  12.51 mm  (2026-11-13_s4-h08-gated.txt)
+crossing   10.0 mm reference  peak  12.07 mm  (2026-11-13_s4-h08-gated.txt)
+crossing   10.0 mm reference  peak  11.80 mm  (2026-11-13_s4-h08-gated.txt)
+crossing   10.0 mm reference  peak  11.16 mm  (2026-11-13_s4-h08-gated.txt)
+crossing   10.0 mm reference  peak  10.83 mm  (2026-11-13_s4-if18.txt)
+crossing   10.0 mm reference  peak  10.95 mm  (2026-11-13_s4-if18.txt)
+one reference height (10.0 mm, 6 crossings, mean peak 11.55 mm): gain-only scale 866 per mille. An offset needs a second height; none fitted.
+flat run 2026-11-17_s3-nav-drive-2.txt: largest bump while following 3.65 mm; the rise should be at least 5.6 mm
+flat run 2026-11-17_s3-nav-drive-3.txt: largest bump while following 3.96 mm; the rise should be at least 6.0 mm
+flat run 2026-11-17_s3-nav-drive-4.txt: largest bump while following 3.52 mm; the rise should be at least 5.5 mm
