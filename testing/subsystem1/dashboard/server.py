@@ -86,6 +86,12 @@ def describe(fields: dict[str, Any]) -> dict[str, Any]:
     out["held_name"] = (
         decoder.COMMAND.get(fields["nav_held"], str(fields["nav_held"]))
         if fields["nav_held"] != 0 else None)
+    # Version 6: S4's motion class and the encoder-estimated yaw rate; both
+    # mean nothing while the class is unknown (0).
+    out["motion_class_name"] = (
+        decoder.MOTION_CLASS.get(fields["motion_class"],
+                                 str(fields["motion_class"]))
+        if fields["motion_class"] != 0 else None)
     return out
 
 

@@ -27,7 +27,7 @@ def frame(f0=0x3F, t=1000, dist=10, f1=0x07, state=3, mode=1, fault=0,
           line=0, scan=0, side=0, left=40, right=38, heading=0, fwd=500,
           near=300, width=80, centre=-5, hump=0, letter=0, command=0,
           cause=0, count=0, last=0, humps=0, fault_detail=0, held=0,
-          junctions=0, version=5):
+          junctions=0, motion=0, yaw=0, version=5):
     v2_part = struct.pack("<BBIHBBBBhhhHHHhB", version, f0, t, dist, f1,
                           state | (mode << 4), fault | (line << 4),
                           scan | (side << 4), left, right, heading, fwd,
@@ -40,7 +40,10 @@ def frame(f0=0x3F, t=1000, dist=10, f1=0x07, state=3, mode=1, fault=0,
     v4_part = v3_part + bytes([last, humps])
     if version == 4:
         return v4_part
-    return v4_part + bytes([fault_detail | (held << 3) | (junctions << 6)])
+    v5_part = v4_part + bytes([fault_detail | (held << 3) | (junctions << 6)])
+    if version == 5:
+        return v5_part
+    return v5_part + bytes([motion]) + struct.pack("<b", yaw)
 
 
 class ParseTest(unittest.TestCase):
@@ -92,6 +95,37 @@ class ParseTest(unittest.TestCase):
         self.assertEqual((g["motion_fault"], g["nav_held"],
                           g["junction_count"], g["barcode_letter"],
                           g["hump_count"]), (7, 2, 1, 25, 0x21))
+
+    def test_version_6_fields(self):
+        f = decoder.parse(frame(version=6, motion=5, yaw=-15))
+        self.assertEqual((f["version"], f["motion_class"], f["yaw_deg_s"]),
+                         (6, 5, -30))
+        text, _ = decoder.decode(frame(version=6, motion=5, yaw=-15), None)
+        self.assertIn("motion=turning yaw_enc=-30deg/s", text)
+        # The car's version 6 golden frame (comms_test.c, S1-U05).
+        golden = bytes([6, 0xff, 0x78, 0x56, 0x34, 0x12, 0xcd, 0xab,
+                        0x0f, 0x43, 0x12, 0x21, 0x6a, 0xff, 0x40, 0x01,
+                        0xb0, 0xb9, 0xa0, 0x0f, 0x02, 0x01, 0x04, 0x03,
+                        0xfe, 0xff, 0xff, 0x99, 0xf4, 0xfe, 0x21, 0x57,
+                        0x05, 0xb8])
+        g = decoder.parse(golden)
+        self.assertEqual((g["motion_fault"], g["nav_held"],
+                          g["junction_count"], g["motion_class"],
+                          g["yaw_deg_s"]), (7, 2, 1, 5, -144))
+        # Wrong length for its version, either way, is rejected.
+        self.assertIsNone(decoder.parse(golden[:32]))
+        self.assertIsNone(decoder.parse(b"" + golden[1:]))
+        d = server.describe(decoder.parse(frame(version=6, motion=8)))
+        self.assertEqual(d["motion_class_name"], "impact")
+        d = server.describe(decoder.parse(frame(version=6, motion=0, yaw=9)))
+        self.assertIsNone(d["motion_class_name"])
+
+    def test_version_5_still_reads(self):
+        f = decoder.parse(frame(version=5, held=2))
+        self.assertEqual((f["version"], f["nav_held"], f["motion_class"],
+                          f["yaw_deg_s"]), (5, 2, 0, 0))
+        text, _ = decoder.decode(frame(version=5), None)
+        self.assertNotIn("motion=", text)
 
     def test_version_4_still_reads(self):
         f = decoder.parse(frame(version=4, last=9, humps=3))

@@ -1,0 +1,120 @@
+# F-25 at 25 runs: analysis and fix, 2026-11-26 (S3 decision 12). Host only,
+# synthetic captures and the recorded 25-run Z; not run on the car.
+#
+# Starting point (main at 51561e0, S3 decision 11): a 27- or 29-run capture
+# with a damaged end and a blip is never a wrong letter, but a 25-run one
+# (6 runs lost and a blip, so only 5 runs of the damaged end are seen)
+# still was: S3-U07 reported 1,208 wrong letters as KNOWN DEFECT F-25.
+#
+# Root cause (same as decision 11): the fallback keeps 20 runs at the intact
+# end; a blip among them shifts the payload by a bar and a space, and the
+# shifted payload can match another letter exactly. With 5 seen runs the
+# damaged-end check cannot see the shift (at the start end a shift changes
+# one of five elements; the real recorded Z end disagrees in two).
+#
+# The independent evidence left is the kept runs themselves: a blip that
+# shifted them is itself one of them, and lasts as long as the noise.
+# Recorded noise at the sensor edge lasted 19..40 ms (2026-11-17,
+# s3_barcode.c, S2 decision 25); recorded code runs measured 99..600 ms on
+# 2026-11-11/17, the shortest element of any recorded capture is 59..60 ms
+# (the 25-run Z core and a 59 ms run on 2026-11-17).
+#
+# Sweep: a one-off program fed every class to s3_scan_decode() directly,
+# all 26 letters, every capture also reversed. Print 100/250 ms unless
+# stated. "cut k + blip": k runs cut from either end plus a blip of 10, 20,
+# 30 or 40 ms at 1/4, 1/2 or 3/4 of any kept run. ok / rejected / WRONG.
+#
+# Candidates (applied only where fewer than 7 runs of the damaged end are
+# seen, i.e. 24..26-run captures; every other capture is unchanged):
+#   A: shortest kept run >= median kept run / R
+#   B: shortest kept run >= mean of the kept narrow-class runs / 2
+#   C: every kept run >= a fixed 50 ms (chosen)
+#
+# 10/20 ms blips, narrow 40, 50, 60, 80, 150, 200 ms ("narrow 40..200"):
+#   old (d11)  cut+blip -> 25 runs  ok  3628 rej  9516 WRONG 1208
+#              cut+blip 25, 40..200 ok 20660 rej 59154 WRONG 6298
+#   A, R = 2   cut+blip -> 25 runs  ok  2184 rej 12168 WRONG    0
+#              cut+blip 25, 40..200 ok 13030 rej 73082 WRONG    0
+#   A, R = 2.5 cut+blip 25, 40..200                    WRONG   86
+#   A, R = 3   cut+blip 25, 40..200                    WRONG  172
+#   B          same as A with R = 2 (0 wrong)
+#   C          cut+blip -> 25 runs  ok  2184 rej 12168 WRONG    0
+#              cut+blip 25, 40..200 ok 10452 rej 75660 WRONG    0
+#
+# Recorded 25-run Z (S3-U01) with every run moved by -10, 0 or +10 ms (one
+# sample at 10 ms), 5000 fixed pseudo-random cases, half reversed:
+#   old 5000/5000 Z;  A (R = 2) 1360/5000;  B 2385/5000;  C 5000/5000.
+#   A and B judge the shortest run against the capture's own narrow width;
+#   the recorded Z's shortest kept run (60 ms) is 1.74 times below its mean
+#   narrow run (104 ms) and exactly half its median (120 ms), so one sample
+#   of error rejects it. A ratio cannot tell this real capture from a blip;
+#   the blip's absolute length can. C chosen.
+#
+# Full sweep, blips of 10..40 ms, old (d11) against C (diff of all classes):
+#   old  scale narrow 40..200 ms            ok    260 rej      0 WRONG     0
+#   old  cut 4 at narrow 40..200            ok    520 rej      0 WRONG     0
+#   old  cut 4 + blurred narrow x0.25       ok   2080 rej      0 WRONG     0
+#   old  cut+blip -> 25 runs                ok   6904 rej  19672 WRONG  2128
+#   old  cut+blip 25, narrow 40..200        ok  38600 rej 123760 WRONG  9864
+#   old  blur 29: narrow x0.25/wide x0.6    ok   1352 rej    156 WRONG     0
+#   new  scale narrow 40..200 ms            ok    260 rej      0 WRONG     0
+#   new  cut 4 at narrow 40..200            ok    416 rej    104 WRONG     0
+#   new  cut 4 + blurred narrow x0.25       ok    624 rej   1456 WRONG     0
+#   new  cut+blip -> 25 runs                ok   4264 rej  24440 WRONG     0
+#   new  cut+blip 25, narrow 40..200        ok  20748 rej 151476 WRONG     0
+#   new  blur 29: narrow x0.25/wide x0.6    ok   1352 rej    156 WRONG     0
+#   Every other class identical (old = new):
+#        clean 2:1/2.5:1/3:1                ok    156 rej      0 WRONG     0
+#        speed ramp (6 profiles)            ok    176 rej    136 WRONG     0
+#        one blip 10..40 ms (31 runs)         ok  16824 rej   1272 WRONG     0
+#        plain cut 2..10 runs, end/start    ok    416 rej    520 WRONG     0
+#        plain cut 4 (25 runs)              ok    104 rej      0 WRONG     0
+#        cut 4 + ramp (25 runs)             ok    280 rej    344 WRONG     0
+#        cut 4 + blurred narrow x0.5        ok   2080 rej      0 WRONG     0
+#        cut+blip -> 29 runs                ok   1924 rej  31772 WRONG     0
+#        cut+blip -> 27 runs                ok   2184 rej  29016 WRONG     0
+#        paused end x5/x15                  ok   1872 rej      0 WRONG     0
+#        two blips                          ok      0 rej   2080 WRONG     0
+#
+# Costs of C, all in 24..26-run captures:
+#  - a 25-run capture read with a 40 ms narrow element is rejected (104 of
+#    520 in "cut 4 at narrow 40..200"): 2.5 to 5 times faster than any
+#    recorded pass;
+#  - a 25-run capture with one narrow element blurred to 25 ms is rejected
+#    (1456 of 2080), never wrong. It cannot be told from a 20 ms blip;
+#  - 25-run double faults that the old decoder happened to read right are
+#    rejected with those it read wrong.
+#  Not covered: a "blip" of 50 ms or more is as long as a real element and
+#  cannot be told from one by any rule on these runs.
+#
+# Mutations (each must fail the S3 suite; make -C testing/host s3):
+#   == mutation: check never applied (seen < 5): the decoder of S3 decision 11
+#   suite exit status 2
+#   FAIL: 25-run capture with a cut end and a blip is never wrong (F-25)
+#   FAIL: a 25-run capture with a 10..40 ms blip is never wrong (F-25)
+#   787 checks, 2 failures
+#   == mutation: floor raised to 70 ms
+#   suite exit status 2
+#   FAIL: decode 25-run Z with damaged trailing sentinel
+#   FAIL: decode 25-run Z in reverse
+#   FAIL: a 25-run capture without a blip decodes at 60..150 ms
+#   FAIL: the recorded 25-run Z within one sample decodes
+#   787 checks, 4 failures
+#   == mutation: floor lowered to 30 ms
+#   suite exit status 2
+#   FAIL: a 25-run capture with a 10..40 ms blip is never wrong (F-25)
+#   787 checks, 1 failures
+#   == mutation: only the first 10 kept runs checked
+#   suite exit status 2
+#   FAIL: 25-run capture with a cut end and a blip is never wrong (F-25)
+#   FAIL: a 25-run capture with a 10..40 ms blip is never wrong (F-25)
+#   787 checks, 2 failures
+#
+# Suite: make -C testing/host (gcc 15.2.0, MSYS2 UCRT64), all suites pass:
+#   S3 787 checks, 0 failures (no known defect left): S3-U07 25 runs 0 wrong
+#   (was 1,208), S3-U08 0 wrong of 86,112; 19 car captures replayed, 2
+#   decoded, unchanged. S2 56/56, S4 39/39, S5 48/48, integration 46/46
+#   (INT-17..INT-20 run the real s3_barcode_update()).
+# Target (arm-none-eabi-gcc 15.2.1, mission flags, same compiler for both):
+#   text 376850 -> 376898 (+48 bytes); data and bss unchanged; 0 warnings.
+#   tools/stack_estimate.py: s3_follow_run 1936 -> 1928 bytes.

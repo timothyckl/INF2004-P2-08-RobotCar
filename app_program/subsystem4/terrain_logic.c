@@ -396,6 +396,7 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
     s4_lift_update(p_context, forward_mg, lateral_mg, vertical_mg);
 
     height_um = s4_hump_height_um(p_context, b_pitch_valid, &contact);
+    p_context->height_um = height_um;
     s4_hump_update(p_context, p_sample->capture_time_us, height_um,
                    contact);
 }

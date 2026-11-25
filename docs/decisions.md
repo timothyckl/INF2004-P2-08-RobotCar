@@ -4,7 +4,7 @@
 
 ### 1. Telemetry frame version 2 (2026-11-17)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 **Problem.** The version 1 frame carried only time, run distance and three
 flags, so the dashboard could not show most of the telemetry the project
@@ -80,7 +80,7 @@ host. S1-H02 must be repeated on the car with the version 2 decoder.
 
 ### 2. Merge into the integration branch (2026-11-17)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 Subsystem 1 comes from `feature/subsystem1-integration` (`b21d964`), the
 newest S1 code and one built on this branch, rather than
@@ -95,7 +95,7 @@ subsystems predate this branch. On merge:
 
 ### 3. Commands are stamped with the controller's clock (2026-11-17)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 **Problem.** After the merge (decision 2), remote `RESET` sent while the
 car was in Fault was acknowledged by the car (PUBACK) but had no effect.
@@ -117,7 +117,7 @@ uses the same function, so GP20 and MQTT commands share one clock.
 
 ### 4. Radio power save off, and telemetry drop counters (2026-11-17)
 
-Approved by Dalton on the integration branch. Not yet validated on the car.
+Approved by the team on the integration branch. Not yet validated on the car.
 
 **Problem.** On a 140 s lap only 76 of about 141 telemetry frames arrived,
 remote STOP was acknowledged 11 s late, and even with the car stationary
@@ -143,7 +143,7 @@ frames stay about 1 s apart and the counters show no refused frames.
 
 ### 5. Telemetry frame version 3: barcode and stop cause (2026-11-20)
 
-Approved by Dalton on the integration branch. Host-tested only; not yet
+Approved by the team on the integration branch. Host-tested only; not yet
 run on the car.
 
 **Problem.** In the 2026-11-20 demo the dashboard could not show three
@@ -186,7 +186,7 @@ the car.
 
 ### 6. Barcode letters set over MQTT (2026-11-23)
 
-Approved by Dalton on the integration branch; also changes subsystem 3's
+Approved by the team on the integration branch; also changes subsystem 3's
 letter map. Run on the car for one junction (2026-11-23).
 
 **Problem.** The course letters are announced on the day, but the letter
@@ -237,7 +237,7 @@ and the table was re-sent after a restart. One junction only.
 
 ### 7. Telemetry frame version 4: last hump, hump count, raw width (2026-11-24)
 
-Approved by Dalton on the integration branch; also changes subsystems 2, 4
+Approved by the team on the integration branch; also changes subsystems 2, 4
 and 5. First written as "host-tested only; not yet run on the car".
 Correction (2026-11-24, evening): this version was built at 14:17
 (`make NET=lwip MQTT=1 S3_NAV_F=0 -j8`, single core, image SHA-256
@@ -289,7 +289,7 @@ which builds without warnings, as does the mission image.
 
 ### 8. Telemetry version 5: fault detail, held command, junctions (2026-11-26)
 
-Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change.
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision.
 
 **Problem.** On demo day four motion faults latched STOP, but the frame
 carried only the class "motion", so whether each was a stall, an encoder
@@ -327,6 +327,41 @@ state through `robot_read_telemetry()` and the encoder: STRAIGHT held,
 then 1 junction, then detail 7 after a stalled task), dashboard tests (v5
 fields, events, the car's golden frame decodes; v4 frames raise no v5
 events). Car test pending: SYS-08 with a forced fault and a junction.
+
+### 9. Telemetry version 6: motion class and encoder yaw rate (2026-11-26)
+
+Approved by the team on 2026-11-26. Later firmware revision; verified on
+the host only.
+
+**Problem.** S4 decision 18 adds a motion class and an encoder-estimated
+yaw rate; without them in the frame, motion event reporting is visible only
+on the USB console, not on the dashboard.
+
+**Decision.** Version 6 is version 5 with two bytes appended (34 bytes):
+
+| Byte, bits | Field | Range | Source |
+|---|---|---|---|
+| 32, 0-3 | motion class | `S4_MOTION_*` 0..8, 0 unknown; above 14 sent as 15 | `s4_terrain_result_t.motion_class` (IF-18) |
+| 32, 4-7 | zero | — | — |
+| 33 | encoder yaw rate, `int8_t`, 2 deg/s per count, left positive; 0 while the class is unknown | ±127 counts (±254 deg/s); the 30 mm/s spins are about 29 deg/s | `s4_terrain_result_t.yaw_rate_ddeg_s` |
+
+Two deg/s steps resolve the 8 deg/s turning limit and every manoeuvre the
+controller commands; only a spin near the 400 mm/s speed limit (385 deg/s)
+would saturate. Bytes 0 to 31 are unchanged, so version 2 to 5 decoders
+still read them, and the decoder and dashboard read every version by its
+length and version byte. The frame is two bytes (16 bit/s) longer.
+
+**Producers.** The IMU task writes the class and yaw into its published
+result each sample; `robot_read_telemetry()` copies them into the snapshot
+(56 bytes, was 52), unknown when S4's status is busy; `telemetry_encoder.c`
+packs bytes 32 and 33.
+
+**Verification.** S1-U05 (version 6 golden frame; class clamp; yaw
+rounding, saturation and zero while unknown), INT-16 (version 6 from the
+real controller state) and INT-31 (the real classifier's class and yaw in
+the frame), dashboard tests (version 6 golden frame, version 5 still read,
+wrong lengths rejected) ([log](../testing/host/logs/2026-11-26_verify-motion-class.txt)). Car test pending:
+SYS-08.
 
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
@@ -446,7 +481,7 @@ Stage 2 adds the scan request, authorise and stop-confirm handshake
 ### 10. A late forward echo means nothing in range (2026-11-10)
 
 Deviation from subsystem 5 decision 3 ("an invalid forward reading requests
-a stop"), approved by Dalton on the integration branch. On the track, the HC-SR04 facing open space or an angled surface
+a stop"), approved by the team on the integration branch. On the track, the HC-SR04 facing open space or an angled surface
 returned echoes that rose but were still high at the 30 ms deadline: one
 such reading stopped the car, and a sustained run (134 in a row) latched a
 scan fault. The datasheet gives a 4 m maximum range (23.5 ms); it does not
@@ -475,7 +510,7 @@ queue still drained) while the mode is not FOLLOW.
 
 ### 12. Clear to resume after a scan (2026-11-10)
 
-Approved by Dalton on the integration branch. Subsystem 5 reported CLEAR
+Approved by the team on the integration branch. Subsystem 5 reported CLEAR
 only when nothing was within 4 m straight ahead, which indoors almost never
 happens: with the obstacle removed, scans read 1134 mm and 682 mm ahead and
 returned a plan or no route, so following never resumed. A scan now
@@ -486,7 +521,7 @@ before. 500 mm is provisional, like the hazard distance.
 
 ### 13. Grove 4 and Grove 7 swapped (2026-11-11)
 
-Approved by Dalton on the integration branch. The Grove 4 and Grove 7 cables
+Approved by the team on the integration branch. The Grove 4 and Grove 7 cables
 were swapped on the robot. Grove 4 (GP16/GP17, Robo Pico datasheet Grove
 table) now carries the left wheel encoder, A on GP16 and B on GP17. Grove 7
 (GP7/GP28) now carries the side barcode sensor, with its DOUT removed and only
@@ -499,7 +534,7 @@ with no decode errors.
 
 ### 14. Subsystem 5 integration, stage 3: bypass and reacquisition (2026-11-11)
 
-Approved by Dalton on the integration branch. In the `_s3line` image a PLAN
+Approved by the team on the integration branch. In the `_s3line` image a PLAN
 no longer stops the run. The pure `bypass_control` module (S2-U64..U67)
 drives subsystem 5's plan: each segment as one MOVE or TURN, then the
 approach turn and a forward search at 100 mm/s (UNMEASURED) for at most the
@@ -526,7 +561,7 @@ bypass can be guaranteed to stay on the mat without knowing where it is.
 
 ### 15. Fresh forward clearance after a scan (2026-11-11)
 
-Deviation from subsystem 5 decision 4's implementation, approved by Dalton
+Deviation from subsystem 5 decision 4's implementation, approved by the team
 on the integration branch. After a scan, subsystem 5 turned the sensor
 forward and accepted the plan only if the fresh reading was at least the
 250 mm hazard distance. A hazard stop always ends inside that distance
@@ -542,7 +577,7 @@ configuration. S5-U56 is revised and fails against both earlier rules.
 ### 16. Bypass prefers left; side-specific vehicle extents (2026-11-11)
 
 Deviation from subsystem 5 decision 5 ("choose the shorter valid route, left
-on a tie"), approved by Dalton on the integration branch. The planner now
+on a tie"), approved by the team on the integration branch. The planner now
 takes the left route whenever it is valid and the right route only when
 left is blocked, unobserved or beyond the search bound. The side barcode
 sensor sticks out on the left, so passing the obstacle on the car's right
@@ -561,7 +596,7 @@ on the robot.
 
 ### 17. 45 degree bypass with swept-body clearance (2026-11-11)
 
-Deviation from subsystem 5 decisions 5 and 9, approved by Dalton on the
+Deviation from subsystem 5 decisions 5 and 9, approved by the team on the
 integration branch (option A). The team asked that the car never turn
 90 degrees after sensing an obstacle. Subsystem 5's planner now returns
 five segments: reverse (often 0), turn 45 degrees to the bypass side, a
@@ -575,7 +610,7 @@ straight by perpendicular distance, each in-place turn by sweeping the
 body rectangle in 5 degree steps against the obstacle outline sampled
 every 20 mm, plus an allowance for both steps. Reversing is allowed up
 to 150 mm (UNMEASURED) along the path the car just drove. Body extents by
-ruler (Dalton, 2026-11-11): 132 mm from the axle to the front, 56 mm to
+ruler (2026-11-11): 132 mm from the axle to the front, 56 mm to
 the rear, 81 mm to the ultrasonic sensor face, sides as in decision 16;
 nothing at the rear sticks out past the tyres.
 
@@ -592,7 +627,7 @@ modelled; anything beyond the assumed depth is not.
 
 ### 18. Ultrasonic beam allowance on obstacle edges (2026-11-11)
 
-Revision of subsystem 5 decision 5's edge estimate, approved by Dalton on
+Revision of subsystem 5 decision 5's edge estimate, approved by the team on
 the integration branch. The HC-SR04 datasheet gives a 15 degree measuring
 angle, but a centred 144 mm wide box 240 mm ahead (corners at +/-16.7
 degrees, measured by ruler) was still seen out to +30 and -40 degrees, and
@@ -625,7 +660,7 @@ the straight ahead of the obstacle is not yet measured or checked.
 
 ### 19. Passing the obstacle by measurement (2026-11-11)
 
-Approved by Dalton on the integration branch (proposed by a teammate);
+Approved by the team on the integration branch (proposed by a teammate);
 replaces the assumed-depth forward leg of decision 17. A front scan
 cannot see an obstacle's depth, and assuming 200 mm made the forward leg
 long enough to leave the mat. After the turn back to straight the car
@@ -657,7 +692,7 @@ S2-U69); S5-U53 revised. Not yet run on the robot.
 
 ### 20. Stop before stepping onto the found line (2026-11-11)
 
-Approved by Dalton on the integration branch; revises the step of
+Approved by the team on the integration branch; revises the step of
 decision 14. The first run passing by measurement (decision 19) found
 the line, stepped and aligned, but ended past the line. The step had
 been worked out the moment the line was confirmed, while the car was
@@ -677,7 +712,7 @@ robot with the STOP command.
 
 ### 21. Align by spinning onto the line (2026-11-11)
 
-Approved by Dalton on the integration branch; revises the align turn of
+Approved by the team on the integration branch; revises the align turn of
 decision 14. With the stop before the step (decision 20) three bypasses
 found the line, stepped and turned 45 degrees, but the car then drove on
 with both sensors white and had to be stopped near the mat edge; in one
@@ -691,7 +726,7 @@ a sensor on black, then line following takes over and steers onto it.
 Black is accepted only after turning the align angle less twice the 15
 degree heading tolerance (15 degrees of the 45), so the crossing just
 made is not taken; past the align angle plus 90 degrees (135 in all, agreed
-with Dalton after the runs below) without the line
+by the team after the runs below) without the line
 the run stops (line not found). Once still, the heading check of
 decision 14 still applies. S2-U66 and S2-U67 are revised. The first run
 on the robot (`logs/2026-11-11_s5-pass-spin.txt`) spun about 60 degrees
@@ -702,7 +737,7 @@ whether the step leaves the axle past the line.
 
 ### 22. Turn to look, a 45 degree servo, and the line sets the heading (2026-11-12)
 
-Approved by Dalton on the integration branch; revises decisions 19 and
+Approved by the team on the integration branch; revises decisions 19 and
 21, S5 decisions 4 and 9 and the servo mapping of S5-U47. Evidence is in
 `testing/subsystem5/logs/2026-11-12_*.txt`.
 
@@ -816,7 +851,7 @@ the decoder already tolerates a damaged first sentinel.
 
 ### 26. Barcode command at the next junction (2026-11-17)
 
-Approved by Dalton on the integration branch. The brief requires the car
+Approved by the team on the integration branch. The brief requires the car
 to carry out the barcode's command (left, right, straight, U-turn) with
 encoder-based motion. The course letters are announced on the day, so
 the mapping is one table in `s3_nav_command()`: the brief's example A-D,
@@ -858,7 +893,7 @@ was intact.
 
 ### 27. Every barcode letter and the cause of each STOP (2026-11-20)
 
-Approved by Dalton on the integration branch, for telemetry version 3
+Approved by the team on the integration branch, for telemetry version 3
 (S1 decision 5). Host-tested only; not yet run on the car.
 
 **Barcode letters (IF-21).** `s2_nav_request_t` carries the decoded
@@ -897,7 +932,7 @@ copy into the telemetry snapshot, and S2-U40 the new flag bit.
 
 ### 28. The normal image runs the mission (2026-11-20)
 
-Approved by Dalton on the integration branch. Builds without warnings
+Approved by the team on the integration branch. Builds without warnings
 and the host suites pass; not yet run on the car.
 
 Until now the mission (line following, barcode commands, humps, Scan &
@@ -933,7 +968,7 @@ and Consumer for INT-01; their removal is a separate change (decision 29).
 
 ### 29. The starter producer, consumer and demo script are removed (2026-11-20)
 
-Approved by Dalton on the integration branch. Builds without warnings
+Approved by the team on the integration branch. Builds without warnings
 and the host suites pass; the mission image did not use any of it.
 
 - Removed: S2's `producer_task`, `sem_slots`, `mpf_samples` and
@@ -950,7 +985,7 @@ and the host suites pass; the mission image did not use any of it.
 
 ### 30. BARR-C review of `app_program/`: fixes and deviations (2026-11-20)
 
-Approved by Dalton on the integration branch. All 128 files under
+Approved by the team on the integration branch. All 128 files under
 `app_program/` were checked against BARR-C:2018: the rules a script can
 check (line width, tabs, braces, keywords, header guards, own header,
 module names, constant on the left of `==`, `switch` defaults, `for (;;)`,
@@ -1002,7 +1037,7 @@ deliberate, but its range argument is not written down yet.
 
 ### 31. Wheel circumference recalibrated for the course floor (2026-11-20)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 **Problem.** On a floor similar to the course, S2-H10 (500 mm, five runs)
 measured 480.4 mm for 502.4 mm of odometry, and the S2-H07 re-check
@@ -1024,7 +1059,7 @@ surface differs, repeat S2-H07 there (three runs) before the demo.
 
 ### 32. S2 bench tests closed on the runs recorded (2026-11-20)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 **Problem.** S2-H10 asks for 10 runs of each motion and S2-H11 for 10
 STOP-latency runs. Before the demo there is no time left for the rest:
@@ -1060,7 +1095,7 @@ the larger check of turn accuracy on the course.
 
 ### 33. The mission runs on one core, `SMP=0` (2026-11-23)
 
-Approved by Dalton on the integration branch. Changes the build default
+Approved by the team on the integration branch. Changes the build default
 in `build_make/pico_rp2040.mk` from `SMP=1` to `SMP=0`; no application
 code changes.
 
@@ -1106,7 +1141,7 @@ boots (SYS-11).
 
 ### 34. Strict warnings for every application file (2026-11-25)
 
-Approved by Dalton on the integration branch, after the demo. Build
+Approved by the team on the integration branch, after the demo. Build
 change only; no source change.
 
 **Problem.** `build_make/mtkernel_3/app_program/subdir.mk` compiled
@@ -1126,17 +1161,17 @@ change, a clean build (`make -B`) of the mission image and of the
 `TEST=1` image gives no warning, and the mission UF2 is byte-identical to
 the demo image (SHA-256 `8cf2c419…416bf3f`).
 
-### 35. Post-demo firmware changes on `main` (2026-11-25)
+### 35. Firmware revisions after the demonstration, on `main` (2026-11-25)
 
-Approved by Dalton on 2026-11-25, after the demo.
+Approved by the team on 2026-11-25, after the demo.
 
-**Problem.** The post-demo review documents said that "the team decided"
+**Problem.** The review documents written after the demonstration said that "the team decided"
 on 2026-11-25 to keep the submitted firmware identical to the demonstrated
 image. No such decision was recorded in this file, and the corrections they
 describe (P1 to P9 of the review) stayed as proposals, so the repository
 did not improve the robot it described.
 
-**Decision.** Post-demo firmware changes are made on `main`, one at a time,
+**Decision.** Firmware revisions after the demonstration are made on `main`, one at a time,
 each with its own tests, documentation and commit. The demo stays fixed in
 history: tags `demo-2026-11-24` (`4a53c23`) and `demo-2026-11-24-flashed`
 (`a41c19c`), the demo UF2 SHA-256 `8cf2c419…`, the dashboard logs and their
@@ -1149,7 +1184,7 @@ evidence that the robot works.
 
 ### 36. A held barcode command waits for the next junction, with no time limit (2026-11-25)
 
-Approved by Dalton on 2026-11-25 (decision 35). Post-demo change; revises
+Approved by the team on 2026-11-25 (decision 35). Later firmware revision; revises
 the hold limit of decision 26.
 
 **Evidence.** Decision 26 dropped a held command after 20 s, then 60 s
@@ -1197,7 +1232,7 @@ obstacle between the barcode and the junction.
 
 ### 37. Task liveness guard on Motion Control; the watchdog fed only by healthy tasks (2026-11-26)
 
-Approved by Dalton on 2026-11-25 (decision 35). Post-demo change; extends
+Approved by the team on 2026-11-25 (decision 35). Later firmware revision; extends
 decision 28.
 
 **Problem.** The hardware watchdog was off (decision 28), and as written
@@ -1245,6 +1280,32 @@ with one 500 ms limit for every task INT-09 loses its line cause
 ([log](../testing/host/logs/2026-11-26_health-mutations.txt)). Car test
 pending: SYS-01 with `S2_WATCHDOG=1`, then a forced stall.
 
+### 38. A check-in after the guard's clock read is not a stall (F-27, 2026-11-26)
+
+Approved by the team on 2026-11-26.
+Revises decision 37's evaluator. Later firmware revision; verified on the host only.
+
+**Problem.** Motion Control (priority 15) reads the clock, then the
+check-in records (`s2_health_guard(..., now_ms())`). The S3 loop (priority
+1, the initial task) and the controller (14) can preempt it in between and
+check in with a later time. The unsigned age `now - last` then wraps to
+about 2^32 ms, the task reads as stalled, and Motion Control latches
+`MOTION_FAULT_TASK`: a false stop that needs RESET. On the single-core
+mission image this needs a kernel tick inside that short window (a late
+pass); on a dual-core build the tasks run at the same time and it is far
+more likely.
+
+**Decision.** An age above half the clock range (`S2_HEALTH_AGE_MAX_MS`,
+2^31 - 1 ms) is a check-in stamped after `now_ms` and counts as fresh.
+Unsigned arithmetic only, so no implementation-defined signed conversion;
+wrap handling is kept. A real stall is reported at its limit (at most
+1.5 s), long before its age could reach 2^31 ms.
+
+**Verification.** S2-U81 now also checks check-ins 1 and 10 ms after
+`now_ms`, across the wrap, and the boundary at 2^31 - 1 ms; it fails with
+the old evaluator. INT-15 (blocked controller, healthy 10 s run) unchanged
+([log](../testing/host/logs/2026-11-26_verify-f27.txt)).
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
@@ -1259,7 +1320,7 @@ be driven by the demo liveness LED.
 
 ### 2. Initial two-sensor line-follow trial
 
-Edmund and Dalton approved IF-06 on 2026-11-04. Subsystem 3 sends timestamped
+The team approved IF-06 on 2026-11-04. Subsystem 3 sends timestamped
 line positions through S2's bounded `line_q`; the Vehicle Controller alone
 converts those positions to Motion Control speed commands. Subsystem 3 never
 writes motor PWM. The observed centred geometry is WHITE/WHITE. The trial
@@ -1574,7 +1635,7 @@ reduced. These mappings are provisional until verified on the physical track.
 
 ### 8. Wider left black margin for the hump (2026-11-16)
 
-Approved by Dalton on the integration branch. The right front sensor worked
+Approved by the team on the integration branch. The right front sensor worked
 loose and was refitted; the sensors are now 30 mm apart, centre to centre,
 on 18 mm tape, so each sits about 6 mm outside the tape edge when centred.
 The raw ranges did not change (left white 113..164, black 1467..1532; right
@@ -1595,7 +1656,7 @@ is unchanged. Not yet validated on the track.
 
 ### 9. Noise blips in 31-run captures (F-18, 2026-11-25)
 
-Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change.
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision.
 
 **Problem.** A 31-run capture was read as a code with a stray mark beside
 it: the decoder tried the first 29 and the last 29 runs. A blip of the
@@ -1637,7 +1698,7 @@ Car test pending: SYS-02 with both prints.
 
 ### 10. A 10 ms sampling period from a cyclic handler (F-01, 2026-11-25)
 
-Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change.
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision.
 
 **Problem.** `s3_follow_run()` ended each pass with `tk_dly_tsk(10)`.
 µT-Kernel sets a delay's expiry to the last tick time plus the delay plus
@@ -1686,8 +1747,7 @@ should become multiples of 10 ms) and the `s3 loop:` line (overruns 0).
 
 ### 11. The damaged end of a 25 to 29-run capture is checked (F-25, 2026-11-26)
 
-Approved by Dalton on 2026-11-26 (S2 decision 35). Post-demo change, made
-after the robot was returned: host evidence only.
+Approved by the team on 2026-11-26 (S2 decision 35). Later firmware revision; verified on the host only.
 
 **Problem.** A capture that has lost runs at one end is decoded by the
 fallback, which keeps the 20 runs at the intact end and copies the intact
@@ -1728,9 +1788,57 @@ correctly are now rejected as well. Cost: +452 bytes of flash, no RAM,
 **Remaining.** A 25-run capture (six runs lost and a blip) can still give
 a wrong letter (1,208 of 15,600 such synthetic cases): F-25 stays a known
 defect for 25 runs only, reported by S3-U07. The remedy is fewer blips
-(sensor height) and fewer lost runs, not decoding.
+(sensor height) and fewer lost runs, not decoding. *Resolved in software
+by decision 12.*
 
-Car test: not possible (robot returned).
+Car test pending (SYS-02).
+
+### 12. Short runs reject a 24 to 26-run capture (F-25 at 25 runs, 2026-11-26)
+
+Approved by the team on 2026-11-26.
+Later firmware revision; verified on the host only.
+
+**Problem.** After decision 11 a 25-run capture (six runs lost and a blip)
+could still give a wrong letter: 1,208 of 15,600 cases in S3-U07. Only five
+runs of the damaged end are seen, too few for the end check to see a shift.
+
+**Evidence used.** The blip that shifted the kept 20 runs is itself one of
+them, and it lasts as long as the noise. Noise at the sensor edge lasted
+19 to 40 ms on 2026-11-17; the shortest element in any recorded capture is
+59 to 60 ms (the 25-run Z, and one run on 2026-11-17).
+
+**Decision.** In a 24- to 26-run capture, every one of the 20 kept runs
+must last at least `run_min_us`, 50 ms in the firmware
+(`S3_BARCODE_RUN_MIN_US`); otherwise that side of the fallback is rejected.
+27- to 29-run captures keep decision 11's end check and are unchanged. The
+limit is a new `s3_scan_cfg_t` field; `s3_scan.c` stays free of time
+constants.
+
+**Rejected alternatives.** Limits relative to the capture's own narrow
+width (the shortest kept run at least half the median, or half the mean
+narrow run) also removed every wrong letter, but the recorded Z sits on or
+near those limits: with each run moved by one 10 ms sample it decoded in
+only 1,360 or 2,385 of 5,000 cases, against 5,000 with the fixed limit. At
+a third of the median, 172 wrong letters remained with 60 ms elements.
+Repairing the short run, as decision 9 does for 31 runs, was rejected in
+decision 9 itself (63 of 468 blurred frames became wrong letters).
+
+**Result** (host, [log](../testing/subsystem3/logs/2026-11-26_s3-f25-25run.txt)).
+No wrong letter at 25 runs: S3-U07 1,208 to 0; new S3-U08 0 of 86,112
+cases (blips of 10 to 40 ms, elements of 60 to 150 ms). The recorded Z
+decodes in all 600 one-sample variants of S3-U08, and the 19 replayed car
+captures are unchanged. Every fault class outside 24 to 26 runs is
+unchanged. Cost: +48 bytes of flash, no RAM, no extra stack.
+
+**Remaining.** A 25-run capture is now rejected, not guessed, when it has
+an element shorter than 50 ms: a narrow element blurred to 25 ms (it cannot
+be told from a 20 ms blip), or a print passed fast enough that a narrow
+element lasts under 50 ms (2.5 times faster than any recorded pass). A
+noise pulse of 50 ms or more looks like a real element, and no rule on
+these runs can separate the two. The limit assumes the line-follow speed
+of about 40 mm/s.
+
+Car test: not done.
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
@@ -1782,7 +1890,7 @@ and repeated measurements before marking a hardware case passed.
 
 ### 6. An overrun is not a fault at the 10 ms kernel tick (2026-11-12)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 Revises decision 3 for overruns. The kernel tick is 10 ms
 (`CNF_TIMER_PERIOD`), so each `tk_dly_tsk()` lasts 10 to 20 ms and the
 task cannot read every sample of the 100 Hz output. On the robot every
@@ -1805,7 +1913,7 @@ delay cannot be shorter than a tick. Now:
 
 ### 7. Installed IMU orientation (2026-11-12)
 
-Approved by Dalton on the integration branch. Seen from behind the
+Approved by the team on the integration branch. Seen from behind the
 car with the ultrasonic sensor facing away, the GY-511's X points left,
 Y backwards and Z up. This replaces decision 2's assumption of X forward.
 The terrain logic works in the vehicle's axes (x forward, y left, z up),
@@ -1817,7 +1925,7 @@ level reads sensor z +900 mg, nose up gives forward +190 mg (sensor y
 
 ### 8. Hump height from tilt and contact geometry (2026-11-12)
 
-Approved by Dalton on the integration branch. Replaces the
+Approved by the team on the integration branch. Replaces the
 pitch-then-descent state machine of decision 3 and the distance-based
 height of the brief: the course's speed humps are crossed by one wheel
 (the bench ramps are 50 mm wide; other groups test the same way), and a
@@ -1849,7 +1957,7 @@ S4-U23 to S4-U27 cover the four contacts and the pitch gate.
 
 ### 9. Short calibration, retried in place (2026-11-12)
 
-Approved by Dalton on the integration branch. In the first hump-pass run
+Approved by the team on the integration branch. In the first hump-pass run
 (`testing/subsystem4/logs/2026-11-12_s4-h08-one-wheel.txt`) S4 never
 calibrated: 200 samples took about 6 s, the car was being handled, and
 each calibration fault also closed the sensor for 1 s. Calibration now
@@ -1859,7 +1967,7 @@ and stale-data faults still restart it.
 
 ### 10. Tilt moving average and a longer hump limit (2026-11-13)
 
-Approved by Dalton on the integration branch. Revises decision 8's tilt
+Approved by the team on the integration branch. Revises decision 8's tilt
 filter and hump limit. Evidence is in `testing/subsystem4/TEST_LOG.md`
 (2026-11-13 rows) and `testing/subsystem4/logs/2026-11-13_*.txt`.
 
@@ -1891,7 +1999,7 @@ The rise threshold should be set from S4-H08 with a measured hump.
 
 ### 11. Right-wheel humps and a 6 mm rise (2026-11-13)
 
-Approved by Dalton on the integration branch. Revises decision 8's rise
+Approved by the team on the integration branch. Revises decision 8's rise
 threshold. Evidence: `testing/subsystem4/logs/2026-11-13_s4-h08-10mm.txt`
 (S4-H08).
 
@@ -1910,7 +2018,7 @@ threshold. Evidence: `testing/subsystem4/logs/2026-11-13_s4-h08-10mm.txt`
 
 ### 12. Height scaled to the 10 mm hump; humps only while driving (2026-11-13)
 
-Approved by Dalton on the integration branch. The course uses one hump,
+Approved by the team on the integration branch. The course uses one hump,
 10 mm high, under the right wheel.
 
 - **Scale.** S4-H08 read a mean of 11.75 mm for the 10 mm hump (decision
@@ -1936,7 +2044,7 @@ from line sensing.
 
 ### 13. Subsystem 4 integration, stage 3: highest hump in telemetry (2026-11-13)
 
-Approved by Dalton on the integration branch. The brief requires the
+Approved by the team on the integration branch. The brief requires the
 highest hump of the run to be reported.
 
 - **IF-18.** `subsystem4_get_status()` now copies S4's terrain result
@@ -1960,7 +2068,7 @@ highest hump of the run to be reported.
 
 ### 14. Impacts only while driving (2026-11-13)
 
-Approved by Dalton on the integration branch. Extends decision 12 to
+Approved by the team on the integration branch. Extends decision 12 to
 impacts: placing and carrying the car raised impact events between runs.
 `s4_terrain_set_detect_enable()` (renamed from
 `s4_terrain_set_hump_enable()`) now gates both. While disabled the impact
@@ -1970,7 +2078,7 @@ with `detect on` or `off`.
 
 ### 15. Stop when the car is picked up (2026-11-16)
 
-Approved by Dalton on the integration branch. The demo rubric requires the
+Approved by the team on the integration branch. The demo rubric requires the
 motors to stop when the car is picked up, which ends the demo. Subsystem 4
 reports a lift (`S4_TERRAIN_EVENT_LIFT`) when either:
 
@@ -2015,7 +2123,7 @@ bypass manoeuvres are not in that data.
 
 ### 16. No detection during the obstacle bypass (2026-11-20)
 
-Approved by Dalton on the integration branch. Revises decision 12's
+Approved by the team on the integration branch. Revises decision 12's
 driving modes.
 
 **Problem.** In the SYS-05/06/07 runs of 2026-11-20 every bypass ended in
@@ -2046,7 +2154,7 @@ bypass) and SYS-10 (lifts while following still stop the car).
 
 ### 17. Detect on the uncalibrated height, FOLLOW only; two-point calibration prepared (2026-11-25)
 
-Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change;
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision;
 revises decisions 11, 12 and 16.
 
 **Problem.** Decision 11 started a hump at 6 mm because floor bumps read up
@@ -2102,6 +2210,59 @@ S4-U43 (offset only on the reading; boundaries; floor at 0; invalid offset
 refused), S4-U44 (replay of the six logged drives). Car test pending: the
 calibration procedure in `app_program/subsystem4/README.md`, then SYS-04
 with a flat lap and a junction turn.
+
+### 18. Motion classification and encoder yaw rate (2026-11-26)
+
+Approved by the team on 2026-11-26. Later firmware revision; verified on
+the host only.
+
+**Problem.** The brief's Buddy 4 tasks include motion classification
+(stationary, accelerating, turning, climbing, descending, sudden impact),
+turn-rate monitoring and motion event reporting. Subsystem 4 reported only
+its terrain states and events.
+
+**Decision.** A pure module, `s4_motion_class.c`, classifies each IMU
+sample from inputs already present: Motion Control's wheel speeds (IF-17,
+read for the pitch gate), the terrain state and the impact event. It is
+observational: it commands nothing and leaves hump, impact and lift
+detection unchanged.
+
+| Priority | State | Condition | Source of the limit |
+|---|---|---|---|
+| 1 | unknown | no snapshot, or one older than 50 ms | the terrain logic's sample gap |
+| 2 | impact | impact event; held 3 samples | the confirmation count |
+| 3 | climbing / descending | on a hump; descending once more than 4 mm below the peak | the detector's rise-level band (6 - 2 mm) |
+| 4 | turning | \|encoder yaw\| at least 8 deg/s | above line correction (3.9 deg/s), below curves (14.4) and spins (29) |
+| 5 | stationary | both wheels at most 10 mm/s | Motion Control's `MC_STILL_MM_S` (checked at compile time) |
+| 6 | accelerating / braking | the pitch gate's window: mean speed changed by more than 15 mm/s between samples, plus 8 samples | decision 8 |
+| 7 | cruising | otherwise | — |
+
+A new state is taken after 3 samples of the same candidate; unknown and
+impact are taken at once. The yaw rate is (right - left) / track (119 mm),
+left positive as Motion Control's heading, in 0.1 deg/s. It is estimated
+from the wheel encoders: the LSM303DLHC has no gyroscope, and the
+magnetometer is not used, because motor interference is not measured
+(S4-H10). The pitch gate's arithmetic moved into `s4_speed_gate_step()`, so
+both use one rule; its behaviour is unchanged, except that a new run is now
+recognised after a failed snapshot read as well.
+
+Reported on the console on each change (`s4: motion turning (encoder yaw
+-28.9 deg/s)`), in IF-18 and in telemetry version 6 (S1 decision 9).
+
+**Limits.** Starting to follow at 40 mm/s stays under the 15 mm/s gate and
+reads as cruising; a STOP from line speed is still within a sample or two
+and reads as stationary. Turning and the speed states are from the
+encoders, so wheel slip reads as motion. The thresholds are derived from
+existing settings, not measured as classification criteria.
+
+**Verification** (host, [log](../testing/host/logs/2026-11-26_verify-motion-class.txt)). S4-U47 (speed gate),
+S4-U48 (yaw geometry and saturation), S4-U49 (every state, boundaries,
+priorities), S4-U50 (debounce, impact hold, stale and invalid input);
+INT-31 runs the real classifier on the real Motion Control status through
+a straight run, a junction turn and a bypass. Six mutations each fail a
+test. The car-log replay (S4-U44) is unchanged. Cost: 1,300 bytes of flash,
+8 bytes of RAM, 56 bytes more on the IMU task's deepest stack path. Car
+test pending: one run with the console captured.
 
 ## Subsystem 5 — Obstacle Scanning and Bypass Planning (Timothy)
 
@@ -2175,7 +2336,7 @@ Compare actual RAM, queue/payload sizes and timing against an unpacked reference
 
 ### 12. Ultrasonic power-up allowance (2026-11-17)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 **Problem.** Every cold start from the power bank (Robo Pico VIN) came up
 in Fault with a scan fault; boots after flashing or a reset button press
@@ -2202,7 +2363,7 @@ boot that comes up Ready.
 
 ### 13. The HC-SR04 stays on 3V3 (2026-11-17)
 
-Approved by Dalton on the integration branch.
+Approved by the team on the integration branch.
 
 The module is powered from the 3V3 rail, as wired in the team pin mapping of
 2026-11-03, and that is the agreed supply; the datasheet's 5 V figure is not

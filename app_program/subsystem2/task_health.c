@@ -12,6 +12,13 @@
 static volatile uint32_t g_health_last_ms[S2_HEALTH_TASKS];
 static volatile bool     g_health_seen[S2_HEALTH_TASKS];
 
+/* Ages above half the clock range are check-ins stamped after now_ms:
+   Motion Control reads the clock before the records, and a higher-priority
+   task (the S3 loop, the controller) can preempt it in between and check
+   in. They are fresh, not 2^32 ms old. A real stall is caught long before
+   its age reaches this (at most 1500 ms limits). */
+#define S2_HEALTH_AGE_MAX_MS    (UINT32_MAX / 2u)
+
 static uint32_t const g_health_limit_ms[S2_HEALTH_TASKS] =
 {
     S2_HEALTH_LIMIT_MS,         /* controller */
@@ -63,9 +70,10 @@ s2_health_evaluate (s2_health_record_t const p_records[S2_HEALTH_TASKS],
         for (uint32_t task = 0u; task < (uint32_t)S2_HEALTH_TASKS; task++)
         {
             /* Modulo 2^32 difference: correct across the clock wrap. */
-            if (p_records[task].b_seen
-                && ((now_ms - p_records[task].last_ms)
-                    > g_health_limit_ms[task]))
+            uint32_t const age_ms = now_ms - p_records[task].last_ms;
+
+            if (p_records[task].b_seen && (age_ms > g_health_limit_ms[task])
+                && (age_ms <= S2_HEALTH_AGE_MAX_MS))
             {
                 /* task < S2_HEALTH_TASKS (4), so the bit fits uint8_t. */
                 stalled = (uint8_t)(stalled | (1u << task));

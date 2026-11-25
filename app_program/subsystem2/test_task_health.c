@@ -17,7 +17,12 @@
  * only when its last check-in is more than its limit ago (500 ms; the S3
  * loop 1000 ms; the IMU 1500 ms): exactly the limit is not a stall, 1 ms
  * more is; the result is one bit per task; differences are taken across
- * the 32-bit clock wrap; NULL records give 0.
+ * the 32-bit clock wrap; NULL records give 0. Added 2026-11-26: a
+ * check-in stamped after now_ms is fresh, not a stall. Motion Control
+ * reads the clock before the records, so a higher-priority task (the S3
+ * loop at priority 1, the controller at 14) can preempt it in between
+ * and check in later than now_ms; before the fix that read as a check-in
+ * 2^32 ms old and latched a false MOTION_FAULT_TASK.
  */
 bool
 test_task_health_evaluate (void)
@@ -72,6 +77,18 @@ test_task_health_evaluate (void)
            && (0u == s2_health_evaluate(records, S2_HEALTH_LIMIT_MS - 100u))
            && (ctrl_bit
                == s2_health_evaluate(records, S2_HEALTH_LIMIT_MS - 99u));
+
+    /* Checked in after the guard read its clock: 10 ms (one tick) and
+       1 ms later are fresh, also across the wrap. The oldest age taken as
+       a stall is half the clock range. */
+    records[S2_HEALTH_CONTROLLER].last_ms = 5010u;
+    b_ok = b_ok && (0u == s2_health_evaluate(records, 5000u));
+    records[S2_HEALTH_CONTROLLER].last_ms = 0u;
+    b_ok = b_ok && (0u == s2_health_evaluate(records, UINT32_MAX));
+    records[S2_HEALTH_CONTROLLER].last_ms = 1u;
+    b_ok = b_ok
+           && (ctrl_bit == s2_health_evaluate(records, 0x80000000u))
+           && (0u == s2_health_evaluate(records, 0x80000001u));
 
     return (b_ok && (0u == s2_health_evaluate(NULL, 0u)));
 }

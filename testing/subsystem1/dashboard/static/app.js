@@ -53,6 +53,12 @@ function render(s) {
     set("right", t.motion_valid ? `${t.right_mm_s} mm/s` : DASH);
     set("dist", t.distance_valid ? `${t.distance_mm} mm` : DASH);
     set("heading", t.motion_valid ? `${(t.heading_cdeg / 100).toFixed(1)}°` : DASH);
+    // Version 6: S4's motion class and the encoder-estimated yaw rate
+    // (2 deg/s steps; no gyroscope on the car).
+    set("motionclass", t.version >= 6 && t.motion_class_name
+        ? t.motion_class_name : DASH);
+    set("yaw", t.version >= 6 && t.motion_class_name
+        ? `${t.yaw_deg_s}°/s` : DASH);
 
     const line = t.line_fresh ? t.line_name : null;
     $("sl").classList.toggle("black", line === "LEFT" || line === "BOTH");

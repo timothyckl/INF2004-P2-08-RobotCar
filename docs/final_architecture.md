@@ -113,7 +113,7 @@ flowchart LR
   S4["S4 terrain result<br/>under the S4 mutex"]
   S5["S5 scan status and telemetry<br/>under the S5 mutex"]
   RS["robot_state.c<br/>telemetry snapshot"]
-  WIFI["WiFi task<br/>32-byte frame"]
+  WIFI["WiFi task<br/>34-byte frame"]
 
   MC -->|"motion_get_status()"| CTRL
   MC -->|"motion_get_status() IF-17"| S4
@@ -295,7 +295,7 @@ sequenceDiagram
   R->>I: subsystem4_get_status() (IF-18), lock tried without waiting
   I-->>R: last, highest, count and valid flags
   R-->>W: telemetry snapshot
-  W->>W: encode the 32-byte version 5 frame
+  W->>W: encode the 34-byte version 6 frame
   W->>D: MQTT publish, binary
 ```
 
@@ -304,7 +304,7 @@ sequenceDiagram
 | Sensor | Principle | Resolution / range | Calibration | Main error sources | Mitigation in software | Evidence |
 |---|---|---|---|---|---|---|
 | Front IR | Reflected infrared; black absorbs | 12-bit ADC; white about 100–300, black about 1,500–3,300 | Adaptive white baseline with fixed black and white margins (hysteresis) | Height and angle to the floor, ambient light, faded tape | Baseline tracks slow change; 3-sample filter; strength-based steering | S3-H01, H02; SYS-01 |
-| Barcode IR | As above, side-mounted | Bar timing resolution **20 ms** (0.8 mm at 40 mm/s) | White 154–184 measured at the old height; margins 400/300 | Spot size against small bars, height, wrinkled paper, speed change over the code | Midpoint split per capture; one-element correction; reject rather than guess | S3-U02; demo report D-01 |
+| Barcode IR | As above, side-mounted | Bar timing resolution 10 ms (0.4 mm at 40 mm/s); 20 ms in the demo firmware (F-01) | White 154–184 measured at the old height; margins 400/300 | Spot size against small bars, height, wrinkled paper, speed change over the code | Midpoint split per capture; one-element correction; blip repair in 31-run captures; damaged-end and short-run checks reject a doubtful capture (S3 d9, d11, d12) | S3-U02; demo report D-01 |
 | Encoders | Quadrature pulses from the motor encoders (type not recorded) | 0.16 mm per count | Effective circumference 217.6 mm on the course floor (S2 d31) | Wheel slip, floor surface (±4% between floors) | Sequence-locked snapshots; invalid-snapshot and stall faults | S2-H07, H10 |
 | LSM303DLHC | MEMS accelerometer | 1 mg per count, ±2 g, 100 Hz | 50 still samples, spread ≤ 80 mg | Acceleration read as tilt, vibration, no gyroscope | Pitch ignored while speed changes; 16-sample average; 6 mm rise; scale 0.851 | S4-H07, H08; S4-U41 |
 | HC-SR04 | 40 kHz echo time of flight | 20 mm to 4 m; 1 mm from integer maths | 3V3 supply; 0.5 s power-up allowance | Wide beam (about 21° effective half-angle, S2 d18), angled surfaces, missing echoes | Median of 3 per angle; beam allowance on edges; invalid/stale count as unsafe | SYS-05; S2 d18 |
@@ -337,9 +337,9 @@ have.
 |---|---|---|
 | Flash | Application 48,024 bytes of 374,410 in the image (12.8%) | `-O2`, `-ffunction-sections -fdata-sections` with `-Wl,--gc-sections` (unused code removed) |
 | Static RAM | Application 2,017 bytes; whole image 80,120 bytes (30% of 264 KB) | Fixed buffers; the application never calls `malloc` or `free` |
-| Stacks | 4 × 2,048 bytes for application tasks; initial task 4,096. Static estimate of the deepest application call chain (GCC `-fstack-usage` and call graph, [log](../testing/host/logs/2026-11-25_stack-usage.txt)): S3 loop 1,872, controller 1,016, motion 768, IMU 632, scan 392 bytes, not counting kernel, SDK or `tm_printf` frames | Sized for `tm_printf` (about 1 KB, `app.h`) and the barcode decoder's copies. The controller has the least margin: its 632-byte frame plus a `tm_printf` call leaves roughly 400 bytes; no run-time high-water mark has been measured (review F-24) |
+| Stacks | 4 × 2,048 bytes for application tasks; initial task 4,096. Static estimate of the deepest application call chain (GCC `-fstack-usage` and call graph, `tools/stack_estimate.py`, [log](../testing/host/logs/2026-11-26_verify-motion-class.txt)): S3 loop 1,928, controller 1,008, motion 800, IMU 688, scan 392 bytes, not counting kernel, SDK or `tm_printf` frames | Sized for `tm_printf` (about 1 KB, `app.h`) and the barcode decoder's copies. The controller has the least margin: its 632-byte frame plus a `tm_printf` call leaves roughly 400 bytes; no run-time high-water mark has been measured (review F-24) |
 | Processing | No floating point; integer and fixed-point units (µm, mg, mdeg, per mille); a sine table for scan geometry | The Cortex-M0+ has no FPU |
-| Communication | 32-byte binary frame per second (about 256 bit/s; version 5 since 2026-11-26, 31 bytes in the demo); commands as short text | Compact, versioned, decoded by the dashboard |
+| Communication | 34-byte binary frame per second (about 272 bit/s; version 6, 31 bytes in the demo); commands as short text | Compact, versioned, decoded by the dashboard |
 | Power | Not measured. Tasks block between periods; WiFi power save is off by choice (S1 d4) to keep latency low | — |
 
 Details and the bit-level analysis are in [data_widths.md](data_widths.md).
@@ -355,7 +355,7 @@ table.
 | Autonomy | Line following, barcode decoding, hump measurement, obstacle scanning and bypass planning all run locally |
 | No dependence on the network | The car kept following for over 4 minutes with the link lost (SYS-01, 2026-11-20) |
 | Low latency for safety | STOP from a local source reaches the motors in under 1 ms (S2-H11); a network round trip would add an unbounded delay |
-| Low bandwidth | Raw data (ADC samples at 100 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 32-byte summary per second leaves it |
+| Low bandwidth | Raw data (ADC samples at 100 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 34-byte summary per second leaves it |
 | Safe degradation | Losing WiFi clears the `link up` flag and nothing else (Tribunal 2 Entry 20) |
 | Privacy and exposure | No camera or location data exists; only run state and summary values leave the car, and the broker runs on the team laptop over a private hotspot. Credentials stay in the untracked `config/wifi_secrets.h` |
 | Working within resource limits | 264 KB SRAM and one core, so processing is integer-only and fixed-size: about 2 KB application RAM, no heap, no floating point (section 8) |

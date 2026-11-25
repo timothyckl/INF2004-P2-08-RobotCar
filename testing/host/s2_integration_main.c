@@ -57,6 +57,7 @@
 #include "../../app_program/subsystem3/s3_nav.h"
 #include "../../app_program/subsystem4/subsystem4.h"
 #include "../../app_program/subsystem4/s4_config.h"
+#include "../../app_program/subsystem4/s4_motion_class.h"
 #include "../../app_program/subsystem5/include/scan_telemetry.h"
 #include "../../app_program/subsystem5/include/bypass_plan.h"
 #include "../../app_program/subsystem5/include/forward_monitor.h"
@@ -95,6 +96,9 @@ EXPORT ID motion_q = 0;
 #define SIM_LOOK_MS         300u    /* one side look (model) */
 #define SIM_HAZARD_MM       250u    /* g_task_hazard_mm */
 #define SIM_FRESH_US        150000u /* g_task_fresh_us */
+#define SIM_FWD_OK          0u      /* forward readings as the geometry */
+#define SIM_FWD_INVALID     1u      /* every reading invalid */
+#define SIM_FWD_SILENT      2u      /* no readings: the last one goes stale */
 #define SIM_CLEAR_MM        500u    /* g_task_clear_mm */
 #define SIM_RANGE_MM        4000.0  /* no echo: beyond range */
 
@@ -159,6 +163,19 @@ typedef struct
     uint32_t follow_on;         /* of those, with detection on */
 } sim_gate_t;
 
+/* S4 motion classification on the real Motion Control status, as the IMU
+   task does every sample (S4 decision 18); its result is S4's IF-18. */
+typedef struct
+{
+    s4_speed_gate_t        gate;
+    s4_motion_classifier_t cls;
+    s4_terrain_result_t    result;      /* returned by subsystem4_get_status */
+    uint16_t               seen[8];     /* per S2_MODE_*: bit per S4_MOTION_* */
+    uint32_t               samples;
+    int16_t                yaw_min;     /* while classified turning */
+    int16_t                yaw_max;
+} sim_class_t;
+
 typedef struct
 {
     motion_t      motion;
@@ -181,6 +198,9 @@ typedef struct
     uint32_t      scan_answer_ms;
     bool          b_still_at_authorise; /* stop-before-scan held */
     uint32_t      authorise_count;
+    uint32_t      authorise_moving; /* AUTHORISE sent with wheels moving */
+    uint8_t       fwd_fault;        /* SIM_FWD_*: forward sensor fault */
+    bool          b_scan_mute;      /* S5 never answers scans or looks */
     uint32_t      navigate_periods; /* periods seen in NAVIGATE */
     uint32_t      scan_periods;     /* periods seen in SCAN */
     int32_t       max_speed_after_stop;
@@ -192,6 +212,7 @@ typedef struct
     bool          b_flag_seen;      /* barcode-active flag reported */
     sim_box_t     box;
     sim_gate_t    gate;
+    sim_class_t   s4;
 } sim_t;
 
 static sim_t g_sim;
@@ -225,6 +246,7 @@ static unsigned int g_failed = 0u;
 
 static void sim_check (bool b_ok, char const * p_id, char const * p_name);
 static void sim_init (sim_track_t const * p_track);
+static void sim_s4_classify (s2_robot_state_t const * p_state);
 static void sim_step (void);
 static void sim_run_ms (uint32_t duration_ms);
 static bool sim_run_until (bool (*p_done)(void), uint32_t limit_ms);
@@ -326,10 +348,49 @@ scan_telemetry_get (scan_telemetry_t * p_out)
 ER
 subsystem4_get_status (s4_terrain_result_t * p_result)
 {
-    s4_terrain_result_t const zero = {0};
-
-    *p_result = zero;
+    *p_result = g_sim.s4.result;
     return (E_OK);
+}
+
+/* One IMU sample of S4's motion classification (task_imu.c s4_classify),
+   on the real Motion Control status; terrain is monitoring and level (no
+   hump or impact is modelled here: the S4 unit tests cover them). */
+static void
+sim_s4_classify (s2_robot_state_t const * p_state)
+{
+    s4_motion_class_config_t const cfg = s4_motion_config_mission();
+    motion_status_t status;
+    s4_motion_input_t input = {0};
+    s4_motion_class_t state;
+
+    (void)motion_get_status(&status);
+    (void)s4_speed_gate_step(&g_sim.s4.gate,
+                             ((int32_t)status.left_mm_s
+                              + (int32_t)status.right_mm_s) / 2,
+                             S4_PITCH_DV_MM_S, S4_PITCH_HOLD_SAMPLES);
+    input.left_mm_s = status.left_mm_s;
+    input.right_mm_s = status.right_mm_s;
+    input.age_ms = g_sim.now_ms - status.captured_ms;
+    input.b_motion_valid = true;
+    input.speed_change = g_sim.s4.gate.direction;
+    input.b_terrain_valid = true;
+    state = s4_motion_class_step(&g_sim.s4.cls, &cfg, &input);
+    g_sim.s4.result.state = S4_TERRAIN_STATE_MONITORING;
+    g_sim.s4.result.motion_class = state;
+    g_sim.s4.result.yaw_rate_ddeg_s = g_sim.s4.cls.yaw_ddeg_s;
+    if (p_state->mode < 8u)
+    {
+        g_sim.s4.seen[p_state->mode] = (uint16_t)(g_sim.s4.seen[p_state->mode]
+                                                  | (1u << state));
+    }
+    if (S4_MOTION_TURNING == state)
+    {
+        g_sim.s4.yaw_min = (g_sim.s4.cls.yaw_ddeg_s < g_sim.s4.yaw_min)
+                           ? g_sim.s4.cls.yaw_ddeg_s : g_sim.s4.yaw_min;
+        g_sim.s4.yaw_max = (g_sim.s4.cls.yaw_ddeg_s > g_sim.s4.yaw_max)
+                           ? g_sim.s4.cls.yaw_ddeg_s : g_sim.s4.yaw_max;
+    }
+    g_sim.s4.samples++;
 }
 
 /* ------------------------------------------------------------------------
@@ -430,6 +491,7 @@ sim_step (void)
             g_sim.gate.follow_on++;
         }
         g_sim.gate.follow_samples += b_following ? 1u : 0u;
+        sim_s4_classify(&gate_state);
     }
 
     if (!g_sim.b_controller_blocked)
@@ -747,6 +809,10 @@ sim_s5_period (void)
             g_sim.scan_since_ms = g_sim.now_ms;
             g_sim.b_still_at_authorise = motion_stop_confirmed();
             g_sim.authorise_count++;
+            if (!g_sim.b_still_at_authorise)
+            {
+                g_sim.authorise_moving++;
+            }
         }
         else if ((S2_SCAN_LOOK == cmd.kind) && g_sim.box.b_on)
         {
@@ -769,7 +835,7 @@ sim_s5_period (void)
         }
     }
 
-    if (g_sim.b_scan_authorised
+    if (g_sim.b_scan_authorised && (!g_sim.b_scan_mute)
         && ((g_sim.now_ms - g_sim.scan_since_ms) >= SIM_SCAN_MS))
     {
         g_sim.scan_answer_id = g_sim.scan_request;
@@ -829,7 +895,8 @@ sim_box_period (void)
         p_box->min_clear_mm = clear_mm;
     }
 
-    if (p_box->b_look_pending && (g_sim.now_ms >= p_box->look_due_ms))
+    if (p_box->b_look_pending && (!g_sim.b_scan_mute)
+        && (g_sim.now_ms >= p_box->look_due_ms))
     {
         p_box->look_mm = (uint16_t)lround(sim_ray_mm(p_box->look_angle));
         p_box->look_result = SCAN_TASK_LOOK_DONE;
@@ -847,8 +914,20 @@ sim_box_period (void)
 
         p_box->next_fwd_ms = g_sim.now_ms + SIM_FWD_PERIOD_MS;
         p_box->forward_mm = (uint16_t)lround(sim_ray_mm(0));
-        forward_monitor_sample(&p_box->monitor, true, p_box->forward_mm,
-                               now_us);
+        if (SIM_FWD_INVALID == g_sim.fwd_fault)
+        {
+            /* No echo, or one out of range: scan_task.c samples invalid. */
+            forward_monitor_sample(&p_box->monitor, false, 0u, now_us);
+        }
+        else if (SIM_FWD_OK == g_sim.fwd_fault)
+        {
+            forward_monitor_sample(&p_box->monitor, true,
+                                   p_box->forward_mm, now_us);
+        }
+        else
+        {
+            /* SIM_FWD_SILENT: no sample at all, so the last one ages. */
+        }
         p_box->b_hazard = (FORWARD_MONITOR_SAFE
                            != forward_monitor_check(&p_box->monitor, &cfg,
                                                     now_us));

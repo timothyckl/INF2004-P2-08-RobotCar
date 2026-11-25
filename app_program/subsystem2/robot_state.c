@@ -116,6 +116,10 @@ robot_read_telemetry (void * p_context,
                           b_hump ? hump.current_height_mm : 0u,
                           b_hump && hump.b_current_height_valid,
                           b_hump ? hump.hump_count : 0u);
+    /* S4 motion class and encoder yaw rate (IF-18, telemetry version 6):
+       unknown while the S4 status is unavailable. */
+    p_snapshot->motion_class = b_hump ? hump.motion_class : 0u;
+    p_snapshot->yaw_ddeg_s = b_hump ? hump.yaw_rate_ddeg_s : 0;
     s2_telemetry_add_scan(p_snapshot, b_scan ? &scan : NULL);
 
     return (true);

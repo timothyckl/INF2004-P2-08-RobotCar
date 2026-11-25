@@ -10,7 +10,7 @@ The defaults below may be overridden in `config/wifi_secrets.h`:
 | Direction | Topic | QoS | Retained | Payload |
 |---|---|---:|---:|---|
 | Broker to robot | `p2-08/p2-08-car-01/command` | 1 | no | Exactly `START`, `STOP` or `RESET`, or a barcode letter assignment `L=A`, `R=A`, `S=A` or `U=A` (any letter `A`–`Z`; S1 decision 6) |
-| Robot to broker | `p2-08/p2-08-car-01/telemetry` | 0 | no | 32-byte binary frame, version 5 (S1 decision 8; the demo ran version 4) |
+| Robot to broker | `p2-08/p2-08-car-01/telemetry` | 0 | no | 34-byte binary frame, version 6 (S1 decision 9; the demo ran version 4) |
 | Robot to broker | `p2-08/p2-08-car-01/heartbeat` | 0 | no | ASCII `hb N`, every 5 s |
 | Robot to broker | `p2-08/p2-08-car-01/stats` | 0 | no | ASCII telemetry counters since boot, every 10 s (S1 decision 4) |
 
@@ -21,13 +21,13 @@ straight (`S`) or U-turn (`U`) in subsystem 3's table, until the car
 restarts. A received command does not write motor PWM and does not bypass
 the Vehicle Controller.
 
-The telemetry frame is version 4 (`docs/decisions.md`, subsystem 1,
-decisions 1, 5 and 7), little-endian. The authoritative byte layout is the comment in
+The telemetry frame is version 6, 34 bytes (`docs/decisions.md`, subsystem 1,
+decisions 1, 5, 7, 8 and 9), little-endian; the demo ran version 4 (31 bytes). The authoritative byte layout is the comment in
 `telemetry_encoder.h`; the decision lists every code. Summary:
 
 | Bytes | Content |
 |---:|---|
-| 0 | Format version (`4`) |
+| 0 | Format version (`6`) |
 | 1 | flags0: distance valid, stopped, MQTT link up, STOP latched, motion valid, line fresh, hump valid, last hump valid |
 | 2-5 | Snapshot time in milliseconds (`uint32_t`) |
 | 6-7 | Run distance in millimetres (`uint16_t`) |
@@ -40,6 +40,9 @@ decisions 1, 5 and 7), little-endian. The authoritative byte layout is the comme
 | 28 | Stop cause while STOP is latched (4 bits), barcode count (4 bits, wraps) |
 | 29 | Last completed hump in millimetres (`uint8_t`, saturated) |
 | 30 | Humps measured this run (`uint8_t`, saturates) |
+| 31 | Motion fault detail (3 bits), command held for the next junction (3 bits), junctions confirmed (low 2 bits, wraps) |
+| 32 | S4 motion class (4 bits, 0 unknown) |
+| 33 | Encoder-estimated yaw rate (`int8_t`, 2 deg/s per count, left positive; 0 while the class is unknown) |
 
 A field is zero whenever its validity flag is clear. Bytes 0-7 keep their
 version 1 meaning and bytes 1-26 their version 2 meaning.

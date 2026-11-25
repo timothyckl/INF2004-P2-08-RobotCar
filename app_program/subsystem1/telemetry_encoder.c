@@ -21,6 +21,7 @@ static void    put_u32 (uint8_t * p_out, uint32_t value);
 static uint8_t flag_if (bool b_set, uint8_t flag);
 static uint8_t pack_diag (uint8_t motion_fault, uint8_t held,
                           uint8_t junctions);
+static uint8_t pack_yaw (uint8_t motion_class, int16_t yaw_ddeg_s);
 
 size_t telemetry_encoder_encode (
     const telemetry_encoder_snapshot_t * p_snapshot,
@@ -97,10 +98,29 @@ size_t telemetry_encoder_encode (
         p_output[30] = p_s->hump_count;
         p_output[31] = pack_diag(p_s->motion_fault, p_s->nav_held,
                                  p_s->junction_count);
+        p_output[32] = pack_codes(p_s->motion_class, 0u);
+        p_output[33] = pack_yaw(p_s->motion_class, p_s->yaw_ddeg_s);
         written = TELEMETRY_ENCODER_SIZE;
     }
 
     return written;
+}
+
+/** @brief Version 6 yaw rate: 0.1 deg/s to 2 deg/s per count, rounded half
+ *  away from zero, saturated at +/-127, and 0 while the class is unknown. */
+static uint8_t pack_yaw (uint8_t motion_class, int16_t yaw_ddeg_s)
+{
+    /* Widening: yaw is int16_t, so +/-10 fits int32_t. */
+    int32_t const yaw = (int32_t)yaw_ddeg_s;
+    int32_t counts = (yaw >= 0) ? ((yaw + 10) / 20) : ((yaw - 10) / 20);
+
+    counts = (counts > INT8_MAX) ? INT8_MAX : counts;
+    counts = (counts < -INT8_MAX) ? -INT8_MAX : counts;
+    counts = (0u == motion_class) ? 0 : counts;
+
+    /* counts is -127..127; its two's-complement byte is the int8_t on the
+       wire: adding 256 to a negative value keeps it in 129..255. */
+    return (uint8_t)((counts < 0) ? (counts + 256) : counts);
 }
 
 /** @brief Two codes in one byte; an out-of-range code becomes INVALID. */

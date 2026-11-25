@@ -63,6 +63,10 @@ typedef struct
     uint8_t  nav_held;          /* S2_NAV_* held for the next junction,
                                    0 none (version 5) */
     uint8_t  junction_count;    /* junctions confirmed, wraps (version 5) */
+    uint8_t  motion_class;      /* S4_MOTION_* 0..8, 0 unknown (version 6) */
+    int16_t  yaw_ddeg_s;        /* encoder-estimated yaw rate, 0.1 deg/s,
+                                   left positive; with motion_class
+                                   (version 6) */
     bool     b_distance_valid;
     bool     b_stopped;           /* both wheels confirmed still */
     bool     b_link_up;           /* set by subsystem 1 */

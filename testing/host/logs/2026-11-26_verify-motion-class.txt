@@ -1,0 +1,114 @@
+# Verification, 2026-11-26, fix/final-refinement at 4ddbb17: S4 motion classification and encoder yaw rate (S4 d18), telemetry v6 (S1 d9)
+# Windows 11: host gcc 15.2.0 (MSYS2 UCRT64); target arm-none-eabi-gcc 15.2.1 (Arm GNU Toolchain 15.2.Rel1, Pico SDK 2.3.0), clean LF worktree.
+# Host evidence and simulation only; not run on the car.
+
+## 1. make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] subsystem2 SUMMARY 56 passed, 0 failed
+787 checks, 0 failures
+[TEST] S4-U45 PASS  detection gate: on after the settle count of FOLLOW only; any other sample reloads it
+[TEST] S4-U46 PASS  invalid samples mid-hump: fault, no hump or lift, run maximum and count kept
+[TEST] S4-U47 PASS  speed gate: over 15 mm/s opens a 9-sample window with its direction; a failed read keeps it
+[TEST] S4-U48 PASS  encoder yaw: (right - left) / track, left positive, rounded, saturated
+[TEST] S4-U49 PASS  motion class: every state, its boundary and the priority order
+[TEST] S4-U50 PASS  motion class: 3-sample debounce, impact held, unknown at once on stale or missing input
+[TEST] subsystem4 SUMMARY 44 passed, 0 failed
+[TEST] S4-U44 PASS  2026-11-13_s4-h08-gated.txt: car [11, 10, 10, 9], replay [11, 10, 10, 9]
+[TEST] S4-U44 PASS  2026-11-13_s4-if18.txt: car [9, 9], replay [9, 9]
+[TEST] S4-U44 PASS  2026-11-17_s3-nav-drive-2.txt: car [], replay []
+[TEST] S4-U44 PASS  2026-11-17_s3-nav-drive-3.txt: car [], replay []
+[TEST] S4-U44 PASS  2026-11-17_s3-nav-drive-4.txt: car [], replay []
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] INT-16 PASS  v6 frame: STRAIGHT held, no junction yet
+[HOST] INT-16 PASS  after the junction: nothing held, count 1
+[HOST] INT-16 PASS  stalled task: fault motion, detail 7 (task)
+[HOST] INT-31 PASS  straight: stationary, then cruising; never turning
+[HOST] INT-31 PASS  v6 frame carries the class and yaw rate
+[HOST] INT-31 PASS  RIGHT turn: turning at about -29 deg/s; step accelerating and braking
+[HOST] INT-31 PASS  obstacle: stationary for the scan; bypass accelerating, braking and turning
+[HOST] s2 integration SUMMARY 64 passed, 0 failed
+[HOST] all suites passed
+(exit status 0)
+
+## 2. dashboard unit tests
+Ran 29 tests in 0.003s
+
+OK
+
+## 3. builds (make -B NET=lwip MQTT=1 S3_NAV_F=0 <option>)
+mission: exit status 0, warnings 0
+TEST=1: exit status 0, warnings 0
+TEST=1 S3_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S3_LINE_TEST=1: exit status 0, warnings 0
+TEST=1 S2_CAL_TEST=1: exit status 0, warnings 0
+TEST=1 S2_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S4_HW_TEST=1: exit status 0, warnings 0
+S2_MOTION_LOG=1: exit status 0, warnings 0
+S5_RANGE_DIAG=1: exit status 0, warnings 0
+S4_RAW_LOG=1: exit status 0, warnings 0
+S2_WATCHDOG=1: exit status 0, warnings 0
+size (text data bss dec hex file):  378202	    132	  90940	 469274	  7291a	mtk3pico_smp0_usb_cdc_wifi_lwip_mqtt.elf
+  before (2468513, same compiler): text 376902, data 132, bss 90932
+
+## 4. target_static_check.py (PYTHONUTF8=1)
+== strict warnings: 0 in application code, 121 in third-party headers
+== gcc -fanalyzer: 1 in application code, 0 in third-party headers
+  app_program/subsystem3/s3_nav.c:49: buffer overflow [CWE-787]
+(the -fanalyzer finding is F-12, a reviewed false positive)
+
+## 5. BARR-C checkers
+      1  1.6a cast to UB * for tm_printf (interface-required)
+    530  1.6a cast with an associated comment (production)
+     82  1.6a cast with an associated comment (test)
+      0  1.7a auto
+      0  1.7b register
+      0  1.7c goto
+      7  1.7d continue (preferred practice)
+      0  3.5a tab character
+      0  4.2 header without an include guard
+     12  6.2a function over 100 lines
+      4  7.1e variable name under 3 characters (production)
+    143  7.1e variable name under 3 characters (test)
+      3  7.1k pointer variable not named p_...
+      1  7.1m bool variable not named b_... (production)
+BARR-C check passed: 46 subsystem 5 files.
+
+## 6. tools/stack_estimate.py
+s3_follow_run: 1928 bytes via s3_follow_run 600 > s3_barcode_update 24 > s3_scan_poll 24 > s3_scan_decode_31 320 > s3_scan_decode_partial 568 > s3_scan_decode_frame 328 > s3_bar_decode 64
+controller_task: 1008 bytes via controller_task 608 > run_summary 72 > robot_read_telemetry 112 > scan_telemetry_get 200 > scan_task_get 16
+motion_task: 800 bytes via motion_task 272 > motion_init 512 > pid_init 16
+s4_imu_task: 688 bytes via s4_imu_task 552 > s4_lsm303_open 72 > s4_lsm303_read_identity 64
+obstacle_scan_task: 392 bytes via obstacle_scan_task 272 > scan_engine_process 40 > scan_engine_complete 56 > scan_engine_abort 24
+
+## 7. mutations (each restored afterwards; each must fail a test)
+== mutation: yaw sign flipped (left - right)
+suite exit status 2
+[TEST] S4-U48 FAIL  encoder yaw: (right - left) / track, left positive, rounded, saturated   (../../app_program/subsystem4/subsystem4_test.c
+[TEST] S4-U50 FAIL  motion class: 3-sample debounce, impact held, unknown at once on stale or missing input   (../../app_program/subsystem4/
+[HOST] INT-31 FAIL  RIGHT turn: turning at about -29 deg/s; step accelerating and braking
+== mutation: stationary checked before turning
+suite exit status 2
+[TEST] S4-U49 FAIL  motion class: every state, its boundary and the priority order   (../../app_program/subsystem4/subsystem4_test.c:190)
+== mutation: no debounce
+suite exit status 2
+[TEST] S4-U50 FAIL  motion class: 3-sample debounce, impact held, unknown at once on stale or missing input   (../../app_program/subsystem4/
+== mutation: stale snapshot accepted
+suite exit status 2
+[TEST] S4-U50 FAIL  motion class: 3-sample debounce, impact held, unknown at once on stale or missing input   (../../app_program/subsystem4/
+== mutation: descending band ignored (any drop below the peak)
+suite exit status 2
+[TEST] S4-U49 FAIL  motion class: every state, its boundary and the priority order   (../../app_program/subsystem4/subsystem4_test.c:190)
+== mutation: yaw byte not zeroed while the class is unknown
+suite exit status 2
+S1-U05 telemetry: FAIL
+
+## 8. evidence integrity (SHA-256 of the committed files; this Windows checkout converts
+##    their line endings to CRLF on disk, so they are hashed from git)
+2d8456242367b7f011a81f1df6d5eb6ce1ab495fd6c094fef64c803c0bf2cf5c  testing/system/logs/2026-11-24_demo-dashboard-1.jsonl
+4e45008633ee0749180ffca8f17bb0391597f1152dd417d43d95cb0a3f5b3441  testing/system/logs/2026-11-24_demo-dashboard-2.jsonl
+recorded: 2d845624...cf5c (dashboard-1), 4e450086...3441 (dashboard-2): match
+tag demo-2026-11-24 -> 4a53c23
+tag demo-2026-11-24-flashed -> a41c19c

@@ -69,7 +69,9 @@ void s2_health_read (s2_health_record_t p_records[S2_HEALTH_TASKS]);
 /**
  * Pure: bit (1 << task) set for each task that has been seen and whose
  * last check-in is more than its limit before now_ms. Wrap-safe (modulo
- * 2^32 differences); a task never seen is not monitored.
+ * 2^32 differences); a check-in stamped after now_ms (the caller was
+ * preempted between reading the clock and the records) is fresh; a task
+ * never seen is not monitored.
  */
 uint8_t s2_health_evaluate (
     s2_health_record_t const p_records[S2_HEALTH_TASKS], uint32_t now_ms);

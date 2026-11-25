@@ -136,5 +136,6 @@ above on it with its commit in every row. These parts need particular attention:
 | F-04: hump detection on the uncalibrated height, FOLLOW only (S4 d17) | SYS-04 with ruler heights | Each hump detected; then fit the scale and offset with `testing/subsystem4/fit_hump_calibration.py` (blocked until these measurements exist) |
 | F-08: liveness guard (S2 d37) | SYS-09 with no `[S2] health:` line; then one `S2_WATCHDOG=1` run | No false trip on healthy tasks; the watchdog stays off by default until this passes |
 | F-06: telemetry version 5 (S1 d8) | SYS-08 | Fault detail, held command and junction count match the run |
+| Motion class and encoder yaw (S4 d18, S1 d9) | SYS-08 with the console captured | Classes on the dashboard match the run (stationary at START, turning in spins, climbing and descending on the hump) |
 | F-24: task stack high-water marks | Any full run | The `stack` lines at the run summary; at least 25% of each stack never used |
 

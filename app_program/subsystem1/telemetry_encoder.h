@@ -1,11 +1,11 @@
 /**
  * @file telemetry_encoder.h
- * @brief Telemetry wire format, version 5 (S1 decisions 1, 5, 7 and 8).
+ * @brief Telemetry wire format, version 6 (S1 decisions 1, 5, 7, 8 and 9).
  *
- * 32 bytes, multi-byte fields little-endian:
+ * 34 bytes, multi-byte fields little-endian:
  *
  *   Byte   Field
- *   0      version (4)
+ *   0      version (6)
  *   1      flags0: bit 0 distance valid, 1 stopped, 2 MQTT link up,
  *                  3 STOP latched, 4 motion valid, 5 line fresh,
  *                  6 hump valid, 7 last hump valid
@@ -35,10 +35,15 @@
  *          (MOTION_FAULT_* 0..7, while fault is motion, else 0),
  *          bits 3-5 command held for the next junction (S2_NAV_* 0..4;
  *          7 invalid), bits 6-7 junctions confirmed (low 2 bits, wraps)
+ *   32     motion class (version 6): bits 0-3 S4_MOTION_* (0 unknown,
+ *          1..8; above 14 sent as 15), bits 4-7 zero
+ *   33     encoder-estimated yaw rate (version 6) int8_t, 2 deg/s per
+ *          count, left positive, saturated at +/-127; 0 while the motion
+ *          class is unknown. Not an IMU (gyroscope) measurement.
  *
  * Bytes 0-7 keep their version 1 positions and meanings; bytes 1-26 keep
- * their version 2 ones, 27-28 their version 3 ones and 29-30 their
- * version 4 ones. Width raw is set
+ * their version 2 ones, 27-28 their version 3 ones, 29-30 their
+ * version 4 ones and 31 its version 5 one. Width raw is set
  * only when shape valid is not. A letter outside 'A'..'Z' is sent as 31 and a
  * command above 6 as 7 (invalid), never masked.
  */
@@ -50,8 +55,8 @@
 
 #include "telemetry_snapshot.h"
 
-#define TELEMETRY_ENCODER_SIZE           32u
-#define TELEMETRY_ENCODER_VERSION        5u
+#define TELEMETRY_ENCODER_SIZE           34u
+#define TELEMETRY_ENCODER_VERSION        6u
 
 /* flags0 (byte 1) */
 #define TELEMETRY_ENCODER_DISTANCE_VALID 0x01u

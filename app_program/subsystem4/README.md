@@ -42,6 +42,7 @@ the [Pico W datasheet](../../docs/datasheets/pico_w_datasheet.pdf), and the
 |---|---|
 | `drv_lsm303dlhc.c` | I2C identity, configuration, status, burst read, decoding |
 | `terrain_logic.c` | Hardware-independent calibration, filtering, state and faults |
+| `s4_motion_class.c` | Hardware-independent motion classification, encoder yaw rate and the shared speed-change gate (decision 18) |
 | `task_imu.c` | data-ready polling each kernel tick, retry/recovery, event reporting |
 | `subsystem4.c` | Lifecycle and mutex-protected public snapshot |
 | `subsystem4_test.c` | On-target synthetic and driver-decode tests |
@@ -163,9 +164,9 @@ evidence table are in the [subsystem 4 test log](../../testing/subsystem4/TEST_L
   and recalibrate.
 - Unstable stationary calibration restarts calibration in place; the sensor
   is not reopened. Neither recovery path requests vehicle movement.
-- An accelerometer overrun is not a fault: the kernel tick is 10 ms, so
-  reads are 10 to 20 ms apart and the newest of the 100 Hz samples is read
-  (decision 6).
+- An accelerometer overrun is not a fault: the kernel tick is 10 ms and
+  `tk_dly_tsk(10)` lasts two or three ticks, so reads are 20 or 30 ms apart
+  (review F-26) and the newest of the 100 Hz samples is read (decision 6).
 - A missing data-ready indication is polled again on the next period and
   is not immediately treated as a sensor failure.
 
@@ -176,8 +177,9 @@ evidence table are in the [subsystem 4 test log](../../testing/subsystem4/TEST_L
   (S4-H08, 9 to 11 mm). Impact behaviour, temperature and other hump heights
   are not verified.
 - The LSM303DLHC has an accelerometer and magnetometer but no gyroscope. The
-  magnetometer is used only for identity checking; heading and turn rate are
-  not implemented.
+  magnetometer is used only for identity checking. The yaw rate is
+  estimated from the wheel encoders (decision 18), not measured by the IMU;
+  heading comes from Motion Control's odometry.
 - Linear acceleration and vibration contaminate gravity-derived tilt. The
   moving average, pitch gate and driving gate (decisions 10 and 12) reduce
   them; at speeds well above line following (about 180 mm/s) vibration
@@ -231,11 +233,25 @@ been re-tested on the car. The evidence supports the measured 10 mm hump
 case, while general terrain classification, impact behaviour and reliable
 pick-up detection remain unverified.
 
-The brief also lists motion classification (stationary, accelerating,
-turning, climbing and descending a hump, sudden impact) and turn-rate
-monitoring. Subsystem 4 classifies less: its states are calibrating,
-monitoring, on a hump and fault, and its events are ready, hump complete,
-impact, lift and fault (`terrain_logic.h`). Climbing and descending are one
-on-hump state, and stationary, accelerating and turning are not reported.
-Turn rate is not measured, because the LSM303DLHC has no gyroscope;
-subsystem 2's encoder odometry supplies the heading instead.
+### Motion classification and turn rate
+
+The brief also lists motion classification, turn-rate monitoring and motion
+event reporting. `s4_motion_class.c` (decision 18) classifies each sample
+as stationary, cruising, accelerating, braking, turning, climbing,
+descending or impact, or unknown when Motion Control's snapshot is missing
+or older than 50 ms. The yaw rate is (right - left) / track from the wheel
+encoders, left positive, in 0.1 deg/s; the IMU has no gyroscope. States are
+debounced over 3 samples (impact and unknown at once) and reported on the
+console, in IF-18 and in telemetry version 6. All thresholds come from
+existing settings (decision 18 lists each); they have not been measured as
+classification criteria.
+
+| Evidence | Status |
+|---|---|
+| S4-U47 to U50: gate, yaw geometry, every state and boundary, priorities, debounce, stale input | Software-verified (host) |
+| INT-31: the real classifier on the real Motion Control status through a straight run, a junction turn and a bypass; class and yaw in the frame | Software-verified (simulation) |
+| On the car | Not yet verified; one run with the console captured |
+
+Limits: a start to 40 mm/s reads as cruising and a STOP from line speed as
+stationary, because both are faster than the 15 mm/s gate resolves; wheel
+slip reads as motion.
