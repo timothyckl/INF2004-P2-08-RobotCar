@@ -228,7 +228,7 @@ EXPORT void app_stack_report (void)
 
         /* Byte counts are at most 2176, which UINT holds. */
         tm_printf((UB*)"stack %s: %u of %u bytes never used\n",
-                  (UB*)g_app_slot[idx].p_name, (UINT)unused,
+                  g_app_slot[idx].p_name, (UINT)unused,
                   (UINT)APP_STACK_BYTES);
     }
 }

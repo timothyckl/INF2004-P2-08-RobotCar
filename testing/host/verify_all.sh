@@ -6,9 +6,10 @@
 #
 #   sh testing/host/verify_all.sh            from the repository root
 #
-# Exits non-zero if any host test, dashboard test or build fails, or if a
-# build prints a warning. The static-analysis and BARR-C sections are
-# reports; read them. Nothing here runs on the car.
+# Exits non-zero if any host test, dashboard test or build fails, if a
+# build prints a warning, or if the strict compile finds a warning in
+# application code. The -fanalyzer and BARR-C sections are reports; read
+# them. Nothing here runs on the car.
 
 ROOT=$(pwd)
 FAILED=0
@@ -63,7 +64,14 @@ echo "mission UF2 SHA-256: $(shasum -a 256 "${ELF%.elf}.uf2" | cut -d' ' -f1)"
 
 echo
 echo "## 4. python3 testing/host/target_static_check.py"
-python3 testing/host/target_static_check.py 2>&1 | tail -6
+python3 testing/host/target_static_check.py > "$TMP/static.txt" 2>&1
+tail -6 "$TMP/static.txt"
+# A strict warning in application code fails the run; the one -fanalyzer
+# finding is a reviewed false positive (F-12) and is only reported.
+if ! grep -q "^== strict warnings: 0 in application code" "$TMP/static.txt"; then
+    echo "(strict warnings in application code)"
+    FAILED=1
+fi
 
 echo
 echo "## 5. BARR-C checkers"

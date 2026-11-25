@@ -304,10 +304,10 @@ table shows the rest.
 
 | Level | Count and where | Latest result |
 |---|---|---|
-| Unit (host) | S1-U04 to U07; S2 52 cases; S3 765 checks; S4 37 cases; S5 48 cases + telemetry view | All pass, with one known defect reported (F-18) (2026-11-25, [log](../testing/host/logs/2026-11-25_final-verification-3.txt)) |
+| Unit (host) | S1-U04 to U07; S2 56 cases; S3 779 checks; S4 38 cases plus S4-U44 (replay of 6 car logs); S5 48 cases + telemetry view; dashboard 27 | All pass, with one known defect reported (F-25) (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final.txt)) |
 | Unit (target) | The same plus the target-only cases (for example S2-U01 to U19, S2-U37, U39, U71, U72) in the `TEST=1` image | Builds (2026-11-25); last on-target run 2026-11-17 (incomplete) |
 | Hardware | S1-H01 to H03, S2-H01 to H11, S3-H01 to H06, S4-H01 to H11, S5-U46 to U50 | Mixed; see each log |
-| Integration | INT-04 to INT-07, letters over MQTT | Pass |
+| Integration | INT-04 to INT-07, letters over MQTT (car); INT-08 to INT-16, the real Vehicle Controller with S1, S3, S4 and S5 interfaces on a kernel model (host) | Pass (car, before the demo); 30/30 (host, 2026-11-26) |
 | System | SYS-01 to SYS-11 | See section 4 |
 | Acceptance | The assessed demonstration | [demo report](DEMO_REPORT_2026-11-24.md) |
 
@@ -315,7 +315,7 @@ table shows the rest.
 
 | Technique | Examples |
 |---|---|
-| White-box | Branch coverage of the host-built application code: 78.0% (89.7% of lines) |
+| White-box | Branch coverage of the host-built application code: 73.9% (84.5% of lines) over 33 files; 78.9% (90.7%) over the 27 files measured before |
 | Black-box | SYS-01 to SYS-11; INT tests |
 | Boundary | S5-U04, U05 (range limits); S4-U36 (lift at 299 and 300 mg); S4-U41 (6 mm floor); S4-U42 (1 mg steps, no jump over 1 mm); S2-U79, U80 (phase and hold limits ±1 ms) |
 | Negative | S1-U04 (malformed commands); S3 invalid patterns; S5-U06, U07; S2-U33 |
@@ -323,24 +323,24 @@ table shows the rest.
 | State transition | S2-U41 to U52 (controller statechart); S2-U20 to U32 (motion statechart) |
 | Regression | `make -C testing/host` before each commit. A failing or crashing test fails the run (F-19): checked with a stand-in program ([log](../testing/host/logs/2026-11-25_runner-status-check.txt)) and by breaking one real function per suite, including a crash in S4 ([log](../testing/host/logs/2026-11-25_runner-mutation-check.txt)). Mission UF2 hash compared after every test-, comment-, name- or build-only change |
 
-### Coverage figures (host, 2026-11-25, [log](../testing/host/logs/2026-11-25_coverage-3.txt))
+### Coverage figures (host, 2026-11-26, [log](../testing/host/logs/2026-11-26_coverage.txt))
 
-27 application files are built on the host. Hardware drivers, RTOS task
-files and the WiFi stack are not, so they are outside these figures.
+33 application files are built on the host. Hardware drivers, most RTOS
+task files and the WiFi stack are not, so they are outside these figures.
+`task_controller.c` and `s2_bridge.c` are built by the controller
+integration suite (INT-08 to INT-16).
 
 | Scope | Lines | Branches |
 |---|---|---|
-| All 27 files | 4704 / 5246 = **89.7%** | 1988 / 2548 = **78.0%** |
-| Without the IMU I2C driver (hardware path) | 93.2% | 80.3% |
-| Lowest: `pid.c`, `odometry.c`, `motion_api.c` | 62% to 77% | 52% to 53% |
+| All 33 files | 5783 / 6842 = **84.5%** | 2384 / 3226 = **73.9%** |
+| The 27 files measured on 2026-11-25 | 90.7% (was 89.7%) | 78.9% (was 78.0%) |
+| Lowest: IMU I2C driver (hardware path), `s2_bridge.c`, `task_controller.c` | 11%, 53%, 61% | 8%, 41%, 55% |
 
-The low files have their unit tests (S2-U03 to U14) in the on-target
-`TEST=1` image only, so the host figures understate their testing.
-
-Branch coverage was 78.2% earlier on 2026-11-25. It fell to 78.0% only
-because the unused S3 command staging (F-20) was removed, with 23 of its
-24 branches covered; no remaining file lost coverage (per-file comparison
-of the two coverage logs).
+The total fell only because six files are newly measured; no file
+measured before lost line or branch coverage (per-file comparison of the
+two logs). `pid.c`, `odometry.c` and `motion_api.c`
+have their unit tests (S2-U03 to U14) in the on-target `TEST=1` image
+only, so the host figures understate their testing.
 
 ## 7. Test conditions
 
@@ -396,7 +396,7 @@ against each, with where the evidence is:
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; a failing or crashing host test fails the build; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08); stack margins calculated, not measured (F-24) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |
 | Resource efficiency | No floating point; about 2 KB application RAM; 32-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |
-| Team integration quality | 14 active interfaces (IF-06 to IF-21) in `TEAM.md` section 5; INT-04 to INT-07 pass; one mission image | Strong | — |
+| Team integration quality | 15 active interfaces (IF-06 to IF-22) in `TEAM.md` section 5; INT-04 to INT-07 pass on the car; INT-08 to INT-16 pass on the host; one mission image | Strong | — |
 | Demonstration performance | [Demo report](DEMO_REPORT_2026-11-24.md) | Partial | See the report |
 
 Completion time: SYS-01 laps took 2 min 8 s to 2 min 15 s at 40 mm/s; no

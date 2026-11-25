@@ -106,14 +106,14 @@ s2_health_guard (motion_t * p_motion, motion_output_t * p_out,
 char const *
 s2_health_name (s2_health_task_t task)
 {
-    static char const * const names[S2_HEALTH_TASKS + 1] =
+    static char const * const p_names[S2_HEALTH_TASKS + 1] =
     {
         "controller", "S3 line loop", "S5 scan task", "S4 IMU task", "?"
     };
 
     /* task and S2_HEALTH_TASKS are 0..4, which uint32_t holds. */
     return (((uint32_t)task < (uint32_t)S2_HEALTH_TASKS)
-            ? names[task] : names[S2_HEALTH_TASKS]);
+            ? p_names[task] : p_names[S2_HEALTH_TASKS]);
 }
 
 /* End of file. */

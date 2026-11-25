@@ -89,6 +89,10 @@ flowchart LR
   MC --> MOT
   S5 --> SERVO
   WIFI <-->|"MQTT over WiFi"| DASH
+  S3 -.->|"check-in IF-22"| MC
+  S4 -.->|"check-in IF-22"| MC
+  S5 -.->|"check-in IF-22"| MC
+  CTRL -.->|"check-in IF-22"| MC
 
   classDef hw fill:#eeeeee,stroke:#777777,color:#222222
   classDef task fill:#dde8f6,stroke:#3b6aa0,color:#111111
@@ -284,7 +288,8 @@ sequenceDiagram
   participant D as Dashboard
   I->>I: read the sensor about every 21 ms (sensor rate 100 Hz)
   I->>I: tilt average, height from contact geometry
-  I->>I: rise of 6 mm then level: hump complete, rounded to mm
+  I->>I: in FOLLOW only, rise of 6 mm then level: hump complete (S4 d17)
+  I->>I: scale and offset the peak, rounded to mm
   I->>I: store last, highest and count under the S4 mutex
   W->>R: robot_read_telemetry() (IF-10), once per second
   R->>I: subsystem4_get_status() (IF-18), lock tried without waiting

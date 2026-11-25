@@ -17,7 +17,7 @@ Define a test here before running it. Test IDs never change.
 | SYS-05 | detects an obstacle on the line and stops before it | Brief MR6; IF-12, IF-13 | manual | Common set-up. Box on a straight (S2 decision 22) on the line; 3 runs. | Car stops and enters `SCAN` with no contact; forward range in telemetry within 20 mm of the ruler distance at the stop |
 | SYS-06 | profiles obstacle shape and position | Brief MR7; IF-20 | manual | Same runs as SYS-05; measure the box width and its offset from the line. | Scan result plan with a side; nearest point within 20 mm of the ruler; width within the greater of 20 mm or 5% and centre offset recorded (S5-U49 criterion; known to fail, see S2 decision 22: record the error) |
 | SYS-07 | bypasses the obstacle without contact and reacquires the line | Brief MR8, MR9 | manual | Same runs as SYS-05. | All 3 runs: no contact; telemetry `BYPASS` then `REACQUIRE` then `FOLLOW` on the original line beyond the box; no stop cause bypass |
-| SYS-08 | reports telemetry over WiFi for a whole run | Brief MR10; IF-10, S1 decisions 1, 4 and 5 | manual | During SYS-09: dashboard and `decode_telemetry_v2.py` logging, `stats` topic recorded. | Version 3 frames (version 4 from 2026-11-24, S1 decision 7) about 1 s apart; at least 95% of periods sent (INT-06 sent 197 of 200); state, mode, barcode, hump and obstacle fields match the run; heartbeat every 5 s |
+| SYS-08 | reports telemetry over WiFi for a whole run | Brief MR10; IF-10, S1 decisions 1, 4 and 5 | manual | During SYS-09: dashboard and `decode_telemetry_v2.py` logging, `stats` topic recorded. | Version 3 frames (version 4 from 2026-11-24, S1 decision 7; version 5 from 2026-11-26, S1 decision 8) about 1 s apart; at least 95% of periods sent (INT-06 sent 197 of 200); state, mode, barcode, hump and obstacle fields match the run; heartbeat every 5 s |
 | SYS-09 | completes the full course in one autonomous run | Brief MR1-MR10; overview (no remote control) | manual | Course with line, barcodes, humps and an obstacle. Start with GP20; send no dashboard command until the end; end with a lift at the finish. Time the run. 3 runs. | Every element handled in each run with no STOP before the lift; record completion time and any element that failed |
 | SYS-10 | picking the car up stops it | Brief Buddy 4 (collision detection); IF-19 | manual | Common set-up. Lift the car by hand during following, 5 times, once slowly and level. | Every lift: wheels stop, stop cause pick-up; no pick-up stop during SYS-01 laps or over humps (S4-H11) |
 | SYS-11 | boots to Ready from a cold power-bank start | Robustness; S5 decision 12 | manual | Power off for at least 20 s, then on from the power bank; 5 times; dashboard open. | READY with no fault on all 5 boots (power-bank boots came up in FAULT on 2026-11-17 before S5 decision 12) |
@@ -117,3 +117,24 @@ shows earlier working behaviour, not the assessed attempts.
 
 The [host review](../host/HOST_REVIEW_2026-11-24.md) passed all five suites
 on the demonstrated source. Host tests do not replace these physical results.
+
+## Post-demo firmware, 2026-11-26: car tests still to run
+
+The changes made after the demo (review `docs/software_quality_review.md`
+section 9; commits `2fddf92` to `134de47` and the final consolidation) are
+verified on the host only ([log](../host/logs/2026-11-26_verify-final.txt):
+every suite passes, 11 builds with 0 warnings, mission UF2 SHA-256
+`279108eb318dbe078a658558ffd4ba12057102683a58e84ccb094def98f8d245`). None
+has run on the car. Before the post-demo image is used, run the full set
+above on it with its commit in every row. These parts need particular attention:
+
+| Change | Car test | What to record |
+|---|---|---|
+| F-01: S3 loop on a 10 ms cyclic handler (S3 d10) | SYS-01, SYS-02 | The `s3 loop:` line every 10 s: period 10 ms, worst pass, overruns, late wakes |
+| F-18: 31-run barcode repair (S3 d9) | SYS-02 | No wrong letter; captures that the demo image rejected now decode |
+| F-03: held command with no time limit (S2 d36) | SYS-03, and one run with an obstacle stop before the junction | The command is still held after the stop (telemetry `held`) and runs at the junction |
+| F-04: hump detection on the uncalibrated height, FOLLOW only (S4 d17) | SYS-04 with ruler heights | Each hump detected; then fit the scale and offset with `testing/subsystem4/fit_hump_calibration.py` (blocked until these measurements exist) |
+| F-08: liveness guard (S2 d37) | SYS-09 with no `[S2] health:` line; then one `S2_WATCHDOG=1` run | No false trip on healthy tasks; the watchdog stays off by default until this passes |
+| F-06: telemetry version 5 (S1 d8) | SYS-08 | Fault detail, held command and junction count match the run |
+| F-24: task stack high-water marks | Any full run | The `stack` lines at the run summary; at least 25% of each stack never used |
+

@@ -21,8 +21,8 @@ in the firmware.
 |---|---|---|
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
-| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 774 checks with 1 known defect (F-25) reported separately, S4 37/37, S5 48/48 (2026-11-25, after the F-18 fix; figures are updated with each later change in section 9) |
-| Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.0% of branches (27 host-built files; 78.2% before the unused S3 staging code, 23 of whose 24 branches were covered, was removed, F-20) |
+| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 56/56, S3 779 checks with 1 known defect (F-25) reported separately, S4 38/38 plus S4-U44 (replay of 6 car logs), S5 48/48, controller integration 30/30 (INT-08 to INT-16), dashboard 27/27 (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final.txt)) |
+| Line and branch coverage | `testing/host/coverage.sh` | 84.5% of lines, 73.9% of branches over 33 host-built files (2026-11-26, [log](../testing/host/logs/2026-11-26_coverage.txt)). The 6 newly measured files include `task_controller.c` (61%) and `s2_bridge.c` (53%), now built by the integration suite. The same 27 files as on 2026-11-25: 90.7% of lines, 78.9% of branches (was 89.7% and 78.0%) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
 
@@ -478,7 +478,7 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `24aaf7a` | F-05 re-assessed: width accuracy and confirmation blocked on car data (no firmware change) | None | Synthetic sweep ([log](../testing/subsystem5/logs/2026-11-26_s5-width-feasibility.txt)) |
 | `df78bdc` | F-06: telemetry version 5 (fault detail, held command, junction count) end to end: firmware, decoder, dashboard (S1 d8) | **Yes**: 32-byte frame. Car test pending (SYS-08) | S1 4/4, dashboard 27/27, integration 30/30 incl. INT-16 ([log](../testing/host/logs/2026-11-26_verify-f06.txt)) |
 | `42573f6` | F-17 re-assessed from the logs; centre-sensor wiring checked against the datasheets (no firmware change) | None | [analysis](../testing/system/logs/2026-11-26_line-loss-analysis.txt) |
-| (F-24 commit) | F-21: tolerance limits in `motion_init()`; F-24: painted task stacks and a high-water report at run end; `tools/stack_estimate.py` | **Yes**: task stacks come from a static pool (same size); a run summary also prints stack marks | S2 56/56 (S2-U83, U84); all suites and builds 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f24.txt)) |
+| `134de47` | F-21: tolerance limits in `motion_init()`; F-24: painted task stacks and a high-water report at run end; `tools/stack_estimate.py` | **Yes**: task stacks come from a static pool (same size); a run summary also prints stack marks | S2 56/56 (S2-U83, U84); all suites and builds 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f24.txt)). The strict compile found 2 warnings there, from F-08 and F-24: a `(UB *)` cast that discarded `const` on a `%s` argument. Both casts were removed in the final consolidation, which also made `verify_all.sh` fail on any strict warning in application code: 0 warnings, mission UF2 unchanged ([log](../testing/host/logs/2026-11-26_verify-final.txt)) |
 
 ## 10. Proposed changes not applied
 

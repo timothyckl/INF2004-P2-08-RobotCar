@@ -447,7 +447,7 @@ log_stall (uint8_t stalled, uint32_t now)
                    32-bit. */
                 tm_printf((UB *)"[S2] health: %s stalled (last pass %u ms "
                                 "ago); motors off, motion FAULT\n",
-                          (UB *)s2_health_name((s2_health_task_t)task),
+                          s2_health_name((s2_health_task_t)task),
                           (UINT)(now - records[task].last_ms));
             }
         }
