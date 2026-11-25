@@ -56,7 +56,7 @@ maintainability or documentation.
 | F-14 | Tests | Six tests ran but were not defined in any test log | Low | **Applied** (`ad2b48c`) |
 | F-15 | S4 tests | Mission hump settings repeated in a test | Low | **Applied** (S4 d17): `s4_config.h` |
 | F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Proposal |
-| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Hardware proposal (P4) |
+| F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Blocked: needs a centre sensor (P4, hardware approval); no safe software rule |
 | F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | **Applied** (S3 d9): blip repaired; car test pending |
 | F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
 | F-20 | S3 | `s3_nav_stage()` and `s3_nav_take()` held a command a second time, but nothing in the mission called them | Low | **Applied**: removed (mission UF2 unchanged) |
@@ -165,9 +165,14 @@ requirement. In practice curve holding (`CTRL_LINE_*_HOLD_MS`) keeps the
 car turning after a sensor sees black, which is why SYS-01 passed.
 This is a limit of the sensor layout, not only of the code: a rule such
 as "no sensor has seen black for X mm" would also fire on a long straight
-where the car stays centred, which is the normal case. *Proposal (P4):* a
-third, centre sensor over the tape, so that all three white means lost;
-until then the limitation stays in the fault table.
+where the car stays centred, which is the normal case. *Re-assessed
+2026-11-26:* the dashboard logs show correct following with both sensors
+white for up to about 1.1 m (767 stretches; [analysis](../testing/system/logs/2026-11-26_line-loss-analysis.txt)),
+so a distance rule safe on straights would let a lost car leave the mat;
+none is added. *Proposal (P4):* a third, centre sensor over the tape (a
+digital module on GP6, checked against the LM393 and RP2040 datasheets),
+so that all three white means lost. It needs hardware approval; until
+then the limitation stays in the fault table.
 
 **F-08 (Medium, partly applied) — watchdog off.** `S2_WATCHDOG` defaulted
 to 0 and only Motion Control fed the watchdog, so a stalled controller (the

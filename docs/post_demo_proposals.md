@@ -15,7 +15,7 @@ been run on the car.
 | ID | Requirement | Problem | Proposed change | Car test needed |
 |---|---|---|---|---|
 | P3 (F-02) | FR4 | One-sided branches are not junctions (the hold time limit, part of F-03, is fixed) | Junction event in telemetry first; then a bench test of the course junction | SYS-03 |
-| P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor; software alone cannot see it | SYS-01 |
+| P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor on GP6 (digital, 3V3); software alone cannot see it (logs: over 1.1 m of both-white while following correctly) | SYS-01 |
 | P5 (F-04) | FR5 | Small humps read high (the threshold part is fixed, S4 d17) | Two-point calibration on the car with the prepared tool | SYS-04 with a flat lap |
 | P6 (F-05) | FR7 | Width overstated (SYS-06) | Set the beam allowance from a measured beam, and report width only when both edges are clear | SYS-06 |
 | P7 (F-08) | NFR1, Tri2 Entry 4 | Watchdog off by default (the task check-ins and liveness guard are done, S2 d37) | Arm `S2_WATCHDOG=1` by default after one car run | One run with it armed |
@@ -82,22 +82,41 @@ normal centred reading; a car that has left the line completely also reads
 both white. The current checks catch a stale or invalid report, a crossing
 over 1.5 s and an exit over 2.5 s, but not this case.
 
-**Can software detect it?** Not reliably with these sensors. A rule such as
-"no sensor has seen black for X mm" would also fire on a long straight
-where the car stays centred, which is the normal case; the length of the
-longest straight on the course was not recorded. Curve holding (a sensor
-seeing black turns the car until the other side is seen) is why SYS-01
-passed, but it is mitigation, not detection.
+**Can software detect it? Re-assessed 2026-11-26 with the logs: no, not
+safely.** Over every dashboard log (767 stretches of correct following
+with both sensors white), the longest is about 1.1 m, the median 40 mm
+([analysis](../testing/system/logs/2026-11-26_line-loss-analysis.txt)):
+on the start straight the car stays centred for over a metre. A
+"no black for X mm" rule would need X well above that, about 2 m, to
+avoid stopping on a straight whose length on the course is not recorded,
+and a car that had really left the line would be off the mat by then. The
+heading cannot help either: on a straight and after missing a curve the
+car holds a steady heading alike. So no software rule is added; curve
+holding (`CTRL_LINE_*_HOLD_MS`) remains the mitigation that makes SYS-01
+pass.
 
-**Proposed change.** Hardware: a third, centre sensor over the tape (the
-brief lists three IR sensors for buddy 3). Centre black and both sides
-white then means centred; all three white means lost, and the controller
-can latch STOP with cause line. Until then the limitation stays in the
-fault table.
+**Proposed change (hardware, needs approval).** A third, centre sensor
+over the tape: centre black with both sides white is centred, all three
+white is lost, and the controller can latch STOP with cause line. Checked
+against the datasheets and the pin map:
+
+- No ADC input is free (ADC0-2 are the line and barcode sensors, ADC3/GP29
+  is the radio), so it must be a digital output: a TCRT5000 module's LM393
+  comparator DOUT. The LM393 output is open-collector, pulled up by the
+  module to its supply; powered from 3V3 (Robo Pico Grove 3V3, 300 mA in
+  total for the Grove ports), DOUT stays at or below 3.3 V, within the
+  RP2040's IOVDD + 0.5 V pin limit.
+- A free pin: GP6 or GP7 on Grove 5 (unused in the pin map); GP18, GP21
+  and GP22 are taken on the board by the NeoPixel, the second button and
+  the buzzer.
+- Mounting between the two front sensors (30 mm apart over 18 mm tape),
+  its threshold set on the module's trimmer; common ground.
+- Software then: one GPIO read per S3 pass and a lost-line rule in
+  `line_control.c`, with tests; about a day's work once the sensor exists.
 
 | Alternative | Why not chosen |
 |---|---|
-| Time-out when neither sensor has seen black for a set distance | Fires on a long straight while the car is correctly centred, the normal case |
+| Time-out when neither sensor has seen black for a set distance | Correct following shows over 1.1 m of both-white on the start straight; a safe limit would let a lost car leave the mat |
 | Use the barcode sensor as a third line sensor | It sits at the side for barcodes and never steers (pin mapping); moving it breaks barcode reading |
 | Wiggle the car to look for the tape | Changes line following on every straight and adds no certainty on curves |
 

@@ -1,0 +1,24 @@
+# Line-loss detectability (P4, F-17), 2026-11-26. Source: every dashboard log (1 Hz telemetry frames).
+# A 'CENTER run' is consecutive frames in RUNNING/FOLLOW with a fresh line report reading both sensors white;
+# its length is the run-distance difference. Frames are 1 s apart (about 40 mm at line speed): the true no-black
+# travel can be up to about one frame longer at each end, or shorter if a brief black fell between two frames.
+
+files: 2026-11-17_dashboard-full-run.jsonl, 2026-11-20_int-07-dashboard.jsonl, 2026-11-20_system-dashboard-sys07.jsonl, 2026-11-20_system-dashboard.jsonl, 2026-11-23_system-dashboard-1.jsonl, 2026-11-23_system-dashboard-2.jsonl, 2026-11-24_demo-dashboard-1.jsonl, 2026-11-24_demo-dashboard-2.jsonl
+CENTER runs while following: 767
+  50th percentile: 40 mm
+  90th percentile: 360 mm
+  99th percentile: 753 mm
+  longest ten (mm, log, start):
+    (1075, '2026-11-20_system-dashboard.jsonl', '14:57:38')
+    (888, '2026-11-23_system-dashboard-2.jsonl', '17:02:25')
+    (826, '2026-11-24_demo-dashboard-1.jsonl', '13:24:54')
+    (807, '2026-11-24_demo-dashboard-2.jsonl', '14:34:01')
+    (807, '2026-11-24_demo-dashboard-1.jsonl', '13:28:22')
+    (769, '2026-11-20_system-dashboard-sys07.jsonl', '22:02:25')
+    (762, '2026-11-24_demo-dashboard-2.jsonl', '14:28:28')
+    (753, '2026-11-20_system-dashboard.jsonl', '14:09:02')
+    (753, '2026-11-20_int-07-dashboard.jsonl', '14:09:02')
+    (750, '2026-11-24_demo-dashboard-1.jsonl', '13:34:26')
+
+Each of the longest runs is ordinary following: the start straight up to the barcode,
+ending in a side reading or a junction turn (checked frame by frame), not a car off the line.
