@@ -12,13 +12,17 @@ All five subsystems are integrated into one mission image, built for **one
 core** (`SMP=0`, S2 decision 33). The image used in the assessed demo on
 2026-11-24 is tag **`demo-2026-11-24-flashed`** (`a41c19c`); a clean build
 of that tag reproduces the demo UF2 byte for byte. Later commits change
-only tests, tools, the build's warning flags and documentation.
+only tests, tools, warning flags, comments, identifier names, unused code
+and documentation. After each one the mission image was rebuilt and is
+still byte-identical to the demo UF2 (SHA-256 `8cf2c419…`). Fixes that
+would change the car's behaviour are written up as
+[post-demo proposals](docs/post_demo_proposals.md), not applied.
 
 ## Results at a glance
 
 | Mission requirement | Result | Evidence |
 |---|---|---|
-| Line following | Pass: 3 laps (SYS-01) | [system test log](testing/system/TEST_LOG.md) |
+| Line following | Pass: 3 laps (SYS-01); the loop samples every 20 ms, not the required 10 ms (FR2 Partial, F-01) | [system test log](testing/system/TEST_LOG.md) |
 | Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car, but host tests found one input that gives one (F-18) | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
 | Hump detection and highest peak | Detected every time; 6, 6, 7 mm for a 5 mm hump (within ±2 mm) | D-03 |
@@ -52,17 +56,18 @@ failures, is kept in the test logs.
 
 | Lecture | Where it is applied |
 |---|---|
+| W1 Embedded systems fundamentals | A Cortex-M0+ at 133 MHz with 264 KB SRAM and no FPU, so all maths is integer or fixed point; hard timing (10 ms motion loop, STOP to motors off in under 1 ms, S2-H11); safety by design (latched STOP, stop before scan); measured flash, RAM and a static stack estimate ([architecture](docs/final_architecture.md) §8) |
 | W2.1 GPIO, W2.2 Interrupts | Encoder and echo ISRs with sequence counters and a ring buffer; one shared GPIO dispatcher ([architecture](docs/final_architecture.md) §7, [BARR-C](docs/barr_c_compliance.md) §3) |
 | W3.1 Digital communication | I2C to the LSM303DLHC; MQTT binary telemetry ([data widths](docs/data_widths.md)) |
-| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; the 10 ms tick behind the 20 ms barcode sampling (review F-01) |
-| W3.3 ADC | 12-bit line and barcode sensing with adaptive thresholds and hysteresis |
-| W4.1 Embedded OS | µT-Kernel tasks, priorities, mutexes with priority inheritance, event flags, message buffers |
-| W4.2 State machines | Vehicle Controller and Motion Control statecharts, tested on the host |
+| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; the 10 ms tick behind the 20 ms barcode sampling (review F-01, proposal P1) ([architecture](docs/final_architecture.md) §7) |
+| W3.3 ADC | 12-bit line and barcode sensing on ADC0–2 with adaptive white baselines and hysteresis (`s3_ir.c`, `s3_barcode.c`; [architecture](docs/final_architecture.md) §6, §7) |
+| W4.1 Embedded OS | µT-Kernel tasks and priorities, mutexes with priority inheritance, event flags for urgent stops, message buffers for commands and reports ([architecture](docs/final_architecture.md) §2, §3) |
+| W4.2 State machines | Vehicle Controller and mode statecharts ([architecture](docs/final_architecture.md) §4), with the transitions tested on the host (S2-U41 to U52, U78) |
 | Lecture 5 Requirements and design | Requirement review (shall, tolerance, verifiable, no design in the requirement) and requirement-to-box/arrow IDs ([traceability](docs/requirements_traceability.md) §10); sequence diagrams and statecharts ([architecture](docs/final_architecture.md) §4, §5) |
 | Lecture 6 Traceability and testing | [traceability](docs/requirements_traceability.md); unit, integration, system, boundary, negative and fault-injection tests; coverage |
 | W9 Sensor fusion | Encoder speed gates IMU pitch; encoder travel times the junction step; line sensors confirm the end of a bypass (no formal filter) |
-| W10 Optimisations | No floating point, packed 31-byte frame, measured memory ([data widths](docs/data_widths.md)) |
-| W11 Edge computing | All sensing, decisions and safety on the Pico ([architecture](docs/final_architecture.md) §9) |
+| W10 Optimisations | Minimum bit widths and a packed 31-byte frame; no floating point; unused code removed at link time; measured flash and RAM and a static stack estimate ([data widths](docs/data_widths.md), [architecture](docs/final_architecture.md) §8) |
+| W11 Edge computing | All sensing, decisions and safety on the Pico; only a 31-byte summary leaves the car; it keeps driving with the link lost (SYS-01) ([architecture](docs/final_architecture.md) §9) |
 
 ## Tests
 

@@ -1,0 +1,31 @@
+# Static stack estimate, 2026-11-25 16:08 +0800, mission build flags (NET=lwip MQTT=1 S3_NAV_F=0), source at 74518bc
+# Method: every app_program file recompiled with the exact mission command plus -fstack-usage and -fcallgraph-info=su
+# (objects written to a scratch folder; the image is not touched). Worst path = largest sum of frames along any call chain
+# from each task entry. Calls into the kernel, the SDK, tm_printf, memcpy and memset are NOT counted, nor interrupt frames.
+
+## Worst application call chain per task
+s3_follow_run: 1872 bytes via s3_follow_run 568 > s3_barcode_update 24 > s3_scan_poll 32 > s3_scan_decode_window 288 > s3_scan_decode_partial 568 > s3_scan_decode_frame.part.0 328 > s3_bar_decode 64
+controller_task: 1016 bytes via controller_task 632 > run_summary 64 > robot_read_telemetry 104 > scan_telemetry_get 200 > scan_task_get 16
+motion_task: 768 bytes via motion_task 240 > motion_init 512 > pid_init 16
+s4_imu_task: 632 bytes via s4_imu_task 496 > s4_lsm303_open 72 > s4_lsm303_read_identity 64
+obstacle_scan_task: 392 bytes via obstacle_scan_task 272 > scan_engine_process 40 > scan_engine_complete 56 > scan_engine_abort 24
+outside the application, not counted: gpio_get_val, gpio_set_pin, gpio_set_val, i2c_write_reg, memcpy, memset, pwm_set_cc, pwm_set_enabled, pwm_set_pin, pwm_set_wrap, tk_can_wup, tk_clr_flg, tk_cls_dev, tk_dly_tsk, tk_get_tim, tk_loc_mtx, tk_opn_dev, tk_rcv_mbf, tk_ref_flg, tk_set_flg, tk_slp_tsk, tk_snd_mbf, tk_srea_dev, tk_swri_dev, tk_unl_mtx, tk_wai_flg, tk_wup_tsk, tm_printf
+
+## Task stacks (config): initial task 4096 bytes (runs s3_follow_run); TASK_STACK_SIZE 2048 for the controller, motion, IMU and scan tasks
+
+## Largest single frames (-fstack-usage; all 'static', no variable-length arrays or alloca)
+632	static	subsystem2/task_controller.c:425:1:controller_task
+568	static	subsystem3/s3_scan.c:247:13:s3_scan_decode_partial
+568	static	subsystem3/s3_follow.c:70:1:s3_follow_run
+512	static	subsystem2/motion_logic.c:77:1:motion_init
+496	static	subsystem4/task_imu.c:122:1:s4_imu_task
+328	static	subsystem3/s3_scan.c:195:13:s3_scan_decode_frame.part.0
+288	static	subsystem3/s3_scan.c:179:13:s3_scan_decode_window
+272	static	subsystem5/src/scan_task.c:276:1:obstacle_scan_task
+240	static	subsystem2/task_motion.c:222:1:motion_task
+200	static	subsystem5/src/scan_telemetry.c:27:1:scan_telemetry_get
+104	static	subsystem5/src/bypass_plan.c:359:1:bypass_plan_route
+104	static	subsystem2/robot_state.c:87:1:robot_read_telemetry
+
+## Any dynamic or bounded frames
+(end)

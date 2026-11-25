@@ -321,7 +321,7 @@ table shows the rest.
 | Negative | S1-U04 (malformed commands); S3 invalid patterns; S5-U06, U07; S2-U33 |
 | Fault injection (host) | S4-U08, U11 (invalid and stale IMU); S5-U21, U24 (bad echo); S2-U29 to U31 (stall, timeout, encoder); S3-U03 (noise blip, broken frames) |
 | State transition | S2-U41 to U52 (controller statechart); S2-U20 to U32 (motion statechart) |
-| Regression | `make -C testing/host` before each commit (a crashed test now fails the run, F-19); mission UF2 hash compared after every test-, comment- or build-only change |
+| Regression | `make -C testing/host` before each commit. A failing or crashing test fails the run (F-19): checked with a stand-in program ([log](../testing/host/logs/2026-11-25_runner-status-check.txt)) and by breaking one real function per suite, including a crash in S4 ([log](../testing/host/logs/2026-11-25_runner-mutation-check.txt)). Mission UF2 hash compared after every test-, comment-, name- or build-only change |
 
 ### Coverage figures (host, 2026-11-25, [log](../testing/host/logs/2026-11-25_coverage-2.txt))
 
@@ -373,6 +373,7 @@ fill it in afterwards.
 | SYS-06 width fails | MR7 shape not met | Measured width correction or a larger beam allowance ([P6](post_demo_proposals.md)); geometry checked by S5-U72 |
 | NFR3 fault bitmask not implemented | Simultaneous faults not visible | [P8](post_demo_proposals.md); Tribunal 2 Entries 11 and 19 |
 | Watchdog off (`S2_WATCHDOG` 0) | A stalled task is not reset | Per-task check-in, then arm it after a car run ([P7](post_demo_proposals.md), Tribunal 2 Entry 4) |
+| Stack high-water marks not measured (F-24) | A stack overflow would corrupt memory without a clear fault; the controller's calculated margin is about 400 bytes | Paint the stacks and read the unused depth after a SYS-01 lap |
 | On-target `TEST=1` run last completed 2026-11-17 | Target-only unit tests not re-run on the v4 code | Run the `TEST=1` image |
 
 ## 9. Assessment considerations from the brief
@@ -387,9 +388,9 @@ against each, with where the evidence is:
 | Obstacle avoidance effectiveness | SYS-07 3/3; demo attempt 3 with no contact | Pass on the formal test | Attempts 1 and 2 of the demo did not complete the bypass |
 | Barcode recognition reliability | No wrong letter seen on the car; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01); a host-found wrong letter from a noise blip (F-18, fix P2 not applied) |
 | Hump measurement capability | Every hump detected; within ±2 mm on every recorded run | Partial | 6 mm minimum reading; no flat lap |
-| System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08) |
+| System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; a failing or crashing host test fails the build; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08); stack margins calculated, not measured (F-24) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |
-| Resource efficiency | No floating point; 2 KB application RAM; 31-byte frame; [data widths](data_widths.md) | Strong | Power not measured |
+| Resource efficiency | No floating point; about 2 KB application RAM; 31-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |
 | Team integration quality | 14 active interfaces (IF-06 to IF-21) in `TEAM.md` section 5; INT-04 to INT-07 pass; one mission image | Strong | — |
 | Demonstration performance | [Demo report](DEMO_REPORT_2026-11-24.md) | Partial | See the report |
 

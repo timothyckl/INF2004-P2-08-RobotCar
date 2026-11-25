@@ -331,7 +331,7 @@ have.
 |---|---|---|
 | Flash | Application 48,024 bytes of 374,410 in the image (12.8%) | `-O2`, `-ffunction-sections -fdata-sections` with `-Wl,--gc-sections` (unused code removed) |
 | Static RAM | Application 2,017 bytes; whole image 80,120 bytes (30% of 264 KB) | Fixed buffers; the application never calls `malloc` or `free` |
-| Stacks | 4 × 2,048 bytes for application tasks; initial task 4,096 | Sized for `tm_printf` and the barcode decoder's 1.3 KB copy |
+| Stacks | 4 × 2,048 bytes for application tasks; initial task 4,096. Static estimate of the deepest application call chain (GCC `-fstack-usage` and call graph, [log](../testing/host/logs/2026-11-25_stack-usage.txt)): S3 loop 1,872, controller 1,016, motion 768, IMU 632, scan 392 bytes, not counting kernel, SDK or `tm_printf` frames | Sized for `tm_printf` (about 1 KB, `app.h`) and the barcode decoder's copies. The controller has the least margin: its 632-byte frame plus a `tm_printf` call leaves roughly 400 bytes; no run-time high-water mark has been measured (review F-24) |
 | Processing | No floating point; integer and fixed-point units (µm, mg, mdeg, per mille); a sine table for scan geometry | The Cortex-M0+ has no FPU |
 | Communication | 31-byte binary frame per second (about 248 bit/s); commands as short text | Compact, versioned, decoded by the dashboard |
 | Power | Not measured. Tasks block between periods; WiFi power save is off by choice (S1 d4) to keep latency low | — |

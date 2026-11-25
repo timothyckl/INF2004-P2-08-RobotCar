@@ -1,0 +1,25 @@
+# Host runner check with real test programs, 2026-11-25 16:06 +0800
+# Each case breaks one production function, runs that suite through testing/host/Makefile,
+# records make's exit status, then restores the file with git checkout. A non-zero status means the runner reported the failure.
+
+s1: wrong result: every command parses as INVALID: make exit status 2
+    S1-U04 commands: FAIL
+    S1-U07 bridge: FAIL
+    make: *** [s1] Error 1
+s2: wrong result: STOP no longer drops a held command: make exit status 2
+    [HOST] S2-U80 FAIL
+    [HOST] subsystem2 SUMMARY 47 passed, 5 failed
+    make: *** [s2] Error 1
+s3: wrong result: no letter maps to a command: make exit status 2
+    FAIL: pipeline decoded letter maps to its command
+    765 checks, 9 failures, 1 known defects
+    make: *** [s3] Error 1
+s4: crash (null write) on the first call: make exit status 2
+    /bin/sh: line 1: 54746 Segmentation fault: 11  /var/folders/lh/n6kkrshd22x9d6v1szy6kvwr0000gn/T/tmp.2rJFYaUM6i/s4_logic > /var/folders/lh/n6kkrshd22x9
+    make: *** [s4] Error 139
+s5: wrong result: every echo invalid: make exit status 2
+    [TEST] S5-U59 FAIL  coarse edges receive five-degree samples
+    [TEST] subsystem5 SUMMARY 38 passed, 10 failed, 0 blocked
+    make: *** [s5] Error 1
+
+after restoring every file: make -C testing/host exit status 0

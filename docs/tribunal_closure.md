@@ -141,7 +141,8 @@ the latch-to-PWM-off part is measured (S2-H11, worst 952 µs).
 | Failure | Why it is not detected | Proposal (not applied) |
 |---|---|---|
 | Car fully off the line | Two sensors straddle the tape, so "both white" also means centred | A centre sensor (P4); a distance rule alone would also fire on a long centred straight |
-| A noise blip turns a barcode into a different letter (F-18) | Not detected: the corrupted capture decodes cleanly | Stray-mark window check (P2), prototype in the S3 logs |
-| Controller or motion task stalls | Watchdog not armed | Arm `S2_WATCHDOG` after one car run (Entry 4) |
+| A noise blip turns a barcode into a different letter (F-18) | Not detected: the corrupted capture decodes cleanly | Stray-mark window check (P2), kept as [`f18_stray_mark_check.patch`](../testing/subsystem3/prototypes/f18_stray_mark_check.patch) |
+| Controller, S3 loop or IMU task stalls | Watchdog not armed, and as written only Motion Control would feed it | Feed it only when every critical task has checked in, then arm it after one car run (P7, Entry 4) |
+| Stack overflow in a task | No high-water check; the controller's static margin is about 400 bytes once `tm_printf` is counted | Measure the high-water marks on the car (review F-24) |
 | IMU fault while driving | `task_imu.c` recovers locally and does not raise a flag | Raise an IMU-fault flag; gate START on IMU ready (Entries 9, 16) |
-| Simultaneous faults | One fault class in telemetry | Fault bitmask in a version 5 frame (Entries 11, 19) |
+| Simultaneous faults | One fault class in telemetry | Fault detail in a version 5 frame (P8); a full bitmask only if needed (Entries 11, 19) |

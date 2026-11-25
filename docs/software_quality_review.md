@@ -61,6 +61,7 @@ maintainability or documentation.
 | F-21 | S2 | `motion_init()` does not range-check the move and turn tolerances before they are cast to `int32_t` | Low | Safe today (build-time constants 5 and 2000); proposal |
 | F-22 | S4 | The `S4_RAW_LOG` stall print passed a `UW` to `%lx` | Low | **Applied** (`268e044`; debug builds only) |
 | F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
+| F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | Proposal: measure on the car |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -171,6 +172,18 @@ they are the build-time constants `MC_MOVE_TOL_MM` (5) and
 `MC_TURN_TOL_MDEG` (2000), so the cast is safe and its comment says so.
 *Proposal:* reject tolerances above, say, 10,000 in `motion_init()`, with
 a host test. It changes code, so it waits for the next firmware change.
+
+**F-24 (Medium, proposal) — stack margin not measured.** A static estimate
+(GCC `-fstack-usage` and call graph on the mission build,
+[log](../testing/host/logs/2026-11-25_stack-usage.txt)) puts the deepest
+application chain at 1,016 bytes in the controller task and 1,872 bytes
+in the S3 loop. Kernel, SDK and `tm_printf` frames are not included;
+`app.h` allows about 1 KB for `tm_printf`, so the controller's 2,048-byte
+stack may have only about 400 bytes spare. No overflow has been seen on
+the car; the S3 loop's stack was raised from 1 KB to 4 KB after a real
+overflow on 2026-11-17 (S3 test log), so the risk is not theoretical. *Proposal:* fill each stack with a known pattern at start-up
+and print the unused depth after a full SYS-01 lap; raise
+`TASK_STACK_SIZE` if any margin is under 25%.
 
 **F-10 (Low, trade-off) — command age during a bypass.**
 `nav_control_step()` runs only while following, but the 60 s hold limit
@@ -413,3 +426,4 @@ design, alternatives, risks and acceptance test.
 9. F-09, F-15, F-16: re-measure barcode white; move S4 constants to a header; show the letter table on the dashboard.
 10. P9 (SYS-09): a staged plan to a full course in one run, after P8, P1, P2 and P3.
 11. F-21: range-check the motion tolerances in `motion_init()`.
+12. F-24: measure the stack high-water marks on the car.

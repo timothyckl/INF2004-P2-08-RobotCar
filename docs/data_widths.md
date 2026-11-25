@@ -93,6 +93,15 @@ of its static RAM; the network stack, USB and kernel make up the rest.
 | Initial task stack (runs `s3_follow_run()`) | 4 096 |
 | Message-buffer memory (motion_q 160, remote_q 32, line_q 48, scan_q 96, nav_q 32) | 368 |
 
+**Stack use (static estimate, 2026-11-25).** GCC `-fstack-usage` with the
+call graph gives the deepest chain of application frames from each task:
+S3 loop 1,872 of 4,096 bytes; controller 1,016, motion 768, IMU 632 and
+obstacle scan 392 of 2,048 bytes each. Every frame is fixed in size (no
+variable-length arrays). Kernel, SDK and `tm_printf` frames are not in the
+figure; `app.h` allows about 1 KB for `tm_printf`, which leaves the
+controller the smallest margin (about 400 bytes). This is a calculation,
+not a measurement on the car ([log](../testing/host/logs/2026-11-25_stack-usage.txt)).
+
 The RP2040 has 264 KB of SRAM. The application's own data (statics, queues
 and the barcode buffer, about 2.6 KB) is about 1% of it; stacks and the
 network stack dominate.
