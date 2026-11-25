@@ -48,6 +48,8 @@
 #define MOTION_FAULT_TIMEOUT    4u      /* Move/Turn took too long */
 #define MOTION_FAULT_STOP_TIMEOUT 5u    /* not still within 2 s */
 #define MOTION_FAULT_EXTERNAL   6u      /* raised by the task wrapper */
+#define MOTION_FAULT_TASK       7u      /* a monitored task stalled
+                                           (task_health.h, S2 d37) */
 
 /* Reject reasons (last_reason of a REJECTED), above the fault codes. */
 #define MOTION_REJ_STOP         0x80u   /* latched STOP is set */

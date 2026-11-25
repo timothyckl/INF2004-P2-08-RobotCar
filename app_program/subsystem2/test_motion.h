@@ -26,6 +26,7 @@ bool test_motion_odometry (void);       /* S2-U34 */
 bool test_motion_api (void);            /* S2-U35 */
 bool test_motion_ramp (void);           /* S2-U55 */
 bool test_motion_ramp_stall (void);     /* S2-U56 */
+bool test_motion_health_guard (void);   /* S2-U82 */
 
 #endif /* TEST_MOTION_H */
 

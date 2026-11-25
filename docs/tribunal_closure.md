@@ -69,7 +69,7 @@ whether the behaviour it relies on exists in the demonstrated firmware.
 | 1 | Dependency-based fault policy | Accept | **Yes** as a design rule: movement data loss stops; telemetry loss does not | Section 3 below | Documented here |
 | 2 | One authority; urgent STOP; single PWM writer | No change | Yes | S2-U45, U51; code review | — |
 | 3 | Encoder validity, stall, timeouts | No change | Yes: fault after more than 3 invalid snapshots; stall at 500 ms | S2-U29 to U31 | Held-duty travel not measured on the car |
-| 4 | Controller liveness; watchdog | Modify | **No**: `S2_WATCHDOG` is 0; no controller heartbeat | S2-H05 (watchdog works on the bench) | Proposal ([review](software_quality_review.md) F-08) |
+| 4 | Controller liveness; watchdog | Modify | **Yes, after the demo** (S2 d37): controller, S3 loop, scan and IMU tasks check in; a stall stops the motors (Motion Fault) and, with `S2_WATCHDOG=1`, stops feeding the watchdog | S2-U81, U82, INT-15; S2-H05 (watchdog on the bench) | Car run with `S2_WATCHDOG=1` pending; the watchdog stays off by default |
 | 5 | Invalid or stale line data stops | No change | Yes: invalid report, no report in 200 ms after START, or none for 500 ms latch STOP | `task_controller.c` `line_step()`; S2-U57 | **Gap**: a car fully off the line reads as centred (F-17) |
 | 6 | Barcode failure never turns the car | Modify | Partly: a failed decode gives no letter and no command | S3-U02, S2-U74 | The proposed stop before an unconfirmed route junction is not built |
 | 7 | Forward invalid/stale counts as unsafe | No change | Yes | S5-U25, U55 | No car fault injection |
@@ -117,7 +117,8 @@ current firmware can notice the failure at all.
 | Message buffer full | Yes for line and motion; best effort for scan | Send with `TMO_POL` fails | Line report or line-following command fails → line STOP; a controller motion command fails → FAULT, delivery (`ctrl_motion_sent()`); STOP itself uses event flags, never a queue | STOPPED or FAULT where movement depends on it | RESET then START | S2-U51 (STOP with `remote_q` full) |
 | Stale data generally | Yes | Age checks: line 100 ms (fresh) / 500 ms (stop); range 150 ms; IMU gap; remote commands 2 s | Each owner rejects or stops | As rows above | — | S2-U50; S5-U25; S4-U11 |
 | Conflicting requests | Yes | All movement goes through the Vehicle Controller | Urgent flags handled before queues; a scan abandons a junction manoeuvre; only Motion Control writes PWM | Highest-priority request wins: STOP over all | — | S2-U45, U46 |
-| Controller or motion task stops | **No** (watchdog off) | — | — | Last duty may stay on | Power cycle | Tribunal 2 Entry 4; S2 d33 stalls |
+| Controller, S3, scan or IMU task stops (blocks) | **Yes, after the demo** | No check-in for 500 ms (S3 loop 1000, IMU 1500) | Motion Control → Fault(TASK), duties 0 that period | FAULT, STOP latched | RESET with wheels still | S2-U81, U82, INT-15 (car test pending) |
+| A task never yields, or Motion Control stops | Only with `S2_WATCHDOG=1` | Watchdog not fed for 200 ms | Chip reset; PWM back in reset | Boots with STOP latched | START after boot | S2-H05 (bench); car run pending |
 
 ### Host fault injection
 
@@ -143,7 +144,7 @@ the latch-to-PWM-off part is measured (S2-H11, worst 952 µs).
 |---|---|---|
 | Car fully off the line | Two sensors straddle the tape, so "both white" also means centred | A centre sensor (P4); a distance rule alone would also fire on a long centred straight |
 | A noise blip turns a barcode into a different letter (F-18) | In the demo firmware the corrupted capture decoded cleanly | **Fixed after the demo** (S3 decision 9): in a 31-run capture the shortest run decides between a stray mark and a blip, and a blip is repaired (S3-U03). A capture with a damaged end *and* a blip can still give a wrong letter (F-25, S3-U04 known defect). Car test pending |
-| Controller, S3 loop or IMU task stalls | Watchdog not armed, and as written only Motion Control would feed it | Feed it only when every critical task has checked in, then arm it after one car run (P7, Entry 4) |
+| Controller, S3 loop or IMU task stalls | Before the demo: watchdog off, and only Motion Control fed it | **Applied after the demo** (S2 d37): check-ins and a liveness guard on Motion Control; the watchdog is fed only while all are healthy. Arming the watchdog by default awaits one car run |
 | Stack overflow in a task | No high-water check; the controller's static margin is about 400 bytes once `tm_printf` is counted | Measure the high-water marks on the car (review F-24) |
 | IMU fault while driving | `task_imu.c` recovers locally and does not raise a flag | Raise an IMU-fault flag; gate START on IMU ready (Entries 9, 16) |
 | Simultaneous faults | One fault class in telemetry | Fault detail in a version 5 frame (P8); a full bitmask only if needed (Entries 11, 19) |

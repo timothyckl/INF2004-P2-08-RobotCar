@@ -34,6 +34,8 @@
 
 #include "kernel_model.h"
 #include "../../app_program/subsystem2/s2_bridge.h"
+/* Included, not linked, so a case can clear its records as a boot does. */
+#include "../../app_program/subsystem2/task_health.c"
 #include "../../app_program/subsystem2/drv_motor.h"
 #include "../../app_program/subsystem2/motion_config.h"
 #include "../../app_program/subsystem2/motion_logic.h"
@@ -88,6 +90,7 @@ typedef struct
     uint32_t      last_report_ms;
     uint8_t       last_position;
     bool          b_reporting;      /* S3 loop running */
+    bool          b_controller_blocked; /* controller task stalled */
     bool          b_hazard_done;
     uint32_t      scan_request;     /* S5: request being served */
     bool          b_scan_authorised;
@@ -230,12 +233,16 @@ sim_init (sim_track_t const * p_track)
     T_CMBF          cmbf = {0};
     sim_t const     zero = {0};
 
+    /* The clock only moves forward between cases, as it would across
+       boots of a car that kept time. */
+    uint32_t const start_ms = g_sim.now_ms + 1000u;
+
     model_reset();
     g_sim = zero;
     g_sim.track = *p_track;
     g_sim.last_position = UINT8_MAX;
     g_sim.max_speed_after_stop = 0;
-    g_sim.now_ms = 1000u;
+    g_sim.now_ms = start_ms;
     host_set_time_ms(g_sim.now_ms);
 
     (void)s2_controller_create();
@@ -253,6 +260,12 @@ sim_init (sim_track_t const * p_track)
         ctrl_button_t const button_zero = {0};
 
         g_line_runtime = line_zero;
+        /* A boot clears the liveness records (task_health.c). */
+        for (uint32_t task = 0u; task < (uint32_t)S2_HEALTH_TASKS; task++)
+        {
+            g_health_seen[task] = false;
+            g_health_last_ms[task] = 0u;
+        }
         g_barcode = barcode_zero;
         g_button = button_zero;
         g_local_cause = S2_STOP_NONE;
@@ -289,12 +302,15 @@ sim_step (void)
     sim_motion_period();
     sim_s5_period();
 
-    if (tk_wai_flg(controller_flags, CTRL_FLG_ALL, TWF_ORW, &ptn,
-                   CTRL_WATCHDOG_MS) < E_OK)
+    if (!g_sim.b_controller_blocked)
     {
-        ptn = 0u;
+        if (tk_wai_flg(controller_flags, CTRL_FLG_ALL, TWF_ORW, &ptn,
+                       CTRL_WATCHDOG_MS) < E_OK)
+        {
+            ptn = 0u;
+        }
+        controller_cycle(ptn, &inputs);
     }
-    controller_cycle(ptn, &inputs);
 
     sim_state(&state);
     if (S2_MODE_NAVIGATE == state.mode)
@@ -354,6 +370,8 @@ sim_motion_period (void)
         motion_command(&g_sim.motion, &cmd, &in, &out);
     }
     motion_step(&g_sim.motion, &in, &out);
+    /* As task_motion.c in the mission image (S2 decision 37). */
+    (void)s2_health_guard(&g_sim.motion, &out, g_sim.now_ms);
     g_sim.duty[0] = out.duty_l;
     g_sim.duty[1] = out.duty_r;
     if (out.b_raise_fault)
@@ -411,6 +429,7 @@ sim_s3_period (void)
     {
         return;
     }
+    s2_health_check_in(S2_HEALTH_LINE);     /* as s3_follow.c, each pass */
     if (s3_ir_filter(&g_sim.filter, mask, (uint8_t)SIM_FILTER_SAMPLES))
     {
         uint8_t position = S2_LINE_CENTER;

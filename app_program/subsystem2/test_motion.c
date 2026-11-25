@@ -9,6 +9,7 @@
  * Steps are 10 ms, the planned control period.
  */
 #include "test_motion.h"
+#include "task_health.h"
 
 #if APP_TEST
 
@@ -898,6 +899,60 @@ test_motion_ramp_stall (void)
     return (b_free && (t_level > 0u) && (f >= 0)
             && sim_fault(p_s, MOTION_FAULT_STALL)
             && ((p_s->log[f].t_us - t_level) >= (g_cfg.stall_ms * 1000u)));
+}
+
+/*
+ * S2-U82 (post-demo, 2026-11-25, S2 decision 37): the task-liveness guard
+ * on Motion Control. Driving at 100 mm/s with every monitored task seen
+ * 500 ms ago, s2_health_apply() reports nothing and leaves the duties; at
+ * 501 ms the controller is stalled: Motion Control enters
+ * Fault with MOTION_FAULT_TASK, both duties are 0 in that same period and
+ * the controller's fault flag is raised; a later call keeps that cause;
+ * and the car then stops.
+ */
+bool
+test_motion_health_guard (void)
+{
+    sim_t * p_s = sim_new(true);
+    s2_health_record_t records[S2_HEALTH_TASKS] =
+    {
+        {1000u, true}, {1000u, true}, {1000u, true}, {1000u, true}
+    };
+    uint8_t mask;
+    bool b_healthy;
+    bool b_stalled;
+
+    (void)sim_cmd(p_s, S2_CMD_SPEED, 100, 100);
+    sim_run(p_s, 50u);
+
+    sim_counts(p_s);
+    motion_output_clear(&p_s->out);
+    motion_step(&p_s->m, &p_s->in, &p_s->out);
+    mask = s2_health_apply(records, 1000u + S2_HEALTH_LIMIT_MS, &p_s->m,
+                           &p_s->out);
+    b_healthy = (0u == mask) && (0 != p_s->out.duty_l)
+                && (0 != p_s->out.duty_r)
+                && (MOTION_SPEED == motion_state(&p_s->m));
+
+    sim_counts(p_s);
+    motion_output_clear(&p_s->out);
+    motion_step(&p_s->m, &p_s->in, &p_s->out);
+    mask = s2_health_apply(records, 1000u + S2_HEALTH_LIMIT_MS + 1u,
+                           &p_s->m, &p_s->out);
+    sim_record(p_s);
+    b_stalled = (0u != (mask & (1u << S2_HEALTH_CONTROLLER)))
+                && (0 == p_s->out.duty_l) && (0 == p_s->out.duty_r)
+                && p_s->out.b_raise_fault
+                && sim_fault(p_s, MOTION_FAULT_TASK);
+
+    motion_output_clear(&p_s->out);
+    (void)s2_health_apply(records, 1000u + S2_HEALTH_LIMIT_MS + 2u,
+                          &p_s->m, &p_s->out);
+    sim_run(p_s, 50u);
+
+    return (b_healthy && b_stalled
+            && (MOTION_FAULT_TASK == motion_fault_code(&p_s->m))
+            && motion_is_stopped(&p_s->m));
 }
 
 #endif /* APP_TEST */

@@ -13,6 +13,7 @@
 #include "../../app_program/subsystem2/test_scan_control.h"
 #include "../../app_program/subsystem2/test_bypass_control.h"
 #include "../../app_program/subsystem2/test_nav_control.h"
+#include "../../app_program/subsystem2/test_task_health.h"
 #include "../../app_program/subsystem2/test_motion.h"
 #include "../../app_program/subsystem2/motion_cmd.h"
 
@@ -80,6 +81,8 @@ static host_case_t const g_cases[] =
     {"S2-U77", test_nav_control_fail},
     {"S2-U79", test_nav_control_phase_limits},
     {"S2-U80", test_nav_control_hold_window},
+    {"S2-U81", test_task_health_evaluate},
+    {"S2-U82", test_motion_health_guard},
 };
 
 int

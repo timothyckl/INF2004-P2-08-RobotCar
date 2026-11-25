@@ -25,6 +25,7 @@
 #include "../include/scan_look.h"
 #include "../../subsystem2/subsystem2.h"
 #include "../../subsystem2/motion_api.h"
+#include "../../subsystem2/task_health.h"
 
 #define SCAN_TASK_PERIOD_MS     (10)
 #define SCAN_TASK_PUBLISH_MS    (2)
@@ -291,6 +292,7 @@ obstacle_scan_task (INT stacd, void * p_exinf)
 
         (void) tk_slp_tsk(TMO_FEVR);
         (void) tk_can_wup(TSK_SELF);
+        s2_health_check_in(S2_HEALTH_SCAN);     /* S2 decision 37 */
 
         /* 1. Controller commands. */
         while (tk_rcv_mbf(scan_q, &cmd, TMO_POL)

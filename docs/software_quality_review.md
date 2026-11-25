@@ -47,7 +47,7 @@ maintainability or documentation.
 | F-05 | S5 | Obstacle width is overstated by the ultrasonic beam (SYS-06) | Medium | Explained; proposal |
 | F-06 | S1/S2 | Telemetry carries one fault class; the detail behind the four demo motion faults was lost | Medium | Proposal |
 | F-07 | Build | Subsystems 1 to 4 were built with no warning flags | Medium | **Applied** (S2 d34) |
-| F-08 | S2 | Watchdog off in the mission image | Medium | Proposal (Tribunal 2 Entry 4) |
+| F-08 | S2 | Watchdog off in the mission image | Medium | **Partly applied** (S2 d37): liveness guard on; watchdog armed only with `S2_WATCHDOG=1` until a car run |
 | F-09 | S3 | Barcode white limits measured at the old sensor height; baseline pinned at its upper limit on demo day | Low | Proposal |
 | F-10 | S2 | A held barcode command keeps ageing during a scan and bypass | Low | **Applied** with F-03: no time limit (S2 d36) |
 | F-11 | Tools | Dashboard received every heartbeat twice | Low | **Applied** (`47a7147`) |
@@ -164,12 +164,17 @@ where the car stays centred, which is the normal case. *Proposal (P4):* a
 third, centre sensor over the tape, so that all three white means lost;
 until then the limitation stays in the fault table.
 
-**F-08 (Medium, proposal) — watchdog off.** `S2_WATCHDOG` defaults to 0, so
-the hardware watchdog (`drv_watchdog.c`, tested in S2-H05) is not armed in
-the mission image. A stalled Motion Control task would leave the last duty
-on the motors until another check stops them. The dual-core stalls of
-2026-11-23 (S2 d33) show tasks can stop. *Proposal:* arm it after one car
-run with it enabled (Tribunal 2 Entry 4).
+**F-08 (Medium, partly applied) — watchdog off.** `S2_WATCHDOG` defaulted
+to 0 and only Motion Control fed the watchdog, so a stalled controller (the
+motors would hold its last speeds), S3 loop, scan or IMU task went
+unnoticed (Tribunal 2 Entry 4). *Applied* (S2 decision 37): those four
+tasks check in each pass; Motion Control, before writing the motors each
+period, faults (`MOTION_FAULT_TASK`, duties 0) when one has not checked in
+within its limit, in every mission image. The hardware watchdog, now a
+make option, is fed only while all are healthy. INT-15 blocks the real
+controller while driving: motors off at 500 to 510 ms. *Still pending:*
+one car run with `S2_WATCHDOG=1` before it is armed by default, and the
+limits are not measured on the car.
 
 **F-21 (Low, proposal) — tolerances not range-checked.** Reading every
 cast for BARR-C 1.6a found that `control()` in `motion_logic.c` casts the
@@ -439,7 +444,8 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `4bec493` | F-01: S3 loop woken by a 10 ms cyclic handler; overruns counted and dropped; filter, baseline step and `line_q` margin kept in time (S3 d10); S3-U06 | **Yes**: S3 samples every 10 ms instead of 20 ms. Car test pending (SYS-01, SYS-02) | S3 779 checks, 0 failures; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f01.txt)) |
 | `f63a20a` | Host integration suite for the Vehicle Controller (INT-08 to INT-14): the real controller with S1, S3, S4 and S5 interfaces on a kernel model; `controller_cycle()` extracted | None (structure only; +216 bytes for the call) | 20 integration checks pass; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-int-harness.txt)) |
 | `b5d380e` | F-03, F-10: a held barcode command waits for the next junction with no time limit (S2 d36); INT-11 | **Yes**: a command is no longer dropped after 60 s. Car test pending (SYS-03) | S2 52/52; 23 integration checks; INT-11 fails with the limit put back ([mutations](../testing/host/logs/2026-11-25_int-mutations.txt), [log](../testing/host/logs/2026-11-25_verify-f03.txt)) |
-| (F-04 commit) | F-04 (part), F-15: hump detection on the uncalibrated height, FOLLOW only; calibration offset and fitting tool; settings in `s4_config.h`; S4 replay tool (S4 d17) | **Yes**: detection starts at 6 mm of measured height (was 7.05 mm) and not during junction turns. Car test pending (calibration, SYS-04) | S4 38/38 and S4-U44 (six logged drives give the car's own readings, no new hump); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f04.txt), [analysis](../testing/subsystem4/logs/2026-11-25_s4-replay-analysis.txt)) |
+| `26842cc` | F-04 (part), F-15: hump detection on the uncalibrated height, FOLLOW only; calibration offset and fitting tool; settings in `s4_config.h`; S4 replay tool (S4 d17) | **Yes**: detection starts at 6 mm of measured height (was 7.05 mm) and not during junction turns. Car test pending (calibration, SYS-04) | S4 38/38 and S4-U44 (six logged drives give the car's own readings, no new hump); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f04.txt), [analysis](../testing/subsystem4/logs/2026-11-25_s4-replay-analysis.txt)) |
+| (F-08 commit) | F-08 (part): task check-ins and a liveness guard on Motion Control; watchdog fed only while healthy; `S2_WATCHDOG` make option (S2 d37) | **Yes**: a task stalled past its limit stops the motors (Fault). Watchdog still off by default. Car test pending | S2 54/54, integration 27/27, two mutations caught; every build incl. `S2_WATCHDOG=1` 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f08.txt)) |
 
 ## 10. Proposed changes not applied
 
@@ -454,7 +460,7 @@ records the decision to apply post-demo changes.)
 4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
 5. P5 (F-04): two-point hump calibration on the car (procedure and tool ready) and a flat lap; SYS-04.
 6. P6 (F-05): measured beam allowance; SYS-06.
-7. P7 (F-08): watchdog fed only when every critical task has checked in.
+7. P7 (F-08): one car run with `S2_WATCHDOG=1`, then arm it by default.
 8. P8 (F-06): version 5 frame with fault detail and a junction bit.
 9. F-09, F-16: re-measure barcode white; show the letter table on the dashboard.
 10. P9 (SYS-09): a staged plan to a full course in one run, after P8, P1, P2 and P3.

@@ -45,7 +45,7 @@ echo "## 3. builds (make -B NET=lwip MQTT=1 S3_NAV_F=0 <option>)"
 for option in "TEST=1" "TEST=1 S3_HW_TEST=1" "TEST=1 S3_LINE_TEST=1" \
               "TEST=1 S2_CAL_TEST=1" "TEST=1 S2_HW_TEST=1" \
               "TEST=1 S4_HW_TEST=1" "S2_MOTION_LOG=1" "S5_RANGE_DIAG=1" \
-              "S4_RAW_LOG=1" ""; do
+              "S4_RAW_LOG=1" "S2_WATCHDOG=1" ""; do
     # shellcheck disable=SC2086
     (cd build_make && make -B -j8 NET=lwip MQTT=1 S3_NAV_F=0 $option \
         > "$TMP/build.txt" 2>&1)

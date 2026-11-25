@@ -18,7 +18,7 @@ been run on the car.
 | P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor; software alone cannot see it | SYS-01 |
 | P5 (F-04) | FR5 | Small humps read high (the threshold part is fixed, S4 d17) | Two-point calibration on the car with the prepared tool | SYS-04 with a flat lap |
 | P6 (F-05) | FR7 | Width overstated (SYS-06) | Set the beam allowance from a measured beam, and report width only when both edges are clear | SYS-06 |
-| P7 (F-08) | NFR1, Tri2 Entry 4 | Watchdog off | Arm it, fed only when every critical task has checked in | One run with it armed |
+| P7 (F-08) | NFR1, Tri2 Entry 4 | Watchdog off by default (the task check-ins and liveness guard are done, S2 d37) | Arm `S2_WATCHDOG=1` by default after one car run | One run with it armed |
 | P8 (F-06) | FR10, Tri2 Entries 11, 19 | One fault class in telemetry | Version 5 frame: fault detail and a junction bit | Dashboard and SYS-08 |
 | P9 (SYS-09) | FR1, MR1–MR10 | No full course completed in one run | A staged run plan that removes the known blockers first | SYS-09 |
 
@@ -33,7 +33,7 @@ the code.
 | P4 | Hardware: one sensor, one ADC input. No free ADC input is left (ADC3/GP29 is the radio), so it needs a digital sensor on a spare GPIO or a multiplexer | One more read per S3 pass | None | Needs new hardware and wiring |
 | P5 | Code done (offset in `s4_config.h`, tool `fit_hump_calibration.py`); the work left is measurement | None | S4-U41 to U44 | Needs reference humps of 5, 10 and 15 mm and a flat lap on the car |
 | P6 | Medium: allowance value, a validity rule, optional 2.5° fine steps | 2.5° steps add servo moves and echoes: a longer scan | S5-U72 | Needs beam measurements with the real box |
-| P7 | Medium: a check-in word shared by four tasks | One word under the existing mutex; a few instructions per cycle | None | A wrong timeout resets the car mid-run; needs one armed run first (S2 d28) |
+| P7 | Code done (`task_health.c`, `S2_WATCHDOG` make option); the default is one line in the makefile | 20 bytes of RAM; a few loads per 10 ms | S2-U81, U82, INT-15 | A wrong limit would stop or reset the car mid-run; needs one armed car run first (S2 d28) |
 | P8 | Medium: encoder, decoder, dashboard and golden frame | +1 byte per frame (8 bit/s) | S1-U05 pattern | Changes the frame format; dashboard and SYS-08 must be re-run |
 | P9 | Process, no code | — | — | Needs the course and track time |
 
@@ -168,34 +168,16 @@ U63, U67, U72; SYS-07 to show bypass planning is unchanged.
 
 ## P7 — Watchdog (F-08)
 
-**Where.** `app_program/subsystem2/task_motion.c` (`S2_WATCHDOG` 0),
-`drv_watchdog.c`.
+**Done (S2 decision 37).** The controller, S3 loop, scan and IMU tasks
+check in each pass; Motion Control stops the motors and faults when one
+stalls, in every mission image; the hardware watchdog, a make option
+(`S2_WATCHDOG=1`, refused with `TEST=1`), is fed only while all are
+healthy. Tests S2-U81, U82 and INT-15.
 
-**Why it is off.** S2 decision 28 left it off until one car run with it
-armed shows no unwanted reset; S2-H05 checked it only on the bench (the
-motor stopped within the 200 ms timeout when kicking stopped, 2026-11-10).
-It must never be armed in a `TEST=1` image, because the unit tests can
-starve the motion task on purpose. As written, only Motion Control would
-kick it, so a stalled controller or line loop would not be noticed while
-Motion Control kept running (Tribunal 2 Entry 4). The 2026-11-23 dual-core
-stalls showed exactly that kind of failure: one task stopped, the others
-ran on.
-
-**Proposed design.** Each safety-critical task (controller, motion, S3
-loop, IMU) sets its own bit in a check-in word each cycle; Motion Control
-kicks the watchdog only when every bit is set, then clears them. Timeout
-200 ms: about 20 controller periods and 10 S3 periods at the current
-20 ms, long enough for normal jitter, short enough to stop the motors
-quickly. After a watchdog reset the car boots into INITIALISING with STOP
-latched (as now) and `drv_watchdog_caused_reset()` is reported, so it never
-drives off on its own.
-
-**Risks.** A task that legitimately blocks longer than 200 ms (an I2C
-retry, a long console print) would reset the car; worst-case blocking times
-are not measured. Hence the car run before arming.
-
-**Acceptance.** One full SYS-01 run armed with no reset; then a forced stall
-of each task (a test build) resets the board and the motors stop.
+**Left.** Build `make NET=lwip MQTT=1 S2_WATCHDOG=1`, run SYS-01 (three
+laps) with the console captured and confirm no `health:` line and no
+reset; then force a stall of each task in a test build and confirm the
+motors stop and the board resets. Only then make 1 the default.
 
 ## P8 — Fault detail and junction events in telemetry (F-06)
 

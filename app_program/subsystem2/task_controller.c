@@ -26,6 +26,7 @@
 #include "motion_cmd.h"
 #include "robot_state.h"
 #include "task_motion.h"
+#include "task_health.h"
 #include "../subsystem5/include/scan_task.h"
 
 #define CTRL_TASK_CORE      TP_PRC2
@@ -484,6 +485,7 @@ controller_cycle (UINT ptn, ctrl_input_t * p_inputs)
     s2_remote_cmd_t  cmd;
     s2_robot_state_t state;
 
+    s2_health_check_in(S2_HEALTH_CONTROLLER);   /* S2 decision 37 */
     read_input(p_inputs);
 #if APP_MISSION
     ctrl_get_state(&g_ctrl, p_inputs, &state);

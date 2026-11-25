@@ -23,7 +23,7 @@ Test procedures and the full result history are in the
 | Motor plug | PH2.0-6P: 01 encoder GND, 02 encoder A, 03 encoder B, 04 encoder VCC, 05 motor +, 06 motor - | as above |
 | Motor wires | M1A GP8 yellow, M1B GP9 black; M2A GP10 yellow, M2B GP11 black | as above |
 | Encoder type | TT motor two-channel Hall (confirmed on the robot; no datasheet) | owner |
-| Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control; armed only with `S2_WATCHDOG=1` (decision 28) | Pico SDK register headers; S2-H05 on the bench |
+| Watchdog | RP2040 watchdog, 200 ms, kicked by Motion Control only while every monitored task checks in; armed only with `S2_WATCHDOG=1` (decisions 28, 37) | Pico SDK register headers; S2-H05 on the bench |
 | GPIO interrupt | IO_IRQ_BANK0, IRQ 13, NVIC priority 2, on core 0 | SDK `hardware/regs/intctrl.h` |
 | Start/stop button | GP20, active low, debounced 30 ms | Robo Pico datasheet; mission image |
 
@@ -111,8 +111,15 @@ section 6.2).
   ramped duty reaches the stall level.
 - Duty cap: the mission image limits duty to 20% of full scale
   (`MC_CONTROL_DUTY_MAX`), as in every car run so far.
+- Task liveness (decision 37, every mission image): the controller, the S3
+  loop, the S5 scan task and the S4 IMU task check in once per pass
+  (`task_health.c`). Each period, before writing the motors, Motion Control
+  checks the limits (500 ms; S3 loop 1000 ms; IMU 1500 ms); a stall puts
+  it into Fault (`MOTION_FAULT_TASK`), so the motors stop in that period
+  and stay stopped until RESET, and the console names the task.
 - Hardware watchdog (only with `S2_WATCHDOG=1`): armed when the task starts
-  and kicked only by Motion Control, every period. If the CPU hangs or the
+  and kicked only by Motion Control, every period, and only while no
+  monitored task has stalled. If the CPU hangs or the
   task is starved for `MC_WATCHDOG_MS` (200 ms), the chip resets; the reset
   puts the PWM block back in reset and the pads back to their pull-downs, so
   the motors stop. The load value is doubled for erratum RP2040-E1, and PSM
@@ -173,7 +180,7 @@ Controller task only. Results appear in `motion_get_status()`.
 
 | Option | File | Default | Effect |
 |---|---|---|---|
-| `S2_WATCHDOG` | `task_motion.c` | 0 | 1 arms the hardware watchdog in a `TEST=0` image (decision 28) |
+| `S2_WATCHDOG` | makefile | 0 | 1 arms the hardware watchdog in a `TEST=0` image (decisions 28, 37); the image is named `..._wdt` |
 | `S2_CAL_TEST` | makefile | 0 | One manoeuvre per GP20 press: 1 forward 1000 mm, 2 left 360 degrees, 3 forward 450 mm (S2-H06..H08, S4-H08); 4 forward 500 mm, 5 left 90, 6 right 90, 7 left 180 degrees (S2-H10). Prints odometry and each STOP's latency (S2-H11); needs `TEST=1` |
 | `S2_HW_TEST` | makefile | 0 | 1: encoder print, motors off; 2: also spins motors; 3: S2-H04 full-speed check; 4: S2-H05 watchdog check. Tasks not started; needs `TEST=1` |
 | `S2_MOTION_LOG` | makefile | 0 | Prints the speed loop every 50 ms, for PID tuning |
@@ -272,9 +279,10 @@ slower than these tests.
 
 ## Known limitations
 
-- The hardware watchdog is not armed in the mission (decision 28). S2-H05
-  showed it resetting the board on the bench; a car run with
-  `S2_WATCHDOG=1` is still needed.
+- The hardware watchdog is not armed in the mission by default (decision
+  28). S2-H05 showed it resetting the board on the bench; a car run with
+  `S2_WATCHDOG=1` is still needed. The software liveness guard (decision
+  37) is on without it, but cannot catch a task that never yields.
 - `S2_DEMO_LOG` and the mission's own console lines print from the
   controller, above Motion Control on the same core. With the watchdog
   armed, a print that blocks for over 200 ms would reset the board.

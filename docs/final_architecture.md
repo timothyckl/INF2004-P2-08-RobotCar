@@ -161,7 +161,7 @@ number means higher priority.
 | USB console | 3 | Kernel | — | — | `tm_printf` | — |
 | WiFi, MQTT, S1 bridge | 4 | Kernel, link events | Telemetry 1 s, heartbeat 5 s | 98.6% of frames received (demo) | robot-state snapshot → MQTT; MQTT → `remote_q`, STOP flag | `state_mutex` (`TMO_POL`) |
 | Vehicle Controller (`controller_task`) | 14 | `controller_flags` wait, at most 10 ms | 10 ms | Not measured | Flags, queues, status snapshots → `motion_q`, `scan_q`, robot state | `state_mutex` (owner) |
-| Motion Control (`motion_task`) | 15 | 10 ms cyclic handler | 10 ms | STOP latch to PWM off: worst 952 µs (S2-H11) | `motion_q`, `safety_flags`, encoders → PWM, motion status | `g_status_mtx` (owner) |
+| Motion Control (`motion_task`) | 15 | 10 ms cyclic handler | 10 ms | STOP latch to PWM off: worst 952 µs (S2-H11) | `motion_q`, `safety_flags`, encoders, task check-ins → PWM, motion status; a stalled controller, S3 loop, scan or IMU task → Fault, motors off (S2 d37, since 2026-11-26) | `g_status_mtx` (owner); check-in times (one writer each) |
 | IMU and terrain (`s4_imu_task`) | 18 | `tk_dly_tsk` | 10 ms poll | About 21 ms per sample (S4 d12 note) | I2C samples → terrain result, `CTRL_FLG_PICKUP` | S4 mutex (owner) |
 | Obstacle scan (`obstacle_scan_task`) | 20 | Bounded waits | Trigger ≥ 65 ms apart | Scan takes about 4 to 6 s (demo log, SCAN to result) | ECHO ring, `scan_q` → HAZARD flag, scan status | S5 mutex (owner) |
 

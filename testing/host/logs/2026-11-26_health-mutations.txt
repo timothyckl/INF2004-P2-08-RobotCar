@@ -1,0 +1,10 @@
+# Task-liveness guard (S2 decision 37) mutation check, 2026-11-26 00:02 +0800, main at 26842cc plus this change
+# Each run copies app_program, breaks one thing, rebuilds the integration suite and lists the failures.
+
+== mutation: liveness guard never faults Motion Control
+[HOST] INT-15 FAIL  blocked controller: motors off at 500 ms, task fault
+[HOST] INT-15 FAIL  controller back: FAULT, STOP latched (fault)
+[HOST] s2 integration SUMMARY 25 passed, 2 failed
+== mutation: one limit (500 ms) for every task
+[HOST] INT-09 FAIL  no report for over 500 ms latches STOP (cause line)
+[HOST] s2 integration SUMMARY 26 passed, 1 failed

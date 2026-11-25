@@ -6,6 +6,7 @@
 #include "s4_config.h"
 #include "../subsystem2/motion_api.h"   /* motion_get_status (IF-17) */
 #include "../subsystem2/subsystem2.h"   /* s2_get_robot_state (IF-14) */
+#include "../subsystem2/task_health.h"  /* liveness (S2 decision 37) */
 
 /* Forward acceleration reads as pitch (200 mg, 17 mm of caster height,
  * when Motion Control ramps to speed). Pitch is ignored while the mean
@@ -89,6 +90,9 @@ s4_imu_task (INT start_code,
 
     for (;;)
     {
+        /* Every pass, a sensor retry included (S2 decision 37). */
+        s2_health_check_in(S2_HEALTH_IMU);
+
         if (!driver.b_open)
         {
             s4_terrain_request_recovery(&terrain);

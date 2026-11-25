@@ -13,7 +13,11 @@
  *   3. run motion_step() and write the duties to the motors;
  *   4. raise CTRL_FLG_MOTION_FAULT if Motion Control entered Fault;
  *   5. publish motion_status_t under its mutex;
- *   6. kick the hardware watchdog (normal firmware only).
+ *   6. kick the hardware watchdog (S2_WATCHDOG=1 only), and only while
+ *      no monitored task has stalled.
+ * Between 3's motion_step() and the motor write, a stalled task
+ * (task_health.h, S2 decision 37) puts Motion Control into Fault, so the
+ * motors stop in that same period (mission images only).
  * The motors are written (3) before anything else is shared.
  *
  * Fail safe: if safety_flags cannot be read (e.g. not created yet), STOP
@@ -30,6 +34,7 @@
 #include "motion_config.h"
 #include "motion_logic.h"
 #include "subsystem2.h"
+#include "task_health.h"
 
 #define MC_TASK_CORE        TP_PRC2
 
@@ -44,6 +49,10 @@
 #endif
 #define MC_USE_WATCHDOG     ((0 != S2_WATCHDOG) && (0 == APP_TEST) \
                              && (0 == S2_HW_TEST))
+/* Task-liveness guard (S2 decision 37): the mission image (also its
+   TEST=1 S3_LINE_TEST=1 form), never the self-test image, whose tests
+   hold the CPU on purpose, nor a bench image. */
+#define MC_USE_HEALTH       ((0 != APP_MISSION) && (0 == S2_HW_TEST))
 #define MC_LOCK_TMO_MS      10      /* reader wait for the status lock */
 #define MC_LOG_PERIODS      5u      /* S2_MOTION_LOG: one line per 50 ms */
 
@@ -92,6 +101,9 @@ static void     publish_status (void);
 static void     motion_log (motion_input_t const * p_in,
                             motion_output_t const * p_out);
 static uint32_t now_ms (void);
+#if MC_USE_HEALTH
+static void     log_stall (uint8_t stalled, uint32_t now);
+#endif
 
 /** @brief Create motion_q, the status mutex and the period handler. */
 ER
@@ -224,6 +236,9 @@ motion_task (INT stacd, void * exinf)
     motion_input_t  inputs  = {0};
     motion_output_t out;
     s2_motion_cmd_t cmd;
+#if MC_USE_HEALTH || MC_USE_WATCHDOG
+    uint8_t         stalled = 0u;   /* monitored tasks stalled (mask) */
+#endif
 
     (void)stacd;
     (void)exinf;
@@ -263,9 +278,18 @@ motion_task (INT stacd, void * exinf)
         }
 
         motion_step(&g_motion, &inputs, &out);
+#if MC_USE_HEALTH
+        stalled = s2_health_guard(&g_motion, &out, now_ms());
+#endif
         apply_duty(out.duty_l, out.duty_r);
 #if MC_USE_WATCHDOG
-        drv_watchdog_kick();    /* the only kick: a hung task resets */
+        if (0u == stalled)
+        {
+            drv_watchdog_kick();    /* the only kick: a hung task resets */
+        }
+#endif
+#if MC_USE_HEALTH
+        log_stall(stalled, now_ms());
 #endif
 
         if (g_b_off_due && inputs.b_stop && (0 == out.duty_l)
@@ -400,6 +424,42 @@ log_fault (motion_input_t const * p_input,
                           "encoder 1 GP0/GP1\n");
     }
 }
+
+#if MC_USE_HEALTH
+/* Print each task that has newly stalled, once, with how long ago it last
+   checked in; and when the stall clears. */
+static void
+log_stall (uint8_t stalled, uint32_t now)
+{
+    static uint8_t reported = 0u;
+    uint8_t const fresh = (uint8_t)(stalled & (uint8_t)~reported);
+
+    if (0u != fresh)
+    {
+        s2_health_record_t records[S2_HEALTH_TASKS];
+
+        s2_health_read(records);
+        for (uint32_t task = 0u; task < (uint32_t)S2_HEALTH_TASKS; task++)
+        {
+            if (0u != (fresh & (1u << task)))
+            {
+                /* The age is a wrapping uint32_t ms difference; UINT is
+                   32-bit. */
+                tm_printf((UB *)"[S2] health: %s stalled (last pass %u ms "
+                                "ago); motors off, motion FAULT\n",
+                          (UB *)s2_health_name((s2_health_task_t)task),
+                          (UINT)(now - records[task].last_ms));
+            }
+        }
+    }
+    if ((0u != reported) && (0u == stalled))
+    {
+        tm_printf((UB *)"[S2] health: every monitored task running "
+                        "again\n");
+    }
+    reported = stalled;
+}
+#endif
 
 /* The controller treats this bit like STOP (Step 4). */
 static void

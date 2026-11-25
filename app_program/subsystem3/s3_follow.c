@@ -21,6 +21,7 @@
 #include "s3_ir_gpio.h"
 #include "s3_nav.h"
 #include "../subsystem2/subsystem2.h"
+#include "../subsystem2/task_health.h"
 
 /* s3_command_t values are sent as S2_NAV_* (subsystem2.h). */
 typedef char s3_nav_codes_match_t[
@@ -455,6 +456,7 @@ s3_follow_wait_period (s3_follow_timing_t * p_timing)
     /* As above: the 32-bit timer word, unchanged. */
     p_timing->pass_start_us = (uint32_t)in_w(TIMER_TIMERAWL);
     p_timing->b_started = true;
+    s2_health_check_in(S2_HEALTH_LINE);     /* S2 decision 37 */
 
     now_ms = s3_follow_now_ms();
     if ((now_ms - p_timing->last_log_ms) >= S3_LINE_TIMING_LOG_MS)

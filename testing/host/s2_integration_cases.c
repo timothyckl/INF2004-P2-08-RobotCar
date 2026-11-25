@@ -15,6 +15,7 @@ static void int_11_hold_through_scan (void);
 static void int_12_pickup_drops_command (void);
 static void int_13_barcode_records (void);
 static void int_14_scan_failure (void);
+static void int_15_task_stall (void);
 static bool int_turned_right (void);
 static bool int_turn_to (uint8_t command, int32_t * p_heading_mdeg,
                          uint32_t * p_navigate_periods);
@@ -32,6 +33,7 @@ s2_integration_cases (void)
     int_12_pickup_drops_command();
     int_13_barcode_records();
     int_14_scan_failure();
+    int_15_task_stall();
 }
 
 /* INT-08 (S1 -> S2): MQTT STOP through the bridge latches STOP at once;
@@ -273,6 +275,66 @@ int_14_scan_failure (void)
     sim_check(int_wheels_still() && (0 == g_sim.duty[0])
               && (0 == g_sim.duty[1]), "INT-14",
               "the car stays still after a failed scan");
+}
+
+/* INT-15 (S2 decision 37, all tasks -> Motion Control): the controller
+   blocks for 600 ms while the car follows the line. Motion Control's
+   liveness guard stops the motors within the 500 ms limit plus one
+   period, without the controller, and holds them at 0; when the
+   controller runs again it enters FAULT with STOP latched (cause fault,
+   class motion); RESET and START run again. A stalled S3 loop instead
+   stops the car through the controller's own 500 ms line time-out first
+   (cause line, INT-09), because the S3 loop's liveness limit is longer. Tasks that never check in (here S4 and S5) are not
+   monitored, so a long healthy run never trips. */
+static void
+int_15_task_stall (void)
+{
+    uint32_t blocked_at;
+    uint32_t stopped_after = 0u;
+    bool b_ok;
+
+    sim_init(&g_cross);
+    sim_start();
+    sim_run_ms(10000u);
+    sim_check(sim_following() && (MOTION_FAULT != motion_state(&g_sim.motion)),
+              "INT-15", "10 s healthy run: no stall reported");
+
+    g_sim.b_controller_blocked = true;
+    blocked_at = g_sim.now_ms;
+    while ((g_sim.now_ms - blocked_at) < 600u)
+    {
+        sim_step();
+        if ((0u == stopped_after) && (0 == g_sim.duty[0])
+            && (0 == g_sim.duty[1]))
+        {
+            stopped_after = g_sim.now_ms - blocked_at;
+        }
+    }
+    sim_check((MOTION_FAULT_TASK == motion_fault_code(&g_sim.motion))
+              && (stopped_after > S2_HEALTH_LIMIT_MS)
+              && (stopped_after <= (S2_HEALTH_LIMIT_MS + 20u))
+              && (0 == g_sim.duty[0]) && (0 == g_sim.duty[1]),
+              "INT-15", "blocked controller: motors off at 500 ms, task fault");
+
+    g_sim.b_controller_blocked = false;
+    sim_run_ms(500u);
+    {
+        s2_robot_state_t state;
+
+        sim_state(&state);
+        sim_check((S2_SYS_FAULT == state.state)
+                  && (0u != (state.flags & S2_RS_STOP_LATCHED))
+                  && (S2_STOP_FAULT == state.stop_cause)
+                  && (S2_FAULT_MOTION == state.fault) && int_wheels_still(),
+                  "INT-15", "controller back: FAULT, STOP latched (fault)");
+    }
+
+    int_send_remote(S2_REMOTE_RESET);
+    sim_run_ms(500u);
+    int_send_remote(S2_REMOTE_START);
+    b_ok = sim_run_until(sim_running, 1000u);
+    sim_run_ms(1000u);
+    sim_check(b_ok && sim_following(), "INT-15", "RESET then START runs again");
 }
 
 /* Run the + junction with one command; report the final heading. */

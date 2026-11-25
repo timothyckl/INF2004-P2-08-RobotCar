@@ -26,6 +26,7 @@
 #include "motion_config.h"
 #include "test_motion.h"
 #include "test_controller.h"
+#include "test_task_health.h"
 #include "test_line_control.h"
 #include "test_scan_control.h"
 #include "test_bypass_control.h"
@@ -960,7 +961,11 @@ EXPORT void subsystem2_test (void)
     TEST_CHECK("S2-U79", test_nav_control_phase_limits(),
                "junction step and settle fail at the phase limit");
     TEST_CHECK("S2-U80", test_nav_control_hold_window(),
-               "held command: taken at the limit, expired after, refreshed");
+               "held command kept through a long scan, acted on after");
+    TEST_CHECK("S2-U81", test_task_health_evaluate(),
+               "task liveness: limits, unseen tasks, clock wrap");
+    TEST_CHECK("S2-U82", test_motion_health_guard(),
+               "a stalled task faults Motion Control, motors off");
 
 #if S2_HW_TEST
     hw_test();

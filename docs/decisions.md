@@ -1154,6 +1154,56 @@ controller: RIGHT decoded 0.6 m in, a 5 s scan at 1.0 m, the junction at
 60 s limit put back, INT-11 fails. Car test pending: SYS-03 with an
 obstacle between the barcode and the junction.
 
+### 37. Task liveness guard on Motion Control; the watchdog fed only by healthy tasks (2026-11-26)
+
+Approved by Dalton on 2026-11-25 (decision 35). Post-demo change; extends
+decision 28.
+
+**Problem.** The hardware watchdog was off (decision 28), and as written
+only Motion Control fed it, so a stalled controller, S3 loop, IMU or scan
+task went unnoticed while Motion Control ran (Tribunal 2 Entry 4, review
+F-08). A stalled controller is the worst case: Motion Control holds the
+last speeds it was given. A stalled scan task removes the hazard check
+while following. The dual-core stalls of 2026-11-23 (decision 33) showed
+one task stopping while others ran on.
+
+**Decision.** `task_health.c`:
+
+- The controller, the S3 loop, the S5 scan task and the S4 IMU task each
+  record the kernel time once per pass of their loop. Each record has one
+  writer, its own task, and is a single 32-bit store, so no lock is
+  needed; "seen" is written after the time and read before it.
+- Every 10 ms Motion Control, which alone writes PWM, compares the records
+  with per-task limits, between computing its duties and writing them. A
+  stall puts it into Fault with the new code `MOTION_FAULT_TASK` (7): both
+  duties are 0 in that period and stay 0 until RESET. The controller, once
+  it runs, enters FAULT with STOP latched; the console names the task.
+  This is on in every mission image, also with the watchdog off.
+- Limits (UNMEASURED): 500 ms for the controller and the scan task (the
+  controller's own line limit; nothing else watches these two); 1000 ms
+  for the S3 loop, so the controller's 500 ms line time-out acts first
+  and names the cause; 1500 ms for the IMU, whose sensor retry is 1000 ms.
+- With `S2_WATCHDOG=1` (now a make option; refused with `TEST=1`) the
+  hardware watchdog is fed only while no task has stalled, so a stall also
+  resets the board 200 ms later; the car then boots with STOP latched and
+  prints `previous reset: WATCHDOG`.
+- Not in the self-test image (its tests hold the CPU on purpose) or the
+  bench images.
+
+**Limits.** A task that never yields starves Motion Control too (it runs
+at priority 15); only the hardware watchdog catches that. The watchdog
+stays off by default until one car run with it armed shows no unwanted
+reset (decision 28).
+
+**Verification.** S2-U81 (limits, unseen tasks, clock wrap), S2-U82 (the
+guard: duties 0 in the same period, Fault with the task code), INT-15 (the
+real controller blocked for 600 ms while driving: motors off between 500
+and 510 ms, then FAULT with STOP latched, RESET and START run again; a
+10 s healthy run never trips). Mutations: without the guard INT-15 fails;
+with one 500 ms limit for every task INT-09 loses its line cause
+([log](../testing/host/logs/2026-11-26_health-mutations.txt)). Car test
+pending: SYS-01 with `S2_WATCHDOG=1`, then a forced stall.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
