@@ -28,7 +28,7 @@ in the firmware.
 
 Raw output: [static analysis](../testing/host/logs/2026-11-25_static-analysis.txt),
 [tests and coverage](../testing/host/logs/2026-11-25_host-tests-and-coverage.txt);
-after the post-demo tests: [final verification](../testing/host/logs/2026-11-25_final-verification-2.txt)
+after the later tests: [final verification](../testing/host/logs/2026-11-25_final-verification-2.txt)
 (host tests, both clean builds, static check, mission checksum) and
 [coverage](../testing/host/logs/2026-11-25_coverage-2.txt).
 
@@ -240,7 +240,7 @@ captures of 24 to 28 runs (one damaged sentinel rebuilt) and 31 runs (one
 stray mark) are handled. A rejected capture never gives a letter, so a
 failure shows as "no letter", which is the safe outcome.
 
-**Host evidence (S3-U02, S3-U03, post-demo).** Over all 26 letters: one
+**Host evidence (S3-U02, S3-U03).** Over all 26 letters: one
 misread element (a bar or space read as the wrong width) is always
 corrected or rejected, never a wrong letter;
 with the speed changing steadily across one code, every letter decodes
@@ -434,7 +434,7 @@ both edges pass the contiguity checks, which did not happen on 2026-11-20.
 Planning uses the clearance profile, not the width, so bypasses still
 worked.
 
-S5-U72 (post-demo) separates the causes with synthetic scans of a box face
+S5-U72 separates the causes with synthetic scans of a box face
 240 mm away ([log](../testing/subsystem5/logs/2026-11-25_s5-width-geometry.txt)).
 With ideal thin rays and no allowance the 150 mm box reads 128 mm: the
 edge logic is sound, and the only error is the 5° ray spacing (about
@@ -486,7 +486,7 @@ from `config/wifi_secrets.h`, so a new network needs a rebuild; this is
 recorded in the system test log. The course is not hardcoded: letters can
 be set over MQTT, and the scan and bypass work from measurements.
 
-## 9. Applied post-demo changes
+## 9. Software Refinements and Verification
 
 | Commit | Change | Behaviour change on the car | Verification |
 |---|---|---|---|
@@ -513,13 +513,27 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `9c5d7f5` | F-27: a check-in after the guard's clock read is fresh, not a stall (S2 d38); S2-U81 extended | **Yes**: no false task fault from a preempted guard | S2 56/56, integration unchanged; +4 bytes ([log](../testing/host/logs/2026-11-26_verify-f27.txt)) |
 | `1d31f8c` | INT-25 to INT-27: STOP and a task fault during a junction turn; 60 s centred straight | None (tests only) | Integration 54/54; 3 mutations caught ([log](../testing/host/logs/2026-11-26_int-turn-stop-mutations.txt)) |
 
-## 10. Proposed changes not applied
+## 10. Outstanding Engineering Limitations
 
-These changes are not in the firmware. The demonstrated image (`a41c19c`,
-UF2 SHA-256 `8cf2c419…`) contains none of the post-demo changes either;
-S2 decision 35 records that post-demo changes are applied on `main` one at
-a time, and each one applied moves to section 9. Each proposal below needs
-a measurement or a hardware change that software alone cannot supply.
+These are existing design, measurement and verification limitations;
+none was introduced by the refinements in section 9, which correct
+separate defects. Each needs a measurement, a calibration, a hardware
+change or a car run that software alone cannot supply. Software mitigation
+is kept where it is safe (curve holding, conservative bypass planning, the
+liveness guard). The demonstrated image (`a41c19c`, UF2 SHA-256
+`8cf2c419…`) contains none of the section 9 refinements.
+
+| Limitation | Technical cause | Current mitigation | Outstanding requirement | Evidence |
+|---|---|---|---|---|
+| Junction recognition (F-02, P3) | A branch leaving on one side covers only one front sensor, which reads as a curve | A held command waits for the next confirmed junction (S2 d36) | Course junction geometry measured; then a rule only if needed | INT-10, INT-11; SYS-03 not run |
+| Line loss (F-17, P4) | Both sensors white is both "centred" and "off the line" | Curve holding; stale and invalid reports latch STOP | A centre sensor (hardware modification) | INT-09, INT-27; line-loss analysis log |
+| Obstacle width (F-05, P6) | The effective beam (about 21°) is wider than the allowance and varies between stops | Planning uses the clearance profile, not the width; conservative bypass | Beam measured on the car to set the allowance | S5-U72; width feasibility log; SYS-06 not met |
+| Hump calibration (F-04, P5) | One reference height cannot separate gain from offset | Detection on the uncalibrated height, FOLLOW only | Reference humps of 5, 10 and 15 mm and a flat lap | S4-U41 to U44; S4-H08 |
+| IMU timing (F-26) | `tk_dly_tsk(10)` lasts 20 or 30 ms | Each sample is time-stamped; windows tuned on this timing | A car run before changing the period | S4-H08 log |
+| Watchdog (F-08, P7) | A wrong limit could reset the car mid-run | Liveness guard always on (S2 d37, d38); watchdog a make option | One armed car run | S2-U81, U82; INT-15, INT-26 |
+| Full course (SYS-09, P9) | Depends on every element in one run | Each element tested separately | Three full-course runs | Demo report; system test log |
+
+The proposals below give the detail of each.
 
 Other open items: re-measure the barcode white limits at the current
 sensor height (F-09); show the letter table on the dashboard before a run

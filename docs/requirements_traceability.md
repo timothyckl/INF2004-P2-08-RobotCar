@@ -87,7 +87,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Criterion | 3 laps, no wheel leaves the track, no STOP before the lift |
 | Result | SYS-01 **Pass** on 2026-11-20 (3 laps of 2 min 8 s to 2 min 15 s). Demo: followed the line in every attempt |
 | Status | **Partial**: line following passed on the car (SYS-01) with the demo firmware, whose loop ran every 20 ms (F-01). The 10 ms cyclic period is implemented after the demo (S3 decision 10, S3-U06); car test pending |
-| Limitations | In the demo firmware the loop ran every 20 ms because `tk_dly_tsk()` adds one 10 ms tick ([review](software_quality_review.md) F-01); the post-demo cyclic period has not yet run on the car. A line report still goes out at once when the position changes. Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
+| Limitations | In the demo firmware the loop ran every 20 ms because `tk_dly_tsk()` adds one 10 ms tick ([review](software_quality_review.md) F-01); the current 10 ms cyclic period has not yet run on the car. A line report still goes out at once when the position changes. Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
 
 ### FR3 — decode Code 39 barcodes
 
@@ -96,11 +96,11 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Decode single-letter Code 39 in either direction while following; reject anything that is not exactly one letter; at 40 mm/s, at least 4 of 5 passes per course barcode and never a wrong letter |
 | Owner / design | S3; S2 d25 (soften curves while reading) |
 | Source | `subsystem3/s3_barcode.c` `s3_barcode_update()`; `subsystem3/s3_scan.c` `s3_scan_poll()`; `subsystem3/s3_bar.c` `s3_bar_decode()`; `subsystem3/s3_code39.c` |
-| Tests | S3 host checks including S3-U02 and S3-U03 (post-demo); S3 bar-drive runs 2026-11-17; SYS-02 |
+| Tests | S3 host checks including S3-U02 and S3-U03; S3 bar-drive runs 2026-11-17; SYS-02 |
 | Criterion | ≥ 4 of 5 passes per barcode, no wrong letter |
-| Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes; in the demo firmware a single 20 ms blip inside the code gave a wrong letter in 25 of 234 synthetic cases (F-18). Post-demo fix (S3 decision 9): 0 wrong and 0 rejected over 4,524 blip cases (S3-U03), the 19 logged car captures unchanged (S3-U05); a damaged end plus a blip gave a wrong letter in 39 of 702 cases (F-25, S3-U04); after S3 decisions 11 and 12 (2026-11-26) none at 25, 27 or 29 runs (S3-U07: 2,416 and 1,208 before; S3-U08: 0 of 86,112) |
+| Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes; in the demo firmware a single 20 ms blip inside the code gave a wrong letter in 25 of 234 synthetic cases (F-18). Current implementation (S3 decision 9): 0 wrong and 0 rejected over 4,524 blip cases (S3-U03), the 19 logged car captures unchanged (S3-U05); a damaged end plus a blip gave a wrong letter in 39 of 702 cases (F-25, S3-U04); after S3 decisions 11 and 12 (2026-11-26) none at 25, 27 or 29 runs (S3-U07: 2,416 and 1,208 before; S3-U08: 0 of 86,112) |
 | Status | **Partial**: decoding works and never gave a wrong letter on the car, but did not reach 4 of 5. F-18 is fixed after the demo (implemented, car test pending); F-25 (a double fault) is rejected rather than misread at 25 to 29 runs (S3 decisions 11 and 12; implemented and software-verified, car test pending) |
-| Limitations | In the demo firmware bar timings had 20 ms resolution (F-01), coarse for small prints; 10 ms after the post-demo change, car test pending. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
+| Limitations | In the demo firmware bar timings had 20 ms resolution (F-01), coarse for small prints; 10 ms in the current implementation; physical acceptance not yet verified. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
 
 ### FR4 — carry out the barcode command at the next junction
 
@@ -124,7 +124,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Source | `subsystem4/terrain_logic.c` `s4_terrain_process()`, `s4_hump_update()`, `s4_hump_calibrated_mm()`; `subsystem4/s4_config.h`; `subsystem4/task_imu.c` `s4_detect_gate()`; `subsystem2/robot_state.c` `s2_telemetry_add_hump()` |
 | Tests | S4-U05, U06, U12 to U14, U21, U23 to U33, U40 to U44 (host; U44 replays six logged drives); S4-H07, H08; SYS-04 |
 | Criterion | Highest hump within ±2 mm (team engineering criterion, not the marking scheme); every hump detected; no hump on a flat lap |
-| Result | S4-H08 (2026-11-13): 11, 10, 10, 9 mm for a 10 mm hump. Demo: 6, 6, 7 mm for a 5 mm hump (+1, +1, +2 mm), with the demo firmware, where no hump could read below 6 mm. Post-demo (S4 d17): detection on the uncalibrated height restores the intended 6 mm start (it had become 7.05 mm); replaying the six logged drives gives the same readings and no new hump (S4-U44) |
+| Result | S4-H08 (2026-11-13): 11, 10, 10, 9 mm for a 10 mm hump. Demo: 6, 6, 7 mm for a 5 mm hump (+1, +1, +2 mm), with the demo firmware, where no hump could read below 6 mm. Current implementation (S4 d17): detection on the uncalibrated height restores the intended 6 mm start (it had become 7.05 mm); replaying the six logged drives gives the same readings and no new hump (S4-U44) |
 | Status | **Partial**: height within ±2 mm on every recorded run; flat lap not run in SYS-04 |
 | Limitations | Single-point calibration (10 mm) cannot correct an offset, so small humps still read high; the offset mechanism and fitting tool are ready but need reference humps of several heights on the car. Humps during a junction turn are not measured |
 
@@ -372,12 +372,12 @@ fill it in afterwards.
 | SYS-02 below 4 of 5 | Barcode reliability not shown | 5 passes per print with sensor height and print condition recorded; 10 ms sampling is applied (S3 d10) |
 | A damaged capture that cannot be checked is rejected, not decoded: a 25-run capture with an element under 50 ms (S3 decision 12), and a damaged end that disagrees with the sentinel (decision 11). A noise pulse of 50 ms or more cannot be told from a real element | Fewer decodes from badly damaged captures; "never a wrong letter" rests on noise shorter than 50 ms, as recorded (19 to 40 ms) | Car test of the barcode prints (SYS-02) |
 | FR2 sampling at 20 ms, not 10 ms (F-01) | FR2 not met by the demo firmware | Fixed after the demo (S3 d10); re-measure bar durations on the car |
-| A car fully off the line reads as centred (F-17) | Line loss is not detected, so FR11's line-loss STOP cannot trigger | Requires hardware modification: a centre sensor ([P4](software_quality_review.md#10-proposed-changes-not-applied)) |
+| A car fully off the line reads as centred (F-17) | Line loss is not detected, so FR11's line-loss STOP cannot trigger | Requires hardware modification: a centre sensor ([P4](software_quality_review.md#10-outstanding-engineering-limitations)) |
 | SYS-03 12-run set never run | Turn reliability not shown | 3 runs per command, console captured |
 | SYS-04 flat lap not run | False humps on a flat lap not excluded | One flat lap |
-| SYS-06 width fails | MR7 shape not met | Requires calibration data: a beam allowance set from the measured beam ([P6](software_quality_review.md#10-proposed-changes-not-applied)); geometry checked by S5-U72 |
+| SYS-06 width fails | MR7 shape not met | Requires calibration data: a beam allowance set from the measured beam ([P6](software_quality_review.md#10-outstanding-engineering-limitations)); geometry checked by S5-U72 |
 | NFR3 fault bitmask not implemented | Simultaneous faults not visible | Not implemented: telemetry version 5 carries the first fault and its detail (S1 d8), not every concurrent fault; Tribunal 2 Entries 11 and 19 |
-| Watchdog off by default (`S2_WATCHDOG` 0) | A task that never yields is not reset; a blocked task still stops the motors (liveness guard, S2 d37 and d38) | One car run with it armed ([P7](software_quality_review.md#10-proposed-changes-not-applied), Tribunal 2 Entry 4) |
+| Watchdog off by default (`S2_WATCHDOG` 0) | A task that never yields is not reset; a blocked task still stops the motors (liveness guard, S2 d37 and d38) | One car run with it armed ([P7](software_quality_review.md#10-outstanding-engineering-limitations), Tribunal 2 Entry 4) |
 | Stack high-water marks not measured (F-24) | A stack overflow would corrupt memory without a clear fault; the controller's calculated margin is about 400 bytes | Stacks are painted and reported at run end (S2-U83); read the `stack ...` lines after a SYS-01 lap |
 | On-target `TEST=1` run last completed 2026-11-17 | Target-only unit tests not re-run on the current code | Run the `TEST=1` image |
 

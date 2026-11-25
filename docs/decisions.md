@@ -289,7 +289,7 @@ which builds without warnings, as does the mission image.
 
 ### 8. Telemetry version 5: fault detail, held command, junctions (2026-11-26)
 
-Approved by the team on 2026-11-25 (S2 decision 35). Post-demo change.
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision.
 
 **Problem.** On demo day four motion faults latched STOP, but the frame
 carried only the class "motion", so whether each was a stall, an encoder
@@ -1126,17 +1126,17 @@ change, a clean build (`make -B`) of the mission image and of the
 `TEST=1` image gives no warning, and the mission UF2 is byte-identical to
 the demo image (SHA-256 `8cf2c419…416bf3f`).
 
-### 35. Post-demo firmware changes on `main` (2026-11-25)
+### 35. Firmware revisions after the demonstration, on `main` (2026-11-25)
 
 Approved by the team on 2026-11-25, after the demo.
 
-**Problem.** The post-demo review documents said that "the team decided"
+**Problem.** The review documents written after the demonstration said that "the team decided"
 on 2026-11-25 to keep the submitted firmware identical to the demonstrated
 image. No such decision was recorded in this file, and the corrections they
 describe (P1 to P9 of the review) stayed as proposals, so the repository
 did not improve the robot it described.
 
-**Decision.** Post-demo firmware changes are made on `main`, one at a time,
+**Decision.** Firmware revisions after the demonstration are made on `main`, one at a time,
 each with its own tests, documentation and commit. The demo stays fixed in
 history: tags `demo-2026-11-24` (`4a53c23`) and `demo-2026-11-24-flashed`
 (`a41c19c`), the demo UF2 SHA-256 `8cf2c419…`, the dashboard logs and their
@@ -1149,7 +1149,7 @@ evidence that the robot works.
 
 ### 36. A held barcode command waits for the next junction, with no time limit (2026-11-25)
 
-Approved by the team on 2026-11-25 (decision 35). Post-demo change; revises
+Approved by the team on 2026-11-25 (decision 35). Later firmware revision; revises
 the hold limit of decision 26.
 
 **Evidence.** Decision 26 dropped a held command after 20 s, then 60 s
@@ -1197,7 +1197,7 @@ obstacle between the barcode and the junction.
 
 ### 37. Task liveness guard on Motion Control; the watchdog fed only by healthy tasks (2026-11-26)
 
-Approved by the team on 2026-11-25 (decision 35). Post-demo change; extends
+Approved by the team on 2026-11-25 (decision 35). Later firmware revision; extends
 decision 28.
 
 **Problem.** The hardware watchdog was off (decision 28), and as written
@@ -1248,7 +1248,7 @@ pending: SYS-01 with `S2_WATCHDOG=1`, then a forced stall.
 ### 38. A check-in after the guard's clock read is not a stall (F-27, 2026-11-26)
 
 Approved by the team on 2026-11-26.
-Revises decision 37's evaluator. Post-demo change: host evidence only.
+Revises decision 37's evaluator. Later firmware revision; verified on the host only.
 
 **Problem.** Motion Control (priority 15) reads the clock, then the
 check-in records (`s2_health_guard(..., now_ms())`). The S3 loop (priority
@@ -1621,7 +1621,7 @@ is unchanged. Not yet validated on the track.
 
 ### 9. Noise blips in 31-run captures (F-18, 2026-11-25)
 
-Approved by the team on 2026-11-25 (S2 decision 35). Post-demo change.
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision.
 
 **Problem.** A 31-run capture was read as a code with a stray mark beside
 it: the decoder tried the first 29 and the last 29 runs. A blip of the
@@ -1663,7 +1663,7 @@ Car test pending: SYS-02 with both prints.
 
 ### 10. A 10 ms sampling period from a cyclic handler (F-01, 2026-11-25)
 
-Approved by the team on 2026-11-25 (S2 decision 35). Post-demo change.
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision.
 
 **Problem.** `s3_follow_run()` ended each pass with `tk_dly_tsk(10)`.
 µT-Kernel sets a delay's expiry to the last tick time plus the delay plus
@@ -1712,7 +1712,7 @@ should become multiples of 10 ms) and the `s3 loop:` line (overruns 0).
 
 ### 11. The damaged end of a 25 to 29-run capture is checked (F-25, 2026-11-26)
 
-Approved by the team on 2026-11-26 (S2 decision 35). Post-demo change: host evidence only.
+Approved by the team on 2026-11-26 (S2 decision 35). Later firmware revision; verified on the host only.
 
 **Problem.** A capture that has lost runs at one end is decoded by the
 fallback, which keeps the 20 runs at the intact end and copies the intact
@@ -1761,7 +1761,7 @@ Car test pending (SYS-02).
 ### 12. Short runs reject a 24 to 26-run capture (F-25 at 25 runs, 2026-11-26)
 
 Approved by the team on 2026-11-26.
-Post-demo change: host evidence only.
+Later firmware revision; verified on the host only.
 
 **Problem.** After decision 11 a 25-run capture (six runs lost and a blip)
 could still give a wrong letter: 1,208 of 15,600 cases in S3-U07. Only five
@@ -2119,7 +2119,7 @@ bypass) and SYS-10 (lifts while following still stop the car).
 
 ### 17. Detect on the uncalibrated height, FOLLOW only; two-point calibration prepared (2026-11-25)
 
-Approved by the team on 2026-11-25 (S2 decision 35). Post-demo change;
+Approved by the team on 2026-11-25 (S2 decision 35). Later firmware revision;
 revises decisions 11, 12 and 16.
 
 **Problem.** Decision 11 started a hump at 6 mm because floor bumps read up

@@ -13,21 +13,21 @@ core** (`SMP=0`, S2 decision 33). The image used in the assessed demo on
 2026-11-24 is tag **`demo-2026-11-24-flashed`** (`a41c19c`); a clean build
 of that tag reproduces the demo UF2 byte for byte (SHA-256 `8cf2c419…`).
 Until 2026-11-25 later commits changed only tests, tools, comments and
-documentation. From 2026-11-25 `main` also carries **post-demo firmware
-changes** (S2 decision 35), each listed with its tests in section 9 of the
-[software review](docs/software_quality_review.md). They were verified on
-the computer and by target builds; none had run on the car when they were
-committed, so the results below describe the demonstrated firmware unless
-a row says otherwise. The demo evidence is unchanged.
+documentation. From 2026-11-25 `main` also carries **later firmware revisions**
+(S2 decision 35), each listed with its tests in section 9 of the
+[software review](docs/software_quality_review.md). They are verified by
+host tests and target builds, not on the car, so the results below describe
+the demonstrated firmware unless a row states the current implementation.
+The demo evidence is unchanged.
 
 ## Results at a glance
 
 | Mission requirement | Result | Evidence |
 |---|---|---|
-| Line following | Pass: 3 laps (SYS-01). The demo loop sampled every 20 ms, not the required 10 ms (F-01); post-demo: 10 ms cyclic period, car test pending | [system test log](testing/system/TEST_LOG.md) |
-| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; a damaged end plus a blip (F-25) is rejected rather than misread for noise under 50 ms at line-follow speed (S3 decisions 11 and 12); software-verified, physical acceptance not yet verified | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Line following | Pass: 3 laps (SYS-01). The demo loop sampled every 20 ms, not the required 10 ms (F-01). Current implementation: 10 ms cyclic period; physical acceptance not yet verified | [system test log](testing/system/TEST_LOG.md) |
+| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Current implementation: the noise-blip wrong letter found on the host (F-18) is fixed; a damaged end plus a blip (F-25) is rejected rather than misread for noise under 50 ms at line-follow speed (S3 decisions 11 and 12); software-verified, physical acceptance not yet verified | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
-| Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion). Post-demo: the detection threshold is back at the intended 6 mm (S4 d17); calibration for small humps needs the car | D-03 |
+| Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion). Current implementation: the detection threshold is back at the intended 6 mm (S4 d17); calibration for small humps needs the car | D-03 |
 | Obstacle detection | Pass (SYS-05) | system test log |
 | Obstacle profiling | Nearest point and side pass; width accuracy not shown (SYS-06 not met) | [software review](docs/software_quality_review.md) F-05 |
 | Bypass and line reacquisition | Pass 3/3 (SYS-07); attempt 3 of the demo | D-02 |
@@ -44,7 +44,7 @@ failures, is kept in the test logs.
 | Requirements → design → code → tests → results | [docs/requirements_traceability.md](docs/requirements_traceability.md) |
 | Architecture, RTOS tasks, state machines, sensors, timers, efficiency, edge computing | [docs/final_architecture.md](docs/final_architecture.md) |
 | Code and logic review, defects and proposals | [docs/software_quality_review.md](docs/software_quality_review.md) |
-| Proposed changes not yet applied | [docs/software_quality_review.md](docs/software_quality_review.md#10-proposed-changes-not-applied), section 10 |
+| Outstanding engineering limitations | [docs/software_quality_review.md](docs/software_quality_review.md#10-outstanding-engineering-limitations), section 10 |
 | Tribunal 1 and 2 closure, fault handling | [docs/tribunal_closure.md](docs/tribunal_closure.md) |
 | BARR-C:2018 compliance and static analysis | [docs/barr_c_compliance.md](docs/barr_c_compliance.md) |
 | Data bit widths and memory | [docs/data_widths.md](docs/data_widths.md) |
@@ -61,7 +61,7 @@ failures, is kept in the test logs.
 | W1 Embedded systems fundamentals | A Cortex-M0+ at 133 MHz with 264 KB SRAM and no FPU, so all maths is integer or fixed point; hard timing (10 ms motion loop, STOP to motors off in under 1 ms, S2-H11); safety by design (latched STOP, stop before scan); measured flash, RAM and a static stack estimate ([architecture](docs/final_architecture.md) §8) |
 | W2.1 GPIO, W2.2 Interrupts | Encoder and echo ISRs with sequence counters and a ring buffer; one shared GPIO dispatcher ([architecture](docs/final_architecture.md) §7, [BARR-C](docs/barr_c_compliance.md) §3) |
 | W3.1 Digital communication | I2C to the LSM303DLHC; MQTT binary telemetry ([data widths](docs/data_widths.md)) |
-| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; a 10 ms cyclic S3 loop since the post-demo fix of the 20 ms barcode sampling (review F-01) ([architecture](docs/final_architecture.md) §7) |
+| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; a 10 ms cyclic S3 loop in the current implementation (the demo firmware sampled every 20 ms, review F-01) ([architecture](docs/final_architecture.md) §7) |
 | W3.3 ADC | 12-bit line and barcode sensing on ADC0–2 with adaptive white baselines and hysteresis (`s3_ir.c`, `s3_barcode.c`; [architecture](docs/final_architecture.md) §6, §7) |
 | W4.1 Embedded OS | µT-Kernel tasks and priorities, mutexes with priority inheritance, event flags for urgent stops, message buffers for commands and reports ([architecture](docs/final_architecture.md) §2, §3) |
 | W4.2 State machines | Vehicle Controller and mode statecharts ([architecture](docs/final_architecture.md) §4), with the transitions tested on the host (S2-U41 to U52, U78) |
