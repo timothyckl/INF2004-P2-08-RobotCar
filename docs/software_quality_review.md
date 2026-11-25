@@ -405,6 +405,22 @@ stops (S2 d18). See [proposal P6](post_demo_proposals.md): measure the beam
 on the car, set the allowance to the smallest measured half-beam, and
 consider 2.5° fine steps near each edge.
 
+*Re-assessed 2026-11-26* ([log](../testing/subsystem5/logs/2026-11-26_s5-width-feasibility.txt)).
+Sweeping the effective half-beam over the range the car showed (the box
+vanished between 20 and 35 degrees, S2 d18) for both faces of the
+15 x 20 cm box at 200 to 300 mm: no single allowance keeps the width
+within 20 mm; each is accurate only near one beam (allowance about
+beam - 3 degrees), and one larger than the beam puts an edge inside the
+box, which planning must never do (the same extents set the bypass
+offset). The same sweep explains the demo's raw-only widths: when the
+box's half-angle plus the beam nears the servo's 45 degrees, the scan
+finds no miss on one side, so no shape (a 200 mm face at 250 mm, 21
+degree beam, 5 degree heading error: raw 337 mm; demo raw 166 to
+332 mm). **No firmware change is made**: a better width needs a beam
+measured on the car (and, for confirmation, a stop further away or a
+wider servo), each a physical trade-off to test first. Status: blocked
+on car measurements.
+
 ## 8. Integration
 
 | Area | Review result |

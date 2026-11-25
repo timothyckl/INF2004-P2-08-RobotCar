@@ -1,0 +1,52 @@
+# Obstacle width feasibility (P6, F-05), 2026-11-26 00:05 +0800, main at 7c040f9
+# Synthetic scans (the S5-U72 beam model: a ray at angle t hits if [t-b, t+b] overlaps the face and reads the distance to the nearest face point in that cone) through the real scan_profile.c.
+# Harness sources: width_sweep.c and width_cases.c (scratch, reproduced in this log's header).
+
+## 1. Worst |width error| over faces 150 and 200 mm at 200, 250 and 300 mm, centred, per allowance and effective half-beam b
+allowance | worst |error| over faces 150/200 at 200-300 mm, per half-beam (mm; '-' = no shape)
+allow  0:   b10:  68    b13: 114    b15: 110    b18: 160    b21:   -    b25:   -    
+allow  5:   b10:  68    b13: 114    b15: 110    b18: 160    b21:   -    b25:   -    
+allow 10:   b10:  30    b13:  64    b15:  68    b18: 114    b21:   -    b25:   -    
+allow 15:   b10:  44u   b13:  22u   b15:  30    b18:  64    b21:   -    b25:   -    
+allow 20:   b10:  98u   b13:  66u   b15:  44u   b18:  22u   b21:   -    b25:   -    
+allow 25:   b10:   -    b13: 110u   b15:  98u   b18:  66u   b21:   -    b25:   -    
+(u = some estimate below the true width: an edge placed inside the box)
+
+## 2. Which geometries lose an edge (allowance 10 = mission); heading = sensor axis off the face normal
+face  dist  beam  heading  half-angle+beam  edges(L,R)  width(allow 10)
+ 150   200    15      0            35.6    1,1        212
+ 150   200    15      5            35.6    1,1        212
+ 150   200    18      0            38.6    1,1        208
+ 150   200    18      5            38.6    1,1        207
+ 150   200    21      0            41.6    1,1        242
+ 150   200    21      5            41.6    1,0        raw 270
+ 150   250    15      0            31.7    1,1        218
+ 150   250    15      5            31.7    1,1        217
+ 150   250    18      0            34.7    1,1        216
+ 150   250    18      5            34.7    1,1        215
+ 150   250    21      0            37.7    1,1        258
+ 150   250    21      5            37.7    1,1        257
+ 150   300    15      0            29.0    1,1        208
+ 150   300    15      5            29.0    1,1        207
+ 150   300    18      0            32.0    1,1        258
+ 150   300    18      5            32.0    1,1        257
+ 150   300    21      0            35.0    1,1        308
+ 150   300    21      5            35.0    1,1        307
+ 200   200    15      0            41.6    1,1        252
+ 200   200    15      5            41.6    1,0        raw 282
+ 200   200    18      0            44.6    1,1        246
+ 200   200    18      5            44.6    1,0        raw 275
+ 200   200    21      0            47.6    0,0        raw 308
+ 200   200    21      5            47.6    1,0        raw 289
+ 200   250    15      0            36.8    1,1        266
+ 200   250    15      5            36.8    1,1        264
+ 200   250    18      0            39.8    1,1        260
+ 200   250    18      5            39.8    1,1        259
+ 200   250    21      0            42.8    1,1        302
+ 200   250    21      5            42.8    1,0        raw 337
+ 200   300    15      0            33.4    1,1        262
+ 200   300    15      5            33.4    1,1        261
+ 200   300    18      0            36.4    1,1        314
+ 200   300    18      5            36.4    1,1        312
+ 200   300    21      0            39.4    1,1        308
+ 200   300    21      5            39.4    1,1        307

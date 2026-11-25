@@ -163,6 +163,16 @@ at 240 mm, just outside the 20 mm criterion; meeting it would need 2.5
 degree fine steps near each edge (servo resolution is 10 µs per degree,
 so this is possible) at the cost of a longer scan.
 
+**Re-assessed 2026-11-26: blocked on car measurements.** A synthetic
+sweep through the real `scan_profile.c` over the beam range seen on the car
+shows no allowance meets ±20 mm for both box faces, and that the demo's
+missing edges come from the box's half-angle plus the beam reaching the
+servo's 45 degrees ([log](../testing/subsystem5/logs/2026-11-26_s5-width-feasibility.txt)).
+Changing the allowance for the width alone would also move the bypass
+offset (the same extents), so nothing changes without the measurement in
+step (1). What the car test must record: stop distance, heading at the
+stop, box orientation, every ray of five scans per distance.
+
 **Acceptance.** SYS-06 with the box both ways round. Regression: S5-U59 to
 U63, U67, U72; SYS-07 to show bypass planning is unchanged.
 
