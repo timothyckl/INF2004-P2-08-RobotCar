@@ -22,6 +22,24 @@ repository unchanged on the evening of 24 November; the SHA-256 values above
 were taken then, not during the demo. "Line" means the line number in the
 log file.
 
+**Evidence integrity (checked 2026-11-25).** A SHA-256 digest changes
+completely if even one byte of a file changes. So anyone can check that a
+log is still the one we recorded: run `shasum -a 256 <file>` (or
+`sha256sum`) and compare the result with the value in the table above. On
+2026-11-25 we checked that:
+
+- both logs in the repository still give the digests recorded on 24
+  November;
+- the assessed session log is byte-for-byte identical (`cmp`) to the
+  original file the dashboard wrote on the laptop
+  (`dashboard-20261124-141757.jsonl`) and to the copy the team shared on
+  the day.
+
+A hash does not stop a file being changed, and it cannot prove what
+happened before the digest was taken. It shows that the file has not
+changed since the digest was recorded, and git keeps the commit history of
+both the logs and the digests.
+
 **Firmware.** The assessed runs used the telemetry version 4 firmware (S1
 decision 7), built at 14:17 with `make NET=lwip MQTT=1 S3_NAV_F=0 -j8`
 (single core, S2 decision 33). Its UF2 SHA-256 is
@@ -45,7 +63,7 @@ course barcode was the letter O.
 
 | Attempt | Run (log lines) | Barcode | Obstacle | Hump |
 |---|---|---|---|---|
-| 1 | START 14:34:01 (1130) to pick-up 14:37:08 (1405) | Not decoded | Scan, left bypass, then `STOP latched: bypass` during REACQUIRE at 14:35:35 (1279) | **6 mm** at 14:34:40 (1191) |
+| 1 | START 14:34:01 (1130) to pick-up 14:37:08 (1405) | Not decoded | Scan, left bypass, then `STOP latched: bypass` during REACQUIRE at 14:35:35 (1279) | **6 mm** at 14:34:40 (1191, frame 1193) |
 | 2 | START 14:48:36 (2492) to pick-up 14:50:40 | Not decoded | `FAULT: scan` at 14:49:54 (2615) | **6 mm** at 14:49:16 (2554, frame 2556) |
 | 3 | Running 14:51:32 (2776) to remote STOP 14:56:30 (3251); lifted at 14:54:17 (3037) and restarted at 14:54:43 (3077) | **O decoded as RIGHT** at 14:51:46 (2800) and again at 14:54:57 (3100) | Three left bypasses, each back to FOLLOW: 14:53:08 (2926), 14:54:03 (3010), 14:56:25 (3240); no contact (team) | **7 mm** at 14:55:21 (3138, frame 3140) |
 | Repeat scan (obstacle removed) | Runs from 14:56:50, 14:57:24 and 14:58:31 | O decoded as RIGHT at 14:56:59 (3303), 14:57:39 (3390), 14:58:46 (3538) | — | — |
@@ -176,11 +194,16 @@ within 2 mm of the tallest hump crossed (criterion agreed on 20 November,
 before the demo), plus detection of every hump and no hump on a flat lap.
 The course hump was 5 mm (0.5 cm), measured by the team.
 
-| Attempt | Logged reading (line) | Error vs 5 mm | Within our ±2 mm criterion | Mark (team record) |
-|---|---:|---:|---|---|
-| 1 | 6 mm (1191) | +1 mm | Yes | 0.5 / 1 |
-| 2 | 6 mm (2554) | +1 mm | Yes | 0.5 / 1 |
-| 3 | 7 mm (3138) | +2 mm | Yes (at the limit) | 0.5 not awarded, see below |
+| Attempt | Logged reading | Laptop time | Event line | Telemetry frame line | Error vs 5 mm | Within our ±2 mm criterion | Mark (team record) |
+|---|---:|---|---:|---:|---:|---|---|
+| 1 | 6 mm | 14:34:40.957 | 1191 | 1193 | +1 mm | Yes | 0.5 / 1 |
+| 2 | 6 mm | 14:49:16.062 | 2554 | 2556 | +1 mm | Yes | 0.5 / 1 |
+| 3 | 7 mm | 14:55:21.821 | 3138 | 3140 | +2 mm | Yes (at the limit) | 0.5 not awarded, see below |
+
+The event line is the dashboard's `hump 1 measured` message; the frame
+line is the first version 4 telemetry frame carrying the same value
+(`hump_last_mm` and `hump_max_mm`), which then repeats in every frame until
+the run ends.
 
 All three readings were detected and reported, and all are within our
 pre-existing criterion. This is not a full SYS-04 pass, because no flat lap
@@ -218,6 +241,16 @@ the full mark. We have not seen their hump height, conditions or reading, so
 we cannot compare the results directly. If the criterion depends on the
 reference height, we would appreciate clarification of how it was applied,
 so that all results, including ours, are assessed the same way.
+
+If the same reference height and assessment criteria were applied, we
+would respectfully appreciate reconsideration of our hump measurement
+marks, including whether our recorded measurements of 6, 6 and 7 mm
+qualify for the full 1 mark.
+
+Our ±2 mm figure is the team's own engineering criterion for SYS-04, set
+on 20 November. It is not the assessor's marking scheme, which we have not
+seen; the request above asks only that the same scheme be applied to every
+group.
 
 **Earlier accuracy evidence.** On 13 November (`03237ef`) four crossings of
 a 10 mm hump read 11, 10, 10 and 9 mm
