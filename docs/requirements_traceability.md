@@ -315,7 +315,7 @@ table shows the rest.
 
 | Technique | Examples |
 |---|---|
-| White-box | Branch coverage of the host-built application code: 78.2% (89.7% of lines) |
+| White-box | Branch coverage of the host-built application code: 78.0% (89.7% of lines) |
 | Black-box | SYS-01 to SYS-11; INT tests |
 | Boundary | S5-U04, U05 (range limits); S4-U36 (lift at 299 and 300 mg); S4-U41 (6 mm floor); S4-U42 (1 mg steps, no jump over 1 mm); S2-U79, U80 (phase and hold limits ±1 ms) |
 | Negative | S1-U04 (malformed commands); S3 invalid patterns; S5-U06, U07; S2-U33 |
@@ -323,19 +323,24 @@ table shows the rest.
 | State transition | S2-U41 to U52 (controller statechart); S2-U20 to U32 (motion statechart) |
 | Regression | `make -C testing/host` before each commit. A failing or crashing test fails the run (F-19): checked with a stand-in program ([log](../testing/host/logs/2026-11-25_runner-status-check.txt)) and by breaking one real function per suite, including a crash in S4 ([log](../testing/host/logs/2026-11-25_runner-mutation-check.txt)). Mission UF2 hash compared after every test-, comment-, name- or build-only change |
 
-### Coverage figures (host, 2026-11-25, [log](../testing/host/logs/2026-11-25_coverage-2.txt))
+### Coverage figures (host, 2026-11-25, [log](../testing/host/logs/2026-11-25_coverage-3.txt))
 
 27 application files are built on the host. Hardware drivers, RTOS task
 files and the WiFi stack are not, so they are outside these figures.
 
 | Scope | Lines | Branches |
 |---|---|---|
-| All 27 files | 4730 / 5272 = **89.7%** | 2011 / 2572 = **78.2%** |
-| Without the IMU I2C driver (hardware path) | 93.2% | 80.5% |
+| All 27 files | 4704 / 5246 = **89.7%** | 1988 / 2548 = **78.0%** |
+| Without the IMU I2C driver (hardware path) | 93.2% | 80.3% |
 | Lowest: `pid.c`, `odometry.c`, `motion_api.c` | 62% to 77% | 52% to 53% |
 
 The low files have their unit tests (S2-U03 to U14) in the on-target
 `TEST=1` image only, so the host figures understate their testing.
+
+Branch coverage was 78.2% earlier on 2026-11-25. It fell to 78.0% only
+because the unused S3 command staging (F-20) was removed, with 23 of its
+24 branches covered; no remaining file lost coverage (per-file comparison
+of the two coverage logs).
 
 ## 7. Test conditions
 

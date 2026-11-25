@@ -20,7 +20,7 @@ checksum with the demo image (`8cf2c419…`).
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
 | Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 765 checks passed with 1 known defect (F-18) reported separately, S4 37/37, S5 48/48 (2026-11-25, after the post-demo tests) |
-| Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.2% of branches (27 host-built files) |
+| Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.0% of branches (27 host-built files; 78.2% before the unused S3 staging code, 23 of whose 24 branches were covered, was removed, F-20) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
 

@@ -1,0 +1,67 @@
+# Final verification 3, 2026-11-25 16:16 +0800, branch final/refinement at bae6198 plus the documentation changes of this commit
+# host: Apple clang version 17.0.0 (clang-1700.6.4.2); target: arm-none-eabi-gcc (Arm GNU Toolchain 15.3.Rel1 (Build arm-15.149)) 15.3.1 20260627
+
+## 1. make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] subsystem2 SUMMARY 52 passed, 0 failed
+noise blip: 25 of 234 payload cases gave a wrong letter
+KNOWN DEFECT (F-18): a noise blip never gives a wrong letter
+765 checks, 0 failures, 1 known defects
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 37 passed, 0 failed
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] all suites passed
+(exit status 0)
+
+## 2. dashboard unit tests
+Ran 23 tests in 0.000s
+OK
+(exit status 0)
+
+## 3. builds (make -B NET=lwip MQTT=1 S3_NAV_F=0 <option>)
+TEST=1: exit status 0, warnings 0
+TEST=1 S3_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S3_LINE_TEST=1: exit status 0, warnings 0
+TEST=1 S2_CAL_TEST=1: exit status 0, warnings 0
+TEST=1 S2_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S4_HW_TEST=1: exit status 0, warnings 0
+S2_MOTION_LOG=1: exit status 0, warnings 0
+S5_RANGE_DIAG=1: exit status 0, warnings 0
+S4_RAW_LOG=1: exit status 0, warnings 0
+mission: exit status 0, warnings 0
+size (text data bss dec hex file):  374410	    132	  79988	 454530	  6ef82	mtk3pico_smp0_usb_cdc_wifi_lwip_mqtt.elf
+mission UF2 SHA-256: 8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+demo image SHA-256:  8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+
+## 4. python3 testing/host/target_static_check.py
+files: 49 application .c files (test files excluded)
+== strict warnings: 0 in application code, 117 in third-party headers
+== gcc -fanalyzer: 1 in application code, 0 in third-party headers
+  app_program/subsystem3/s3_nav.c:49: buffer overflow [CWE-787]
+
+## 5. BARR-C checkers
+      1  1.6a cast to UB * for tm_printf (interface-required)
+    478  1.6a cast with an associated comment (production)
+     63  1.6a cast with an associated comment (test)
+      0  3.5a tab character
+      0  4.2 header without an include guard
+     13  6.2a function over 100 lines
+      4  7.1e variable name under 3 characters (production)
+    142  7.1e variable name under 3 characters (test)
+      3  7.1k pointer variable not named p_...
+BARR-C check passed: 46 subsystem 5 files.
+
+## 6. coverage: see 2026-11-25_coverage-3.txt (lines 89.7%, branches 78.0%)
+
+## 7. evidence integrity
+2d8456242367b7f011a81f1df6d5eb6ce1ab495fd6c094fef64c803c0bf2cf5c  testing/system/logs/2026-11-24_demo-dashboard-1.jsonl
+4e45008633ee0749180ffca8f17bb0391597f1152dd417d43d95cb0a3f5b3441  testing/system/logs/2026-11-24_demo-dashboard-2.jsonl
+recorded: 2d845624...cf5c (dashboard-1), 4e450086...3441 (dashboard-2)
+tags: demo-2026-11-24 -> 4a53c23, demo-2026-11-24-flashed -> a41c19c
+remote tags: 4a53c23 refs/tags/demo-2026-11-24^{} a41c19c refs/tags/demo-2026-11-24-flashed^{} 
+
+## 8. Mermaid: 7 diagrams in docs/final_architecture.md rendered through mermaid.ink (HTTP 200 each) and inspected
+## 9. relative Markdown links: 232 checked, 0 broken

@@ -217,7 +217,8 @@ reaches 6 mm (`S4_RISE_UM` in
 [`task_imu.c`](../app_program/subsystem4/task_imu.c)). The threshold was
 chosen because floor undulations read up to about 4 mm while driving (S4
 decision 11). `s4_hump_complete()` then rounds the peak to whole millimetres
-(line 555); `s2_telemetry_add_hump()` in
+(line 555 in the demo source `a41c19c`; line 566 after later comment-only
+changes); `s2_telemetry_add_hump()` in
 [`robot_state.c`](../app_program/subsystem2/robot_state.c) copies it into
 an 8-bit field, and the dashboard shows it as `N mm`
 ([`app.js`](../testing/subsystem1/dashboard/static/app.js), lines 56–57).
