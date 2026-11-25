@@ -1245,6 +1245,32 @@ with one 500 ms limit for every task INT-09 loses its line cause
 ([log](../testing/host/logs/2026-11-26_health-mutations.txt)). Car test
 pending: SYS-01 with `S2_WATCHDOG=1`, then a forced stall.
 
+### 38. A check-in after the guard's clock read is not a stall (F-27, 2026-11-26)
+
+Recorded by Khang on 2026-11-26; approval by Dalton (S2) to be confirmed.
+Revises decision 37's evaluator. Post-demo change: host evidence only.
+
+**Problem.** Motion Control (priority 15) reads the clock, then the
+check-in records (`s2_health_guard(..., now_ms())`). The S3 loop (priority
+1, the initial task) and the controller (14) can preempt it in between and
+check in with a later time. The unsigned age `now - last` then wraps to
+about 2^32 ms, the task reads as stalled, and Motion Control latches
+`MOTION_FAULT_TASK`: a false stop that needs RESET. On the single-core
+mission image this needs a kernel tick inside that short window (a late
+pass); on a dual-core build the tasks run at the same time and it is far
+more likely.
+
+**Decision.** An age above half the clock range (`S2_HEALTH_AGE_MAX_MS`,
+2^31 - 1 ms) is a check-in stamped after `now_ms` and counts as fresh.
+Unsigned arithmetic only, so no implementation-defined signed conversion;
+wrap handling is kept. A real stall is reported at its limit (at most
+1.5 s), long before its age could reach 2^31 ms.
+
+**Verification.** S2-U81 now also checks check-ins 1 and 10 ms after
+`now_ms`, across the wrap, and the boundary at 2^31 - 1 ms; it fails with
+the old evaluator. INT-15 (blocked controller, healthy 10 s run) unchanged
+([log](../testing/host/logs/2026-11-26_verify-f27.txt)).
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment

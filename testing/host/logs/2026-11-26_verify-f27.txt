@@ -1,0 +1,18 @@
+# F-27 (S2 decision 38): a check-in stamped after the guard's clock read is fresh, 2026-11-26
+# host: gcc.exe (Rev8, Built by MSYS2 project) 15.2.0
+
+## evaluator before the fix, extended S2-U81 (make -C testing/host s2)
+(exit status 2)
+[HOST] S2-U81 FAIL
+[HOST] subsystem2 SUMMARY 55 passed, 1 failed
+
+## with the fix (make -C testing/host s2 int)
+(exit status 0)
+[HOST] S2-U81 PASS
+[HOST] S2-U82 PASS
+[HOST] subsystem2 SUMMARY 56 passed, 0 failed
+[HOST] INT-15 PASS  10 s healthy run: no stall reported
+[HOST] INT-15 PASS  blocked controller: motors off at 500 ms, task fault
+[HOST] INT-15 PASS  controller back: FAULT, STOP latched (fault)
+[HOST] INT-15 PASS  RESET then START runs again
+[HOST] s2 integration SUMMARY 46 passed, 0 failed

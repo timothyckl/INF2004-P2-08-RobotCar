@@ -65,6 +65,7 @@ maintainability or documentation.
 | F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
 | F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | **Applied** (instrument): painted stacks, high-water printed at run end; car run pending |
 | F-25 | S3 | A capture missing runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases in S3-U04; 3,624 in a wider sweep) | Medium | **Applied** (S3 d11 for 27 and 29 runs, d12 for 25 runs): 0 wrong in S3-U04, U07 and U08; host-verified, car test pending |
+| F-27 | S2 | The liveness guard can read a check-in made after its clock read (a higher-priority task preempting Motion Control) as 2^32 ms old and latch a false task fault | Medium | **Applied** (S2 d38): such an age counts as fresh; S2-U81 extended; host-verified |
 | F-26 | S4 | The IMU task polls with `tk_dly_tsk(10)` (really 20 ms), so samples arrive 20 or 30 ms apart | Low | Kept: the averaging windows were tuned on it |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
@@ -385,6 +386,17 @@ reference humps of several heights are crossed on the car.
 to `task_imu.c`, so S4-U41 repeated 6000 and 851. They now live in
 `s4_config.h` (`s4_config_mission()`), used by the task, the tests and the
 replay, and the tests derive their expectations from them.
+
+**F-27 (Medium, applied) — false stall from a preempted guard.**
+`s2_health_guard()` is given `now_ms()` and then reads the check-in
+records. The S3 loop (priority 1) and the controller (14) run above Motion
+Control (15), so either can preempt it between those reads and check in
+with a later time; `now - last` then wraps to about 2^32 ms and the task
+reads as stalled, latching `MOTION_FAULT_TASK` until RESET. The window is
+short on the single-core mission image (a tick must land in it), wide on
+a dual-core build. *Applied* (S2 decision 38): an age above 2^31 - 1 ms is
+a check-in after `now_ms` and counts as fresh; S2-U81 covers it and fails
+on the old evaluator. Found in this review; never seen on the car.
 
 **F-26 (Low, kept) — IMU sample timing.** The IMU task polls with
 `tk_dly_tsk(10)`, which takes 20 ms (as in F-01), against a 50 Hz sensor,
