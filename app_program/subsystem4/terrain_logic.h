@@ -163,6 +163,14 @@ void s4_terrain_request_recovery(s4_terrain_context_t * p_context);
 void s4_terrain_start_new_run(s4_terrain_context_t * p_context);
 void s4_terrain_set_detect_enable(s4_terrain_context_t * p_context,
                                 bool b_enable);
+/**
+ * Detection gate, one call per sample (S4 decisions 12, 16 and 17): true
+ * once b_following has held for settle_samples samples in a row.
+ * *p_settle counts down while following and is reloaded with
+ * settle_samples whenever not.
+ */
+bool s4_terrain_gate_step(uint8_t * p_settle, bool b_following,
+                          uint8_t settle_samples);
 s4_terrain_result_t const *
 s4_terrain_get_result(s4_terrain_context_t const * p_context);
 

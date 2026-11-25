@@ -360,7 +360,6 @@ s4_detect_gate (uint8_t * p_settle)
 {
     s2_robot_state_t state;
     bool b_driving = false;
-    bool b_enabled = false;
 
     if (E_OK == s2_get_robot_state(&state))
     {
@@ -368,20 +367,7 @@ s4_detect_gate (uint8_t * p_settle)
                     (S2_MODE_FOLLOW == state.mode);
     }
 
-    if (!b_driving)
-    {
-        *p_settle = S4_SETTLE_SAMPLES;
-    }
-    else if (*p_settle > 0u)
-    {
-        (*p_settle)--;
-    }
-    else
-    {
-        b_enabled = true;
-    }
-
-    return (b_enabled);
+    return (s4_terrain_gate_step(p_settle, b_driving, S4_SETTLE_SAMPLES));
 }
 
 /*

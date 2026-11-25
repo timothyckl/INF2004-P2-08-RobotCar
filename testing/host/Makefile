@@ -77,7 +77,16 @@ INT_SRC := s2_integration_main.c stubs/kernel_model.c \
            $(APP)/subsystem2/pid.c \
            $(APP)/subsystem2/odometry.c \
            $(APP)/subsystem3/s3_ir.c \
-           $(APP)/subsystem1/telemetry_encoder.c
+           $(APP)/subsystem3/s3_barcode.c \
+           $(APP)/subsystem3/s3_scan.c \
+           $(APP)/subsystem3/s3_bar.c \
+           $(APP)/subsystem3/s3_code39.c \
+           $(APP)/subsystem3/s3_nav.c \
+           $(APP)/subsystem1/telemetry_encoder.c \
+           $(APP)/subsystem5/src/bypass_plan.c \
+           $(APP)/subsystem5/src/scan_profile.c \
+           $(APP)/subsystem5/src/forward_monitor.c \
+           $(APP)/subsystem4/terrain_logic.c
 
 S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(APP)/subsystem5/src/scan_test_adapter.c \

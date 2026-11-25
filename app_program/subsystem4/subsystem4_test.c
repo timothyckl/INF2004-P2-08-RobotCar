@@ -72,6 +72,7 @@ static bool s4_test_hump_count(void);
 static bool s4_test_hump_floor(void);
 static bool s4_test_hump_monotonic(void);
 static bool s4_test_hump_offset(void);
+static bool s4_test_detect_gate(void);
 static void s4_test_calibrate_with(s4_terrain_context_t * p_context,
                                    s4_terrain_config_t const * p_config,
                                    uint32_t * p_time_us);
@@ -167,6 +168,9 @@ subsystem4_test (void)
     TEST_CHECK("S4-U43", s4_test_hump_offset(),
                "calibration only on the report, detection uncalibrated; "
                "never below 0; invalid offsets refused");
+    TEST_CHECK("S4-U45", s4_test_detect_gate(),
+               "detection gate: on after the settle count of FOLLOW only; "
+               "any other sample reloads it");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -666,6 +670,38 @@ s4_test_hump_offset (void)
 
     return (b_ten && b_below && b_above && b_floor
             && (S4_TERRAIN_STATE_FAULT == context.result.state));
+}
+
+/*
+ * S4-U45 (post-demo, 2026-11-26, decisions 16 and 17): the detection gate
+ * of task_imu.c, now pure. With a settle count of 3: three following
+ * samples keep it off, the fourth turns it on; one sample not following
+ * (a turn, a scan, a stop) turns it off and restarts the count; a count
+ * of 0 enables on the first following sample; a null counter is refused.
+ */
+static bool
+s4_test_detect_gate (void)
+{
+    uint8_t settle = 3u;
+    bool b_off = true;
+    bool b_on;
+    bool b_reloaded;
+
+    for (uint8_t sample = 0u; sample < 3u; sample++)
+    {
+        b_off = b_off && !s4_terrain_gate_step(&settle, true, 3u);
+    }
+    b_on = s4_terrain_gate_step(&settle, true, 3u)
+           && s4_terrain_gate_step(&settle, true, 3u);
+    b_reloaded = !s4_terrain_gate_step(&settle, false, 3u)
+                 && (3u == settle)
+                 && !s4_terrain_gate_step(&settle, true, 3u)
+                 && (2u == settle);
+    settle = 0u;
+
+    return (b_off && b_on && b_reloaded
+            && s4_terrain_gate_step(&settle, true, 0u)
+            && !s4_terrain_gate_step(NULL, true, 3u));
 }
 
 /* Initialise with config and feed the calibration samples level. */

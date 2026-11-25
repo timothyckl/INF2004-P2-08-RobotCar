@@ -171,6 +171,33 @@ s4_terrain_set_detect_enable (s4_terrain_context_t * p_context,
     }
 }
 
+bool
+s4_terrain_gate_step (uint8_t * p_settle, bool b_following,
+                      uint8_t settle_samples)
+{
+    bool b_enabled = false;
+
+    if (NULL == p_settle)
+    {
+        return (false);
+    }
+
+    if (!b_following)
+    {
+        *p_settle = settle_samples;
+    }
+    else if (*p_settle > 0u)
+    {
+        (*p_settle)--;
+    }
+    else
+    {
+        b_enabled = true;
+    }
+
+    return (b_enabled);
+}
+
 s4_terrain_result_t const *
 s4_terrain_get_result (s4_terrain_context_t const * p_context)
 {

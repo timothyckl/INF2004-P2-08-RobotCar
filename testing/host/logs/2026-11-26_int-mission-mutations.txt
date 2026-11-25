@@ -1,0 +1,33 @@
+# Mutation checks of the new integration cases (INT-17 to INT-24), 2026-11-26.
+# Each mutation was applied alone, the suite run (make -C testing/host int,
+# and s4 where stated), and the file restored; the suite then passed again
+# (46 passed, 0 failed; S4 39 passed).
+
+1. app_program/subsystem3/s3_scan.c replaced by its version at 9d0fb5f
+   (before S3 decision 11, F-25):
+   [HOST] INT-18 FAIL  damaged code rejected; nothing held; still following
+   [HOST] INT-18 FAIL  junction crossed, no turn
+   SUMMARY 37 passed, 2 failed   (at that time 39 cases)
+   The damaged C decodes as P, which the case maps to LEFT: the car turns.
+
+2. Harness S5 planner settings with clearance 0 and margin 0 (instead of
+   scan_task.c's 50 and 30):
+   [HOST] INT-21 150 wide, 200 deep: side left, closest -1 mm, ...
+   [HOST] INT-21 FAIL  150 x 200 mm box ...
+   [HOST] INT-21 200 wide, 150 deep: side left, closest -1 mm, ...
+   [HOST] INT-21 FAIL  200 x 150 mm box ...
+   [HOST] INT-23 FAIL  no line after the bypass: STOP (bypass), still
+   SUMMARY 41 passed, 3 failed
+
+3. app_program/subsystem2/bypass_control.c: the "beside the obstacle"
+   look test inverted (look_mm > clear_mm):
+   [HOST] INT-21 FAIL  150 x 200 mm box ...
+   [HOST] INT-23 FAIL  no line after the bypass: STOP (bypass), still
+   SUMMARY 42 passed, 2 failed
+
+4. app_program/subsystem4/terrain_logic.c, s4_terrain_gate_step(): the
+   settle count not reloaded when not following:
+   [HOST] INT-24 FAIL  bypass: detection only in FOLLOW, off while settling
+   [HOST] INT-24 FAIL  junction turn: detection only in FOLLOW, ...
+   SUMMARY 44 passed, 2 failed
+   [TEST] S4-U45 FAIL  detection gate ...   SUMMARY 38 passed, 1 failed

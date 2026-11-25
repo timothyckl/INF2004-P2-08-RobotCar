@@ -17,6 +17,19 @@ static void int_13_barcode_records (void);
 static void int_14_scan_failure (void);
 static void int_15_task_stall (void);
 static void int_16_telemetry_v5 (void);
+static void int_17_printed_code (void);
+static void int_18_corrupted_code (void);
+static void int_19_repeated_codes (void);
+static void int_20_stop_drops_code (void);
+static void int_21_obstacle_bypass (void);
+static void int_22_stop_in_bypass (void);
+static void int_23_bypass_no_line (void);
+static void int_24_terrain_gate (void);
+static bool int_bypass_mission (int32_t width_mm, int32_t depth_mm,
+                                char const * p_name);
+static bool int_in_bypass (void);
+static void int_drive_past (int32_t x_mm, uint32_t limit_ms);
+static bool int_crossed_straight (void);
 static bool int_frame (uint8_t * p_frame);
 static bool int_turned_right (void);
 static bool int_turn_to (uint8_t command, int32_t * p_heading_mdeg,
@@ -37,6 +50,14 @@ s2_integration_cases (void)
     int_14_scan_failure();
     int_15_task_stall();
     int_16_telemetry_v5();
+    int_17_printed_code();
+    int_18_corrupted_code();
+    int_19_repeated_codes();
+    int_20_stop_drops_code();
+    int_21_obstacle_bypass();
+    int_22_stop_in_bypass();
+    int_23_bypass_no_line();
+    int_24_terrain_gate();
 }
 
 /* INT-08 (S1 -> S2): MQTT STOP through the bridge latches STOP at once;
@@ -473,6 +494,328 @@ static bool
 int_wheels_still (void)
 {
     return (motion_stop_confirmed());
+}
+
+/* INT-17 (S3 sensor -> decoder -> S2 -> Motion): B (RIGHT in the boot
+   map) printed beside the line 300 mm in is read by the real side-sensor
+   path while the car follows the line; the controller is told while the
+   code is read, the letter and RIGHT reach the published state, the
+   line is held, and the car turns right at the junction 1.5 m in. */
+static void
+int_17_printed_code (void)
+{
+    s2_robot_state_t state;
+    bool b_held;
+    bool b_turned;
+
+    sim_init(&g_cross);
+    sim_print_code('B', 300);
+    sim_start();
+    int_drive_past(600, 30000u);
+    sim_state(&state);
+    b_held = sim_following() && (1u == g_sim.bar_decoded)
+             && (0u == g_sim.bar_rejected)
+             && (0u != (state.flags & S2_RS_BARCODE_VALID))
+             && ('B' == state.barcode)
+             && (S2_NAV_RIGHT == state.barcode_command)
+             && (S2_NAV_RIGHT == state.nav_held);
+    sim_check(b_held, "INT-17",
+              "printed B decoded once; RIGHT held; still following");
+    sim_check(g_sim.b_flag_seen, "INT-17",
+              "barcode-active flag reported while the code is read");
+
+    b_turned = sim_run_until(int_turned_right, 120000u);
+    sim_check(b_turned && (1u == g_sim.bar_decoded), "INT-17",
+              "RIGHT carried out at the junction");
+}
+
+/* INT-18 (S3 sensor -> decoder -> S2): a damaged C (STRAIGHT): its last
+   two runs are missing and a 0.8 mm speck (20 ms at 40 mm/s) splits run
+   7. Before S3 decision 11 the decoder read this as P (F-25). P is mapped
+   to LEFT for this case, so a wrong letter would turn the car. The
+   capture must be rejected, nothing held, and the junction crossed. */
+static void
+int_18_corrupted_code (void)
+{
+    s2_robot_state_t state;
+    bool b_ok;
+
+    sim_init(&g_cross);
+    sim_print_code('C', 300);
+    g_sim.print.runs = (uint8_t)(g_sim.print.runs - 2u);
+    sim_print_speck(7u, 800u);
+    (void)s3_nav_set_letter(S3_NAV_LEFT, 'P');
+    sim_start();
+    int_drive_past(600, 30000u);
+    sim_state(&state);
+    b_ok = sim_following() && (0u == g_sim.bar_decoded)
+           && (g_sim.bar_rejected >= 1u)
+           && (0u == (state.flags & S2_RS_BARCODE_VALID))
+           && (S2_NAV_NONE == state.nav_held);
+    sim_check(b_ok, "INT-18",
+              "damaged code rejected; nothing held; still following");
+
+    b_ok = int_crossed_straight();
+    (void)s3_nav_set_letter(S3_NAV_LEFT, 'A');  /* boot map again */
+    sim_check(b_ok, "INT-18", "junction crossed, no turn");
+}
+
+/* INT-19 (S3 sensor -> S2): the same code read twice is counted twice
+   and held once (one turn); a different code read later replaces the
+   held command (S2 decision 27). */
+static void
+int_19_repeated_codes (void)
+{
+    s2_robot_state_t state;
+    bool b_ok;
+
+    sim_init(&g_cross);
+    sim_print_code('B', 300);
+    sim_start();
+    int_drive_past(550, 30000u);
+    /* The side sensor is 133 mm ahead: the next code starts ahead of it. */
+    sim_print_code('B', 750);
+    int_drive_past(1050, 30000u);
+    sim_state(&state);
+    b_ok = (2u == g_sim.bar_decoded) && (2u == state.barcode_count)
+           && (S2_NAV_RIGHT == state.nav_held);
+    b_ok = b_ok && sim_run_until(int_turned_right, 120000u);
+    g_sim.navigate_periods = 0u;
+    sim_run_ms(3000u);
+    sim_check(b_ok && sim_following() && (0u == g_sim.navigate_periods),
+              "INT-19", "a repeated code is held once: one right turn");
+
+    sim_init(&g_cross);
+    sim_print_code('A', 300);
+    sim_start();
+    int_drive_past(550, 30000u);
+    sim_state(&state);
+    b_ok = (S2_NAV_LEFT == state.nav_held);
+    sim_print_code('B', 750);
+    int_drive_past(1050, 30000u);
+    sim_state(&state);
+    b_ok = b_ok && ('B' == state.barcode)
+           && (S2_NAV_RIGHT == state.nav_held);
+    sim_check(b_ok && sim_run_until(int_turned_right, 120000u), "INT-19",
+              "a later code replaces the held one: LEFT, then RIGHT turn");
+}
+
+/* INT-20 (S1 + S3 sensor -> S2): a remote STOP while a printed RIGHT is
+   held drops it; after RESET and START the junction is crossed. */
+static void
+int_20_stop_drops_code (void)
+{
+    s2_robot_state_t state;
+    bool b_ok;
+
+    sim_init(&g_cross);
+    sim_print_code('B', 300);
+    sim_start();
+    int_drive_past(600, 30000u);
+    sim_state(&state);
+    b_ok = (S2_NAV_RIGHT == state.nav_held);
+    controller_raise_remote_stop(NULL, g_sim.now_ms);
+    sim_step();
+    sim_state(&state);
+    sim_check(b_ok && int_stopped_latched(S2_STOP_REMOTE)
+              && (S2_NAV_NONE == state.nav_held),
+              "INT-20", "remote STOP latches and drops the held RIGHT");
+
+    sim_run_ms(2000u);
+    /* A new run restarts the pose, and so this track, at 0; the code was
+       passed before the stop, so it is not read again. */
+    g_sim.print.runs = 0u;
+    int_send_remote(S2_REMOTE_RESET);
+    sim_run_ms(500u);
+    int_send_remote(S2_REMOTE_START);
+    (void)sim_run_until(sim_running, 1000u);
+    sim_check(int_crossed_straight(), "INT-20",
+              "after restart the junction is crossed, no turn");
+}
+
+/* A straight line with no junction; the obstacle is placed by the case. */
+static sim_track_t const g_straight = {0, false, false, true, 0, 0u};
+
+/* INT-21 (S5 -> S2 -> Motion -> S3, a whole obstacle mission): the demo
+   obstacle (150 x 200 mm, S2 decision 22), in both orientations, sits on
+   the line 900 mm in. The real forward monitor raises the hazard; the
+   car stops before the scan; the real planner plans from the scan; the
+   controller carries out the plan with side looks, searches for the line
+   and follows it again. The body must never come within the agreed 50 mm
+   of the box (the plan aims for 50 + 30 mm margin). Ideal rays and
+   wheels: not evidence for the car (SYS-05 to SYS-07). */
+static void
+int_21_obstacle_bypass (void)
+{
+    sim_check(int_bypass_mission(150, 200, "150 wide, 200 deep"), "INT-21",
+              "150 x 200 mm box: scan, bypass, reacquire, follow; >= 50 mm");
+    sim_check(int_bypass_mission(200, 150, "200 wide, 150 deep"), "INT-21",
+              "200 x 150 mm box: scan, bypass, reacquire, follow; >= 50 mm");
+}
+
+static bool
+int_bypass_mission (int32_t width_mm, int32_t depth_mm, char const * p_name)
+{
+    uint8_t const want = (uint8_t)((1u << S2_MODE_FOLLOW)
+                                   | (1u << S2_MODE_SCAN)
+                                   | (1u << S2_MODE_BYPASS)
+                                   | (1u << S2_MODE_REACQUIRE));
+    int32_t const past_mm = 900 + depth_mm + 400;
+    bool b_back = false;
+    bool b_ok;
+
+    sim_init(&g_straight);
+    sim_place_box(900, width_mm, depth_mm);
+    sim_start();
+    for (uint32_t elapsed = 0u; (elapsed < 240000u) && sim_running();
+         elapsed += SIM_PERIOD_MS)
+    {
+        sim_step();
+        if (((g_sim.box.modes_seen & want) == want) && sim_following()
+            && (sim_x_mm() > past_mm))
+        {
+            b_back = true;
+            break;
+        }
+    }
+    sim_run_ms(2000u);
+    {
+        motion_status_t status;
+
+        (void)motion_get_status(&status);
+        printf("[HOST] INT-21 %s: side %s, closest %.0f mm, then at x %ld "
+               "y %ld mm heading %ld mdeg\n", p_name,
+               (BYPASS_PLAN_LEFT == g_sim.box.plan.side) ? "left" : "right",
+               g_sim.box.min_clear_mm, (long)status.x_mm, (long)status.y_mm,
+               (long)status.heading_mdeg);
+        b_ok = b_back && sim_following()
+               && (1u == g_sim.authorise_count) && g_sim.b_still_at_authorise
+               && (g_sim.box.min_clear_mm >= 50.0)
+               && (abs(status.y_mm) <= 20)
+               && (abs(status.heading_mdeg) <= 10000);
+    }
+
+    return (b_ok);
+}
+
+/* INT-22 (S1 -> S2 during a bypass): a remote STOP while the plan is
+   being carried out latches STOP in that period, gives zero duty from the
+   next Motion Control period, ends the bypass and stops the wheels;
+   nothing moves while it is latched. */
+static void
+int_22_stop_in_bypass (void)
+{
+    bool b_ok;
+
+    sim_init(&g_straight);
+    sim_place_box(900, 150, 200);
+    sim_start();
+    b_ok = sim_run_until(int_in_bypass, 120000u);
+    sim_run_ms(1500u);
+    controller_raise_remote_stop(NULL, g_sim.now_ms);
+    sim_step();
+    b_ok = b_ok && int_stopped_latched(S2_STOP_REMOTE);
+    /* Each model step runs Motion Control before the controller, so the
+       latch reaches the motors in the next Motion Control period. */
+    sim_step();
+    b_ok = b_ok && (0 == g_sim.duty[0]) && (0 == g_sim.duty[1]);
+    sim_check(b_ok, "INT-22", "remote STOP in BYPASS latches; duty 0 by the next motion period");
+    sim_run_ms(3000u);
+    sim_check(int_wheels_still() && int_stopped_latched(S2_STOP_REMOTE)
+              && (!bypass_control_active(&g_bypass))
+              && (g_sim.box.min_clear_mm >= 50.0), "INT-22",
+              "bypass ended; wheels still; box never reached");
+}
+
+/* INT-23 (failed recovery): the line ends 60 mm before the box, so after
+   the bypass the bounded search finds nothing. STOP latches with cause
+   bypass and the car stays still. */
+static void
+int_23_bypass_no_line (void)
+{
+    sim_track_t const track = {840, false, false, false, 0, 0u};
+    uint8_t const want = (uint8_t)((1u << S2_MODE_BYPASS)
+                                   | (1u << S2_MODE_REACQUIRE));
+
+    sim_init(&track);
+    sim_place_box(900, 150, 200);
+    sim_start();
+    (void)sim_run_until(int_in_bypass, 120000u);
+    for (uint32_t elapsed = 0u; (elapsed < 240000u) && sim_running();
+         elapsed += SIM_PERIOD_MS)
+    {
+        sim_step();
+    }
+    sim_run_ms(3000u);
+    sim_check(int_stopped_latched(S2_STOP_BYPASS)
+              && ((g_sim.box.modes_seen & want) == want)
+              && int_wheels_still() && (0 == g_sim.duty[0])
+              && (0 == g_sim.duty[1]) && (g_sim.box.min_clear_mm >= 50.0),
+              "INT-23", "no line after the bypass: STOP (bypass), still");
+}
+
+/* INT-24 (S2 -> S4): S4's real detection gate, fed the controller's
+   published state every 20 ms through a whole obstacle bypass and a
+   right turn at a junction, is never on in SCAN, BYPASS, REACQUIRE or
+   NAVIGATE (S4 decisions 16 and 17), is on for most of the following,
+   and is off for the settle count after each return to FOLLOW. */
+static void
+int_24_terrain_gate (void)
+{
+    uint8_t const follow_only = (uint8_t)(1u << S2_MODE_FOLLOW);
+    int32_t heading = 0;
+    uint32_t navigate = 0u;
+    bool b_ok;
+
+    b_ok = int_bypass_mission(150, 200, "gate run");
+    b_ok = b_ok && (follow_only == g_sim.gate.on_modes)
+           && (g_sim.gate.follow_on > (g_sim.gate.follow_samples / 2u))
+           && (g_sim.gate.follow_on
+               <= (g_sim.gate.follow_samples - (2u * S4_SETTLE_SAMPLES)));
+    sim_check(b_ok, "INT-24",
+              "bypass: detection only in FOLLOW, off while settling");
+
+    b_ok = int_turn_to(S2_NAV_RIGHT, &heading, &navigate)
+           && (navigate > 0u) && (follow_only == g_sim.gate.on_modes)
+           && (g_sim.gate.follow_on
+               <= (g_sim.gate.follow_samples - (2u * S4_SETTLE_SAMPLES)));
+    sim_check(b_ok, "INT-24",
+              "junction turn: detection only in FOLLOW, off while settling");
+}
+
+static bool
+int_in_bypass (void)
+{
+    s2_robot_state_t state;
+
+    sim_state(&state);
+    return ((S2_SYS_RUNNING == state.state)
+            && (S2_MODE_BYPASS == state.mode));
+}
+
+/* Follow until the axle is past x_mm (or limit_ms, or not running). */
+static void
+int_drive_past (int32_t x_mm, uint32_t limit_ms)
+{
+    for (uint32_t elapsed = 0u;
+         (elapsed < limit_ms) && sim_running() && (sim_x_mm() < x_mm);
+         elapsed += SIM_PERIOD_MS)
+    {
+        sim_step();
+    }
+}
+
+/* Follow on until 300 mm past the junction: no NAVIGATE on the way and
+   still following straight ahead. */
+static bool
+int_crossed_straight (void)
+{
+    g_sim.navigate_periods = 0u;
+    int_drive_past(g_cross.junction_mm + 300, 90000u);
+
+    return (sim_following() && (0u == g_sim.navigate_periods)
+            && (abs(sim_heading_mdeg()) < 5000)
+            && (sim_x_mm() >= (g_cross.junction_mm + 300)));
 }
 
 /* End of file. */
