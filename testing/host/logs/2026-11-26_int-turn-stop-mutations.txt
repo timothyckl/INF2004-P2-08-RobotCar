@@ -1,0 +1,58 @@
+# INT-25..INT-27 (STOP and a task fault during a junction turn; 60 s straight), 2026-11-26
+# host: gcc 15.2.0 (MSYS2 UCRT64); make -C testing/host int
+
+## suite
+[HOST] INT-25 PASS  remote STOP in NAVIGATE latches; duty 0 by the next period
+[HOST] INT-25 PASS  no duty while latched; wheels still; held command dropped
+[HOST] INT-25 PASS  START alone stays stopped; RESET, START follows, no turn
+[HOST] INT-26 PASS  blocked controller mid-turn: task fault at 500 ms
+[HOST] INT-26 PASS  controller back: FAULT latched, turn not resumed
+[HOST] INT-26 PASS  RESET then START follows again, no turn resumed
+[HOST] INT-27 PASS  60 s centred on a straight: following throughout
+[HOST] INT-27 PASS  about 2.4 m covered at 40 mm/s; no false line-loss stop
+[HOST] s2 integration SUMMARY 54 passed, 0 failed
+
+## mutations (each restored afterwards; each must fail the suite)
+== mutation: STOP keeps the held command and manoeuvre (no nav abort when not running)
+suite exit status 2
+[HOST] INT-12 FAIL  pick-up latches STOP and drops the held command
+[HOST] INT-12 FAIL  after restart the junction is crossed, no turn
+[HOST] INT-20 FAIL  remote STOP latches and drops the held RIGHT
+[HOST] INT-20 FAIL  after restart the junction is crossed, no turn
+[HOST] INT-25 FAIL  START alone stays stopped; RESET, START follows, no turn
+[HOST] INT-26 FAIL  RESET then START follows again, no turn resumed
+[HOST] s2 integration SUMMARY 48 passed, 6 failed
+
+== mutation: liveness guard never reports a stall
+suite exit status 2
+[HOST] INT-15 FAIL  blocked controller: motors off at 500 ms, task fault
+[HOST] INT-15 FAIL  controller back: FAULT, STOP latched (fault)
+[HOST] INT-16 FAIL  stalled task: fault motion, detail 7 (task)
+[HOST] INT-26 FAIL  blocked controller mid-turn: task fault at 500 ms
+[HOST] INT-26 FAIL  controller back: FAULT latched, turn not resumed
+[HOST] s2 integration SUMMARY 49 passed, 5 failed
+
+== mutation: a 'line lost' stop after 30 s of following (an artificial time limit)
+suite exit status 2
+[HOST] INT-10 FAIL  RIGHT: NAVIGATE, then following at -90 degrees
+[HOST] INT-10 FAIL  LEFT: NAVIGATE, then following at +90 degrees
+[HOST] INT-10 FAIL  U-TURN: NAVIGATE, then following back
+[HOST] INT-10 FAIL  STRAIGHT: no stop, crosses the junction
+[HOST] INT-11 FAIL  RIGHT held through the scan, turned at 3.0 m
+[HOST] INT-12 FAIL  after restart the junction is crossed, no turn
+[HOST] INT-13 FAIL  a letter during a manoeuvre is reported, dropped
+[HOST] INT-16 FAIL  after the junction: nothing held, count 1
+[HOST] INT-17 FAIL  RIGHT carried out at the junction
+[HOST] INT-18 FAIL  junction crossed, no turn
+[HOST] INT-19 FAIL  a repeated code is held once: one right turn
+[HOST] INT-19 FAIL  a later code replaces the held one: LEFT, then RIGHT turn
+[HOST] INT-20 FAIL  after restart the junction is crossed, no turn
+[HOST] INT-24 FAIL  junction turn: detection only in FOLLOW, off while settling
+[HOST] INT-25 FAIL  remote STOP in NAVIGATE latches; duty 0 by the next period
+[HOST] INT-25 FAIL  no duty while latched; wheels still; held command dropped
+[HOST] INT-25 FAIL  START alone stays stopped; RESET, START follows, no turn
+[HOST] INT-26 FAIL  blocked controller mid-turn: task fault at 500 ms
+[HOST] INT-27 FAIL  60 s centred on a straight: following throughout
+[HOST] INT-27 FAIL  about 2.4 m covered at 40 mm/s; no false line-loss stop
+[HOST] s2 integration SUMMARY 34 passed, 20 failed
+

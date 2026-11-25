@@ -25,6 +25,10 @@ static void int_21_obstacle_bypass (void);
 static void int_22_stop_in_bypass (void);
 static void int_23_bypass_no_line (void);
 static void int_24_terrain_gate (void);
+static void int_25_stop_in_turn (void);
+static void int_26_fault_in_turn (void);
+static void int_27_long_straight (void);
+static bool int_start_turn (uint8_t command);
 static bool int_bypass_mission (int32_t width_mm, int32_t depth_mm,
                                 char const * p_name);
 static bool int_in_bypass (void);
@@ -58,6 +62,9 @@ s2_integration_cases (void)
     int_22_stop_in_bypass();
     int_23_bypass_no_line();
     int_24_terrain_gate();
+    int_25_stop_in_turn();
+    int_26_fault_in_turn();
+    int_27_long_straight();
 }
 
 /* INT-08 (S1 -> S2): MQTT STOP through the bridge latches STOP at once;
@@ -816,6 +823,142 @@ int_crossed_straight (void)
     return (sim_following() && (0u == g_sim.navigate_periods)
             && (abs(sim_heading_mdeg()) < 5000)
             && (sim_x_mm() >= (g_cross.junction_mm + 300)));
+}
+
+/* INT-25 (S1 -> S2 during NAVIGATE, post-demo 2026-11-26): a remote STOP
+   1 s into a RIGHT manoeuvre at the + junction. STOP latches (cause
+   remote) in that period and the motors get no duty from the next Motion
+   Control period, though Motion Control is mid-move; the held command is
+   gone, the wheels stay still, and START alone does not move the car;
+   RESET then START follows the line again without resuming the turn. */
+static void
+int_25_stop_in_turn (void)
+{
+    s2_robot_state_t state;
+    bool b_ok = int_start_turn(S2_NAV_RIGHT);
+
+    controller_raise_remote_stop(NULL, g_sim.now_ms);
+    sim_step();
+    b_ok = b_ok && int_stopped_latched(S2_STOP_REMOTE);
+    sim_step();
+    b_ok = b_ok && (0 == g_sim.duty[0]) && (0 == g_sim.duty[1]);
+    sim_check(b_ok, "INT-25",
+              "remote STOP in NAVIGATE latches; duty 0 by the next period");
+
+    sim_run_ms(3000u);
+    sim_state(&state);
+    sim_check(int_wheels_still() && int_stopped_latched(S2_STOP_REMOTE)
+              && (S2_NAV_NONE == state.nav_held)
+              && (INT32_MAX != g_sim.max_speed_after_stop), "INT-25",
+              "no duty while latched; wheels still; held command dropped");
+
+    int_send_remote(S2_REMOTE_START);
+    sim_run_ms(500u);
+    b_ok = int_stopped_latched(S2_STOP_REMOTE) && int_wheels_still();
+    int_send_remote(S2_REMOTE_RESET);
+    sim_run_ms(500u);
+    int_send_remote(S2_REMOTE_START);
+    b_ok = b_ok && sim_run_until(sim_running, 1000u);
+    sim_run_ms(300u);
+    sim_check(b_ok && sim_following() && (!sim_navigating()), "INT-25",
+              "START alone stays stopped; RESET, START follows, no turn");
+}
+
+/* INT-26 (all tasks -> Motion Control during NAVIGATE, post-demo
+   2026-11-26): the controller blocks for 600 ms 1 s into a RIGHT
+   manoeuvre. Motion Control's guard faults (MOTION_FAULT_TASK) at the
+   500 ms limit without the controller, as in INT-15 while following, and
+   holds the duty at 0. (The duty may reach 0 earlier: Motion Control
+   ends the current turn segment and waits.) When the controller runs
+   again it enters FAULT with STOP latched (cause fault) and the turn is
+   not resumed; RESET then START follow again without the turn. */
+static void
+int_26_fault_in_turn (void)
+{
+    s2_robot_state_t state;
+    uint32_t blocked_at;
+    uint32_t fault_after = 0u;
+    bool b_ok = int_start_turn(S2_NAV_RIGHT);
+
+    g_sim.b_controller_blocked = true;
+    blocked_at = g_sim.now_ms;
+    while ((g_sim.now_ms - blocked_at) < 600u)
+    {
+        sim_step();
+        if ((0u == fault_after)
+            && (MOTION_FAULT == motion_state(&g_sim.motion)))
+        {
+            fault_after = g_sim.now_ms - blocked_at;
+        }
+    }
+    sim_check(b_ok && (MOTION_FAULT_TASK == motion_fault_code(&g_sim.motion))
+              && (fault_after > S2_HEALTH_LIMIT_MS)
+              && (fault_after <= (S2_HEALTH_LIMIT_MS + 20u))
+              && (0 == g_sim.duty[0]) && (0 == g_sim.duty[1]),
+              "INT-26", "blocked controller mid-turn: task fault at 500 ms");
+
+    g_sim.b_controller_blocked = false;
+    sim_run_ms(2000u);
+    sim_state(&state);
+    sim_check((S2_SYS_FAULT == state.state)
+              && (0u != (state.flags & S2_RS_STOP_LATCHED))
+              && (S2_STOP_FAULT == state.stop_cause)
+              && (S2_MODE_NONE == state.mode) && int_wheels_still(),
+              "INT-26", "controller back: FAULT latched, turn not resumed");
+
+    int_send_remote(S2_REMOTE_RESET);
+    sim_run_ms(500u);
+    int_send_remote(S2_REMOTE_START);
+    b_ok = sim_run_until(sim_running, 1000u);
+    sim_run_ms(300u);
+    sim_check(b_ok && sim_following() && (!sim_navigating()), "INT-26",
+              "RESET then START follows again, no turn resumed");
+}
+
+/* INT-27 (S3 -> S2, review F-17, post-demo 2026-11-26): 60 s of a long
+   straight with the car centred. Both front sensors then read white
+   (each sits about 6 mm outside the tape), which is also what a car fully
+   off the line would read. Ordinary following must never stop on it: no
+   STOP, no other mode, and both wheels near the line speed throughout. */
+static void
+int_27_long_straight (void)
+{
+    s2_robot_state_t state;
+    bool b_always = true;
+
+    sim_init(&g_straight);
+    sim_start();
+    sim_run_ms(2000u);
+    for (uint32_t elapsed = 0u; elapsed < 60000u; elapsed += SIM_PERIOD_MS)
+    {
+        sim_step();
+        b_always = b_always && sim_following();
+    }
+    sim_state(&state);
+    sim_check(b_always && (S2_STOP_NONE == state.stop_cause)
+              && (S2_LINE_CENTER == state.line)
+              && (abs(state.left_mm_s - CTRL_LINE_BASE_MM_S) <= 2)
+              && (abs(state.right_mm_s - CTRL_LINE_BASE_MM_S) <= 2),
+              "INT-27", "60 s centred on a straight: following throughout");
+    sim_check(sim_x_mm() > 2300, "INT-27",
+              "about 2.4 m covered at 40 mm/s; no false line-loss stop");
+}
+
+/* Hold command 200 mm in, then follow until 1 s into its manoeuvre at the
+   + junction. True if the car is then still navigating. */
+static bool
+int_start_turn (uint8_t command)
+{
+    sim_init(&g_cross);
+    sim_start();
+    int_drive_past(200, 30000u);
+    (void)s2_nav_submit(command, 'X', 1u, g_sim.now_ms);
+
+    bool b_navigating = sim_run_until(sim_navigating, 90000u);
+
+    sim_run_ms(1000u);
+
+    return (b_navigating && sim_navigating());
 }
 
 /* End of file. */
