@@ -181,17 +181,25 @@ to show a turn either way.
 - 24 Nov practice (above): barcode F followed by a complete U-turn at a
   junction.
 
-**Width (SYS-06).** Still not met. In practice the version 3 firmware
-reported confirmed widths of 315, 327, 219 and 220 mm; in the assessed
-session the version 4 raw width (an edge missing) read 166 to 332 mm. The
-demo obstacle was 15 × 20 cm, so none of these is accurate. Bypass planning
-does not use the width, so this did not affect avoidance.
+**Width (SYS-06).** Still not met; the width accuracy is unverified.
+
+- Confirmed widths (both edges seen), practice, version 3 firmware: 315,
+  327, 219 and 220 mm. The demo obstacle was 15 × 20 cm and its
+  orientation for each scan was not recorded. 315 and 327 mm are too wide
+  for either face. 219 and 220 mm are within ±20 mm only if the 200 mm
+  face was towards the car, which we cannot confirm.
+- Raw widths (one edge missing), assessed session, version 4 firmware: 166
+  to 332 mm. These are for display only and are not width measurements,
+  so they cannot show accuracy either way.
+
+Bypass planning does not use the width, so this did not affect avoidance.
 
 ## 5. D-03 — Hump measurement and marks
 
 **Requirement.** MR4–MR5; SYS-04 requires the reported highest hump to be
-within 2 mm of the tallest hump crossed (criterion agreed on 20 November,
-before the demo), plus detection of every hump and no hump on a flat lap.
+within 2 mm of the tallest hump crossed (our internal engineering
+criterion, agreed on 20 November before the demo, not the assessor's
+marking scheme), plus detection of every hump and no hump on a flat lap.
 The course hump was 5 mm (0.5 cm), measured by the team.
 
 | Attempt | Logged reading | Laptop time | Event line | Telemetry frame line | Error vs 5 mm | Within our ±2 mm criterion | Mark (team record) |
@@ -205,9 +213,10 @@ line is the first version 4 telemetry frame carrying the same value
 (`hump_last_mm` and `hump_max_mm`), which then repeats in every frame until
 the run ends.
 
-All three readings were detected and reported, and all are within our
-pre-existing criterion. This is not a full SYS-04 pass, because no flat lap
-was run and the crossing count was not checked against the course.
+A hump was detected and reported in each attempt, and all three readings
+are within our pre-existing criterion. This is not a full SYS-04 pass,
+because no flat lap was run and the number of physical crossings was not
+independently checked against the logged hump count.
 
 **Why the car reads 6 mm or more for a 5 mm hump.** In
 [`terrain_logic.c`](../app_program/subsystem4/terrain_logic.c), the height
@@ -237,10 +246,11 @@ appropriate, not as a promise of extra marks.
 
 **Request.** Attempt 3 read 7 mm, within the same ±2 mm engineering
 criterion that attempts 1 and 2 met, and it is recorded in the log above.
-When the attempt 3 value was reported to the assessor, there was a verbal
-miscommunication. When our team tried to correct it, we were told it was
-already too late, and that attempt was not given the 0.5 mark awarded for
-attempts 1 and 2. The value said aloud and the value the car recorded
+When the attempt 3 value was reported to the assessor, our groupmate
+accidentally said 0.7 mm instead of 0.7 cm (7 mm), according to our team's
+recollection. When we tried to correct this verbal mistake, we were told it
+was already too late, and that attempt was not given the 0.5 mark awarded
+for attempts 1 and 2. The value said aloud and the value the car recorded
 should therefore be kept apart: the car detected the hump and recorded
 7 mm in both `hump_max_mm` and `hump_last_mm` (line 3140). We respectfully
 ask that attempt 3 be assessed from this logged reading on the same basis
@@ -255,8 +265,9 @@ so that all results, including ours, are assessed the same way.
 
 If the same reference height and assessment criteria were applied, we
 would respectfully appreciate reconsideration of our hump measurement
-marks, including whether our recorded measurements of 6, 6 and 7 mm
-qualify for the full 1 mark.
+marks in the assessed demonstration grade: whether our recorded
+measurements of 6, 6 and 7 mm qualify for the full 1 mark, or at least
+the 0.5 mark for attempt 3.
 
 Our ±2 mm figure is the team's own engineering criterion for SYS-04, set
 on 20 November. It is not the assessor's marking scheme, which we have not
@@ -280,7 +291,7 @@ hump we did not measure.
 | MR3 barcode command | Not demonstrated: no turn started; U-turn shown in practice |
 | MR4–MR5 hump | Detected in all three attempts: 6, 6, 7 mm for a 5 mm hump |
 | MR6 obstacle detection | Stopped and scanned in all three attempts |
-| MR7 profiling | Side chosen; width inaccurate (SYS-06 not met) |
+| MR7 profiling | Side chosen; width accuracy not shown (SYS-06 not met) |
 | MR8–MR9 bypass and recovery | Attempt 3: bypassed without contact and recovered the line |
 | MR10 telemetry | Telemetry, heartbeat and dashboard worked throughout; both sessions logged |
 
