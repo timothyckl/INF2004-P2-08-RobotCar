@@ -58,6 +58,9 @@ maintainability or documentation.
 | F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | Found by S3-U03; prototype fix (P2), not applied |
 | F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
 | F-20 | S3 | `s3_nav_stage()` and `s3_nav_take()` held a command a second time, but nothing in the mission called them | Low | **Applied**: removed (mission UF2 unchanged) |
+| F-21 | S2 | `motion_init()` does not range-check the move and turn tolerances before they are cast to `int32_t` | Low | Safe today (build-time constants 5 and 2000); proposal |
+| F-22 | S4 | The `S4_RAW_LOG` stall print passed a `UW` to `%lx` | Low | **Applied** (`268e044`; debug builds only) |
+| F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -158,6 +161,16 @@ the mission image. A stalled Motion Control task would leave the last duty
 on the motors until another check stops them. The dual-core stalls of
 2026-11-23 (S2 d33) show tasks can stop. *Proposal:* arm it after one car
 run with it enabled (Tribunal 2 Entry 4).
+
+**F-21 (Low, proposal) — tolerances not range-checked.** Reading every
+cast for BARR-C 1.6a found that `control()` in `motion_logic.c` casts the
+`uint32_t` tolerances `move_tol_mm` and `turn_tol_mdeg` to `int32_t`, and
+`motion_init()` checks the other settings but not these. A value above
+`INT32_MAX` would be converted in an implementation-defined way. Today
+they are the build-time constants `MC_MOVE_TOL_MM` (5) and
+`MC_TURN_TOL_MDEG` (2000), so the cast is safe and its comment says so.
+*Proposal:* reject tolerances above, say, 10,000 in `motion_init()`, with
+a host test. It changes code, so it waits for the next firmware change.
 
 **F-10 (Low, trade-off) — command age during a bypass.**
 `nav_control_step()` runs only while following, but the 60 s hold limit
@@ -376,6 +389,8 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `a618bef` | Host runner keeps a test's own exit status (F-19) | None (test infrastructure) | Stand-in pass, fail and crash programs ([log](../testing/host/logs/2026-11-25_runner-status-check.txt)) |
 | `b4871e3` | Tests S2-U80, S3-U03, S4-U42, S5-U72 | None (tests only) | Host suites pass; mission UF2 unchanged |
 | `032437c` | Range comments for every narrowing cast (BARR-C 1.6a) | None (comments only) | Mission UF2 byte-identical |
+| `cc72bd2` | Removed the unused S3 command staging (F-20); S2-U77 checks that STOP drops a held command; F-18 fix kept as a patch | None (unused code; `--gc-sections` had already dropped it) | Mission UF2 byte-identical; [log](../testing/host/logs/2026-11-25_s3-nav-cleanup-and-f18-recheck.txt) |
+| `268e044` | A range comment on every cast; BARR-C naming rules 7.1e, 7.1k, 7.1m; 8.1 in test files; F-22, F-23 | None (comments and names) | Mission UF2 byte-identical; every build option 0 warnings; [log](../testing/host/logs/2026-11-25_barr-c-changes-verification.txt) |
 
 ## 10. Proposed changes not applied
 
@@ -388,7 +403,7 @@ the demonstrated image. Each change below is worked out in
 design, alternatives, risks and acceptance test.
 
 1. P1 (F-01): 10 ms sampling from a cyclic handler; SYS-01, SYS-02.
-2. P2 (F-18): stray-mark window check; SYS-02.
+2. P2 (F-18): stray-mark window check, ready as [`f18_stray_mark_check.patch`](../testing/subsystem3/prototypes/f18_stray_mark_check.patch); SYS-02.
 3. P3 (F-02, F-03): junction event in telemetry, then a bench test of the course junction; SYS-03.
 4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
 5. P5 (F-04): two-point hump calibration and a flat lap; SYS-04.
@@ -396,3 +411,5 @@ design, alternatives, risks and acceptance test.
 7. P7 (F-08): watchdog fed only when every critical task has checked in.
 8. P8 (F-06): version 5 frame with fault detail and a junction bit.
 9. F-09, F-15, F-16: re-measure barcode white; move S4 constants to a header; show the letter table on the dashboard.
+10. P9 (SYS-09): a staged plan to a full course in one run, after P8, P1, P2 and P3.
+11. F-21: range-check the motion tolerances in `motion_init()`.
