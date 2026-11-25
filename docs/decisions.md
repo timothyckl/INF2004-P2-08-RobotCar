@@ -184,6 +184,109 @@ command, count wrap, cause only while latched), S2-U37, S2-U39 and S2-U40
 (revised), S2-U78 (new), and the dashboard unit tests. INT-07 must run on
 the car.
 
+### 6. Barcode letters set over MQTT (2026-11-23)
+
+Approved by Dalton on the integration branch; also changes subsystem 3's
+letter map. Run on the car for one junction (2026-11-23).
+
+**Problem.** The course letters are announced on the day, but the letter
+for each junction command was fixed at build time (A-D, plus F through
+`S3_NAV_F`). Changing one meant a rebuild and reflash at the course.
+
+**Decision.**
+
+- **Payload.** On the existing command topic, exactly three bytes: `L`,
+  `R`, `S` or `U` (left, right, straight, U-turn), `=`, then a letter
+  `A`–`Z`, for example `U=K`. Anything else is invalid, as before. It fits
+  the 5-byte command limit and cannot be confused with START, STOP or
+  RESET. `command_parser_parse_assign()` checks the syntax only.
+- **Route.** The service bridge passes a valid assignment to a fourth
+  port function, which `mqtt_service.c` maps explicitly to
+  `s3_nav_set_letter()`. It does not use `remote_q` and does not involve
+  the Vehicle Controller: it moves nothing, and the controller still
+  authorises every junction action. Counted in the bridge's valid or
+  delivery-failure counters like other commands.
+- **Table.** Subsystem 3 keeps one byte per letter A–Z (26 bytes; command
+  0..4). An assignment first unmaps every letter that had that command,
+  then maps the new letter, replacing whatever it had. So each command
+  ends with exactly one letter, and sending all four leaves exactly four
+  letters mapped, whatever the order. The boot map is unchanged (A-D, F by
+  `S3_NAV_F`), and the car returns to it on every restart; nothing is
+  stored in flash.
+- **Concurrency.** One writer (the WiFi service task) and one reader (the
+  S3 line loop, at each decode). Each entry is a single byte, written and
+  read whole on the RP2040, so a reader sees an old or a new entry. Between
+  the unmap and the map a letter can read as unmapped; a decode in that
+  moment is reported and ignored, as for any unmapped letter. A command
+  already staged is not affected.
+- **Dashboard.** A Barcode letters table sends all four assignments and
+  refuses two commands with the same letter. The car does not acknowledge
+  them, so the decoded letter and command in telemetry are the check.
+  When the heartbeat count goes back (only a restart resets it,
+  `mqtt_utk.c`), the dashboard sends the last table again.
+
+**Tests.** S1-U04 (assignment syntax), S1-U07 (bridge routing, delivery
+failure, invalid letter), the S3 host navigation cases (remap, move a
+letter, rejects, boot map restored) and the dashboard unit tests pass on
+the host. The mission and TEST images build without warnings. Against a
+local mosquitto, the dashboard published `L=G`, `R=H`, `S=C`, `U=Z`,
+refused a duplicate letter and a cross-site post, and re-sent the table
+after a simulated `hb 0`. On the car on 2026-11-23 (system test log):
+with LEFT set to F, `F` decoded as LEFT and the car took the left branch,
+and the table was re-sent after a restart. One junction only.
+
+### 7. Telemetry frame version 4: last hump, hump count, raw width (2026-11-24)
+
+Approved by Dalton on the integration branch; also changes subsystems 2, 4
+and 5. First written as "host-tested only; not yet run on the car".
+Correction (2026-11-24, evening): this version was built at 14:17
+(`make NET=lwip MQTT=1 S3_NAV_F=0 -j8`, single core, image SHA-256
+`8cf2c419…416bf3f`) and flashed for the assessed demo runs; the dashboard
+log of 14:17 to 15:03 carries version 4 frames. Tag
+`demo-2026-11-24-flashed` marks the source; see
+[the demo report](DEMO_REPORT_2026-11-24.md).
+
+**Problem.** For the demo the dashboard should show the obstacle width
+even when it is not confirmed, and the last hump's height and the number
+of humps measured. Version 3 sent only the run's highest hump, and a
+width only when both obstacle edges were found (SYS-06 still reports no
+width).
+
+**Decision.** Version 4 is version 3 with two bytes appended (31 bytes).
+Bytes 0–28 keep their version 3 meanings.
+
+| Byte / bit | Field | Range | Source |
+|---|---|---|---|
+| flags0 bit 7 | last hump valid | — | S4 `b_current_height_valid` |
+| flags1 bit 4 | width raw | — | S5 `SCAN_TELEMETRY_WIDTH_RAW` |
+| 29 | `hump_last_mm` | 0–255 mm, saturated like the maximum | S4 `current_height_mm` |
+| 30 | `hump_count` | 0–255, saturates | S4 `hump_count` (new) |
+
+- **Raw width.** When a scan profile exists but an edge is missing, S5
+  now fills `observed_width_mm` with `raw_width_mm`: on each side, the
+  widest lateral reach of any ray within the obstacle depth, with no edge,
+  gap or beam check. It overstates the span (no beam allowance) and is for
+  display only; nothing in S2 or S5 acts on it. Each side is at most
+  2828 mm, so the sum fits `uint16_t`. Width raw is never set together
+  with shape valid; the centre offset stays 0 with a raw width.
+- **Hump count and last height.** S4 counts completed humps per run,
+  saturating at 255. The count and the last height survive a pick-up
+  recalibration, as the maximum already did; `s4_terrain_start_new_run()`
+  clears all three. The count is sent as 0 when S4's status is busy.
+- **Concurrency.** Unchanged: the new fields travel in the same S4 result
+  copy and S5 view, each taken under its provider's lock, and S2 never
+  nests locks (`robot_read_telemetry()`).
+- **Decoders.** `decode_telemetry_v2.py` and the dashboard read versions
+  2–4. The dashboard shows the raw width with "(raw, edge missing)", adds
+  Last hump and Humps measured, and logs "hump N measured: X mm".
+
+**Tests.** S1-U05 (version 4 golden frame; width raw only without a
+shape; last hump guarded by its flag), S4-U40 (count and last height
+across recovery and a new run), S5-U62/U63 (raw span with and without
+both edges), the S5 telemetry view test and the dashboard unit tests pass
+on the host. S2-U71/U72 are updated but run only in the `TEST=1` image,
+which builds without warnings, as does the mission image.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins
@@ -912,6 +1015,74 @@ runs. The closing rows state the sample size.
 **Risk.** Small samples show that each motion can meet its target, not
 how often it does. SYS-03 (junction turns) and SYS-07 (bypass turns) are
 the larger check of turn accuracy on the course.
+
+### 33. The mission runs on one core, `SMP=0` (2026-11-23)
+
+Approved by Dalton on the integration branch. Changes the build default
+in `build_make/pico_rp2040.mk` from `SMP=1` to `SMP=0`; no application
+code changes.
+
+**Problem.** On 2026-11-23 the dual-core mission image (the committed
+`5416b39` code, and the same with S1 decision 6) repeatedly lost a task.
+Evidence is in `testing/system/logs/2026-11-23_console.txt`.
+
+- The S3 line loop stopped printing within about 3 s of the MQTT
+  connection on the boots at 16:14, 16:24, 16:27 and 16:45 (the 16:45
+  boot ran the committed code without decision 6), so every START ended
+  `[S2] line: no report after START; STOP`. WiFi, MQTT, the controller and
+  the console kept running.
+- On the 17:08 boot the S4 IMU task calibrated
+  (`stationary calibration complete`) and then never printed again: no
+  `s4: new run` at START, and a lift ended in a line stop instead of a
+  pick-up stop.
+- Neither task printed `ADC read failed` or `IMU read failed`, which both
+  drivers print after their 1000 ms flag-wait timeout
+  (`DEVCNF_ADC_TMOSCAN`, `DEVCNF_I2C1_TMO`). So the task never returned
+  from a timed wait: a wake-up or a timeout was lost, not a sensor error.
+  This also fits the unexplained S3 stall of 2026-11-17 and the boot on
+  2026-11-20 where pick-up detection did not work (SYS-10, first row).
+- The stall was intermittent: on two boots (16:49 with a diagnostic
+  marker, 16:52) the line loop kept running.
+
+**Decision.** Build the mission with `SMP=0`. The image name becomes
+`mtk3pico_smp0_...`. `SMP=1` stays available for investigation.
+
+**Evidence so far.** One single-core boot (17:12, USB and power bank):
+`s4: new run 1` at START, `s4: car lifted; STOP requested` and the
+dashboard showed STOP latched: pick-up; then a run of more than 30 s
+with line following, `s4: hump 11 mm under the right wheel`, and MQTT
+telemetry and commands working. That image still had the temporary S3
+stage marker used for diagnosis; it was removed before this commit.
+
+**Not proven.** The kernel defect behind the lost wake-up is not found.
+The single-core image is checked on one boot only, and the mission has no
+earlier recorded run on one core, so all of it must be re-checked before
+the demo: laps (SYS-01), barcodes and junctions (SYS-02, SYS-03), humps
+(SYS-04), the obstacle with 15 cm and with 20 cm across the line
+(SYS-05 to SYS-07; S5 ultrasonic timing), pick-up (SYS-10) and cold
+boots (SYS-11).
+
+### 34. Strict warnings for every application file (2026-11-25)
+
+Approved by Dalton on the integration branch, after the demo. Build
+change only; no source change.
+
+**Problem.** `build_make/mtkernel_3/app_program/subdir.mk` compiled
+subsystem 5 with `-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+-Wshadow -Werror`, but `app_main.c` and subsystems 1 to 4 with no warning
+flags at all, so a new warning there would go unseen.
+
+**Decision.** The other application objects get `-Wall -Wextra
+-Wconversion -Wsign-conversion -Wshadow -Werror`. They keep the SDK's
+`gnu11` dialect (the kernel headers need it), so `-std=c99 -Wpedantic`
+stay subsystem 5 only.
+
+**Evidence.** `testing/host/target_static_check.py` had already shown no
+warning in any application file under a wider set of 18 flags
+([log](../testing/host/logs/2026-11-25_static-analysis.txt)). With the
+change, a clean build (`make -B`) of the mission image and of the
+`TEST=1` image gives no warning, and the mission UF2 is byte-identical to
+the demo image (SHA-256 `8cf2c419…416bf3f`).
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 

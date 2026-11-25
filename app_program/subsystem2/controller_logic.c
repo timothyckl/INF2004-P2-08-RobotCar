@@ -349,6 +349,8 @@ stop_running (ctrl_t * p_c, uint32_t now_ms, ctrl_output_t * p_out)
 static bool
 motion_healthy (ctrl_input_t const * p_in)
 {
+    /* status.state holds a motion_state_t (0..6) as uint8_t; the enum
+       constants are cast to the same type to compare. */
     return (p_in->b_status_ok
             && (0u != (p_in->status.flags & MOTION_ST_VALID))
             && ((uint8_t)MOTION_IDLE == p_in->status.state)
@@ -461,6 +463,7 @@ do_reset (ctrl_t * p_c, ctrl_input_t const * p_in, ctrl_output_t * p_out)
         p_c->b_waiting        = false;
         enter(p_c, S2_SYS_INITIALISING, p_in->now_ms);
 
+        /* As in motion_healthy(): the enum constant cast to the stored type. */
         if ((uint8_t)MOTION_FAULT == p_in->status.state)
         {
             p_out->action = CTRL_ACT_RESET;

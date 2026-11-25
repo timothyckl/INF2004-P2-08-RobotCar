@@ -1,0 +1,44 @@
+# python3 tools/barr_c_report.py and python3 tools/check_subsystem5_barr_c.py, 2026-11-25 00:28 +0800, firmware source of a41c19c plus post-demo test files
+BARR-C report: 128 files under app_program/
+    479  1.6a cast without a comment on its line
+      0  1.7a auto
+      0  1.7b register
+      0  1.7c goto
+      7  1.7d continue (preferred practice)
+           app_program/subsystem2/drv_encoder.c:95
+           app_program/subsystem2/drv_encoder.c:168
+           app_program/subsystem2/drv_gpio_irq.c:172
+           app_program/subsystem3/s3_follow.c:147
+           app_program/subsystem3/s3_follow.c:166
+           app_program/subsystem3/s3_follow.c:175
+           app_program/subsystem4/task_imu.c:157
+      0  3.5a tab character
+      0  4.2 header without an include guard
+     13  6.2a function over 100 lines
+     66  7.1e variable name under 3 characters
+      7  7.1k pointer variable not named p_...
+           app_program/app.h:32
+           app_program/app_main.c:57
+           app_program/subsystem2/subsystem2_test.c:620
+           app_program/subsystem2/subsystem2_test.c:641
+           app_program/subsystem2/task_controller.c:1312
+           app_program/subsystem2/task_controller.c:1345
+           app_program/subsystem4/task_imu.c:515
+    100  7.1m bool variable not named b_...
+  functions over 100 lines:
+           comms_test_telemetry (168 lines, app_program/subsystem1/comms_test.c)
+           comms_test_bridge (115 lines, app_program/subsystem1/comms_test.c)
+           motion_command (114 lines, app_program/subsystem2/motion_logic.c)
+           control (115 lines, app_program/subsystem2/motion_logic.c)
+           nav_control_step (126 lines, app_program/subsystem2/nav_control.c)
+           subsystem2_test (167 lines, app_program/subsystem2/subsystem2_test.c)
+           controller_task (104 lines, app_program/subsystem2/task_controller.c)
+           line_step (151 lines, app_program/subsystem2/task_controller.c)
+           test_bypass_control_reacquire (175 lines, app_program/subsystem2/test_bypass_control.c)
+           test_line_control_junction (111 lines, app_program/subsystem2/test_line_control.c)
+           s3_follow_run (172 lines, app_program/subsystem3/s3_follow.c)
+           s4_imu_task (110 lines, app_program/subsystem4/task_imu.c)
+           obstacle_scan_task (152 lines, app_program/subsystem5/src/scan_task.c)
+
+BARR-C check passed: 46 subsystem 5 files.
+exit status 0

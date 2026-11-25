@@ -413,21 +413,30 @@ static bool test_telemetry_fill (void)
            e.link_up && e.hump_valid;
 }
 
-/* S2-U71: hump fields from subsystem 4's run maximum (IF-18) */
+/* S2-U71: hump fields from subsystem 4's run maximum, last hump and
+   count (IF-18) */
 static bool test_telemetry_hump (void)
 {
     telemetry_encoder_snapshot_t a = { 0u }, b = { 0u }, c = { 0u };
 
-    s2_telemetry_add_hump(&a, 10u, true);
-    s2_telemetry_add_hump(&b, 300u, true);
+    s2_telemetry_add_hump(&a, 10u, true, 8u, true, 2u);
+    s2_telemetry_add_hump(&b, 300u, true, 256u, true, 255u);
     c.hump_max_mm = 7u;
     c.hump_valid = true;
-    s2_telemetry_add_hump(&c, 12u, false);
-    s2_telemetry_add_hump(NULL, 10u, true);
+    c.hump_last_mm = 7u;
+    c.hump_last_valid = true;
+    s2_telemetry_add_hump(&c, 12u, false, 12u, false, 0u);
+    s2_telemetry_add_hump(NULL, 10u, true, 10u, true, 1u);
 
     return (10u == a.hump_max_mm) && a.hump_valid &&
+           (8u == a.hump_last_mm) && a.hump_last_valid &&
+           (2u == a.hump_count) &&
            (255u == b.hump_max_mm) && b.hump_valid &&
-           (0u == c.hump_max_mm) && !c.hump_valid;
+           (255u == b.hump_last_mm) && b.hump_last_valid &&
+           (255u == b.hump_count) &&
+           (0u == c.hump_max_mm) && !c.hump_valid &&
+           (0u == c.hump_last_mm) && !c.hump_last_valid &&
+           (0u == c.hump_count);
 }
 
 /* S2-U72: obstacle fields from subsystem 5's decoded status */
@@ -435,6 +444,7 @@ static bool test_telemetry_scan (void)
 {
     scan_telemetry_t scan = { 0u };
     telemetry_encoder_snapshot_t a = { 0u }, b = { 0u }, c = { 0u };
+    telemetry_encoder_snapshot_t r = { 0u };
 
     scan.forward_mm = 350u;
     scan.nearest_observed_mm = 180u;
@@ -450,12 +460,21 @@ static bool test_telemetry_scan (void)
     scan.flags = 0u;
     s2_telemetry_add_scan(&b, &scan);
 
+    /* Raw width only: copied with its flag, no centre (S1 decision 7) */
+    scan.flags = SCAN_TELEMETRY_PROFILE_SEEN | SCAN_TELEMETRY_WIDTH_RAW;
+    s2_telemetry_add_scan(&r, &scan);
+    scan.flags = 0u;
+
     /* S5 busy: an earlier obstacle report is cleared, not repeated */
-    c = a;
+    c = r;
+    c.forward_valid = true;
+    c.shape_valid = true;
     s2_telemetry_add_scan(&c, NULL);
     s2_telemetry_add_scan(NULL, &scan);
 
-    return a.forward_valid && (350u == a.forward_mm) &&
+    return r.width_raw && !r.shape_valid && (210u == r.width_mm) &&
+           (0 == r.centre_offset_mm) && !a.width_raw && !c.width_raw &&
+           a.forward_valid && (350u == a.forward_mm) &&
            a.profile_valid && (180u == a.nearest_mm) &&
            a.shape_valid && (210u == a.width_mm) &&
            (-30 == a.centre_offset_mm) &&
@@ -885,7 +904,7 @@ EXPORT void subsystem2_test (void)
     TEST_CHECK("S2-U70", test_bypass_control_look_turn(),
                "pass: turn to look, back, pass only after pass_min");
     TEST_CHECK("S2-U71", test_telemetry_hump(),
-               "telemetry hump: run maximum, 255 cap, invalid gives 0");
+               "telemetry hump: maximum, last and count; 255 cap; invalid 0");
     TEST_CHECK("S2-U72", test_telemetry_scan(),
                "telemetry obstacle fields follow S5's validity flags");
     TEST_CHECK("S2-U74", test_nav_control_hold(),
@@ -896,6 +915,10 @@ EXPORT void subsystem2_test (void)
                "U-turn counts past 180 degrees, ignores a side branch");
     TEST_CHECK("S2-U77", test_nav_control_fail(),
                "junction turn fails on overshoot, rejection, slow stop");
+    TEST_CHECK("S2-U79", test_nav_control_phase_limits(),
+               "junction step and settle fail at the phase limit");
+    TEST_CHECK("S2-U80", test_nav_control_hold_window(),
+               "held command: taken at the limit, expired after, refreshed");
 
 #if S2_HW_TEST
     hw_test();

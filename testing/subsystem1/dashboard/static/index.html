@@ -54,9 +54,29 @@
   </section>
 
   <section>
+    <h2>Barcode letters <small>S1 → S3</small></h2>
+    <table class="letters">
+      <thead><tr><th>Junction command</th><th>Letter</th></tr></thead>
+      <tbody>
+        <tr><td>Left</td><td><select data-route="L" aria-label="Letter for left"></select></td></tr>
+        <tr><td>Right</td><td><select data-route="R" aria-label="Letter for right"></select></td></tr>
+        <tr><td>Straight</td><td><select data-route="S" aria-label="Letter for straight"></select></td></tr>
+        <tr><td>U-turn</td><td><select data-route="U" aria-label="Letter for U-turn"></select></td></tr>
+      </tbody>
+    </table>
+    <div class="buttons letterbar">
+      <button id="sendletters">Send to car</button>
+      <button id="bootletters" type="button">A–D</button>
+    </div>
+    <p id="lettermsg" class="notice">Car starts on A–D after every restart.</p>
+  </section>
+
+  <section>
     <h2>Terrain <small>S4</small></h2>
     <dl>
       <dt>Highest hump</dt><dd id="hump" class="big">—</dd>
+      <dt>Last hump</dt><dd id="humplast">—</dd>
+      <dt>Humps measured</dt><dd id="humpcount">—</dd>
     </dl>
   </section>
 

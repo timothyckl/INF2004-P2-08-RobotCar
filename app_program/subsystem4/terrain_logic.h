@@ -104,6 +104,8 @@ typedef struct
     int16_t            lateral_tilt_mg;
     uint16_t           current_height_mm; /* last completed hump's peak */
     uint16_t           maximum_height_mm; /* highest peak this run */
+    uint8_t            hump_count;        /* humps completed this run,
+                                             saturates at 255 */
     bool               b_current_height_valid;
     bool               b_maximum_height_valid;
 } s4_terrain_result_t;

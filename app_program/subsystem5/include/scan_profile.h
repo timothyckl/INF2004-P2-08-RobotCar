@@ -59,6 +59,8 @@ typedef struct
     uint16_t left_extent_mm;
     uint16_t right_extent_mm;
     uint16_t observed_width_mm;
+    uint16_t raw_width_mm;      /* unrefined span of every obstacle ray, no
+                                   edge or beam check; display only */
     int16_t  centre_offset_mm;
     bool     b_left_edge;
     bool     b_right_edge;

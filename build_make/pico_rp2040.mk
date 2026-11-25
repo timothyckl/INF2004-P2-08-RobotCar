@@ -6,17 +6,18 @@
 ################################################################################
 # Execution model
 #
-#   SMP=1  (default)  dual core.  TK_MAX_CORE is 2.
-#   SMP=0             single core.  TK_MAX_CORE is 1, the per-core arrays
+#   SMP=0  (default)  single core.  TK_MAX_CORE is 1, the per-core arrays
 #                     collapse and the current-core index folds to a constant
 #                     zero, so the generated code is equivalent to the
-#                     pre-SMP port.
+#                     pre-SMP port.  Default since 2026-11-23 (S2 decision
+#                     33): on SMP=1 tasks stopped waking from timed waits.
+#   SMP=1             dual core.  TK_MAX_CORE is 2.
 #
 # Passed to the assembler as well: the dispatcher indexes the per-core arrays
 # by SIO CPUID and needs the same profile.
 ################################################################################
 
-SMP ?= 1
+SMP ?= 0
 
 ifneq ($(SMP),0)
 ifneq ($(SMP),1)

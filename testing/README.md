@@ -36,7 +36,7 @@ Test IDs never change and are never reused, even if a test is dropped.
 3. **Build the test image and flash it.**
    ```sh
    cd build_make
-   make TEST=1 -j8        # -> mtk3pico_smp1_usb_cdc_wifi_test.uf2
+   make TEST=1 -j8        # -> mtk3pico_smp0_usb_cdc_wifi_test.uf2
    ```
    The test image runs every subsystem's tests at power-up and prints one
    `[TEST] <ID> PASS|FAIL` line per check. (A normal `make` leaves the tests out.)

@@ -15,6 +15,7 @@
 
 static int16_t const  g_scan_first_angle_deg   = -SCAN_PROFILE_HALF_DEG;
 static int16_t const  g_scan_forward_angle_deg = 0;
+/* 3 bins x 5 degrees = 15 degrees, inside int16_t. */
 static int16_t const  g_scan_step_deg          =
     (int16_t)(SCAN_PROFILE_COARSE_BINS * SCAN_PROFILE_STEP_DEG);
 static uint32_t const g_scan_retrigger_us      = 65000u;
@@ -580,6 +581,9 @@ scan_engine_prepare_fine (scan_engine_t * p_engine)
 
         if (b_first_blocked != b_next_blocked)
         {
+            /* Scan angles are -45..+45 degrees (scan_profile.h), and the
+               fine angles below add at most 10 to a base below +45, so
+               every value fits int16_t. */
             int16_t const base_deg = (int16_t)(g_scan_first_angle_deg
                                      + ((int16_t)index * g_scan_step_deg));
 
@@ -615,6 +619,7 @@ scan_engine_angle (scan_engine_t const * p_engine)
         }
         else
         {
+            /* Scan angles are -45..+45 degrees, inside int16_t. */
             angle_deg = (int16_t) (g_scan_first_angle_deg
                         + ((int16_t) p_engine->angle_index
                            * g_scan_step_deg));

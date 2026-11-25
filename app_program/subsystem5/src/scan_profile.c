@@ -18,6 +18,10 @@ static bool scan_profile_side (uint16_t const * p_distances,
                                    uint32_t pass_mm, uint32_t beam_steps,
                                    bool b_left, uint16_t * p_extent_mm);
 
+/** Widest lateral reach of any obstacle ray on one side, unrefined. */
+static uint16_t scan_profile_raw_extent (uint16_t const * p_distances,
+                                         uint32_t pass_mm, bool b_left);
+
 /** The distance of the ray step steps from forward on one side. */
 static uint16_t scan_profile_ray (uint16_t const * p_distances,
                                   bool b_left, uint32_t step);
@@ -101,6 +105,12 @@ scan_profile_make (uint16_t const * p_distances,
             p_profile->b_right_edge = scan_profile_side(
                 p_distances, pass_mm, beam_steps, false,
                 &p_profile->right_extent_mm);
+
+            /* Each raw extent is <=2828 mm (4000 mm at 45 degrees), so
+               the sum fits uint16_t. */
+            p_profile->raw_width_mm = (uint16_t)(
+                scan_profile_raw_extent(p_distances, pass_mm, true)
+                + scan_profile_raw_extent(p_distances, pass_mm, false));
 
             if (p_profile->b_left_edge && p_profile->b_right_edge
                 && (0u < p_profile->left_extent_mm)
@@ -230,6 +240,32 @@ scan_profile_clear (uint16_t const * p_distances, uint16_t clear_mm)
     return (b_clear);
 }
 
+/*
+ * Unlike scan_profile_side(), this ignores missing edges, gaps and the beam
+ * allowance, so it overstates the span; it exists only so telemetry can
+ * show a width before both edges are found.
+ */
+static uint16_t
+scan_profile_raw_extent (uint16_t const * p_distances, uint32_t pass_mm,
+                         bool b_left)
+{
+    uint16_t extent_mm = 0u;
+
+    for (uint32_t step = 1u; step <= SCAN_PROFILE_SIDE_BINS; step++)
+    {
+        uint32_t const range_mm = scan_profile_ray(p_distances, b_left, step);
+
+        if ((0u < range_mm) && (range_mm <= pass_mm))
+        {
+            uint16_t const lateral_mm = scan_profile_lateral(range_mm, step);
+
+            extent_mm = (lateral_mm > extent_mm) ? lateral_mm : extent_mm;
+        }
+    }
+
+    return (extent_mm);
+}
+
 static uint16_t
 scan_profile_ray (uint16_t const * p_distances, bool b_left, uint32_t step)
 {
@@ -240,6 +276,8 @@ scan_profile_ray (uint16_t const * p_distances, bool b_left, uint32_t step)
 static uint16_t
 scan_profile_lateral (uint32_t range_mm, uint32_t step)
 {
+    /* range_mm <= 4000 and sin <= 707 per mille, so the result is at most
+       2828 mm. */
     return ((0u == step) ? 0u
             : (uint16_t)((range_mm * g_profile_sin_permille[step - 1u])
                          / 1000u));

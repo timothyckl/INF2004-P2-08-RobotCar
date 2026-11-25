@@ -109,6 +109,8 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
             return (false);
         }
 
+        /* |value| <= MOTION_DISTANCE_MAX_MM (checked above) and the speeds are
+           small constants, all inside int16_t. */
         c.u.move.distance_mm = (int16_t)value;
         c.u.move.speed_mm_s  = (int16_t)MC_MOVE_SPEED_MM_S;
     }
@@ -120,6 +122,7 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
         }
 
         c.u.turn.angle_mdeg = value;
+        /* A small positive constant (motion_config.h), inside int16_t. */
         c.u.turn.speed_mm_s = (int16_t)MC_TURN_SPEED_MM_S;
     }
     else if ((S2_CMD_STOP != cmd) && (S2_CMD_RESET != cmd)
@@ -194,6 +197,7 @@ motion_queue (s2_motion_cmd_t * p_cmd)
     }
 
     g_last_id = g_next_id;
+    /* Command IDs wrap at 65536 by design (compared as serial numbers). */
     g_next_id = (uint16_t)(g_next_id + 1u);
 
     return (E_OK);
@@ -230,6 +234,7 @@ s2_distance_delta (motion_status_t const * p_prev,
         return (false);
     }
 
+    /* d is 0..UINT16_MAX (checked above). */
     *p_delta_mm = (uint16_t)d;
 
     return (true);

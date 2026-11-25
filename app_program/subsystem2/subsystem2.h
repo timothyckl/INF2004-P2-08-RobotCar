@@ -220,10 +220,13 @@ ER s2_get_robot_state (s2_robot_state_t * p_state);
 void s2_telemetry_from_state (s2_robot_state_t const * p_state,
                               telemetry_encoder_snapshot_t * p_out);
 
-/* Hump fields from subsystem 4's run maximum (pure; IF-18). Saturates at
-   255 mm; an invalid maximum gives 0 and hump_valid false. */
+/* Hump fields from subsystem 4's run maximum, last completed hump and
+   hump count (pure; IF-18). Heights saturate at 255 mm; an invalid height
+   gives 0 and its flag false. */
 void s2_telemetry_add_hump (telemetry_encoder_snapshot_t * p_out,
-                            uint16_t max_mm, bool b_valid);
+                            uint16_t max_mm, bool b_max_valid,
+                            uint16_t last_mm, bool b_last_valid,
+                            uint8_t count);
 
 /* Obstacle fields from subsystem 5's decoded status (pure). A NULL status
    (S5 unavailable or busy) clears the obstacle fields and their flags. */

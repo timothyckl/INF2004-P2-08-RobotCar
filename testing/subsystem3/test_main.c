@@ -17,6 +17,7 @@
 
 static unsigned int g_checks = 0U;
 static unsigned int g_failures = 0U;
+static unsigned int g_known = 0U;
 
 static void check(bool passed, char const * p_name)
 {
@@ -25,6 +26,23 @@ static void check(bool passed, char const * p_name)
     {
         ++g_failures;
         printf("FAIL: %s\n", p_name);
+    }
+}
+
+/* A property the firmware is known not to meet yet, recorded with its
+ * finding ID (docs/software_quality_review.md). It is reported on every
+ * run but does not fail the suite; if the firmware is corrected it
+ * reports FIXED so that it can become an ordinary check. */
+static void known_defect(bool passed, char const * p_id, char const * p_name)
+{
+    if (passed)
+    {
+        printf("FIXED (%s): %s\n", p_id, p_name);
+    }
+    else
+    {
+        ++g_known;
+        printf("KNOWN DEFECT (%s): %s\n", p_id, p_name);
     }
 }
 
@@ -246,6 +264,26 @@ static void test_navigation(void)
     check(!s3_nav_stage(NULL, 'A', 0U, 0U), "null navigation");
     check(S3_NAV_NONE == s3_nav_take(NULL, false, true, true, 0U, 1U),
           "null take");
+
+    /* Run-time letters (S1 decision 6). */
+    check(s3_nav_set_letter(S3_NAV_LEFT, 'G'), "set G left");
+    check(S3_NAV_LEFT == s3_nav_command('G'), "G maps left");
+    check(S3_NAV_NONE == s3_nav_command('A'), "A no longer left");
+    check(s3_nav_set_letter(S3_NAV_RIGHT, 'G'), "set G right");
+    check(S3_NAV_RIGHT == s3_nav_command('G'), "G moved to right");
+    check(S3_NAV_NONE == s3_nav_command('B'), "B no longer right");
+    check(S3_NAV_STRAIGHT == s3_nav_command('C'), "C untouched");
+    check(!s3_nav_set_letter(S3_NAV_NONE, 'H'), "NONE rejected");
+    check(!s3_nav_set_letter((s3_command_t)5, 'H'), "code 5 rejected");
+    check(!s3_nav_set_letter(S3_NAV_LEFT, 'a'), "lower case rejected");
+    check(!s3_nav_set_letter(S3_NAV_LEFT, '['), "past Z rejected");
+    check(S3_NAV_NONE == s3_nav_command('H'), "rejects change nothing");
+    check(S3_NAV_NONE == s3_nav_command('@'), "below A unmapped");
+    check(s3_nav_set_letter(S3_NAV_LEFT, 'A') &&
+          s3_nav_set_letter(S3_NAV_RIGHT, 'B') &&
+          (S3_NAV_NONE == s3_nav_command('G')) &&
+          (S3_NAV_LEFT == s3_nav_command('A')) &&
+          (S3_NAV_RIGHT == s3_nav_command('B')), "boot map restored");
 }
 
 static void test_pipeline(void)
@@ -409,6 +447,271 @@ static s3_scan_result_t feed_runs_ms(s3_scan_t * p_scan,
     }
 
     return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
+}
+
+/* Drive one framed code past the sensor while the speed changes steadily:
+ * run idx of the 29 lasts its nominal time scaled by a factor that moves
+ * linearly from 1000 per mille (first run) to end_permille (last run).
+ * Above 1000 the car slows down over the code; below, it speeds up. */
+static s3_scan_result_t feed_code_ramp(s3_scan_t * p_scan, uint16_t symbol,
+                                       uint32_t narrow, uint32_t wide,
+                                       uint32_t end_permille,
+                                       uint32_t * p_now, char * p_out)
+{
+    s3_scan_cfg_t const cfg = scan_cfg();
+    uint16_t const order[3] =
+    {
+        S3_CODE39_SENTINEL, symbol, S3_CODE39_SENTINEL
+    };
+    uint32_t runs[S3_BAR_FRAME_RUNS];
+    uint8_t count = 0U;
+    bool black = true;
+
+    for (uint8_t ch = 0U; ch < 3U; ++ch)
+    {
+        for (uint8_t idx = 0U; idx < S3_BAR_ELEMENTS; ++idx)
+        {
+            bool const b_wide = (0U != (order[ch] & (1U << (8U - idx))));
+
+            runs[count] = b_wide ? wide : narrow;
+            ++count;
+        }
+        if (ch < 2U)
+        {
+            runs[count] = narrow;           /* inter-character gap */
+            ++count;
+        }
+    }
+
+    (void)s3_scan_edge(p_scan, &cfg, true, *p_now);
+    for (uint8_t idx = 0U; idx < count; ++idx)
+    {
+        /* Linear in idx; all terms stay far below 2^32 for these inputs. */
+        uint32_t const scale = (end_permille >= 1000U)
+            ? (1000U + (((end_permille - 1000U) * idx)
+                        / (S3_BAR_FRAME_RUNS - 1U)))
+            : (1000U - (((1000U - end_permille) * idx)
+                        / (S3_BAR_FRAME_RUNS - 1U)));
+
+        *p_now += (runs[idx] * scale) / 1000U;
+        black = !black;
+        (void)s3_scan_edge(p_scan, &cfg, black, *p_now);
+    }
+
+    return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
+}
+
+/*
+ * S3-U02: decoder robustness (post-demo test, 2026-11-25). Two properties
+ * the course depends on, checked over every letter A..Z:
+ *  - one element misread (narrow seen as wide or the reverse) is either
+ *    corrected to the printed letter or rejected, never a different letter;
+ *  - a steady speed change across one code, with a 2.5:1 print (100 ms
+ *    narrow, 250 ms wide), decodes every letter while the last run is
+ *    0.4 to 2.5 times the first (the sentinel rebuild and the one-element
+ *    correction absorb the damaged end). At 0.3 and 3.5 times, letters are
+ *    lost (probed on 2026-11-25: 9/26 and 0/26 decoded); a lost letter
+ *    must be a rejection, never a wrong letter.
+ */
+static void test_scan_robustness(void)
+{
+    s3_scan_t scan;
+    uint32_t now = 9000000U;
+    uint32_t const ends[4] = {400U, 2500U, 300U, 3500U};
+    bool b_never_wrong = true;
+    bool b_some_corrected = false;
+    bool b_some_rejected = false;
+
+    s3_scan_init(&scan);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        for (uint8_t bit = 0U; bit < S3_BAR_ELEMENTS; ++bit)
+        {
+            uint16_t const damaged = (uint16_t)(
+                g_s3_code39_alphabet[idx].pattern ^ (1U << bit));
+            char symbol = '\0';
+            s3_scan_result_t const result = feed_code(
+                &scan, damaged, 2000U, 5000U, false, &now, &symbol);
+
+            if (S3_SCAN_DECODED == result)
+            {
+                b_never_wrong = b_never_wrong
+                    && (g_s3_code39_alphabet[idx].symbol == symbol);
+                b_some_corrected = true;
+            }
+            else
+            {
+                b_some_rejected = true;
+            }
+        }
+    }
+    check(b_never_wrong, "one misread element never gives a wrong letter");
+    check(b_some_corrected, "one misread element can be corrected");
+    check(b_some_rejected, "an ambiguous misread element is rejected");
+
+    for (uint8_t end = 0U; end < 4U; ++end)
+    {
+        bool b_all_decoded = true;
+        bool b_no_wrong = true;
+
+        for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+        {
+            char symbol = '\0';
+            s3_scan_result_t const result = feed_code_ramp(
+                &scan, g_s3_code39_alphabet[idx].pattern, 100000U, 250000U,
+                ends[end], &now, &symbol);
+            bool const b_right = (S3_SCAN_DECODED == result)
+                && (g_s3_code39_alphabet[idx].symbol == symbol);
+
+            b_all_decoded = b_all_decoded && b_right;
+            b_no_wrong = b_no_wrong
+                && ((S3_SCAN_DECODED != result) || b_right);
+        }
+        if (end < 2U)
+        {
+            check(b_all_decoded, "steady speed change within limits decodes");
+        }
+        check(b_no_wrong, "speed change never gives a wrong letter");
+    }
+}
+
+/* Build the 29 runs of one framed code: sentinel, gap, symbol, gap,
+ * sentinel, with the given narrow and wide durations. */
+static uint8_t make_runs(uint32_t * p_runs, uint16_t first, uint16_t symbol,
+                         uint16_t last, uint32_t narrow, uint32_t wide)
+{
+    uint16_t const order[3] = {first, symbol, last};
+    uint8_t count = 0U;
+
+    for (uint8_t ch = 0U; ch < 3U; ++ch)
+    {
+        for (uint8_t idx = 0U; idx < S3_BAR_ELEMENTS; ++idx)
+        {
+            p_runs[count] = (0U != (order[ch] & (1U << (8U - idx))))
+                            ? wide : narrow;
+            ++count;
+        }
+        if (ch < 2U)
+        {
+            p_runs[count] = narrow;
+            ++count;
+        }
+    }
+
+    return count;
+}
+
+/* Feed run durations in microseconds, first run black. */
+static s3_scan_result_t feed_runs_us(s3_scan_t * p_scan,
+                                     uint32_t const * p_runs, uint8_t count,
+                                     uint32_t * p_now, char * p_out)
+{
+    s3_scan_cfg_t const cfg = scan_cfg();
+    bool black = true;
+
+    (void)s3_scan_edge(p_scan, &cfg, true, *p_now);
+    for (uint8_t idx = 0U; idx < count; ++idx)
+    {
+        *p_now += p_runs[idx];
+        black = !black;
+        (void)s3_scan_edge(p_scan, &cfg, black, *p_now);
+    }
+
+    return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
+}
+
+/*
+ * S3-U03: noise and broken frames (post-demo test, 2026-11-25). Over
+ * every letter A..Z with a 2.5:1 print (100 ms narrow, 250 ms wide):
+ *  - a 20 ms blip of the opposite level (one sample at the 20 ms
+ *    sampling of F-01; sensor noise or a speck) inside any one of the
+ *    29 runs should be decoded as the printed letter or rejected, never
+ *    decoded as a different letter. KNOWN DEFECT F-18: a blip inside the
+ *    payload makes 31 runs, the stray-mark path decodes a misaligned
+ *    window, and 25 of the 234 payload cases give a wrong letter;
+ *  - a frame whose start or stop character is a letter instead of the
+ *    sentinel is rejected. P is left out: P is the mirror image of the
+ *    sentinel, so P-x-P read backwards is exactly *-reverse(x)-*, which
+ *    no two-way decoder can tell apart (P-Q-P reads as W);
+ *  - the symbol framed by sentinels decodes, as a control.
+ */
+static void test_scan_noise(void)
+{
+    s3_scan_t scan;
+    uint32_t now = 20000000U;
+    bool b_never_wrong = true;
+    unsigned int wrong = 0U;
+    bool b_frames_rejected = true;
+    bool b_controls = true;
+
+    s3_scan_init(&scan);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        uint16_t const pattern = g_s3_code39_alphabet[idx].pattern;
+        char const letter = g_s3_code39_alphabet[idx].symbol;
+        uint32_t runs[S3_BAR_FRAME_RUNS + 2U];
+        char symbol = '\0';
+
+        (void)make_runs(runs, S3_CODE39_SENTINEL, pattern,
+                        S3_CODE39_SENTINEL, 100000U, 250000U);
+        b_controls = b_controls
+            && (S3_SCAN_DECODED == feed_runs_us(&scan, runs,
+                                                S3_BAR_FRAME_RUNS, &now,
+                                                &symbol))
+            && (letter == symbol);
+
+        for (uint8_t split = 0U; split < S3_BAR_FRAME_RUNS; ++split)
+        {
+            uint32_t noisy[S3_BAR_FRAME_RUNS + 2U];
+            uint8_t count = 0U;
+
+            (void)make_runs(runs, S3_CODE39_SENTINEL, pattern,
+                            S3_CODE39_SENTINEL, 100000U, 250000U);
+            for (uint8_t run = 0U; run < S3_BAR_FRAME_RUNS; ++run)
+            {
+                if (run == split)
+                {
+                    /* Half the run, a 20 ms blip, the rest. */
+                    noisy[count] = runs[run] / 2U;
+                    noisy[count + 1U] = 20000U;
+                    noisy[count + 2U] = runs[run] - (runs[run] / 2U)
+                                        - 20000U;
+                    count = (uint8_t)(count + 3U);
+                }
+                else
+                {
+                    noisy[count] = runs[run];
+                    ++count;
+                }
+            }
+            symbol = '\0';
+            if ((S3_SCAN_DECODED == feed_runs_us(&scan, noisy, count, &now,
+                                                 &symbol))
+                && (letter != symbol))
+            {
+                b_never_wrong = false;
+                ++wrong;
+            }
+        }
+
+        if ((idx > 0U) && ('P' != g_s3_code39_alphabet[idx - 1U].symbol))
+        {
+            /* The previous letter in place of the start, then the stop. */
+            uint16_t const other = g_s3_code39_alphabet[idx - 1U].pattern;
+
+            (void)make_runs(runs, other, pattern, other, 100000U, 250000U);
+            b_frames_rejected = b_frames_rejected
+                && (S3_SCAN_DECODED != feed_runs_us(&scan, runs,
+                                                    S3_BAR_FRAME_RUNS, &now,
+                                                    &symbol));
+        }
+    }
+    check(b_controls, "framed letters decode (noise test control)");
+    printf("noise blip: %u of %u payload cases gave a wrong letter\n",
+           wrong, (unsigned int)(S3_CODE39_SYMBOL_COUNT * S3_BAR_ELEMENTS));
+    known_defect(b_never_wrong, "F-18",
+                 "a noise blip never gives a wrong letter");
+    check(b_frames_rejected, "a letter in place of the sentinels is rejected");
 }
 
 /* Car captures of barcode F, 2026-11-17 (logs/2026-11-17_s3-bar-drive-4):
@@ -865,7 +1168,10 @@ int main(void)
     test_scan_failures();
     test_scan_recorded();
     test_sampled_barcode();
-    printf("%u checks, %u failures\n", g_checks, g_failures);
+    test_scan_robustness();
+    test_scan_noise();
+    printf("%u checks, %u failures, %u known defects\n", g_checks, g_failures,
+           g_known);
     return (0U == g_failures) ? 0 : 1;
 }
 

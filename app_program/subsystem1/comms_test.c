@@ -18,8 +18,11 @@ typedef struct
 {
     uint32_t                   stop_calls;
     uint32_t                   command_calls;
+    uint32_t                   assign_calls;
     uint32_t                   last_received_ms;
     command_parser_command_t   last_command;
+    uint8_t                    last_route;
+    char                       last_letter;
     telemetry_encoder_snapshot_t snapshot;
     bool                       deliver;
     bool                       snapshot_ready;
@@ -30,6 +33,10 @@ static bool fake_command (void * p_context,
     command_parser_command_t command, uint32_t received_ms);
 static bool fake_snapshot (void * p_context,
     telemetry_encoder_snapshot_t * p_snapshot);
+static bool fake_assign (void * p_context, uint8_t route, char letter);
+static bool assign_is (const char * p_payload, size_t length,
+                       uint8_t route, char letter);
+static bool assign_rejects (const char * p_payload, size_t length);
 
 bool comms_test_commands (void)
 {
@@ -66,30 +73,50 @@ bool comms_test_commands (void)
               &passed);
     }
 
+    /* Barcode letter assignments (S1 decision 6). */
+    check(assign_is("L=A", 3u, COMMAND_PARSER_ROUTE_LEFT, 'A'), &passed);
+    check(assign_is("R=Z", 3u, COMMAND_PARSER_ROUTE_RIGHT, 'Z'), &passed);
+    check(assign_is("S=F", 3u, COMMAND_PARSER_ROUTE_STRAIGHT, 'F'),
+          &passed);
+    check(assign_is("U=D", 3u, COMMAND_PARSER_ROUTE_UTURN, 'D'), &passed);
+    check(assign_rejects("L=a", 3u), &passed);
+    check(assign_rejects("L=@", 3u), &passed);
+    check(assign_rejects("L=[", 3u), &passed);
+    check(assign_rejects("X=A", 3u), &passed);
+    check(assign_rejects("l=A", 3u), &passed);
+    check(assign_rejects("L:A", 3u), &passed);
+    check(assign_rejects("L=AB", 4u), &passed);
+    check(assign_rejects("L=", 2u), &passed);
+    check(assign_rejects(NULL, 3u), &passed);
+    check((COMMAND_PARSER_INVALID == command_parser_parse("L=A", 3u)),
+          &passed);
+
     return passed;
 }
 
 bool comms_test_telemetry (void)
 {
-    /* Every field set; the golden frame is the version 3 layout. Letter
+    /* Every field set; the golden frame is the version 4 layout. Letter
        'Z' (25) with command 4 is 0x99; stop cause 4 with count 0x1f
-       (low bits 0xf) is 0xf4. */
+       (low bits 0xf) is 0xf4. Width raw is set but shape valid wins, so
+       flags1 bit 4 stays clear. */
     static const telemetry_encoder_snapshot_t full =
     {
         UINT32_C(0x12345678), UINT16_C(0xabcd),
         INT16_C(-150), INT16_C(320), INT16_C(-18000),
         UINT16_C(4000), UINT16_C(0x0102), UINT16_C(0x0304), INT16_C(-2),
-        3u, 4u, 2u, 1u, 1u, 2u, 255u,
+        3u, 4u, 2u, 1u, 1u, 2u, 255u, 254u, 0x21u,
         'Z', 4u, 0x1fu, 4u,
-        true, true, true, true, true, true, true, true, true, true, true
+        true, true, true, true, true, true, true, true, true, true, true,
+        true, true
     };
     static const uint8_t golden[TELEMETRY_ENCODER_SIZE] =
     {
-        3u, 0x7fu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
+        4u, 0xffu, 0x78u, 0x56u, 0x34u, 0x12u, 0xcdu, 0xabu,
         0x0fu, 0x43u, 0x12u, 0x21u,
         0x6au, 0xffu, 0x40u, 0x01u, 0xb0u, 0xb9u,
         0xa0u, 0x0fu, 0x02u, 0x01u, 0x04u, 0x03u, 0xfeu, 0xffu,
-        0xffu, 0x99u, 0xf4u
+        0xffu, 0x99u, 0xf4u, 0xfeu, 0x21u
     };
     telemetry_encoder_snapshot_t snapshot = full;
     uint8_t output[TELEMETRY_ENCODER_SIZE + 1u] = {0u};
@@ -135,6 +162,9 @@ bool comms_test_telemetry (void)
     snapshot.profile_valid  = false;
     snapshot.shape_valid    = false;
     snapshot.barcode_valid  = false;
+    snapshot.hump_last_valid = false;
+    snapshot.width_raw      = false;
+    snapshot.hump_count     = 0u;
     snapshot.captured_ms    = 0u;
     snapshot.state          = 0u;
     snapshot.mode           = 0u;
@@ -164,6 +194,23 @@ bool comms_test_telemetry (void)
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
     check((0u == output[1]), &passed);
     check((TELEMETRY_ENCODER_SHAPE_VALID == output[8]), &passed);
+    check((0x04u == output[22]) && (0x03u == output[23]), &passed);
+
+    /* Version 4: a raw width is sent, with its flag, only without a
+       shape; the centre stays zero. */
+    snapshot.shape_valid = false;
+    snapshot.width_raw   = true;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((TELEMETRY_ENCODER_WIDTH_RAW == output[8]), &passed);
+    check((0x04u == output[22]) && (0x03u == output[23]), &passed);
+    check((0u == output[24]) && (0u == output[25]), &passed);
+    snapshot.width_raw   = false;
+    snapshot.hump_last_valid = true;
+    (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
+    check((TELEMETRY_ENCODER_HUMP_LAST_VALID == output[1]), &passed);
+    check((0xfeu == output[29]) && (0u == output[30]), &passed);
+    snapshot.hump_last_valid = false;
+    snapshot.shape_valid = true;
 
     /* A code above 14 is sent as 15 (invalid), never masked. */
     snapshot.state       = 16u;
@@ -288,7 +335,7 @@ bool comms_test_bridge (void)
     comms_test_context_t context = {0};
     service_bridge_port_t port =
     {
-        fake_stop, fake_command, fake_snapshot, &context
+        fake_stop, fake_command, fake_snapshot, fake_assign, &context
     };
     service_bridge_t bridge = {0};
     service_bridge_stats_t stats = {0};
@@ -302,6 +349,9 @@ bool comms_test_bridge (void)
     port.p_raise_remote_stop = NULL;
     check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
     port.p_raise_remote_stop = fake_stop;
+    port.p_assign_letter = NULL;
+    check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
+    port.p_assign_letter = fake_assign;
     check(service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
 
     check(!service_bridge_begin(&bridge, "other/cmd", 9u, 4u), &passed);
@@ -334,6 +384,24 @@ bool comms_test_bridge (void)
         &bridge, "RESET", 5u, true, 30u)), &passed);
     check((2u == context.command_calls), &passed);
     check((COMMAND_PARSER_RESET == context.last_command), &passed);
+
+    context.deliver = true;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &passed);
+    check((SERVICE_BRIDGE_FORWARDED == service_bridge_data(
+        &bridge, "U=K", 3u, true, 35u)), &passed);
+    check((1u == context.assign_calls), &passed);
+    check((COMMAND_PARSER_ROUTE_UTURN == context.last_route), &passed);
+    check(('K' == context.last_letter), &passed);
+    check((2u == context.command_calls), &passed);
+    context.deliver = false;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &passed);
+    check((SERVICE_BRIDGE_UNDELIVERED == service_bridge_data(
+        &bridge, "L=Q", 3u, true, 36u)), &passed);
+    check((2u == context.assign_calls), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &passed);
+    check((SERVICE_BRIDGE_INVALID == service_bridge_data(
+        &bridge, "L=q", 3u, true, 37u)), &passed);
+    check((2u == context.assign_calls), &passed);
 
     check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
@@ -369,9 +437,9 @@ bool comms_test_bridge (void)
     check((250u == output[6]), &passed);
 
     check(service_bridge_get_stats(&bridge, &stats), &passed);
-    check((2u == stats.valid_commands), &passed);
-    check((7u == stats.invalid_messages), &passed);
-    check((1u == stats.delivery_failures), &passed);
+    check((3u == stats.valid_commands), &passed);
+    check((8u == stats.invalid_messages), &passed);
+    check((2u == stats.delivery_failures), &passed);
     check((2u == stats.ignored_topics), &passed);
     check(!service_bridge_get_stats(NULL, &stats), &passed);
     check(!service_bridge_get_stats(&bridge, NULL), &passed);
@@ -414,6 +482,40 @@ static bool fake_snapshot (void * p_context,
     }
 
     return copied;
+}
+
+static bool fake_assign (void * p_context, uint8_t route, char letter)
+{
+    comms_test_context_t * const p_test = p_context;
+
+    ++p_test->assign_calls;
+    p_test->last_route = route;
+    p_test->last_letter = letter;
+
+    return p_test->deliver;
+}
+
+/** @brief True if the payload parses to exactly this route and letter. */
+static bool assign_is (const char * p_payload, size_t length,
+                       uint8_t route, char letter)
+{
+    uint8_t parsed_route = 0u;
+    char    parsed_letter = '\0';
+
+    return command_parser_parse_assign(p_payload, length, &parsed_route,
+                                       &parsed_letter) &&
+           (route == parsed_route) && (letter == parsed_letter);
+}
+
+/** @brief True if the payload is rejected and the outputs are unchanged. */
+static bool assign_rejects (const char * p_payload, size_t length)
+{
+    uint8_t route = 9u;
+    char    letter = '?';
+
+    return !command_parser_parse_assign(p_payload, length, &route,
+                                        &letter) &&
+           (9u == route) && ('?' == letter);
 }
 
 /** @brief Accumulate a failed check without skipping subsequent cases. */

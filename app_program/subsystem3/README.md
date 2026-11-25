@@ -225,8 +225,8 @@ To validate on the car:
 
 ## Acting on a barcode (S2 decision 26)
 
-A decoded letter is mapped by `s3_nav_command()`: the brief's example
-A-D, plus the test letter F, set at build time:
+A decoded letter is mapped by `s3_nav_command()`. At boot the table is
+the brief's example A-D, plus the test letter F, set at build time:
 
 ```sh
 make NET=lwip MQTT=1 S3_NAV_F=1 -j8   # F = left
@@ -234,6 +234,11 @@ make NET=lwip MQTT=1 S3_NAV_F=1 -j8   # F = left
 
 `S3_NAV_F` is 0 (none), 1 (left), 2 (right), 3 (straight) or 4 (U-turn);
 the image name ends `_navF<n>`. Other letters are reported and ignored.
+When the course letters are announced, set them from the dashboard's
+Barcode letters table instead of rebuilding: it sends `L=<letter>` and so
+on over MQTT, and `s3_nav_set_letter()` makes that letter the only one for
+the command (S1 decision 6). The table returns to the boot map on a
+restart; the dashboard sends it again when it sees one.
 The mapped command goes to the Vehicle Controller, which carries it out at
 the next junction. Expect these serial lines:
 

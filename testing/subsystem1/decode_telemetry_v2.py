@@ -1,8 +1,10 @@
-"""Decode telemetry frames, versions 2 and 3 (S1 decisions 1 and 5).
+"""Decode telemetry frames, versions 2 to 4 (S1 decisions 1, 5 and 7).
 
 Reference decoder used to record the 2026-11-17 S1-H01/H02 results; it
 still reads those version 2 logs. Version 3 adds the last barcode letter,
-its command and count, and the cause of a STOP latch. The authoritative
+its command and count, and the cause of a STOP latch. Version 4 adds the
+last hump's height, the hump count and a raw (unconfirmed) width. The
+authoritative
 layout is the comment in app_program/subsystem1/telemetry_encoder.h. The
 file keeps its name because earlier test records cite it.
 
@@ -13,16 +15,18 @@ Usage (mosquitto clients installed, broker on this machine):
 
 Each telemetry line shows the robot time, the gap since the previous frame
 (robot clock, wrap-safe), flags0 as DSLXMNH (distance valid, stopped, link
-up, STOP latched, motion valid, line fresh, hump valid; '.' when clear),
-flags1 as FPWB (forward, profile, shape, barcode valid) and the decoded
+up, STOP latched, motion valid, line fresh, hump valid, last hump valid;
+'.' when clear), flags1 as FPWBR (forward, profile, shape, barcode valid,
+width raw) and the decoded
 fields.
 Other topics (heartbeat, stats, command) are printed as raw bytes.
 """
 import struct
 import sys
 
-# Version -> frame length. Version 3 appends bytes 27-28 to version 2.
-SIZES = {2: 27, 3: 29}
+# Version -> frame length. Version 3 appends bytes 27-28 to version 2,
+# version 4 bytes 29-30 to version 3.
+SIZES = {2: 27, 3: 29, 4: 31}
 
 STATE = {1: "INIT", 2: "READY", 3: "RUNNING", 4: "STOPPED", 5: "FAULT"}
 MODE = {0: "-", 1: "FOLLOW", 2: "NAVIGATE", 3: "SCAN", 4: "BYPASS",
@@ -40,7 +44,9 @@ STOP = {0: "-", 1: "start-up", 2: "remote", 3: "button", 4: "pick-up",
 STOP_LATCHED = 0x08
 LINE_FRESH = 0x20
 HUMP_VALID = 0x40
+HUMP_LAST_VALID = 0x80   # flags0, version 4
 BARCODE_VALID = 0x08     # flags1, version 3
+WIDTH_RAW = 0x10         # flags1, version 4
 LETTER_INVALID = 31
 
 
@@ -53,14 +59,15 @@ def parse(data):
     """Return the fields of one frame as a dict, or None if malformed.
 
     Field names follow telemetry_encoder.h. Raw codes are kept; the name
-    tables above turn them into text. A version 2 frame has the version 3
-    fields as zero (barcode not valid, no stop cause).
+    tables above turn them into text. Fields an older version lacks are
+    zero (barcode and last hump not valid, no stop cause, no humps).
     """
     if not data or SIZES.get(data[0]) != len(data):
         return None
     (_, f0, t, dist, f1, sm, fl, ss, left, right, heading, fwd, near,
      width, centre, hump) = struct.unpack("<BBIHBBBBhhhHHHhB", data[:27])
     bc, sc = (data[27], data[28]) if data[0] >= 3 else (0, 0)
+    last, count = (data[29], data[30]) if data[0] >= 4 else (0, 0)
     return {
         "version": data[0],
         "flags0": f0, "flags1": f1, "captured_ms": t, "distance_mm": dist,
@@ -71,6 +78,7 @@ def parse(data):
         "centre_offset_mm": centre, "hump_max_mm": hump,
         "barcode_letter": bc & 31, "barcode_command": bc >> 5,
         "stop_cause": sc & 15, "barcode_count": sc >> 4,
+        "hump_last_mm": last, "hump_count": count,
     }
 
 
@@ -89,8 +97,8 @@ def decode(data, previous_ms):
     near, width = fields["nearest_mm"], fields["width_mm"]
     centre, hump = fields["centre_offset_mm"], fields["hump_max_mm"]
     gap = "" if previous_ms is None else f" dt={(t - previous_ms) & 0xFFFFFFFF}ms"
-    flags0 = "".join(c if f0 & (1 << i) else "." for i, c in enumerate("DSLXMNH"))
-    flags1 = "".join(c if f1 & (1 << i) else "." for i, c in enumerate("FPWB"))
+    flags0 = "".join(c if f0 & (1 << i) else "." for i, c in enumerate("DSLXMNHV"))
+    flags1 = "".join(c if f1 & (1 << i) else "." for i, c in enumerate("FPWBR"))
     line = LINE.get(fl >> 4, fl >> 4) if f0 & LINE_FRESH else "-"
     hump_text = str(hump) if f0 & HUMP_VALID else "-"
     text = (f"t={t}{gap} [{flags0}|{flags1}] "
@@ -108,6 +116,10 @@ def decode(data, previous_ms):
             bar = (f"{letter(fields['barcode_letter'])}/"
                    f"{COMMAND.get(cmd, cmd)}#{fields['barcode_count']}")
         text += f" bar={bar} stop={cause}"
+    if fields["version"] >= 4:
+        last = (str(fields["hump_last_mm"]) if f0 & HUMP_LAST_VALID
+                else "-")
+        text += f" hump_last={last} humps={fields['hump_count']}"
     return (text, t)
 
 

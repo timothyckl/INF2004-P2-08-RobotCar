@@ -30,11 +30,16 @@ typedef bool (*service_bridge_command_fn_t)(
 typedef bool (*service_bridge_snapshot_fn_t)(
     void * p_context, telemetry_encoder_snapshot_t * p_snapshot);
 
+/* Route is a COMMAND_PARSER_ROUTE_* code; letter is 'A' to 'Z'. */
+typedef bool (*service_bridge_assign_fn_t)(void * p_context, uint8_t route,
+                                           char letter);
+
 typedef struct
 {
     service_bridge_stop_fn_t     p_raise_remote_stop;
     service_bridge_command_fn_t  p_send_regular_command;
     service_bridge_snapshot_fn_t p_read_snapshot;
+    service_bridge_assign_fn_t   p_assign_letter;
     void *                       p_context;
 } service_bridge_port_t;
 
@@ -93,7 +98,8 @@ bool service_bridge_begin (service_bridge_t * p_bridge,
  * @param received_ms Local receipt time supplied by the service adapter.
  * @return MORE, FORWARDED, INVALID, UNDELIVERED, or IGNORED.
  * @note STOP uses only p_raise_remote_stop. START and RESET use only the
- * regular-command function. No callback authorises motion by itself.
+ * regular-command function. A letter assignment ("L=A") uses only
+ * p_assign_letter. No callback authorises motion by itself.
  */
 service_bridge_result_t service_bridge_data (service_bridge_t * p_bridge,
     const void * p_data, size_t data_length, bool is_last,

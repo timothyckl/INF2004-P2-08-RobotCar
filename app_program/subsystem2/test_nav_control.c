@@ -245,6 +245,112 @@ test_nav_control_fail (void)
     return (b_passed);
 }
 
+/* S2-U79 (post-demo test, 2026-11-25): a step onto the junction that
+   never reports, and a stop on the new line that never settles, each
+   fail at the phase limit rather than hold the car; null inputs are
+   ignored. */
+bool
+test_nav_control_phase_limits (void)
+{
+    nav_control_t nav;
+    nav_control_input_t in;
+    nav_control_output_t out;
+    bool b_passed;
+
+    /* ADVANCE: the step is sent but no result ever arrives. */
+    test_nav_setup(&nav, &in);
+    b_passed = nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 0u);
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    in.b_junction = false;
+    in.b_still = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_ACT_MOVE == out.action);
+    nav_control_sent(&nav, 9u);
+    in.b_still = false;
+    in.now_ms = TEST_NAV_PHASE_MS;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_OUT_NONE == out.outcome)
+               && (NAV_CONTROL_ADVANCE == nav.state);
+    in.now_ms++;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_OUT_FAILED == out.outcome)
+               && (NAV_CONTROL_IDLE == nav.state);
+
+    /* SETTLE: on the new line, but the wheels never stop. */
+    test_nav_setup(&nav, &in);
+    b_passed = b_passed
+               && test_nav_to_spin(&nav, &in, NAV_CONTROL_CMD_LEFT, 1)
+               && test_nav_spin_to(&nav, &in, 5000, 80000);
+    in.b_on_line = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_SETTLE == nav.state);
+    in.now_ms += TEST_NAV_PHASE_MS + 1u;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_OUT_FAILED == out.outcome)
+               && (NAV_CONTROL_IDLE == nav.state);
+
+    /* Null arguments change nothing and do not crash. */
+    nav_control_step(NULL, &in, &out);
+    nav_control_step(&nav, NULL, &out);
+    nav_control_step(&nav, &in, NULL);
+    b_passed = b_passed && (NAV_CONTROL_IDLE == nav.state)
+               && (!nav_control_stage(NULL, NAV_CONTROL_CMD_LEFT, 0u));
+
+    return (b_passed);
+}
+
+/* S2-U80 (post-demo test, 2026-11-25): the hold limit counts from the
+   decode, whatever happens in between. While the car scans and bypasses,
+   the controller does not step the policy (task_controller.c), so the
+   first step after a bypass may come late. A junction at exactly the
+   limit is still taken; one ms later the command has expired. A repeat
+   decode of the same command restarts the hold (it replaces the held
+   one). LEFT here; any held command behaves the same. */
+bool
+test_nav_control_hold_window (void)
+{
+    nav_control_t nav;
+    nav_control_input_t in;
+    nav_control_output_t out;
+    bool b_passed;
+
+    /* No step at all until the junction, at exactly the limit. */
+    test_nav_setup(&nav, &in);
+    b_passed = nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 1000u);
+    in.now_ms = 1000u + TEST_NAV_PENDING_MS;
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_STOP, 0,
+                                        NAV_CONTROL_OUT_STARTED);
+
+    /* One ms later the same junction finds nothing held. */
+    test_nav_setup(&nav, &in);
+    b_passed = b_passed && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT,
+                                             1000u);
+    in.now_ms = 1000u + TEST_NAV_PENDING_MS + 1u;
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_OUT_EXPIRED == out.outcome)
+               && (NAV_CONTROL_ACT_NONE == out.action);
+
+    /* A repeat decode restarts the hold. */
+    test_nav_setup(&nav, &in);
+    b_passed = b_passed
+               && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 1000u)
+               && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 15000u);
+    in.now_ms = 1000u + TEST_NAV_PENDING_MS + 1u;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && (NAV_CONTROL_OUT_NONE == out.outcome)
+               && (NAV_CONTROL_PENDING == nav.state);
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_STOP, 0,
+                                        NAV_CONTROL_OUT_STARTED);
+
+    return (b_passed);
+}
+
 static void
 test_nav_setup (nav_control_t * p_nav, nav_control_input_t * p_in)
 {

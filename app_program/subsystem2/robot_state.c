@@ -16,6 +16,8 @@
 static ID               g_state_mtx = 0;
 static s2_robot_state_t g_state;        /* guarded by g_state_mtx */
 
+static uint8_t s2_hump_mm8 (uint16_t height_mm);
+
 ER
 s2_robot_state_create (void)
 {
@@ -108,7 +110,10 @@ robot_read_telemetry (void * p_context,
 
     s2_telemetry_from_state(&st, p_snapshot);
     s2_telemetry_add_hump(p_snapshot, b_hump ? hump.maximum_height_mm : 0u,
-                          b_hump && hump.b_maximum_height_valid);
+                          b_hump && hump.b_maximum_height_valid,
+                          b_hump ? hump.current_height_mm : 0u,
+                          b_hump && hump.b_current_height_valid,
+                          b_hump ? hump.hump_count : 0u);
     s2_telemetry_add_scan(p_snapshot, b_scan ? &scan : NULL);
 
     return (true);
@@ -116,18 +121,28 @@ robot_read_telemetry (void * p_context,
 
 void
 s2_telemetry_add_hump (telemetry_encoder_snapshot_t * p_out,
-                       uint16_t max_mm, bool b_valid)
+                       uint16_t max_mm, bool b_max_valid,
+                       uint16_t last_mm, bool b_last_valid,
+                       uint8_t count)
 {
     if (NULL == p_out)
     {
         return;
     }
 
-    p_out->hump_valid  = b_valid;
-    p_out->hump_max_mm = (!b_valid) ? 0u
-                         : ((max_mm > S2_HUMP_MAX_MM)
-                            ? (uint8_t)S2_HUMP_MAX_MM
-                            : (uint8_t)max_mm);
+    p_out->hump_valid      = b_max_valid;
+    p_out->hump_max_mm     = b_max_valid ? s2_hump_mm8(max_mm) : 0u;
+    p_out->hump_last_valid = b_last_valid;
+    p_out->hump_last_mm    = b_last_valid ? s2_hump_mm8(last_mm) : 0u;
+    p_out->hump_count      = count;
+}
+
+/* Saturate a height to the uint8_t telemetry field. */
+static uint8_t
+s2_hump_mm8 (uint16_t height_mm)
+{
+    return ((height_mm > S2_HUMP_MAX_MM) ? (uint8_t)S2_HUMP_MAX_MM
+                                         : (uint8_t)height_mm);
 }
 
 void
@@ -142,6 +157,7 @@ s2_telemetry_add_scan (telemetry_encoder_snapshot_t * p_out,
     p_out->forward_valid    = false;
     p_out->profile_valid    = false;
     p_out->shape_valid      = false;
+    p_out->width_raw        = false;
     p_out->forward_mm       = 0u;
     p_out->nearest_mm       = 0u;
     p_out->width_mm         = 0u;
@@ -175,6 +191,16 @@ s2_telemetry_add_scan (telemetry_encoder_snapshot_t * p_out,
         p_out->width_mm         = p_scan->observed_width_mm;
         p_out->centre_offset_mm = p_scan->centre_offset_mm;
     }
+    else if (0u != (p_scan->flags & SCAN_TELEMETRY_WIDTH_RAW))
+    {
+        /* Display only: an edge is missing (S1 decision 7). */
+        p_out->width_raw = true;
+        p_out->width_mm  = p_scan->observed_width_mm;
+    }
+    else
+    {
+        /* No width at all. */
+    }
 }
 
 void
@@ -196,6 +222,7 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
     p_out->captured_ms    = p_state->captured_ms;
     p_out->distance_valid = b_known && (d >= 0)
                             && (d <= S2_DISTANCE_MAX_MM);
+    /* d is saturated at S2_DISTANCE_MAX_MM (65535) before the cast. */
     p_out->distance_mm    = (!b_known || (d < 0)) ? 0u
                             : ((d > S2_DISTANCE_MAX_MM)
                                ? (uint16_t)S2_DISTANCE_MAX_MM

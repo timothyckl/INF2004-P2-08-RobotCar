@@ -166,6 +166,7 @@ static const ctrl_step_t g_cal_script[] =
     {CTRL_CAL_ACTION, CTRL_CAL_VALUE}
 };
 #define CTRL_SCRIPT     g_cal_script
+/* The script has a handful of steps, far below 256. */
 #define CTRL_SCRIPT_LEN ((uint8_t)(sizeof(g_cal_script) \
                                    / sizeof(g_cal_script[0])))
 #else
@@ -638,6 +639,8 @@ send_action (ctrl_action_t action, uint32_t value)
             er = motion_reset();
             break;
         case CTRL_ACT_FORWARD:
+            /* value is checked against MOTION_DISTANCE_MAX_MM before each
+               cast. */
             er = (value > MOTION_DISTANCE_MAX_MM) ? E_PAR
                  : motion_move_forward((uint16_t)value);
             break;
@@ -1199,6 +1202,8 @@ bypass_input (ctrl_input_t const * p_input, bypass_control_input_t * p_in)
     p_in->b_hazard = (!b_forward_fresh)
                      || (0u != (g_scan_status.flags & SCAN_TASK_FLAG_HAZARD));
     p_in->b_still = motion_stop_confirmed();
+    /* Look IDs are issued by this task as uint16_t (g_bypass_look_id), so
+       the uint32_t copy holds at most 65535. */
     p_in->look_id = (uint16_t)g_scan_status.look_id;
     p_in->look_mm = g_scan_status.look_mm;
     p_in->b_look_done = (SCAN_TASK_LOOK_DONE == g_scan_status.look_result);
@@ -1217,6 +1222,9 @@ bypass_send (bypass_control_output_t const * p_out)
     switch (p_out->action)
     {
         case BYPASS_CONTROL_ACT_MOVE:
+            /* Plan distances are below 1000 mm (bypass_plan.c), inside
+               uint16_t; a SPIN value is +1 or -1, so value x 30 mm/s fits
+               int16_t; look IDs wrap at 65536 by design. */
             er = (p_out->value >= 0)
                  ? motion_move_forward((uint16_t)p_out->value)
                  : motion_move_backward((uint16_t)(-p_out->value));
@@ -1431,6 +1439,8 @@ nav_send (nav_control_output_t const * p_out)
         break;
 
         case NAV_CONTROL_ACT_MOVE:
+            /* The step is at most sensor_ahead_mm (133 mm) and a SPIN value is
+               +1 or -1, so both casts below are in range. */
             er = motion_move_forward((uint16_t)p_out->value);
             if (E_OK == er)
             {
@@ -1767,6 +1777,8 @@ line_barcode_soft (uint32_t now)
 static int16_t
 line_correction_speed (uint8_t strength)
 {
+    /* speed_range is 6 mm/s and strength 0..100, so reduction is 0..6 and
+       the result is 32..38 mm/s: every cast here is in range. */
     uint16_t const speed_range = (uint16_t)(CTRL_LINE_CORRECT_MAX_MM_S
                                - CTRL_LINE_CORRECT_MIN_MM_S);
     uint16_t const reduction = (uint16_t)((((uint16_t)strength * speed_range)

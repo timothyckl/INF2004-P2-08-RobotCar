@@ -39,6 +39,9 @@
 #define SCAN_TELEMETRY_CLEARANCE_EST (0x08u)
 #define SCAN_TELEMETRY_SCANNING      (0x10u)
 #define SCAN_TELEMETRY_REQUEST_PENDING (0x20u)
+/* observed_width_mm holds the unrefined raw span because a side edge is
+   missing; never set together with SHAPE_ESTIMATE. Display only. */
+#define SCAN_TELEMETRY_WIDTH_RAW     (0x40u)
 
 /**
  * One internally consistent decoded copy. Distances are whole millimetres.

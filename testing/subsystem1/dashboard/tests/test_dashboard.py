@@ -1,8 +1,8 @@
 """Unit tests for the dashboard's decoding and event logic.
 
 Run from testing/subsystem1/dashboard: python -m unittest discover tests
-Frames are synthetic, packed in the telemetry_encoder.h version 3 layout
-(and version 2, which the decoder still reads).
+Frames are synthetic, packed in the telemetry_encoder.h version 4 layout
+(and versions 2 and 3, which the decoder still reads).
 """
 import struct
 import sys
@@ -26,14 +26,17 @@ import server  # noqa: E402
 def frame(f0=0x3F, t=1000, dist=10, f1=0x07, state=3, mode=1, fault=0,
           line=0, scan=0, side=0, left=40, right=38, heading=0, fwd=500,
           near=300, width=80, centre=-5, hump=0, letter=0, command=0,
-          cause=0, count=0, version=3):
+          cause=0, count=0, last=0, humps=0, version=4):
     v2_part = struct.pack("<BBIHBBBBhhhHHHhB", version, f0, t, dist, f1,
                           state | (mode << 4), fault | (line << 4),
                           scan | (side << 4), left, right, heading, fwd,
                           near, width, centre, hump)
     if version == 2:
         return v2_part
-    return v2_part + bytes([letter | (command << 5), cause | (count << 4)])
+    v3_part = v2_part + bytes([letter | (command << 5), cause | (count << 4)])
+    if version == 3:
+        return v3_part
+    return v3_part + bytes([last, humps])
 
 
 class ParseTest(unittest.TestCase):
@@ -57,6 +60,24 @@ class ParseTest(unittest.TestCase):
                          (5, 1, 4, 15))
         self.assertEqual(decoder.letter(5), "F")
         self.assertEqual(decoder.letter(31), "?")
+
+    def test_version_4_fields(self):
+        f = decoder.parse(frame(f0=0x80, f1=0x10, width=412, last=9,
+                                humps=3))
+        self.assertEqual((f["hump_last_mm"], f["hump_count"],
+                          f["width_mm"]), (9, 3, 412))
+        text, _ = decoder.decode(frame(f0=0x80, last=9, humps=3), None)
+        self.assertIn("hump_last=9 humps=3", text)
+        text, _ = decoder.decode(frame(f0=0x00, last=9, humps=3), None)
+        self.assertIn("hump_last=- humps=3", text)
+
+    def test_version_3_still_reads(self):
+        f = decoder.parse(frame(version=3))
+        self.assertEqual((f["version"], f["hump_last_mm"], f["hump_count"]),
+                         (3, 0, 0))
+        self.assertIsNone(decoder.parse(b"\x04" + frame(version=3)[1:]))
+        text, _ = decoder.decode(frame(version=3), None)
+        self.assertNotIn("humps=", text)
 
     def test_version_2_still_reads(self):
         f = decoder.parse(frame(version=2))
@@ -84,12 +105,31 @@ class DescribeTest(unittest.TestCase):
         self.assertFalse(d["motion_valid"])
         self.assertTrue(d["forward_valid"])
         self.assertFalse(d["shape_valid"])
+        self.assertFalse(d["width_raw"])
+        self.assertFalse(d["hump_last_valid"])
         self.assertEqual(d["fault_name"], "motion")
+        d = server.describe(decoder.parse(frame(f0=0x80, f1=0x12)))
+        self.assertTrue(d["width_raw"])
+        self.assertTrue(d["hump_last_valid"])
         self.assertIsNone(d["stop_cause_name"])   # cause 0, latched: "-"
         d = server.describe(decoder.parse(frame(f0=0x08, cause=4)))
         self.assertEqual(d["stop_cause_name"], "pick-up")
         d = server.describe(decoder.parse(frame(f0=0x00, cause=4)))
         self.assertIsNone(d["stop_cause_name"])   # not latched
+
+
+class SubscriptionsTest(unittest.TestCase):
+    def test_heartbeat_under_prefix_is_not_subscribed_twice(self):
+        self.assertEqual(server.subscriptions("p2-08/car", "p2-08/car/heartbeat"),
+                         [("p2-08/car/#", 0)])
+
+    def test_heartbeat_elsewhere_is_added(self):
+        self.assertEqual(server.subscriptions("p2-08/car", "robot/heartbeat"),
+                         [("p2-08/car/#", 0), ("robot/heartbeat", 0)])
+
+    def test_similar_prefix_is_not_covered(self):
+        self.assertEqual(server.subscriptions("p2-08/car", "p2-08/car2/hb"),
+                         [("p2-08/car/#", 0), ("p2-08/car2/hb", 0)])
 
 
 class ChangesTest(unittest.TestCase):
@@ -111,6 +151,14 @@ class ChangesTest(unittest.TestCase):
         self.assertIn("scan result: plan side L", ev)
         self.assertIn("highest hump now 11 mm", ev)
         self.assertIn("STOP latched", ev)
+
+    def test_hump_count_event(self):
+        old = self.d(f0=0x37 | 0x40 | 0x80, hump=11, last=11, humps=1)
+        new = self.d(f0=0x37 | 0x40 | 0x80, hump=11, last=6, humps=2)
+        ev = server.changes(old, new)
+        self.assertIn("hump 2 measured: 6 mm", ev)
+        self.assertNotIn("highest hump now 11 mm", ev)
+        self.assertEqual(server.changes(new, new), [])
 
     def test_barcode_and_stop_cause_events(self):
         old = self.d(f0=0x37)
@@ -137,6 +185,38 @@ class ChangesTest(unittest.TestCase):
                       server.changes(self.d(), self.d(state=5, fault=2)))
         self.assertNotIn("FAULT: none",
                          server.changes(self.d(fault=2), self.d()))
+
+
+class LetterTest(unittest.TestCase):
+    """Barcode letter table (S1 decision 6)."""
+
+    def test_valid_table(self):
+        self.assertIsNone(server.check_letters(
+            {"L": "G", "R": "H", "S": "C", "U": "Z"}))
+        self.assertIsNone(server.check_letters(server.BOOT_LETTERS))
+
+    def test_invalid_tables(self):
+        bad = [None, [], {"L": "A", "R": "B", "S": "C"},
+               {"L": "A", "R": "B", "S": "C", "U": "D", "X": "E"},
+               {"L": "a", "R": "B", "S": "C", "U": "D"},
+               {"L": "AB", "R": "B", "S": "C", "U": "D"},
+               {"L": 1, "R": "B", "S": "C", "U": "D"},
+               {"L": "A", "R": "A", "S": "C", "U": "D"}]
+        for table in bad:
+            self.assertIsNotNone(server.check_letters(table), table)
+
+    def test_payload_format_matches_the_car(self):
+        for good in ("L=A", "R=Z", "S=F", "U=D"):
+            self.assertTrue(server.ASSIGN.fullmatch(good))
+        for bad in ("L=a", "X=A", "L=AB", "L:A", "l=A", "L="):
+            self.assertIsNone(server.ASSIGN.fullmatch(bad))
+
+    def test_restart_detection(self):
+        self.assertEqual(server.restarted(None, "hb 0"), (0, False))
+        self.assertEqual(server.restarted(0, "hb 0"), (0, False))  # dup
+        self.assertEqual(server.restarted(0, "hb 1"), (1, False))
+        self.assertEqual(server.restarted(41, "hb 0"), (0, True))
+        self.assertEqual(server.restarted(7, "garbage"), (7, False))
 
 
 if __name__ == "__main__":

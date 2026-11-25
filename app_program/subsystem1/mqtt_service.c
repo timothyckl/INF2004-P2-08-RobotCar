@@ -8,8 +8,11 @@
 #include "service_bridge.h"
 #include "telemetry_encoder.h"
 #include "../subsystem2/s2_s1_adapter.h"
+#include "../subsystem3/s3_nav.h"
 
 static service_bridge_t g_bridge;       /* WiFi service task only */
+
+static bool assign_letter (void * p_context, uint8_t route, char letter);
 
 bool mqtt_service_init (void)
 {
@@ -18,6 +21,7 @@ bool mqtt_service_init (void)
         controller_raise_remote_stop,
         controller_send_remote_command,
         robot_read_telemetry,
+        assign_letter,
         NULL
     };
 
@@ -66,6 +70,36 @@ size_t mqtt_service_telemetry (uint8_t * p_output, size_t capacity)
     }
 
     return length;
+}
+
+/* Map the parser's route code to subsystem 3's command explicitly, so
+   neither module depends on the other's numbering (S1 decision 6). */
+static bool assign_letter (void * p_context, uint8_t route, char letter)
+{
+    s3_command_t command = S3_NAV_NONE;
+
+    (void) p_context;
+
+    switch (route)
+    {
+        case COMMAND_PARSER_ROUTE_LEFT:
+            command = S3_NAV_LEFT;
+        break;
+        case COMMAND_PARSER_ROUTE_RIGHT:
+            command = S3_NAV_RIGHT;
+        break;
+        case COMMAND_PARSER_ROUTE_STRAIGHT:
+            command = S3_NAV_STRAIGHT;
+        break;
+        case COMMAND_PARSER_ROUTE_UTURN:
+            command = S3_NAV_UTURN;
+        break;
+        default:
+            command = S3_NAV_NONE;
+        break;
+    }
+
+    return s3_nav_set_letter(command, letter);
 }
 
 /*** End of file. ***/

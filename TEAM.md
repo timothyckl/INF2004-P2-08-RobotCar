@@ -4,9 +4,9 @@ Group **P2-8**. Ownership below comes from `docs/AAI08_Design_Review.pdf`
 and `docs/AAI08_PostTri1.pdf`. The latter records subsequent design decisions
 and outstanding validation.
 
-The firmware still runs the starter examples. Pin, task, interface and object
-entries marked *example* describe that code, not the planned robot subsystems.
-Update them as each implementation replaces the example. Keep this file current
+The starter examples (producer, consumer, LED task) were removed on
+2026-11-20 (S2 decision 29). Entries still marked *example* or *retired*
+are kept as history of what the template provided. Keep this file current
 so five people can work in one firmware image without resource conflicts.
 
 A **subsystem** is one student's part of the product, with its own folder.
@@ -124,9 +124,10 @@ several peripherals (one owning task each, or one task owning all of them).
 Every other task, in the same subsystem or another one, asks the owning task
 through a kernel object (section 5) and never touches that peripheral itself.
 
-*Why:* this port runs tasks on both cores at the same time. If two tasks
-drive the same I2C or UART block at once, their transfers get mixed up, and
-the drivers have no locking to stop it.
+*Why:* the drivers have no locking. On the dual-core build (`SMP=1`) two
+tasks can drive the same I2C or UART block at the same time; on the
+single-core mission build (S2 decision 33) a higher-priority task can still
+pre-empt a transfer half-way. Either way the transfers get mixed up.
 
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
@@ -182,6 +183,9 @@ the tasks the mission image creates (S2 decision 28).
 | 5 | 20–21 | obstacle_scan – 20 – any |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
+The core column applies only to a dual-core build (`SMP=1`). Since S2
+decision 33 the mission is built with `SMP=0`, so every task runs on the
+one core and the affinity is ignored (`app_start_task()`).
 
 ## 5. Interfaces between subsystems
 
@@ -199,16 +203,16 @@ sends to it or waits on it. Agree on the data format before coding.
 | IF-06 | S3 → S2 | message buffer (owned by S2) | `line_q` | `s2_line_report_t`: capture time plus CENTER/LEFT/RIGHT/BOTH_BLACK/STOP; non-blocking, interpreted only by the Vehicle Controller | Edmund + Dalton, 2026-11-04 |
 | IF-08 | S1 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_REMOTE_STOP` via `controller_raise_remote_stop()` | integration branch, S1 decision 2 |
 | IF-09 | S1 → S2 | message buffer (owned by S2) | `remote_q` | `s2_remote_cmd_t` START/RESET via `controller_send_remote_command()` | integration branch, S1 decision 2 |
-| IF-10 | S2 → S1 | snapshot under state_mutex (`TMO_POL`) | `robot_read_telemetry()` | fills `telemetry_encoder_snapshot_t` (`subsystem1/telemetry_snapshot.h`); S1 encodes the 29-byte version 3 frame, with the last barcode letter and the stop cause | integration branch, S1 decisions 1 and 5 |
+| IF-10 | S2 → S1 | snapshot under state_mutex (`TMO_POL`) | `robot_read_telemetry()` | fills `telemetry_encoder_snapshot_t` (`subsystem1/telemetry_snapshot.h`); S1 encodes the 31-byte version 4 frame, with the last barcode letter, the stop cause, the last hump, the hump count and a raw width | integration branch, S1 decisions 1, 5 and 7 |
 | IF-11 | S2 → S5 | message buffer (owned by S2) | `scan_q` | `s2_scan_cmd_t`: REQUEST, AUTHORISE, STOP_CONFIRM, CANCEL, STOP | integration branch, S2 decisions 9 and 11 |
 | IF-12 | S5 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_HAZARD`, `CTRL_FLG_SCAN_FAULT` | integration branch, S2 decisions 9 and 11 |
 | IF-13 | S5 → S2 | snapshot under S5's mutex (`TMO_POL`) | `scan_task_get()` | `scan_task_status_t`: forward verdict, result, `bypass_plan_t` | integration branch, S2 decision 14 |
 | IF-14 | S2 → S5, S4 | robot_state field | `s2_get_robot_state()` | `mode` (`S2_MODE_*`): S5 raises hazards only in FOLLOW, BYPASS, REACQUIRE; S4 detects humps, impacts and lifts only in FOLLOW and NAVIGATE (S4 decisions 12 and 16) | integration branch, S2 decision 9 |
 | IF-16 | S2 → S3, S5 | shared GPIO interrupt dispatcher | `drv_gpio_irq_register()` | one callback per pin, timestamped edges | PostTri1 (single dispatcher) |
 | IF-17 | S2 → S4 | snapshot under S2's mutex | `motion_get_status()` | `motion_status_t`: a new `run_id` (START) clears the hump maximum; wheel speed changes mark pitch unreadable while accelerating | integration branch, S2 decision 24 |
-| IF-18 | S4 → S2 | snapshot under S4's mutex (`TMO_POL`) | `subsystem4_get_status()` | `s4_terrain_result_t`: the run's highest hump (`maximum_height_mm`, valid flag), copied into the telemetry snapshot as `hump_max_mm` (8 bits, saturates at 255; IF-10) | integration branch, S4 decision 13 |
+| IF-18 | S4 → S2 | snapshot under S4's mutex (`TMO_POL`) | `subsystem4_get_status()` | `s4_terrain_result_t`: the run's highest hump (`maximum_height_mm`, valid flag), the last completed hump (`current_height_mm`, valid flag) and the run's hump count (`hump_count`), copied into the telemetry snapshot as `hump_max_mm`, `hump_last_mm` (8 bits, saturate at 255) and `hump_count` (IF-10) | integration branch, S4 decision 13, S1 decision 7 |
 | IF-19 | S4 → S2 | event flag (owned by S2) | `controller_flags` | `CTRL_FLG_PICKUP`: the car was lifted while driving; the controller latches STOP | integration branch, S4 decision 15 |
-| IF-20 | S5 → S2 (for S1) | decoded snapshot under S5's mutex (`TMO_POL`) | `scan_telemetry_get()` | `scan_telemetry_t`: forward range, scan result, bypass side, observed nearest/width/centre, mapped into IF-10 | integration branch, S1 decision 1 |
+| IF-20 | S5 → S2 (for S1) | decoded snapshot under S5's mutex (`TMO_POL`) | `scan_telemetry_get()` | `scan_telemetry_t`: forward range, scan result, bypass side, observed nearest/width/centre (width is the raw span when `SCAN_TELEMETRY_WIDTH_RAW`), mapped into IF-10 | integration branch, S1 decisions 1 and 7 |
 | IF-21 | S3 → S2 | message buffer (owned by S2) | `nav_q` | `s2_nav_request_t` via `s2_nav_submit()`: every decoded letter `A`..`Z` with its command (`S2_NAV_NONE` if unmapped); the controller reports each letter and holds a mapped command for the next junction | integration branch, S2 decisions 26 and 27 |
 
 Each interface is tested by at least one integration test

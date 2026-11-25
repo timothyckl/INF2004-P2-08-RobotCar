@@ -18,16 +18,69 @@ not measured.
 
 | Data | Packed now? | Size now | Minimum (calculated) |
 |---|---|---|---|
-| Telemetry frame v3 (MQTT) | **Yes**, masks and shifts | 29 bytes per frame | 27 bytes (S1 decision 1 left two 12-bit pairs byte-aligned) |
-| Same data unpacked (`telemetry_encoder_snapshot_t`) | reference | 44 bytes | — |
+| Telemetry frame v4 (MQTT, since 2026-11-24, S1 decision 7) | **Yes**, masks and shifts | 31 bytes per frame | 29 bytes (same method: two 12-bit pairs left byte-aligned) |
+| Same data unpacked (`telemetry_encoder_snapshot_t`) | reference | 48 bytes (44 in v3) | — |
+| Telemetry frame v3 (MQTT, until 2026-11-24) | **Yes** | 29 bytes | 27 bytes |
 | Interface queue records (IF-06, 09, 11, 21, motion_q) | No, whole-byte fields | 8 to 16 bytes each, 368 bytes of queue memory | about 290 bytes of queue memory |
 | `s2_robot_state_t` (shared state) | No | 32 bytes | 21 bytes |
 | Barcode capture (`s3_capture_t`) | No | 264 bytes (on the initial task's stack) | 136 bytes with 16-bit ms runs |
 
-The telemetry frame, the only data sent off the car, is packed: 29 bytes
-against 44 for the same fields in their C types, 34% smaller. The internal
+The telemetry frame, the only data sent off the car, is packed: 31 bytes
+against 48 for the same fields in their C types, 35% smaller (version 3:
+29 against 44). The internal
 records keep whole-byte fields; packing all of them would save about 220
 bytes of RAM in total (below).
+
+## Telemetry frame version 4 (31 bytes)
+
+Version 4 is version 3 with two bytes appended and two flag bits used
+(S1 decision 7); bytes 0 to 28 keep their meanings, so version 2 and 3
+decoders still read the first part. Layout and packing are in
+`app_program/subsystem1/telemetry_encoder.h`.
+
+| Bytes | Field | Range | Bits needed | Bits used |
+|---|---|---|---|---|
+| 0 | version | 1..4 | 3 | 8 |
+| 1 | flags0: 8 validity and state flags (bit 7 = last hump valid, new) | flags | 8 | 8 |
+| 2-5 | `captured_ms` | controller clock, wraps | 32 | 32 |
+| 6-7 | `distance_mm` | 0..65 535 per run | 16 | 16 |
+| 8 | flags1: 5 flags (bit 4 = width raw, new) | flags | 5 | 8 |
+| 9 | state, mode | 0..5 each | 3 + 3 | 4 + 4 |
+| 10 | fault, line | 0..4 each | 3 + 3 | 4 + 4 |
+| 11 | scan result, bypass side | 0..5, 0..2 | 3 + 2 | 4 + 4 |
+| 12-15 | left, right wheel speed | ±400 mm/s | 10 + 10 (signed) | 16 + 16 |
+| 16-17 | heading | ±18 000 cdeg | 16 (signed) | 16 |
+| 18-21 | forward range, nearest point | 20..4000 mm | 12 + 12 | 16 + 16 |
+| 22-23 | width (or raw span when width raw) | 0..5656 mm | 13 | 16 |
+| 24-25 | centre offset | ±4000 mm | 13 (signed) | 16 |
+| 26 | highest hump | 0..255 mm, saturated | 8 | 8 |
+| 27 | barcode letter, command | 0..25 (31 invalid), 0..4 (7 invalid) | 5 + 3 | 5 + 3 |
+| 28 | stop cause, barcode count | 0..11, low 4 bits | 4 + 4 | 4 + 4 |
+| 29 | last hump (new) | 0..255 mm, saturated | 8 | 8 |
+| 30 | hump count (new) | 0..255, saturates | 8 | 8 |
+
+The new fields need their full byte: a hump height is whole millimetres up
+to the 255 mm saturation, and the count saturates at 255. The raw width
+reuses bytes 22-23 and needs only a flag bit. One frame per second is 31
+bytes/s of payload, about 248 bit/s, against a WiFi link of several Mbit/s:
+the frame is small for the data it carries, so we did not pack it further.
+
+## Re-measured on 2026-11-25 (`a41c19c`, the demo source)
+
+`sizeof` with `arm-none-eabi-gcc` 15.3.1 and the mission flags; sizes with
+`arm-none-eabi-size` on the mission image. Unchanged sizes are not
+repeated.
+
+| Item | 2026-11-20 (`253a045`) | 2026-11-25 (`a41c19c`) | Why it changed |
+|---|---|---|---|
+| `telemetry_encoder_snapshot_t` | 44 bytes | 48 bytes | Last hump, hump count, two flags (S1 d7) |
+| `s4_terrain_result_t` | 14 bytes | 16 bytes | Hump count (`uint8_t`) plus alignment padding |
+| `s2_robot_state_t`, `s2_line_report_t`, `s2_remote_cmd_t`, `s2_scan_cmd_t`, `s2_nav_request_t`, `scan_telemetry_t`, `scan_task_status_t`, `s3_capture_t` | 32, 8, 12, 12, 12, 28, 120, 264 | same | — |
+| Application objects: text (code and constants), data, bss | — | 48 024, 41, 1 976 bytes | — |
+| Whole mission image: text, data, bss | — | 374 410, 132, 79 988 bytes | — |
+
+The application is 12.8% of the image's code and constants and about 2.5%
+of its static RAM; the network stack, USB and kernel make up the rest.
 
 ## Measured RAM
 

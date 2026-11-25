@@ -148,12 +148,15 @@ drv_motor_map (int32_t duty, drv_motor_cc_t * p_cc)
 
     if (duty >= 0)
     {
+        /* duty is 0..DRV_MOTOR_DUTY_MAX (6250, checked above), inside
+           uint16_t. */
         p_cc->cc_a = (uint16_t)duty;
         p_cc->cc_b = 0u;
     }
     else
     {
         p_cc->cc_a = 0u;
+        /* -duty is 1..DRV_MOTOR_DUTY_MAX (checked above), inside uint16_t. */
         p_cc->cc_b = (uint16_t)(-duty);
     }
 

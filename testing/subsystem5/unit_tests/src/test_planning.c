@@ -9,6 +9,7 @@
 #include "../include/test_runner.h"
 #include "../../../../app_program/subsystem5/include/bypass_plan.h"
 #include "../../../../app_program/subsystem5/include/forward_monitor.h"
+#include "../../../../app_program/subsystem5/include/scan_profile.h"
 
 #include <stddef.h>
 
@@ -73,6 +74,9 @@ static bool test_planning_beam (test_interface_api_t const * p_api);
 /** S5-U71: clear needs every measured bin within +/-15 degrees open. */
 static bool test_planning_clear_window (test_interface_api_t const * p_api);
 
+/** S5-U72: width and centre from synthetic box geometry (SYS-06). */
+static bool test_planning_box_geometry (test_interface_api_t const * p_api);
+
 
 void
 test_planning_run (test_interface_api_t const * p_api)
@@ -108,7 +112,9 @@ test_planning_run (test_interface_api_t const * p_api)
         {"S5-U67", "beam allowance pulls edges in",
          test_planning_beam},
         {"S5-U71", "clear only if +/-15 degrees is open",
-         test_planning_clear_window}
+         test_planning_clear_window},
+        {"S5-U72", "box geometry: width bounds and centre sign",
+         test_planning_box_geometry}
     };
     uint32_t const count = (uint32_t) (sizeof(cases) / sizeof(cases[0]));
 
@@ -450,6 +456,9 @@ test_planning_profile (test_interface_api_t const * p_api)
             && (106u == plan.profile.left_extent_mm)
             && (71u == plan.profile.right_extent_mm)
             && (177u == plan.profile.observed_width_mm)
+            /* Raw span: left 410 mm at 25 deg (173) + right 410 mm at
+               20 deg (140), with no beam allowance. */
+            && (313u == plan.profile.raw_width_mm)
             && (17 == plan.profile.centre_offset_mm));
 }
 
@@ -480,6 +489,9 @@ test_planning_partial_profile (test_interface_api_t const * p_api)
                                  && (!plan.profile.b_left_edge)
                                  && (!plan.profile.b_shape_estimated)
                                  && (0u == plan.profile.observed_width_mm)
+                                 /* Raw span still given: left 410 mm at
+                                    15 deg (106) + right 140. */
+                                 && (246u == plan.profile.raw_width_mm)
                                  && (0 == plan.profile.centre_offset_mm);
 
     bypass_plan_config_t invalid_config = g_planning_config;
@@ -703,6 +715,100 @@ test_planning_clear_window (test_interface_api_t const * p_api)
     open[9] = 0u;               /* the forward bin must be measured */
 
     return (b_angled_blocked && b_open && (!scan_profile_clear(open, 500u)));
+}
+
+/*
+ * S5-U72 (post-demo test, 2026-11-25). Synthetic scans of a flat box face
+ * 240 mm from the sensor, index 9 forward, left positive, 5 degrees per
+ * bin. Ranges were generated independently from geometry (not from this
+ * code): a ray at angle t hits if its cone [t - b, t + b] overlaps the
+ * face, and reads the distance to the nearest face point in that cone,
+ * 240 / cos(angle). b = 0 is an ideal thin ray; b = 21 is the effective
+ * half-beam measured in S2 decision 18. Misses read 4000 mm.
+ *
+ * Properties checked:
+ *  (a) ideal rays, no allowance: the width is never more than the real
+ *      width and never short by more than two ray spacings at the edge
+ *      (240 x (tan 20 - tan 15) = 23 mm a side for 150 mm; 25 mm for
+ *      200 mm), so the edge logic itself is sound;
+ *  (b) 21 degree beam with a matching 20 degree allowance: the width is
+ *      within the SYS-06 criterion (20 mm) of 150 mm;
+ *  (c) 21 degree beam with the mission's 10 degree allowance
+ *      (scan_task.c): the width is never below the real width, but is
+ *      overstated, which is the SYS-06 failure seen on the car;
+ *  (d) a box 50 mm to the left gives a positive centre offset within one
+ *      ray spacing of 50 mm, and a longer left extent.
+ */
+static bool
+test_planning_box_geometry (test_interface_api_t const * p_api)
+{
+    static uint16_t const ideal_150[SCAN_PROFILE_ANGLES] =
+    {
+        4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 248u, 244u, 241u, 240u,
+        241u, 244u, 248u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u
+    };
+    static uint16_t const ideal_200[SCAN_PROFILE_ANGLES] =
+    {
+        4000u, 4000u, 4000u, 4000u, 4000u, 255u, 248u, 244u, 241u, 240u,
+        241u, 244u, 248u, 255u, 4000u, 4000u, 4000u, 4000u, 4000u
+    };
+    static uint16_t const beam21_150[SCAN_PROFILE_ANGLES] =
+    {
+        4000u, 4000u, 247u, 243u, 241u, 240u, 240u, 240u, 240u, 240u,
+        240u, 240u, 240u, 240u, 241u, 243u, 247u, 4000u, 4000u
+    };
+    static uint16_t const ideal_150_left50[SCAN_PROFILE_ANGLES] =
+    {
+        4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 241u, 240u,
+        241u, 244u, 248u, 255u, 265u, 4000u, 4000u, 4000u, 4000u
+    };
+    scan_profile_config_t const no_allowance = {200u, 4000u, 0u};
+    scan_profile_config_t const matched = {200u, 4000u, 20u};
+    scan_profile_config_t const mission = {200u, 4000u, 10u};
+    scan_profile_t profile;
+    bool b_ideal = true;
+    bool b_matched;
+    bool b_mission;
+    bool b_offset;
+
+    (void) p_api;
+
+    /* (a) */
+    b_ideal = (SCAN_PROFILE_OBSERVED
+               == scan_profile_make(ideal_150, &no_allowance, &profile))
+              && profile.b_shape_estimated
+              && (profile.observed_width_mm <= 150u)
+              && (profile.observed_width_mm >= (150u - (2u * 23u)));
+    b_ideal = b_ideal
+              && (SCAN_PROFILE_OBSERVED
+                  == scan_profile_make(ideal_200, &no_allowance, &profile))
+              && profile.b_shape_estimated
+              && (profile.observed_width_mm <= 200u)
+              && (profile.observed_width_mm >= (200u - (2u * 25u)));
+
+    /* (b) */
+    b_matched = (SCAN_PROFILE_OBSERVED
+                 == scan_profile_make(beam21_150, &matched, &profile))
+                && profile.b_shape_estimated
+                && (profile.observed_width_mm >= (150u - 20u))
+                && (profile.observed_width_mm <= (150u + 20u));
+
+    /* (c) */
+    b_mission = (SCAN_PROFILE_OBSERVED
+                 == scan_profile_make(beam21_150, &mission, &profile))
+                && profile.b_shape_estimated
+                && (profile.observed_width_mm > (150u + 20u));
+
+    /* (d) */
+    b_offset = (SCAN_PROFILE_OBSERVED
+                == scan_profile_make(ideal_150_left50, &no_allowance,
+                                     &profile))
+               && profile.b_shape_estimated
+               && (profile.left_extent_mm > profile.right_extent_mm)
+               && (profile.centre_offset_mm >= (50 - 23))
+               && (profile.centre_offset_mm <= (50 + 23));
+
+    return (b_ideal && b_matched && b_mission && b_offset);
 }
 
 /* End of file. */

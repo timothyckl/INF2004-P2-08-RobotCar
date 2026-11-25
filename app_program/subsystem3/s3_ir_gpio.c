@@ -72,6 +72,7 @@ s3_ir_gpio_read_channel (W channel, uint16_t * p_value)
     if ((E_OK == error) && (1 == actual_size)
         && (raw_value <= S3_IR_ADC_MAX))
     {
+        /* raw_value <= S3_IR_ADC_MAX (4095), checked in the condition above. */
         *p_value = (uint16_t)raw_value;
     }
     else if (E_OK == error)

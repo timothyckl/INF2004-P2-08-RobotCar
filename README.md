@@ -1,23 +1,83 @@
 # INF2004 P2-8 — Autonomous Robot Car
 
-Team P2-8's autonomous robot car uses the Raspberry Pi Pico W + Robo Pico
-platform and micro T-Kernel 3.0. The project must follow a line, decode navigation
-barcodes, detect humps and report the highest peak, profile and bypass obstacles,
-reacquire the original line, and report telemetry over WiFi/MQTT.
+Team P2-8's autonomous robot car runs on the Raspberry Pi Pico W with a
+Cytron Robo Pico, in C with the Pico SDK and µT-Kernel 3.0. It follows a
+line, decodes Code 39 barcodes and turns at the next junction, measures the
+highest hump with an accelerometer, scans and bypasses obstacles with a
+servo-mounted ultrasonic sensor, rejoins the original line, and reports
+telemetry over WiFi/MQTT to a laptop dashboard. All decisions are made on
+the car; WiFi is only for monitoring and START/STOP.
 
-The firmware contains each subsystem's first implementation alongside some
-remaining starter examples (see `TEAM.md`). The subsystems are not yet joined
-into the complete robot behaviour, and the integrated firmware has not been
-validated on hardware. It runs on **both cores** of the Pico W's RP2040, with a
-USB serial console and the WiFi driver built in.
+All five subsystems are integrated into one mission image, built for **one
+core** (`SMP=0`, S2 decision 33). The image used in the assessed demo on
+2026-11-24 is tag **`demo-2026-11-24-flashed`** (`a41c19c`); a clean build
+of that tag reproduces the demo UF2 byte for byte. Later commits change
+only tests, tools, the build's warning flags and documentation.
 
-Project references in `docs/`:
-- `Project Description.pdf` — mission and subsystem requirements.
-- `AAI08_Design_Review.pdf` — team ownership and initial architecture.
-- `AAI08_PostTri1.pdf` — later decisions, open risks and planned validation.
+## Results at a glance
 
-See `TEAM.md` for subsystem owners. Design targets are not measured results;
-interfaces and compact data formats still need implementation and validation.
+| Mission requirement | Result | Evidence |
+|---|---|---|
+| Line following | Pass: 3 laps (SYS-01) | [system test log](testing/system/TEST_LOG.md) |
+| Barcode decoding | Partial: works, never a wrong letter, below 4 of 5 passes | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
+| Hump detection and highest peak | Detected every time; 6, 6, 7 mm for a 5 mm hump (within ±2 mm) | D-03 |
+| Obstacle detection | Pass (SYS-05) | system test log |
+| Obstacle profiling | Nearest point and side pass; width fails (SYS-06) | [software review](docs/software_quality_review.md) F-05 |
+| Bypass and line reacquisition | Pass 3/3 (SYS-07); attempt 3 of the demo | D-02 |
+| Telemetry over WiFi | Pass: 98.6% of frames received on demo day | [traceability](docs/requirements_traceability.md) FR10 |
+
+The full course was not completed in one run. Every result, including
+failures, is kept in the test logs.
+
+## Where to find things
+
+| Topic | Document |
+|---|---|
+| Assessed demo, its logs and the backup video | [docs/DEMO_REPORT_2026-11-24.md](docs/DEMO_REPORT_2026-11-24.md), [videos/README.md](videos/README.md) |
+| Requirements → design → code → tests → results | [docs/requirements_traceability.md](docs/requirements_traceability.md) |
+| Architecture, RTOS tasks, state machines, sensors, timers, efficiency, edge computing | [docs/final_architecture.md](docs/final_architecture.md) |
+| Code and logic review, defects and proposals | [docs/software_quality_review.md](docs/software_quality_review.md) |
+| Proposed fixes after the demo (not in the demo firmware) | [docs/post_demo_proposals.md](docs/post_demo_proposals.md) |
+| Tribunal 1 and 2 closure, fault handling | [docs/tribunal_closure.md](docs/tribunal_closure.md) |
+| BARR-C:2018 compliance and static analysis | [docs/barr_c_compliance.md](docs/barr_c_compliance.md) |
+| Data bit widths and memory | [docs/data_widths.md](docs/data_widths.md) |
+| Every agreed design decision | [docs/decisions.md](docs/decisions.md) |
+| Owners, pins, task priorities, interfaces | [TEAM.md](TEAM.md), [AGENTS.md](AGENTS.md) |
+| Test definitions and every run | `testing/*/TEST_LOG.md`, [testing/README.md](testing/README.md) |
+| Original design and tribunals | [docs/AAI08_Design_Review.pdf](docs/AAI08_Design_Review.pdf), [docs/AAI08_PostTri1.pdf](docs/AAI08_PostTri1.pdf), [docs/AAI08_ImmediateTri2.pdf](docs/AAI08_ImmediateTri2.pdf) |
+| Brief | [docs/Project Description.pdf](docs/Project%20Description.pdf) |
+
+## Module topics in this project
+
+| Lecture | Where it is applied |
+|---|---|
+| W2.1 GPIO, W2.2 Interrupts | Encoder and echo ISRs with sequence counters and a ring buffer; one shared GPIO dispatcher ([architecture](docs/final_architecture.md) §7, [BARR-C](docs/barr_c_compliance.md) §3) |
+| W3.1 Digital communication | I2C to the LSM303DLHC; MQTT binary telemetry ([data widths](docs/data_widths.md)) |
+| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; the 10 ms tick behind the 20 ms barcode sampling (review F-01) |
+| W3.3 ADC | 12-bit line and barcode sensing with adaptive thresholds and hysteresis |
+| W4.1 Embedded OS | µT-Kernel tasks, priorities, mutexes with priority inheritance, event flags, message buffers |
+| W4.2 State machines | Vehicle Controller and Motion Control statecharts, tested on the host |
+| Lecture 5 Requirements and design | Requirement review (shall, tolerance, verifiable, no design in the requirement) and requirement-to-box/arrow IDs ([traceability](docs/requirements_traceability.md) §10); sequence diagrams and statecharts ([architecture](docs/final_architecture.md) §4, §5) |
+| Lecture 6 Traceability and testing | [traceability](docs/requirements_traceability.md); unit, integration, system, boundary, negative and fault-injection tests; coverage |
+| W9 Sensor fusion | Encoder speed gates IMU pitch; encoder travel times the junction step; line sensors confirm the end of a bypass (no formal filter) |
+| W10 Optimisations | No floating point, packed 31-byte frame, measured memory ([data widths](docs/data_widths.md)) |
+| W11 Edge computing | All sensing, decisions and safety on the Pico ([architecture](docs/final_architecture.md) §9) |
+
+## Tests
+
+```sh
+make -C testing/host                       # five host suites
+python3 -m unittest discover -s testing/subsystem1/dashboard/tests
+sh testing/host/coverage.sh                # line and branch coverage
+python3 testing/host/target_static_check.py  # strict warnings and -fanalyzer
+python3 tools/barr_c_report.py             # BARR-C rules a script can check
+```
+
+Host tests check logic with synthetic input; they are not evidence that
+the robot works on the track (see [testing/README.md](testing/README.md)).
+
+---
 
 You need a **Raspberry Pi Pico W**, a USB cable, and a computer running
 macOS, Linux, or Windows with **WSL (Ubuntu)**. On Windows, run every
@@ -115,13 +175,13 @@ make -j8
 ```
 
 A successful build ends with a line like
-`tools/elf2uf2 mtk3pico_smp1_usb_cdc_wifi.elf mtk3pico_smp1_usb_cdc_wifi.uf2`.
-Your firmware is **`build_make/mtk3pico_smp1_usb_cdc_wifi.uf2`**.
+`tools/elf2uf2 mtk3pico_smp0_usb_cdc_wifi.elf mtk3pico_smp0_usb_cdc_wifi.uf2`.
+Your firmware is **`build_make/mtk3pico_smp0_usb_cdc_wifi.uf2`**.
 
 This image runs the robot's mission (section 3, *The mission image*).
 For telemetry over WiFi, build the robot's firmware with
 `make NET=lwip MQTT=1 -j8` instead, which gives
-`build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`.
+`build_make/mtk3pico_smp0_usb_cdc_wifi_lwip_mqtt.uf2`.
 
 If `make` stops with an error, it tells you which one is wrong:
 `arm-none-eabi-gcc not found` means fix `PATH`, and
@@ -167,9 +227,8 @@ subfolders, is compiled automatically.
   every subsystem's `subsystemN_init()` (create kernel objects), then every
   `subsystemN_start()` (start tasks). Read its comments first.
 - **One folder per student:** `app_program/subsystem1/` … `subsystem5/`.
-  Each holds that subsystem's implementation. Some starter examples
-  remain until their replacements are integrated; `TEAM.md` sections 4 to 6
-  mark them.
+  Each holds that subsystem's implementation. The course's starter
+  examples were removed on 2026-11-20 (S2 decision 29).
 - `subsystemN.h` is that subsystem's public interface: the object IDs and
   data formats the other subsystems may use.
 - `app.h` holds the definitions shared by the whole team.
@@ -201,8 +260,8 @@ After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
 after `make`. They can be combined in any order:
 
 ```sh
-make -j8                          # defaults: SMP=1 CONSOLE=usb_cdc WIFI=cyw43 TEST=0 CRASH_REPORT=0
-make SMP=0 -j8                    # single-core build
+make -j8                          # defaults: SMP=0 CONSOLE=usb_cdc WIFI=cyw43 TEST=0 CRASH_REPORT=0
+make SMP=1 -j8                    # dual-core build (not used: S2 decision 33)
 make CONSOLE=uart WIFI=none -j8   # no USB console, radio off (see note below)
 make TEST=1 -j8                   # firmware with the subsystem self-tests
 make CRASH_REPORT=1 -j8           # also see crash reports, on GP0/GP1 (uses those pins)
@@ -212,7 +271,7 @@ To set several options at once, list them all, separated by spaces. For
 example, to track down a crash in the test build while running on one core only:
 
 ```sh
-make SMP=0 TEST=1 CRASH_REPORT=1 -j8
+make TEST=1 CRASH_REPORT=1 -j8
 #  -> build_make/mtk3pico_smp0_usb_cdc_wifi_crash_test.uf2
 ```
 
@@ -222,7 +281,7 @@ the next plain `make` goes back to the defaults.
 
 | Option | Values (**default**) | What it does | Image name | C macro your code can test |
 |---|---|---|---|---|
-| `SMP` | `0`, **`1`** | `1` runs the kernel on both RP2040 cores; `0` uses core 0 only | `smp1` / `smp0` | `TK_SUPPORT_SMP` (1 or 0) |
+| `SMP` | **`0`**, `1` | `0` uses core 0 only (default, S2 decision 33); `1` runs the kernel on both RP2040 cores | `smp1` / `smp0` | `TK_SUPPORT_SMP` (1 or 0) |
 | `CONSOLE` | **`usb_cdc`**, `uart` | where `tm_printf` output goes. `usb_cdc` = USB cable; `uart` = UART0 only (GP0 TX / GP1 RX, needs a USB-serial adapter) | `_usb_cdc` / `_uart` | `TM_CONSOLE_USB_CDC` |
 | `WIFI` | **`cyw43`**, `none` | `cyw43` powers up the Pico W radio and its driver task; `none` leaves the radio off | `_wifi` / *(nothing)* | `TM_WIFI_CYW43` |
 | `TEST` | **`0`**, `1` | `1` compiles every `subsystemN_test.c` and runs the tests at power-up | `_test` / *(nothing)* | `APP_TEST` (1 or 0) |
@@ -268,7 +327,7 @@ RP2040 hardware watchdog is not armed (`S2_WATCHDOG`, subsystem 2
 decision 28). `S3_NAV_F` maps the test barcode letter F to a command.
 
 The options are part of the image name, e.g.
-`mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build
+`mtk3pico_smp0_usb_cdc_wifi_test.uf2`, so you can always tell which build
 you are flashing. Switching options needs no `make clean`: the makefile
 notices and recompiles everything.
 

@@ -67,6 +67,9 @@ static bool s4_test_lift_tilt(void);
 static bool s4_test_lift_once(void);
 static bool s4_test_lift_config_checked(void);
 static bool s4_test_lift_raw_tilt(void);
+static bool s4_test_hump_count(void);
+static bool s4_test_hump_floor(void);
+static bool s4_test_hump_monotonic(void);
 #if S4_HARDWARE_TEST
 static bool s4_test_hardware_startup(void);
 #endif
@@ -150,6 +153,12 @@ subsystem4_test (void)
                "zero lift thresholds or samples are rejected");
     TEST_CHECK("S4-U39", s4_test_lift_raw_tilt(),
                "held unaveraged tilt is a lift, a two-sample jolt is not");
+    TEST_CHECK("S4-U40", s4_test_hump_count(),
+               "hump count and last height survive recovery, not a new run");
+    TEST_CHECK("S4-U41", s4_test_hump_floor(),
+               "mission rise and scale: no hump reads below 6 mm");
+    TEST_CHECK("S4-U42", s4_test_hump_monotonic(),
+               "reading rises with tilt, at most 1 mm per 1 mg step");
 #if S4_HARDWARE_TEST
     TEST_CHECK("S4-H01", s4_test_hardware_startup(),
                "live identity configuration and calibration");
@@ -438,6 +447,135 @@ s4_test_new_run_clears_max (void)
 
     return ((!context.result.b_maximum_height_valid) &&
             (0u == context.result.maximum_height_mm));
+}
+
+static bool
+s4_test_hump_count (void)
+{
+    s4_terrain_context_t context;
+    uint32_t time_us = 30000u;
+    bool b_counted;
+    bool b_kept;
+
+    s4_test_calibrate(&context, 0u);
+    (void) s4_test_hump(&context, &time_us, S4_TEST_WHEEL_10MM_PITCH_MG,
+                        S4_TEST_WHEEL_10MM_ROLL_MG, true);
+    (void) s4_test_hump(&context, &time_us, (S4_TEST_WHEEL_10MM_PITCH_MG / 2),
+                        (S4_TEST_WHEEL_10MM_ROLL_MG / 2), true);
+    b_counted = (2u == context.result.hump_count) &&
+                context.result.b_current_height_valid &&
+                (context.result.current_height_mm <
+                 context.result.maximum_height_mm);
+
+    s4_terrain_request_recovery(&context);
+    b_kept = (2u == context.result.hump_count) &&
+             context.result.b_current_height_valid &&
+             (context.result.current_height_mm <
+              context.result.maximum_height_mm);
+
+    s4_terrain_start_new_run(&context);
+
+    return (b_counted && b_kept && (0u == context.result.hump_count) &&
+            (!context.result.b_current_height_valid));
+}
+
+/*
+ * S4-U41: with the mission's hump settings (task_imu.c: S4_RISE_UM 6000,
+ * S4_HEIGHT_SCALE_PERMILLE 851), sweep a held both-wheel tilt from 1 to
+ * 200 mg forward. Every completed hump must read at least 6 mm, the
+ * lowest must read exactly 6 mm, and an ideal 5 mm step (57 mg, about
+ * 4.3 mm after scaling) must not be a hump. The values are repeated here
+ * because task_imu.c keeps them private; change both together.
+ */
+static bool
+s4_test_hump_floor (void)
+{
+    s4_terrain_config_t config = s4_test_config();
+    uint16_t lowest_mm = UINT16_MAX;
+    bool b_below = false;
+    bool b_five_mm_hump = true;
+
+    config.rise_um = 6000u;
+    config.height_scale_permille = 851u;
+
+    for (int16_t pitch_mg = 1; pitch_mg <= 200; pitch_mg++)
+    {
+        s4_terrain_context_t context;
+        uint32_t time_us = 0u;
+        bool b_complete;
+
+        s4_terrain_init(&context, &config);
+        for (uint16_t index = 0u; index < config.calibration_samples;
+             index++)
+        {
+            s4_test_feed(&context, 0, 0, time_us, true);
+            time_us += S4_TEST_SAMPLE_PERIOD_US;
+        }
+
+        b_complete = s4_test_hump(&context, &time_us, (int16_t) -pitch_mg,
+                                  0, true)
+                     && context.result.b_current_height_valid;
+
+        if (b_complete)
+        {
+            uint16_t const height_mm = context.result.current_height_mm;
+
+            lowest_mm = (height_mm < lowest_mm) ? height_mm : lowest_mm;
+            b_below = b_below || (height_mm < 6u);
+        }
+        if (57 == pitch_mg)
+        {
+            b_five_mm_hump = b_complete;
+        }
+    }
+
+    return ((6u == lowest_mm) && (!b_below) && (!b_five_mm_hump));
+}
+
+/*
+ * S4-U42 (post-demo test, 2026-11-25): with the mission settings (as in
+ * S4-U41), sweep a held both-wheel tilt from 90 mg (about 6.7 mm after
+ * scaling, just above the 6 mm rise) to 1000 mg. Every step must complete
+ * a hump, the
+ * reported height must never fall as the tilt rises, and one 1 mg step
+ * must never move it by more than 1 mm. A rounding, scaling or overflow
+ * error in the integer chain (mg to um, the 851 per mille scale, um to
+ * mm) would show as a drop or a jump.
+ */
+static bool
+s4_test_hump_monotonic (void)
+{
+    s4_terrain_config_t config = s4_test_config();
+    uint16_t previous_mm = 0u;
+    bool b_ok = true;
+
+    config.rise_um = 6000u;
+    config.height_scale_permille = 851u;
+
+    for (int16_t pitch_mg = 90; b_ok && (pitch_mg <= 1000); pitch_mg++)
+    {
+        s4_terrain_context_t context;
+        uint32_t time_us = 0u;
+
+        s4_terrain_init(&context, &config);
+        for (uint16_t index = 0u; index < config.calibration_samples;
+             index++)
+        {
+            s4_test_feed(&context, 0, 0, time_us, true);
+            time_us += S4_TEST_SAMPLE_PERIOD_US;
+        }
+
+        b_ok = s4_test_hump(&context, &time_us, (int16_t) -pitch_mg, 0,
+                            true)
+               && context.result.b_current_height_valid
+               && (context.result.current_height_mm >= previous_mm)
+               && ((90 == pitch_mg)
+                   || (context.result.current_height_mm
+                       <= (uint16_t) (previous_mm + 1u)));
+        previous_mm = context.result.current_height_mm;
+    }
+
+    return (b_ok && (previous_mm > 50u));
 }
 
 static bool
