@@ -58,6 +58,22 @@ S4_SRC  := $(APP)/subsystem4/terrain_logic.c \
            stubs/device_stub.c \
            s4_host_main.c
 
+# Vehicle Controller integration (INT-08 on): the real task_controller.c
+# with the other S2 modules, S3's filter and a working kernel model.
+INT_SRC := s2_integration_main.c stubs/kernel_model.c \
+           $(APP)/subsystem2/controller_logic.c \
+           $(APP)/subsystem2/line_control.c \
+           $(APP)/subsystem2/scan_control.c \
+           $(APP)/subsystem2/bypass_control.c \
+           $(APP)/subsystem2/nav_control.c \
+           $(APP)/subsystem2/robot_state.c \
+           $(APP)/subsystem2/s2_bridge.c \
+           $(APP)/subsystem2/motion_api.c \
+           $(APP)/subsystem2/motion_logic.c \
+           $(APP)/subsystem2/pid.c \
+           $(APP)/subsystem2/odometry.c \
+           $(APP)/subsystem3/s3_ir.c
+
 S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(APP)/subsystem5/src/scan_test_adapter.c \
            $(APP)/subsystem5/src/scan_engine.c \
@@ -69,9 +85,9 @@ S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(wildcard $(ROOT)/testing/subsystem5/unit_tests/src/*.c) \
            s5_host_main.c
 
-.PHONY: all s1 s2 s3 s4 s5 clean
+.PHONY: all s1 s2 s3 s4 s5 int clean
 
-all: s1 s2 s3 s4 s5
+all: s1 s2 s3 s4 s5 int
 	@echo "[HOST] all suites passed"
 
 s1:
@@ -114,6 +130,12 @@ s5:
 	    $(APP)/subsystem5/src/scan_telemetry.c s5_telemetry_test.c
 	$(OUT)/s5_view
 
+# The integration suite exits non-zero on any FAIL.
+int:
+	$(CC) $(STRICT) -DAPP_TEST=0 -DAPP_MISSION=1 -Istubs -o $(OUT)/s2_int \
+	    $(INT_SRC) -lm
+	$(OUT)/s2_int
+
 clean:
 	rm -f $(OUT)/s1_logic $(OUT)/s2_logic $(OUT)/s3_logic \
-	    $(OUT)/s4_logic $(OUT)/s5_logic $(OUT)/s5_view
+	    $(OUT)/s4_logic $(OUT)/s5_logic $(OUT)/s5_view $(OUT)/s2_int

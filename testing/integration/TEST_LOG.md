@@ -19,6 +19,26 @@ Define a test here before running it. Test IDs never change.
 | INT-06 | telemetry snapshot from S2, S4 and S5 encoded as version 2 | IF-10, IF-18, IF-20 | manual | subscribe and decode with `testing/subsystem1/decode_telemetry_v2.py` during a lap | frames 1 s apart; state, line, speeds, hump and obstacle fields match the run (S1-H02) |
 | INT-07 | telemetry version 3: barcode letter, command and stop cause | IF-10, IF-21, IF-19 | manual | `NET=lwip MQTT=1 TEST=1 S3_LINE_TEST=1 S3_NAV_F=1`; dashboard and `decode_telemetry_v2.py` during a lap with barcode F and a junction; end by picking the car up; repeat ending with dashboard STOP and with GP20 | 29-byte version 3 frames; `bar=F/LEFT` and a "barcode F decoded" event within 1 s of the console `DECODED F`; NAVIGATE (LEFT) at the junction; stop cause pick-up, remote and button respectively |
 
+Host-automated integration cases (post-demo, 2026-11-25). They run the
+real Vehicle Controller (`task_controller.c`, through `controller_cycle()`)
+with the other S2 modules, the real S3 filter and submit calls, the real
+S1 bridge calls and the real Motion Control logic, on a working kernel
+model (`testing/host/stubs/kernel_model.c`), a simulated drivetrain and a
+geometric track (`testing/host/s2_integration_main.c`). Run with
+`make -C testing/host int`; each check prints `[HOST] INT-xx PASS|FAIL`.
+They are synthetic: ideal wheels and sensors and no timing jitter, so
+they show that the interfaces and state machines fit together, not that
+the car does.
+
+| ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
+|---|---|---|---|---|---|
+| INT-08 | S1 → S2: MQTT STOP through the bridge latches STOP; no duty while latched; START alone does not clear it; RESET then START runs | FR10, NFR1; IF-08, IF-09 | host auto | `controller_raise_remote_stop()` after 2 s of following; 3 s with reports still arriving; START; RESET, START | STOPPED with cause remote in one period; duty 0 and wheels still; still STOPPED after START; RUNNING and following after RESET, START |
+| INT-09 | S3 → S2: line reports drive the wheels; missing reports latch STOP; `line_q` capacity | FR2, FR11; IF-06 | host auto | centred track; stop the S3 reports; fill `line_q` with the controller paused | both wheels 40 ± 2 mm/s; a 400 ms gap tolerated, STOP with cause line after 500 ms; 6 reports accepted, the rest refused |
+| INT-10 | S3 → S2 → Motion: each barcode command at a + junction 1.5 m on | FR4; IF-21, IF-06 | host auto | command decoded 0.2 m in; RIGHT, LEFT, U-TURN, STRAIGHT in turn | RIGHT and LEFT: NAVIGATE, then following at ∓90 ± 20°; U-TURN: following back (beyond ±160°); STRAIGHT: no NAVIGATE, past the junction at 0 ± 5° |
+| INT-12 | S4 → S2: a pick-up latches STOP and drops a held command | FR11; IF-19, IF-21 | host auto | RIGHT held; `CTRL_FLG_PICKUP`; RESET, START; drive past the junction | STOPPED with cause pick-up and the command dropped; after restart the junction is crossed with no turn |
+| INT-13 | S3 → S2 → S1: barcode records reach the published state | FR3, FR10; IF-21, IF-10 | host auto | unmapped Q; an invalid record; RIGHT then LEFT; a letter during the turn | letter, command and count published; invalid record ignored; LEFT replaces RIGHT; a letter during a manoeuvre is reported and dropped |
+| INT-14 | S5 → S2: a scan with no route | FR6, FR8; IF-11, IF-13 | host auto | hazard at 0.8 m, S5 answers NO_ROUTE | the scan starts only with the wheels still; STOP with cause scan; the car stays still |
+
 Note, 2026-11-03: subsystem 4 replaced its starter monitor, so
 `subsystem4_test.c` no longer contains the INT-02 check and no task receives
 IF-03 (`TEAM.md` section 5). INT-02 cannot run until IF-03 is retired or
@@ -44,3 +64,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-20 | INT-07 | working tree after `1a2df7f` (telemetry v3, uncommitted), `NET=lwip MQTT=1 TEST=1 S3_LINE_TEST=1 S3_NAV_F=1`, power as used, broker 10.158.213.224 | Dalton | PASS (partial: barcode and remote, scan and fault causes); pick-up and button causes not exercised | `../subsystem1/logs/2026-11-20_int-07-dashboard.jsonl` | 501 frames, all version 3, none bad. Barcode events: F (LEFT) at 14:05:03 then NAVIGATE (LEFT) 14:05:07-14:05:11; A (LEFT) 14:07:39 then NAVIGATE (LEFT) 14:07:47-14:07:51; F (LEFT) again 14:09:52; A (LEFT) 14:06:44 with the run then scanning. Unmapped letters reported as command none: Q at 14:03:54 and 14:05:26, Z at 14:10:20 (not confirmed against the course; possible misreads, previously invisible). Stop causes seen: remote (6 runs ended by dashboard STOP), scan (no route at 14:08:11, right after START), fault (S5 scan fault at 14:09:24; RESET returned Ready). No run in this log ended with a pick-up or GP20, so those causes still need a run; the tester reported the session as working. Console not logged, so the 1 s barcode-to-event timing was not checked |
 | 2026-11-20 | INT-07 (pick-up endings; follow-up to the row above) | as above | Dalton | PASS (barcode, remote, scan, fault and pick-up causes); GP20 button cause not exercised | `../subsystem1/logs/2026-11-20_int-07-dashboard.jsonl` (copied again after 14:17, events from 14:16:48) | Two runs ended by lifting the car: START 14:16:48, `STOP latched: pick-up` 14:16:51; START 14:17:00, `STOP latched: pick-up` 14:17:06; RESET between them returned Ready. Tester confirmed Q, Z, A and F were all on the course, so the Q and Z reports in the row above were real barcodes with no mapped command, not misreads. A GP20 stop is still needed to show the button cause |
 | 2026-11-20 | INT-07 (button ending) | `02c79e6` (same firmware as the INT-07 rows above) | Dalton | PASS (button cause); INT-07 now complete | `../system/logs/2026-11-20_system-dashboard.jsonl` | Run started 14:55:29, stopped with GP20 at 14:55:39: `STOP latched: button`. Every cause INT-07 asks for (pick-up, remote, button) has now been seen on the car, with barcode letter and command |
+| 2026-11-25 | INT-08, INT-09, INT-10, INT-12, INT-13, INT-14 (host) | post-demo, after the F-01 commit (`controller_cycle()` extracted) | host (Apple clang 17) | PASS (20 checks, 0 failed) | `../host/logs/2026-11-25_verify-int-harness.txt` | Synthetic: ideal drivetrain and sensors. Not evidence that the car works |

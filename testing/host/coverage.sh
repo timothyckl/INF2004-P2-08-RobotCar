@@ -17,7 +17,7 @@ LLVM_PROFILE_FILE="$OUT/%p.profraw" make -C testing/host OUT="$OUT" \
 xcrun llvm-profdata merge -o "$OUT/all.profdata" "$OUT"/*.profraw
 
 OBJECTS=""
-for suite in s1_logic s2_logic s3_logic s4_logic s5_logic s5_view; do
+for suite in s1_logic s2_logic s3_logic s4_logic s5_logic s5_view s2_int; do
     OBJECTS="$OBJECTS -object $OUT/$suite"
 done
 

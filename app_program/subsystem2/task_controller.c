@@ -251,6 +251,8 @@ static ctrl_barcode_t      g_barcode;
 static uint8_t g_local_cause = S2_STOP_NONE;
 
 static void     controller_task (INT stacd, void * exinf);
+static void     controller_setup (void);
+static void     controller_cycle (UINT ptn, ctrl_input_t * p_inputs);
 static void     demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in);
 static void     read_input (ctrl_input_t * p_in);
 static void     apply (ctrl_output_t * p_out, ctrl_input_t const * p_in);
@@ -424,17 +426,33 @@ s2_controller_start (void)
 static void
 controller_task (INT stacd, void * exinf)
 {
-    ctrl_cfg_t const cfg = {CTRL_INIT_LIMIT_MS, CTRL_RESULT_LIMIT_MS,
-                            S2_REMOTE_MAX_AGE_MS, CTRL_SCRIPT,
-                            CTRL_SCRIPT_LEN};
-    ctrl_input_t     inputs  = {0};
-    ctrl_output_t    out;
-    s2_remote_cmd_t  cmd;
-    s2_robot_state_t state;
-    UINT             ptn;
+    ctrl_input_t inputs = {0};
+    UINT         ptn;
 
     (void)stacd;
     (void)exinf;
+
+    controller_setup();
+
+    for (;;)
+    {
+        if (tk_wai_flg(controller_flags, CTRL_FLG_ALL, TWF_ORW, &ptn,
+                       CTRL_WATCHDOG_MS) < E_OK)
+        {
+            ptn = 0u;   /* watchdog timeout */
+        }
+
+        controller_cycle(ptn, &inputs);
+    }
+}
+
+/* Initialise the statechart and the mission policies, once, in the task. */
+static void
+controller_setup (void)
+{
+    ctrl_cfg_t const cfg = {CTRL_INIT_LIMIT_MS, CTRL_RESULT_LIMIT_MS,
+                            S2_REMOTE_MAX_AGE_MS, CTRL_SCRIPT,
+                            CTRL_SCRIPT_LEN};
 
 #if S2_CAL_TEST
     cal_timer_start();
@@ -450,86 +468,89 @@ controller_task (INT stacd, void * exinf)
 #if CTRL_BUTTON
     tm_printf((UB *)"[S2] GP20 button ready: press to START or STOP\n");
 #endif
+}
 
-    for (;;)
-    {
-        if (tk_wai_flg(controller_flags, CTRL_FLG_ALL, TWF_ORW, &ptn,
-                       CTRL_WATCHDOG_MS) < E_OK)
-        {
-            ptn = 0u;   /* watchdog timeout */
-        }
+/*
+ * One controller period: the flags that woke it (ptn, 0 on the 10 ms
+ * time-out), then inputs, urgent flags, queued remote commands, the
+ * statechart tick, the mission policies and the published state. Kept
+ * apart from the wait so the host integration test runs the same code
+ * (testing/host/s2_integration_main.c).
+ */
+static void
+controller_cycle (UINT ptn, ctrl_input_t * p_inputs)
+{
+    ctrl_output_t    out;
+    s2_remote_cmd_t  cmd;
+    s2_robot_state_t state;
 
-        read_input(&inputs);
+    read_input(p_inputs);
 #if APP_MISSION
-        ctrl_get_state(&g_ctrl, &inputs, &state);
-        ptn = scan_hazard(ptn, &state);    /* a hazard while following scans */
+    ctrl_get_state(&g_ctrl, p_inputs, &state);
+    ptn = scan_hazard(ptn, &state);    /* a hazard while following scans */
 #endif
 
-        if ((0u != (ptn & (CTRL_FLG_HAZARD | CTRL_FLG_SCAN_FAULT)))
-            && (S2_SYS_RUNNING == g_ctrl.state))
-        {
-            /* A stop must never be silent; S5 repeats its flags while
-               the cause persists, so report only the one that stops a
-               run. */
-            tm_printf((UB *)"[S2] S5 %s%s: STOP latched\n",
-                      (0u != (ptn & CTRL_FLG_HAZARD)) ? "HAZARD" : "",
-                      (0u != (ptn & CTRL_FLG_SCAN_FAULT)) ? " SCAN_FAULT"
-                                                          : "");
-        }
+    if ((0u != (ptn & (CTRL_FLG_HAZARD | CTRL_FLG_SCAN_FAULT)))
+        && (S2_SYS_RUNNING == g_ctrl.state))
+    {
+        /* A stop must never be silent; S5 repeats its flags while the
+           cause persists, so report only the one that stops a run. */
+        tm_printf((UB *)"[S2] S5 %s%s: STOP latched\n",
+                  (0u != (ptn & CTRL_FLG_HAZARD)) ? "HAZARD" : "",
+                  (0u != (ptn & CTRL_FLG_SCAN_FAULT)) ? " SCAN_FAULT" : "");
+    }
 
-        if ((0u != (ptn & CTRL_FLG_PICKUP))
-            && (S2_SYS_RUNNING == g_ctrl.state))
-        {
-            /* Picking the car up ends the demo (S4 decision 15). */
-            tm_printf((UB *)"[S2] S4 PICKUP: car lifted, STOP latched\n");
-            run_summary();
-        }
+    if ((0u != (ptn & CTRL_FLG_PICKUP)) && (S2_SYS_RUNNING == g_ctrl.state))
+    {
+        /* Picking the car up ends the demo (S4 decision 15). */
+        tm_printf((UB *)"[S2] S4 PICKUP: car lifted, STOP latched\n");
+        run_summary();
+    }
 
+    ctrl_output_clear(&out);
+    p_inputs->local_cause = g_local_cause;
+    /* ptn is a UINT flag pattern; UINT and uint32_t are both 32-bit
+       unsigned, so no bit changes. */
+    ctrl_flags(&g_ctrl, (uint32_t)ptn, p_inputs, &out);
+    apply(&out, p_inputs);
+
+    if (0u != (ptn & CTRL_FLG_LOCAL_STOP))
+    {
+        g_local_cause = S2_STOP_NONE;   /* that STOP is handled */
+    }
+
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
+    while (tk_rcv_mbf(remote_q, &cmd, TMO_POL)
+           == (INT)sizeof(s2_remote_cmd_t))
+    {
         ctrl_output_clear(&out);
-        inputs.local_cause = g_local_cause;
-        /* ptn is a UINT flag pattern; UINT and uint32_t are both 32-bit
-           unsigned, so no bit changes. */
-        ctrl_flags(&g_ctrl, (uint32_t)ptn, &inputs, &out);
-        apply(&out, &inputs);
+        ctrl_remote(&g_ctrl, &cmd, p_inputs, &out);
+        apply(&out, p_inputs);
+    }
 
-        if (0u != (ptn & CTRL_FLG_LOCAL_STOP))
-        {
-            g_local_cause = S2_STOP_NONE;   /* that STOP is handled */
-        }
+    ctrl_output_clear(&out);
+    ctrl_tick(&g_ctrl, p_inputs, &out);
+    apply(&out, p_inputs);
 
-        /* sizeof the message is a few bytes, which INT holds (kernel message
-           buffer size argument). */
-        while (tk_rcv_mbf(remote_q, &cmd, TMO_POL)
-               == (INT)sizeof(s2_remote_cmd_t))
-        {
-            ctrl_output_clear(&out);
-            ctrl_remote(&g_ctrl, &cmd, &inputs, &out);
-            apply(&out, &inputs);
-        }
-
-        ctrl_output_clear(&out);
-        ctrl_tick(&g_ctrl, &inputs, &out);
-        apply(&out, &inputs);
-
-        ctrl_get_state(&g_ctrl, &inputs, &state);
+    ctrl_get_state(&g_ctrl, p_inputs, &state);
 #if APP_MISSION
-        /* Running is line following (or a scan) in the mission image. */
-        scan_update(&state, &inputs);
+    /* Running is line following (or a scan) in the mission image. */
+    scan_update(&state, p_inputs);
 #endif
 #if CTRL_BUTTON
-        button_step(&state, &inputs);
+    button_step(&state, p_inputs);
 #endif
 #if S2_CAL_TEST
-        cal_report(&state, &inputs);
+    cal_report(&state, p_inputs);
 #endif
 #if APP_MISSION
-        line_step(&state, &inputs);
-        line_telemetry(&state, inputs.now_ms);
-        barcode_telemetry(&state);
+    line_step(&state, p_inputs);
+    line_telemetry(&state, p_inputs->now_ms);
+    barcode_telemetry(&state);
 #endif
-        s2_robot_state_publish(&state);
-        demo(&state, &inputs);
-    }
+    s2_robot_state_publish(&state);
+    demo(&state, p_inputs);
 }
 
 /* Optional demo helpers (S2_DEMO_AUTOSTART, S2_DEMO_LOG). */

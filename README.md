@@ -74,7 +74,7 @@ failures, is kept in the test logs.
 ## Tests
 
 ```sh
-make -C testing/host                       # five host suites
+make -C testing/host                       # five host suites and the controller integration suite (INT-08 on)
 python3 -m unittest discover -s testing/subsystem1/dashboard/tests
 sh testing/host/coverage.sh                # line and branch coverage
 python3 testing/host/target_static_check.py  # strict warnings and -fanalyzer

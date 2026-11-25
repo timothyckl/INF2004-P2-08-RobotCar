@@ -28,7 +28,7 @@ echo
 echo "## 1. make -C testing/host"
 make -C testing/host > "$TMP/host.txt" 2>&1
 status=$?
-grep -E "^S1-U|SUMMARY|checks,|KNOWN|noise blip|damaged end|BLOCKED|FAIL|all suites" "$TMP/host.txt"
+grep -E "^S1-U|SUMMARY|checks,|KNOWN|noise blip|damaged end|replayed|BLOCKED|FAIL|all suites" "$TMP/host.txt"
 note_status $status
 
 echo

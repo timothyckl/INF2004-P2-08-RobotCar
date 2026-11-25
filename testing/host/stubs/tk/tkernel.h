@@ -63,6 +63,8 @@ typedef void      (*FP)(void);
 #define TA_INHERIT  (0x2u)
 #define TA_WSGL     (0x0u)
 #define TA_HLNG     (0x1u)
+#define TA_WMUL     (0x8u)
+#define TA_STA      (0x2u)
 #define TWF_ORW     (0x1u)
 #define TWF_CLR     (0x10u)
 #define TWF_BITCLR  (0x20u)
@@ -85,6 +87,32 @@ typedef struct
     UINT   flgptn;
 } T_RFLG;
 
+/* Creation packets: only the fields the application sets. */
+typedef struct
+{
+    void * exinf;
+    UINT   flgatr;
+    UINT   iflgptn;
+} T_CFLG;
+
+typedef struct
+{
+    void * exinf;
+    UINT   mbfatr;
+    INT    bufsz;
+    INT    maxmsz;
+} T_CMBF;
+
+typedef struct
+{
+    void * exinf;
+    UINT   mtxatr;
+    PRI    ceilpri;
+} T_CMTX;
+
+ID tk_cre_flg (T_CFLG const * p_cflg);
+ID tk_cre_mbf (T_CMBF const * p_cmbf);
+ID tk_cre_mtx (T_CMTX const * p_cmtx);
 ER tk_get_tim (SYSTIM * p_tim);
 ER tk_set_flg (ID flgid, UINT setptn);
 ER tk_clr_flg (ID flgid, UINT clrptn);
