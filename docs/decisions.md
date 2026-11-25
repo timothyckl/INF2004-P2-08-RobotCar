@@ -1084,6 +1084,27 @@ change, a clean build (`make -B`) of the mission image and of the
 `TEST=1` image gives no warning, and the mission UF2 is byte-identical to
 the demo image (SHA-256 `8cf2c419…416bf3f`).
 
+### 35. Post-demo firmware changes on `main` (2026-11-25)
+
+Approved by Dalton on 2026-11-25, after the demo.
+
+**Problem.** The post-demo review documents said that "the team decided"
+on 2026-11-25 to keep the submitted firmware identical to the demonstrated
+image. No such decision was recorded in this file, and the corrections they
+describe (P1 to P9 of the review) stayed as proposals, so the repository
+did not improve the robot it described.
+
+**Decision.** Post-demo firmware changes are made on `main`, one at a time,
+each with its own tests, documentation and commit. The demo stays fixed in
+history: tags `demo-2026-11-24` (`4a53c23`) and `demo-2026-11-24-flashed`
+(`a41c19c`), the demo UF2 SHA-256 `8cf2c419…`, the dashboard logs and their
+hashes, and the demo report are not changed. Every change is checked with
+`testing/host/verify_all.sh` (host suites, dashboard tests, every build
+option with no warnings, static analysis, BARR-C checkers, evidence hashes)
+before it is committed. A change that alters what the car does is marked
+"car test pending" until it has been run on the car; host tests are not
+evidence that the robot works.
+
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 
 ### 1. Front-left sensor signal assignment
@@ -1431,6 +1452,46 @@ the 136 baseline, both above the tilted white. Both are kept above 210 so a
 tilt can neither set nor hold BLACK. Cost: faded left patches, measured at
 206..310 in decision 3, are only detected above about 236. The right sensor
 is unchanged. Not yet validated on the track.
+
+### 9. Noise blips in 31-run captures (F-18, 2026-11-25)
+
+Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change.
+
+**Problem.** A 31-run capture was read as a code with a stray mark beside
+it: the decoder tried the first 29 and the last 29 runs. A blip of the
+opposite level inside the code also makes 31 runs, and a window shifted
+past it can match a different letter exactly. S3-U03 found 25 wrong letters
+in 234 payload cases with a 20 ms blip; over a wider sweep (four print
+scales, blips of 10 to 60 ms at three places in every run) the demo
+decoder gave 1,521 wrong letters.
+
+**Prototype rejected.** The earlier prototype accepted a window only when
+the run it left out was under half the narrowest run kept. It removed every
+wrong letter but rejected 4,420 of the 4,524 blip cases of the new S3-U03,
+including most of those the old decoder read correctly, because it never
+repaired the blip.
+
+**Decision.** In a 31-run capture the shortest run is the extra mark. If
+it is at either end it is a stray mark beside the code, so it and its
+space are dropped (the 2026-11-17 car captures). If it is inside the code
+it is a blip that split one element, so that element is rebuilt from the
+blip and its two neighbours (a saturating 64-bit sum). Only that one window
+is decoded; windows are never searched. Result on the host: 0 wrong and 0
+rejected in the 4,524 cases of S3-U03, 0 wrong in the whole sweep, the
+recorded captures unchanged (S3-U05 replays all 19 logged car captures
+through `s3_barcode_update()`). Cost: +132 bytes of flash, no RAM, about 24
+more bytes of S3 stack, and one 29-run decode instead of two.
+
+**Trade-offs kept.** A stray mark after the code as wide as a narrow bar,
+or a stray mark plus a code element shorter than it, is now rejected
+instead of read; it is never read as a wrong letter. Applying the same
+repair to 26 to 29-run captures (a damaged end plus a blip, F-25) was
+tried and rejected: such a capture cannot be told from a valid frame with
+one short element, and the repair turned 63 of 468 blurred-element frames
+into wrong letters. F-25 stays a known defect in S3-U04
+([log](../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)).
+
+Car test pending: SYS-02 with both prints.
 
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 

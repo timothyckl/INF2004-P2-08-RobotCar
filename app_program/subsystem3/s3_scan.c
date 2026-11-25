@@ -16,10 +16,8 @@ static bool s3_scan_decode(s3_capture_t const * p_capture,
                            s3_scan_cfg_t const * p_cfg, char * p_symbol);
 static bool s3_scan_decode_29(s3_capture_t const * p_capture,
                               s3_scan_cfg_t const * p_cfg, char * p_symbol);
-static bool s3_scan_decode_window(s3_capture_t const * p_capture,
-                                  uint8_t offset,
-                                  s3_scan_cfg_t const * p_cfg,
-                                  char * p_symbol);
+static bool s3_scan_decode_31(s3_capture_t const * p_capture,
+                              s3_scan_cfg_t const * p_cfg, char * p_symbol);
 static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
                                  s3_scan_cfg_t const * p_cfg,
                                  char * p_symbol);
@@ -141,21 +139,7 @@ static bool s3_scan_decode(s3_capture_t const * p_capture,
     }
     else if ((S3_BAR_FRAME_RUNS + S3_SCAN_STRAY_RUNS) == p_capture->count)
     {
-        char first = '\0';
-        char last = '\0';
-        bool const b_first_ok = s3_scan_decode_window(p_capture, 0U, p_cfg,
-                                                    &first);
-        bool const b_last_ok = s3_scan_decode_window(p_capture,
-                                                   S3_SCAN_STRAY_RUNS,
-                                                   p_cfg, &last);
-
-        /* Two different letters from one pass is ambiguous. */
-        if ((b_first_ok || b_last_ok) && !(b_first_ok && b_last_ok
-                                       && (first != last)))
-        {
-            *p_symbol = b_first_ok ? first : last;
-            b_decoded = true;
-        }
+        b_decoded = s3_scan_decode_31(p_capture, p_cfg, p_symbol);
     }
     else
     {
@@ -174,18 +158,59 @@ static bool s3_scan_decode_29(s3_capture_t const * p_capture,
            || s3_scan_decode_partial(p_capture, p_cfg, p_symbol);
 }
 
-/* Decode the 29 runs starting at offset, which must be even so that the
- * window starts on a bar. */
-static bool s3_scan_decode_window(s3_capture_t const * p_capture,
-                                  uint8_t offset,
-                                  s3_scan_cfg_t const * p_cfg,
-                                  char * p_symbol)
+/*
+ * A 31-run capture holds one extra bar and space. Its shortest run tells
+ * where they came from (F-18):
+ *  - at either end, a stray mark beside the code (seen on the car on
+ *    2026-11-17): the 29 runs without it and its space are decoded;
+ *  - inside the code, a noise blip that split one element in three: the
+ *    element is rebuilt from the blip and its two neighbours.
+ * Decoding a window shifted past a blip instead can match a different
+ * letter exactly (S3-U03), so the window is chosen, never searched for.
+ */
+static bool s3_scan_decode_31(s3_capture_t const * p_capture,
+                              s3_scan_cfg_t const * p_cfg, char * p_symbol)
 {
+    uint8_t const last = (uint8_t)(S3_BAR_FRAME_RUNS + S3_SCAN_STRAY_RUNS
+                                   - 1U);
     s3_capture_t window = *p_capture;
+    uint8_t shortest = 0U;
+
+    /* On a tie the first run is taken; either choice is then checked by
+     * the full frame decode. */
+    for (uint8_t idx = 1U; idx <= last; ++idx)
+    {
+        if (p_capture->runs[idx] < p_capture->runs[shortest])
+        {
+            shortest = idx;
+        }
+    }
 
     for (uint8_t idx = 0U; idx < S3_BAR_FRAME_RUNS; ++idx)
     {
-        window.runs[idx] = p_capture->runs[offset + idx];
+        if (0U == shortest)
+        {
+            window.runs[idx] = p_capture->runs[idx + S3_SCAN_STRAY_RUNS];
+        }
+        else if ((last == shortest) || (idx < (shortest - 1U)))
+        {
+            window.runs[idx] = p_capture->runs[idx];
+        }
+        else if (idx == (shortest - 1U))
+        {
+            /* Three runs of at most UINT32_MAX us each fit in 64 bits;
+             * the sum saturates rather than wraps. */
+            uint64_t const merged = (uint64_t)p_capture->runs[idx]
+                                    + p_capture->runs[idx + 1U]
+                                    + p_capture->runs[idx + 2U];
+
+            window.runs[idx] = (merged > UINT32_MAX) ? UINT32_MAX
+                                                     : (uint32_t)merged;
+        }
+        else
+        {
+            window.runs[idx] = p_capture->runs[idx + S3_SCAN_STRAY_RUNS];
+        }
     }
     window.count = S3_BAR_FRAME_RUNS;
 

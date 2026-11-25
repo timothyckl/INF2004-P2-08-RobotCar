@@ -1,0 +1,126 @@
+# F-18 fix: 31-run captures, 2026-11-25 (post-demo), main at d81e730 plus this change
+# Host: Apple clang version 17.0.0 (clang-1700.6.4.2). Synthetic input only; nothing here ran on the car.
+
+## 1. S3 host suite with the new tests, three decoders (same test_main.c)
+### old (demo firmware s3_scan.c)
+noise blip: 4524 cases, 242 wrong letters, 890 rejected
+FAIL: a noise blip never gives a wrong letter (F-18)
+FAIL: a 10 or 20 ms blip is repaired, not rejected
+damaged end plus blip: 39 of 702 cases gave a wrong letter
+KNOWN DEFECT (F-25): a blip in a capture with a damaged end is never wrong
+car captures replayed: 19, decoded: 2
+774 checks, 2 failures, 1 known defects
+### proto (testing/subsystem3/prototypes/f18_stray_mark_check.patch applied)
+noise blip: 4524 cases, 0 wrong letters, 4420 rejected
+FAIL: a 10 or 20 ms blip is repaired, not rejected
+damaged end plus blip: 39 of 702 cases gave a wrong letter
+KNOWN DEFECT (F-25): a blip in a capture with a damaged end is never wrong
+car captures replayed: 19, decoded: 2
+774 checks, 1 failures, 1 known defects
+### new (integrated fix)
+noise blip: 4524 cases, 0 wrong letters, 0 rejected
+damaged end plus blip: 39 of 702 cases gave a wrong letter
+KNOWN DEFECT (F-25): a blip in a capture with a damaged end is never wrong
+car captures replayed: 19, decoded: 2
+774 checks, 0 failures, 1 known defects
+
+## 2. Sweep: 4 print scales x 5 blip lengths x blip at 1/4, 1/2, 3/4 of every run of every letter (sweep2.c)
+### old
+print=100/250 blip=10ms: cases=2262 right=1696 rejected= 445 WRONG=121
+print=100/250 blip=20ms: cases=2262 right=1696 rejected= 445 WRONG=121
+print=100/250 blip=30ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print=100/250 blip=40ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print=100/250 blip=60ms: cases= 988 right= 712 rejected= 251 WRONG=25
+print= 60/150 blip=10ms: cases=2262 right=1696 rejected= 445 WRONG=121
+print= 60/150 blip=20ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print= 60/150 blip=30ms: cases=1222 right= 882 rejected= 292 WRONG=48
+print= 60/150 blip=40ms: cases= 988 right= 712 rejected= 251 WRONG=25
+print= 60/150 blip=60ms: cases= 468 right= 312 rejected= 156 WRONG=0
+print=160/400 blip=10ms: cases=2262 right=1696 rejected= 445 WRONG=121
+print=160/400 blip=20ms: cases=2262 right=1696 rejected= 445 WRONG=121
+print=160/400 blip=30ms: cases=2262 right=1696 rejected= 445 WRONG=121
+print=160/400 blip=40ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print=160/400 blip=60ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print= 50/125 blip=10ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print= 50/125 blip=20ms: cases=1742 right=1296 rejected= 350 WRONG=96
+print= 50/125 blip=30ms: cases= 988 right= 712 rejected= 251 WRONG=25
+print= 50/125 blip=40ms: cases= 468 right= 312 rejected= 156 WRONG=0
+print= 50/125 blip=60ms: cases= 234 right= 156 rejected=  78 WRONG=0
+TOTAL WRONG 1521
+### new
+print=100/250 blip=10ms: cases=2262 right=2262 rejected=   0 WRONG=0
+print=100/250 blip=20ms: cases=2262 right=2262 rejected=   0 WRONG=0
+print=100/250 blip=30ms: cases=1742 right=1643 rejected=  99 WRONG=0
+print=100/250 blip=40ms: cases=1742 right=1621 rejected= 121 WRONG=0
+print=100/250 blip=60ms: cases= 988 right= 889 rejected=  99 WRONG=0
+print= 60/150 blip=10ms: cases=2262 right=2262 rejected=   0 WRONG=0
+print= 60/150 blip=20ms: cases=1742 right=1621 rejected= 121 WRONG=0
+print= 60/150 blip=30ms: cases=1222 right=1101 rejected= 121 WRONG=0
+print= 60/150 blip=40ms: cases= 988 right= 733 rejected= 255 WRONG=0
+print= 60/150 blip=60ms: cases= 468 right= 312 rejected= 156 WRONG=0
+print=160/400 blip=10ms: cases=2262 right=2262 rejected=   0 WRONG=0
+print=160/400 blip=20ms: cases=2262 right=2262 rejected=   0 WRONG=0
+print=160/400 blip=30ms: cases=2262 right=2262 rejected=   0 WRONG=0
+print=160/400 blip=40ms: cases=1742 right=1742 rejected=   0 WRONG=0
+print=160/400 blip=60ms: cases=1742 right=1621 rejected= 121 WRONG=0
+print= 50/125 blip=10ms: cases=1742 right=1742 rejected=   0 WRONG=0
+print= 50/125 blip=20ms: cases=1742 right=1621 rejected= 121 WRONG=0
+print= 50/125 blip=30ms: cases= 988 right= 889 rejected=  99 WRONG=0
+print= 50/125 blip=40ms: cases= 468 right= 312 rejected= 156 WRONG=0
+print= 50/125 blip=60ms: cases= 234 right= 156 rejected=  78 WRONG=0
+TOTAL WRONG 0
+### stray mark 200 ms beside the code, width in ms -> letters right after/before (wrong)
+old:
+print=100/250 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:26/26(0) 70:26/26(0) 80:26/26(0) 90:26/26(0) 100:26/26(0) 110:26/26(0) 120:26
+print=60/150 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:26/26(0) 70:26/26(0) 80:26/26(0) 90:26/26(0) 100:26/26(0) 110:26/26(0) 120:26/
+print=160/400 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:26/26(0) 70:26/26(0) 80:26/26(0) 90:26/26(0) 100:26/26(0) 110:26/26(0) 120:26
+print=50/125 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:26/26(0) 70:26/26(0) 80:26/26(0) 90:26/26(0) 100:26/26(0) 110:26/26(0) 120:26/
+new:
+print=100/250 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:26/26(0) 70:26/26(0) 80:26/26(0) 90:26/26(0) 100:0/26(0) 110:0/26(0) 120:0/26
+print=60/150 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:0/26(0) 70:0/26(0) 80:0/26(0) 90:0/26(0) 100:0/26(0) 110:0/26(0) 120:0/26(0) 1
+print=160/400 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:26/26(0) 60:26/26(0) 70:26/26(0) 80:26/26(0) 90:26/26(0) 100:26/26(0) 110:26/26(0) 120:26
+print=50/125 stray width ms -> right after/before (wrong): 10:26/26(0) 20:26/26(0) 30:26/26(0) 40:26/26(0) 50:0/26(0) 60:0/26(0) 70:0/26(0) 80:0/26(0) 90:0/26(0) 100:0/26(0) 110:0/26(0) 120:0/26(0) 13
+
+## 3. Rejected alternative: also repairing a clear blip in 26..29-run captures
+### damaged end plus 20 ms blip
+truncated back by 2 runs + 20 ms blip: right=702 rejected=0 WRONG=0
+truncated front by 2 runs + 20 ms blip: right=702 rejected=0 WRONG=0
+truncated back by 4 runs + 20 ms blip: right=650 rejected=0 WRONG=0
+truncated front by 4 runs + 20 ms blip: right=650 rejected=0 WRONG=0
+### one narrow element shortened (blur), no blip: repair on 26..29 (rejected design)
+one narrow element at 25%: right=246 rejected=159 WRONG=63
+one narrow element at 35%: right=246 rejected=159 WRONG=63
+one narrow element at 45%: right=246 rejected=159 WRONG=63
+one narrow element at 60%: right=468 rejected=0 WRONG=0
+### same input, integrated fix (repair only in 31-run captures)
+one narrow element at 25%: right=468 rejected=0 WRONG=0
+one narrow element at 35%: right=468 rejected=0 WRONG=0
+one narrow element at 45%: right=468 rejected=0 WRONG=0
+one narrow element at 60%: right=468 rejected=0 WRONG=0
+### stray 40 ms after the code plus one shortened element: integrated fix
+one narrow element at 25%: right=104 rejected=364 WRONG=0
+one narrow element at 35%: right=104 rejected=364 WRONG=0
+one narrow element at 45%: right=468 rejected=0 WRONG=0
+one narrow element at 60%: right=468 rejected=0 WRONG=0
+### same input, old decoder
+one narrow element at 25%: right=468 rejected=0 WRONG=0
+one narrow element at 35%: right=468 rejected=0 WRONG=0
+one narrow element at 45%: right=468 rejected=0 WRONG=0
+one narrow element at 60%: right=468 rejected=0 WRONG=0
+
+## 4. Cost (arm-none-eabi-gcc -O2 -mcpu=cortex-m0plus -mthumb, s3_scan.c alone)
+old: text 900; new: text 1036
+stack frames (bytes), old | new:
+  s3_scan_old.c:195:13:s3_scan_decode_frame.part.0 328  |  app_programs3_scan.c:220:13:s3_scan_decode_frame.part.0 328
+  s3_scan_old.c:247:13:s3_scan_decode_partial 568  |  app_programs3_scan.c:272:13:s3_scan_decode_partial 568
+  s3_scan_old.c:179:13:s3_scan_decode_window 288  |  app_programs3_scan.c:171:13:s3_scan_decode_31 320
+  s3_scan_old.c:30:6:s3_scan_init 8  |  app_programs3_scan.c:28:6:s3_scan_init 8
+  s3_scan_old.c:40:6:s3_scan_abort 0  |  app_programs3_scan.c:38:6:s3_scan_abort 0
+  s3_scan_old.c:49:18:s3_scan_edge 16  |  app_programs3_scan.c:47:18:s3_scan_edge 16
+  s3_scan_old.c:82:18:s3_scan_poll 32  |  app_programs3_scan.c:80:18:s3_scan_poll 24
+mission image text: 374410 (demo) -> 374542 bytes; data and bss unchanged (verify_all.sh)
+
+Note: sweep2.c, partial.c, short.c and the rejected 26..29-run repair were scratch harnesses for
+this investigation and are not kept. The properties they established are enforced by S3-U03
+(blips never wrong and always repaired), S3-U04 (stray marks, double faults, F-25) and S3-U05
+(replay of the 19 logged car captures through s3_barcode_update()).

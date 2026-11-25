@@ -130,18 +130,19 @@ current firmware can notice the failure at all.
 | Expired and repeated remote commands | S2-U50 | Pass |
 | Malformed line reports | S2-U57 | Pass |
 | Corrupted barcode element, speed change within a code | S3-U02 | Pass |
+| Noise blip or stray mark in a barcode (post-demo, F-18 fix) | S3-U03, U04, U05 | Pass; one double fault remains (F-25) |
 | Junction manoeuvre with no response or no stop | S2-U77, U79 | Pass |
 
 These prove the logic responds correctly to the injected input. They do
 not prove the time from a real sensor fault to motors off on the car; only
 the latch-to-PWM-off part is measured (S2-H11, worst 952 µs).
 
-## 4. Undetectable failures and proposals
+## 4. Undetectable failures and corrections
 
-| Failure | Why it is not detected | Proposal (not applied) |
+| Failure | Why it is not detected | Correction and status |
 |---|---|---|
 | Car fully off the line | Two sensors straddle the tape, so "both white" also means centred | A centre sensor (P4); a distance rule alone would also fire on a long centred straight |
-| A noise blip turns a barcode into a different letter (F-18) | Not detected: the corrupted capture decodes cleanly | Stray-mark window check (P2), kept as [`f18_stray_mark_check.patch`](../testing/subsystem3/prototypes/f18_stray_mark_check.patch) |
+| A noise blip turns a barcode into a different letter (F-18) | In the demo firmware the corrupted capture decoded cleanly | **Fixed after the demo** (S3 decision 9): in a 31-run capture the shortest run decides between a stray mark and a blip, and a blip is repaired (S3-U03). A capture with a damaged end *and* a blip can still give a wrong letter (F-25, S3-U04 known defect). Car test pending |
 | Controller, S3 loop or IMU task stalls | Watchdog not armed, and as written only Motion Control would feed it | Feed it only when every critical task has checked in, then arm it after one car run (P7, Entry 4) |
 | Stack overflow in a task | No high-water check; the controller's static margin is about 400 bytes once `tm_printf` is counted | Measure the high-water marks on the car (review F-24) |
 | IMU fault while driving | `task_imu.c` recovers locally and does not raise a flag | Raise an IMU-fault flag; gate START on IMU ready (Entries 9, 16) |

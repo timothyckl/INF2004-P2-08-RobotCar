@@ -126,7 +126,8 @@ copes with a steady speed change of 0.4 to 2.5 times across one code and
 never turns one misread element into a wrong letter. S3-U03 found one input
 it does not handle: a single 20 ms blip inside the code gave a wrong letter
 in 25 of 234 synthetic cases (F-18). That is a count of test cases, not a
-real-world error rate; the fix is proposal P2 and is not in this firmware.
+real-world error rate. It was fixed on `main` after the demo (S3 decision
+9); the fix is not in the demonstrated firmware.
 
 **Earlier evidence.**
 

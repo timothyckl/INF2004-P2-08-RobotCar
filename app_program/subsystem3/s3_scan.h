@@ -9,9 +9,10 @@
  * sentinel, gap, one symbol, gap, sentinel (29 runs). A bounded fallback
  * accepts 24--29 captured runs when one intact end still supplies a
  * sentinel, both gaps and the complete payload; only the damaged terminal
- * sentinel is reconstructed. A 31-run capture (one stray mark beside the
- * code) is decoded from its first and last 29 runs; if both decode, they
- * must agree. Reads are tried forwards, then reversed. The sentinel and
+ * sentinel is reconstructed. A 31-run capture has one extra bar and space:
+ * if its shortest run is at either end it is a stray mark and is dropped;
+ * if it is inside the code it is a noise blip and the split element is
+ * rebuilt (F-18). Reads are tried forwards, then reversed. The sentinel and
  * alphabet are supplied by the caller and must match the printed course
  * barcodes.
  *

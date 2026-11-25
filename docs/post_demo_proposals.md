@@ -1,12 +1,12 @@
 # Post-demo engineering proposals
 
-These are the corrections we would make next. **None of them is in the
-firmware.** The team decided on 2026-11-25 to keep the submitted firmware
-identical to the demonstrated image (`a41c19c`, UF2 SHA-256 `8cf2c419…`),
-because each change alters the car's behaviour and none can be tested on
-the car before submission. Each proposal is worked out far enough to be
-implemented and accepted: root cause, design, alternatives, risks, the
-acceptance test and the regression tests that already guard it.
+These are the corrections still outstanding. Since 2026-11-25 post-demo
+corrections are applied on `main` one at a time (S2 decision 35); each one
+applied is removed from this list and described where it now lives (the
+code, its tests, its decision record and section 9 of the
+[software review](software_quality_review.md)). Git history keeps the
+earlier versions of this document. The demonstrated image (`a41c19c`, UF2
+SHA-256 `8cf2c419…`) contains none of them.
 
 Findings are numbered as in the [software review](software_quality_review.md).
 "Host evidence" means synthetic tests on the computer; nothing here has
@@ -15,7 +15,6 @@ been run on the car.
 | ID | Requirement | Problem | Proposed change | Car test needed |
 |---|---|---|---|---|
 | P1 (F-01) | FR2, FR3 | S3 loop runs every 20 ms, not 10 ms | Cyclic handler wakes the loop every 10 ms | SYS-01, SYS-02 |
-| P2 (F-18) | FR3 | A noise blip inside a barcode can give a wrong letter | Accept a 31-run "stray mark" window only if the left-out run is short | SYS-02 |
 | P3 (F-02, F-03) | FR4 | One-sided branches are not junctions; no record of why no turn happened | Junction event in telemetry first; then a bench test of the course junction | SYS-03 |
 | P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor; software alone cannot see it | SYS-01 |
 | P5 (F-04) | FR5 | No hump reads below 6 mm; small humps read high | Two-point calibration, then review the 6 mm rise | SYS-04 with a flat lap |
@@ -27,12 +26,11 @@ been run on the car.
 ### Cost and what stops each one going in now
 
 "Complexity" counts the code that would change. Costs are worked out from
-the code; only P2 has been built for the target.
+the code.
 
 | ID | Complexity | Timing, memory, CPU | Host evidence today | What blocks it now |
 |---|---|---|---|---|
 | P1 | Small: one cyclic handler and one semaphore in `s3_follow.c` | Loop runs twice as often; its worst-case time is not measured, so its CPU share is unknown. No new buffers | S3-U02, U03 already sample at 10 ms | Changes line following; needs SYS-01 and SYS-02 on the car |
-| P2 | Small: about 10 lines in one function | Built for the target: +44 bytes flash, 0 bytes RAM. At most 58 extra comparisons, only for a 31-run capture, after the capture has ended | Prototype: 0 of 234 wrong letters, every other S3 check passes | Changes which captures decode; needs SYS-02 on the car |
 | P3 | Step 1 is P8; step 3 is unknown until the bench test | — | S2-U58, U74 to U80 | Junction shape unknown; needs a bench drive with the console captured |
 | P4 | Hardware: one sensor, one ADC input. No free ADC input is left (ADC3/GP29 is the radio), so it needs a digital sensor on a spare GPIO or a multiplexer | One more read per S3 pass | None | Needs new hardware and wiring |
 | P5 | Small in code (two constants and one formula); most of the work is measurement | None | S4-U41, U42 | Needs reference humps and a flat lap on the car |
@@ -96,71 +94,6 @@ responds twice as fast, so line following must be re-checked.
 10 ms; SYS-01 three laps; SYS-02 five passes per print with the sensor
 height recorded, at least 4 of 5 and no wrong letter. Regression: all S3
 host checks (S3-U02, S3-U03 already model 10 ms sampling).
-
-## P2 — No wrong letter from a noise blip (F-18)
-
-**Where.** `app_program/subsystem3/s3_scan.c`, `s3_scan_decode()` and
-`s3_scan_decode_window()`.
-
-**Current behaviour.** A capture of 31 runs is treated as a code with one
-stray mark beside it (seen on the car on 2026-11-17): the decoder tries the
-first 29 and the last 29 runs. S3-U03 shows the flaw: a 20 ms blip inside
-the payload also makes 31 runs, and one of the misaligned windows then
-matches a different letter exactly. In 25 of 234 cases (26 letters × 9
-payload runs) the result is a wrong letter. With 20 ms sampling a blip of
-one sample is a realistic event. FR3 requires that a wrong letter is never
-reported.
-
-**Root cause.** The 31-run path checks only that a window decodes; it does
-not check that the two runs it leaves out look like a stray mark.
-
-**Proposed design.** Accept a 31-run window only when the run left out at
-the far end is less than half the narrowest run inside the window. A real
-stray mark is short and outside the code; a blip is inside the code and
-puts a 20 ms run inside the window.
-
-**Host evidence.** The prototype
-([log and diff](../testing/subsystem3/logs/2026-11-25_s3-f18-blip-prototype.txt))
-removed all 25 wrong letters, and every other S3 check still passed,
-including the two recorded car captures with a stray mark. It is kept as
-[`f18_stray_mark_check.patch`](../testing/subsystem3/prototypes/f18_stray_mark_check.patch)
-and was re-checked on the final source on 2026-11-25:
-
-```sh
-git apply testing/subsystem3/prototypes/f18_stray_mark_check.patch
-make -C testing/host s3      # 0 of 234, "FIXED (F-18)", 0 known defects
-git checkout app_program/subsystem3/s3_scan.c
-```
-
-**Review of the change.**
-
-- *Correctness.* A stray mark is outside the code and short; a blip moves a
-  real bar out of the window, so the run left out is at least one narrow
-  element long. "Less than half the narrowest run in the window" separates
-  the two with a factor of two of margin.
-- *Overflow.* Runs are `uint32_t` microseconds; `outer` is widened to 64
-  bits before doubling, so the product cannot wrap.
-- *Timing.* The check runs once per 31-run window (two windows at most),
-  after the capture has ended, so it does not touch the sampling path.
-- *Regressions.* A genuine stray mark wider than half a narrow element is
-  now rejected instead of decoded. That gives "no letter", the safe
-  outcome, and the two recorded stray-mark captures still decode.
-- *Not covered.* A blip that splits the sentinel, or two blips, is not
-  tested. The fix only removes the wrong letters S3-U03 found.
-
-| Alternative tried | Result |
-|---|---|
-| No one-element correction (exact patterns only) | All 25 wrong letters remain: they are exact matches of a misaligned window |
-| Remove the 31-run path | No wrong letters, but the recorded car captures with a stray mark fail |
-
-**Limitation found at the same time.** In Code 39, P is the mirror image
-of the start/stop character `*`, and some letters are mirrors of others
-(Q reversed is W). A frame `P Q P` read backwards is exactly `* W *`. No
-two-way decoder can tell these apart; the course prints always use `*`, so
-it does not arise on the course.
-
-**Acceptance.** S3-U03 reports `FIXED (F-18)` and becomes an ordinary
-check; SYS-02 on the car with no wrong letter.
 
 ## P3 — Junction detection and the missing turn (F-02, F-03)
 
@@ -372,10 +305,10 @@ of the [demo report](DEMO_REPORT_2026-11-24.md)).
 
 **Why it has not been met.** The run depends on every element working in
 one go, so the blockers add up: the junction turn (P3), barcode reads
-below 4 of 5 (P1, P2) and line loss going unnoticed (P4). There is no
+below 4 of 5 (P1; F-18 is fixed) and line loss going unnoticed (P4). There is no
 separate root cause to fix.
 
-**Proposed plan.** Apply and car-test P8, then P1 and P2, then do the P3
+**Proposed plan.** Apply and car-test P8, then P1 and the F-18 fix, then do the P3
 bench test, one at a time, each with SYS-01 re-run to show line following
 is unchanged. Then three full-course runs with the console captured and
 the time recorded.

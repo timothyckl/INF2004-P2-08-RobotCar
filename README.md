@@ -11,19 +11,21 @@ the car; WiFi is only for monitoring and START/STOP.
 All five subsystems are integrated into one mission image, built for **one
 core** (`SMP=0`, S2 decision 33). The image used in the assessed demo on
 2026-11-24 is tag **`demo-2026-11-24-flashed`** (`a41c19c`); a clean build
-of that tag reproduces the demo UF2 byte for byte. Later commits change
-only tests, tools, warning flags, comments, identifier names, unused code
-and documentation. After each one the mission image was rebuilt and is
-still byte-identical to the demo UF2 (SHA-256 `8cf2c419…`). Fixes that
-would change the car's behaviour are written up as
-[post-demo proposals](docs/post_demo_proposals.md), not applied.
+of that tag reproduces the demo UF2 byte for byte (SHA-256 `8cf2c419…`).
+Until 2026-11-25 later commits changed only tests, tools, comments and
+documentation. From 2026-11-25 `main` also carries **post-demo firmware
+changes** (S2 decision 35), each listed with its tests in section 9 of the
+[software review](docs/software_quality_review.md). They were verified on
+the computer and by target builds; none had run on the car when they were
+committed, so the results below describe the demonstrated firmware unless
+a row says otherwise. The demo evidence is unchanged.
 
 ## Results at a glance
 
 | Mission requirement | Result | Evidence |
 |---|---|---|
 | Line following | Pass: 3 laps (SYS-01); the loop samples every 20 ms, not the required 10 ms (FR2 Partial, F-01) | [system test log](testing/system/TEST_LOG.md) |
-| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car, but host tests found one input that gives one (F-18) | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; one double fault remains (F-25); car test pending | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
 | Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion) | D-03 |
 | Obstacle detection | Pass (SYS-05) | system test log |

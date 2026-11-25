@@ -8,6 +8,7 @@
 #include "s3_scan.h"
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 
 /* Scan limits used by these synthetic cases. They equal the provisional
  * values on feature/subsystem3-ir-line-barcode; the firmware values are
@@ -583,15 +584,44 @@ static s3_scan_result_t feed_runs_us(s3_scan_t * p_scan,
     return scan_settle(p_scan, &cfg, 10000U, p_now, p_out);
 }
 
+/* Split run split of a 29-run frame: the first at_permille of it, a blip
+ * of the opposite level lasting blip_us, then the rest. Returns 31. */
+static uint8_t add_blip(uint32_t * p_noisy, uint32_t const * p_runs,
+                        uint8_t count, uint8_t split, uint32_t at_permille,
+                        uint32_t blip_us)
+{
+    uint8_t out = 0U;
+
+    for (uint8_t run = 0U; run < count; ++run)
+    {
+        if (run == split)
+        {
+            uint32_t const head = (p_runs[run] * at_permille) / 1000U;
+
+            p_noisy[out] = head;
+            p_noisy[out + 1U] = blip_us;
+            p_noisy[out + 2U] = p_runs[run] - head - blip_us;
+            out = (uint8_t)(out + 3U);
+        }
+        else
+        {
+            p_noisy[out] = p_runs[run];
+            ++out;
+        }
+    }
+
+    return out;
+}
+
 /*
- * S3-U03: noise and broken frames (post-demo test, 2026-11-25). Over
- * every letter A..Z with a 2.5:1 print (100 ms narrow, 250 ms wide):
- *  - a 20 ms blip of the opposite level (one sample at the 20 ms
- *    sampling of F-01; sensor noise or a speck) inside any one of the
- *    29 runs should be decoded as the printed letter or rejected, never
- *    decoded as a different letter. KNOWN DEFECT F-18: a blip inside the
- *    payload makes 31 runs, the stray-mark path decodes a misaligned
- *    window, and 25 of the 234 payload cases give a wrong letter;
+ * S3-U03: noise and broken frames (post-demo test, 2026-11-25; extended
+ * 2026-11-25 with the F-18 fix). Over every letter A..Z with a 2.5:1 print
+ * (100 ms narrow, 250 ms wide):
+ *  - a 10 ms or 20 ms blip of the opposite level (one sample at 10 ms or
+ *    20 ms sampling; sensor noise or a speck), 1/4, 1/2 or 3/4 of the way
+ *    into any of the 29 runs, is decoded as the printed letter. Before
+ *    F-18 was fixed, 25 of the 234 payload cases at 1/2 and 20 ms gave a
+ *    wrong letter: the 31-run path tried a window shifted past the blip;
  *  - a frame whose start or stop character is a letter instead of the
  *    sentinel is rejected. P is left out: P is the mirror image of the
  *    sentinel, so P-x-P read backwards is exactly *-reverse(x)-*, which
@@ -600,10 +630,13 @@ static s3_scan_result_t feed_runs_us(s3_scan_t * p_scan,
  */
 static void test_scan_noise(void)
 {
+    static uint32_t const blips_us[2] = {10000U, 20000U};
+    static uint32_t const at_permille[3] = {250U, 500U, 750U};
     s3_scan_t scan;
     uint32_t now = 20000000U;
-    bool b_never_wrong = true;
     unsigned int wrong = 0U;
+    unsigned int rejected = 0U;
+    unsigned int cases = 0U;
     bool b_frames_rejected = true;
     bool b_controls = true;
 
@@ -612,7 +645,7 @@ static void test_scan_noise(void)
     {
         uint16_t const pattern = g_s3_code39_alphabet[idx].pattern;
         char const letter = g_s3_code39_alphabet[idx].symbol;
-        uint32_t runs[S3_BAR_FRAME_RUNS + 2U];
+        uint32_t runs[S3_BAR_FRAME_RUNS];
         char symbol = '\0';
 
         (void)make_runs(runs, S3_CODE39_SENTINEL, pattern,
@@ -623,37 +656,36 @@ static void test_scan_noise(void)
                                                 &symbol))
             && (letter == symbol);
 
-        for (uint8_t split = 0U; split < S3_BAR_FRAME_RUNS; ++split)
+        for (uint8_t blip = 0U; blip < 2U; ++blip)
         {
-            uint32_t noisy[S3_BAR_FRAME_RUNS + 2U];
-            uint8_t count = 0U;
+            for (uint8_t at = 0U; at < 3U; ++at)
+            {
+                for (uint8_t split = 0U; split < S3_BAR_FRAME_RUNS; ++split)
+                {
+                    uint32_t noisy[S3_BAR_FRAME_RUNS + 2U];
+                    uint8_t const count = add_blip(noisy, runs,
+                                                   S3_BAR_FRAME_RUNS, split,
+                                                   at_permille[at],
+                                                   blips_us[blip]);
+                    s3_scan_result_t result;
 
-            (void)make_runs(runs, S3_CODE39_SENTINEL, pattern,
-                            S3_CODE39_SENTINEL, 100000U, 250000U);
-            for (uint8_t run = 0U; run < S3_BAR_FRAME_RUNS; ++run)
-            {
-                if (run == split)
-                {
-                    /* Half the run, a 20 ms blip, the rest. */
-                    noisy[count] = runs[run] / 2U;
-                    noisy[count + 1U] = 20000U;
-                    noisy[count + 2U] = runs[run] - (runs[run] / 2U)
-                                        - 20000U;
-                    count = (uint8_t)(count + 3U);
+                    symbol = '\0';
+                    result = feed_runs_us(&scan, noisy, count, &now,
+                                          &symbol);
+                    ++cases;
+                    if (S3_SCAN_DECODED != result)
+                    {
+                        ++rejected;
+                    }
+                    else if (letter != symbol)
+                    {
+                        ++wrong;
+                    }
+                    else
+                    {
+                        /* Repaired to the printed letter. */
+                    }
                 }
-                else
-                {
-                    noisy[count] = runs[run];
-                    ++count;
-                }
-            }
-            symbol = '\0';
-            if ((S3_SCAN_DECODED == feed_runs_us(&scan, noisy, count, &now,
-                                                 &symbol))
-                && (letter != symbol))
-            {
-                b_never_wrong = false;
-                ++wrong;
             }
         }
 
@@ -670,11 +702,117 @@ static void test_scan_noise(void)
         }
     }
     check(b_controls, "framed letters decode (noise test control)");
-    printf("noise blip: %u of %u payload cases gave a wrong letter\n",
-           wrong, (unsigned int)(S3_CODE39_SYMBOL_COUNT * S3_BAR_ELEMENTS));
-    known_defect(b_never_wrong, "F-18",
-                 "a noise blip never gives a wrong letter");
+    printf("noise blip: %u cases, %u wrong letters, %u rejected\n", cases,
+           wrong, rejected);
+    check(0U == wrong, "a noise blip never gives a wrong letter (F-18)");
+    check(0U == rejected, "a 10 or 20 ms blip is repaired, not rejected");
     check(b_frames_rejected, "a letter in place of the sentinels is rejected");
+}
+
+/*
+ * S3-U04: 31-run boundaries and double faults (post-demo, 2026-11-25).
+ * Over A..Z with a 2.5:1 print (100 ms narrow, 250 ms wide):
+ *  - a stray mark 40 ms wide (as recorded on 2026-11-17) 200 ms before or
+ *    after the code decodes the printed letter;
+ *  - a stray mark after the code as wide as a narrow bar cannot be told
+ *    from a code bar; it must be rejected or decoded right, never wrong;
+ *  - a stray mark together with one code element shorter than the mark
+ *    (a blurred narrow space, 25 ms) must never give a wrong letter;
+ *  - KNOWN DEFECT F-25: a capture missing two runs at one end (a damaged
+ *    sentinel, handled by the 24..29-run fallback) that also holds a 20 ms
+ *    blip can give a wrong letter. A 29-run capture cannot tell such a
+ *    blip from a genuine short element, and repairing it turned blurred
+ *    narrow elements into wrong letters (63 of 468), so it is not repaired.
+ */
+static void test_scan_extra_marks(void)
+{
+    s3_scan_t scan;
+    uint32_t now = 40000000U;
+    bool b_recorded_ok = true;
+    bool b_wide_never_wrong = true;
+    bool b_short_never_wrong = true;
+    unsigned int compound_wrong = 0U;
+
+    s3_scan_init(&scan);
+    for (uint8_t idx = 0U; idx < S3_CODE39_SYMBOL_COUNT; ++idx)
+    {
+        uint16_t const pattern = g_s3_code39_alphabet[idx].pattern;
+        char const letter = g_s3_code39_alphabet[idx].symbol;
+        uint32_t runs[S3_BAR_FRAME_RUNS + 2U];
+        uint32_t noisy[S3_BAR_FRAME_RUNS + 2U];
+        char symbol = '\0';
+        s3_scan_result_t result;
+
+        /* Recorded-size stray mark after, then before, the code. */
+        (void)make_runs(runs, S3_CODE39_SENTINEL, pattern,
+                        S3_CODE39_SENTINEL, 100000U, 250000U);
+        runs[S3_BAR_FRAME_RUNS] = 200000U;
+        runs[S3_BAR_FRAME_RUNS + 1U] = 40000U;
+        result = feed_runs_us(&scan, runs, S3_BAR_FRAME_RUNS + 2U, &now,
+                              &symbol);
+        b_recorded_ok = b_recorded_ok && (S3_SCAN_DECODED == result)
+                        && (letter == symbol);
+
+        noisy[0] = 40000U;
+        noisy[1] = 200000U;
+        (void)make_runs(&noisy[2], S3_CODE39_SENTINEL, pattern,
+                        S3_CODE39_SENTINEL, 100000U, 250000U);
+        symbol = '\0';
+        result = feed_runs_us(&scan, noisy, S3_BAR_FRAME_RUNS + 2U, &now,
+                              &symbol);
+        b_recorded_ok = b_recorded_ok && (S3_SCAN_DECODED == result)
+                        && (letter == symbol);
+
+        /* A stray mark as wide as a narrow bar, after the code. */
+        runs[S3_BAR_FRAME_RUNS + 1U] = 100000U;
+        symbol = '\0';
+        result = feed_runs_us(&scan, runs, S3_BAR_FRAME_RUNS + 2U, &now,
+                              &symbol);
+        b_wide_never_wrong = b_wide_never_wrong
+            && ((S3_SCAN_DECODED != result) || (letter == symbol));
+
+        /* Stray mark plus one narrow code element shorter than it. */
+        runs[S3_BAR_FRAME_RUNS + 1U] = 40000U;
+        for (uint8_t pos = 1U; pos < (S3_BAR_FRAME_RUNS - 1U); ++pos)
+        {
+            uint32_t const saved = runs[pos];
+
+            if (100000U == saved)
+            {
+                runs[pos] = 25000U;
+                symbol = '\0';
+                result = feed_runs_us(&scan, runs, S3_BAR_FRAME_RUNS + 2U,
+                                      &now, &symbol);
+                b_short_never_wrong = b_short_never_wrong
+                    && ((S3_SCAN_DECODED != result) || (letter == symbol));
+                runs[pos] = saved;
+            }
+        }
+
+        /* Two runs missing at the end, then a 20 ms blip in one run. */
+        for (uint8_t split = 0U; split < (S3_BAR_FRAME_RUNS - 2U); ++split)
+        {
+            uint8_t const count = add_blip(noisy, runs,
+                                           S3_BAR_FRAME_RUNS - 2U, split,
+                                           500U, 20000U);
+
+            symbol = '\0';
+            result = feed_runs_us(&scan, noisy, count, &now, &symbol);
+            if ((S3_SCAN_DECODED == result) && (letter != symbol))
+            {
+                ++compound_wrong;
+            }
+        }
+    }
+    check(b_recorded_ok, "a 40 ms stray mark before or after is ignored");
+    check(b_wide_never_wrong, "a stray mark as wide as a bar is never wrong");
+    check(b_short_never_wrong,
+          "stray mark plus a shorter code element is never wrong");
+    printf("damaged end plus blip: %u of %u cases gave a wrong letter\n",
+           compound_wrong,
+           (unsigned int)(S3_CODE39_SYMBOL_COUNT * (S3_BAR_FRAME_RUNS - 2U)));
+    known_defect(0U == compound_wrong, "F-25",
+                 "a blip in a capture with a damaged end is never wrong");
 }
 
 /* Car captures of barcode F, 2026-11-17 (logs/2026-11-17_s3-bar-drive-4):
@@ -742,6 +880,101 @@ static void test_scan_recorded(void)
     check((S3_SCAN_ERROR == feed_runs_ms(&scan, &lead[2], 29U, &now,
                                          &symbol)) && ('x' == symbol),
           "29 runs with both sentinels damaged are rejected");
+}
+
+/* One capture logged on the car: where it was logged, the letters printed
+ * on the course in that session, and its run durations in ms. */
+typedef struct
+{
+    char const * p_where;
+    char const * p_letters;
+    uint8_t      count;
+    uint16_t     runs_ms[S3_BAR_CAPACITY];
+} recorded_capture_t;
+
+#include "recorded_captures.h"
+
+/* Replay levels: the provisional white of s3_barcode.c and a black well
+ * above its 400-count margin (the car read about 2,560 over a bar). */
+#define REPLAY_WHITE_ADC    169U
+#define REPLAY_BLACK_ADC    2500U
+
+/* Feed one logged capture through the production pipeline as 1 ms ADC
+ * samples: white idle, the runs (first black), then white until the
+ * capture ends. Returns the first finished result. */
+static s3_scan_result_t replay_capture(s3_barcode_t * p_barcode,
+                                       recorded_capture_t const * p_capture,
+                                       uint32_t * p_now, char * p_symbol)
+{
+    s3_scan_result_t result = S3_SCAN_NONE;
+    bool b_black = true;
+
+    for (uint16_t ms = 0U; ms < 1000U; ++ms)
+    {
+        *p_now += 1000U;
+        (void)s3_barcode_update(p_barcode, REPLAY_WHITE_ADC, *p_now,
+                                p_symbol);
+    }
+    for (uint8_t idx = 0U; (idx < p_capture->count)
+                           && (S3_SCAN_NONE == result); ++idx)
+    {
+        uint16_t const adc = b_black ? REPLAY_BLACK_ADC : REPLAY_WHITE_ADC;
+
+        for (uint16_t ms = 0U; (ms < p_capture->runs_ms[idx])
+                               && (S3_SCAN_NONE == result); ++ms)
+        {
+            *p_now += 1000U;
+            result = s3_barcode_update(p_barcode, adc, *p_now, p_symbol);
+        }
+        b_black = !b_black;
+    }
+    for (uint16_t ms = 0U; (ms < 3000U) && (S3_SCAN_NONE == result); ++ms)
+    {
+        *p_now += 1000U;
+        result = s3_barcode_update(p_barcode, REPLAY_WHITE_ADC, *p_now,
+                                   p_symbol);
+    }
+
+    return result;
+}
+
+/*
+ * S3-U05: replay of every barcode capture logged on the car (post-demo,
+ * 2026-11-25), through s3_barcode_update() with the firmware's own limits.
+ * The logs hold the runs of rejected captures only (and the two
+ * stray-mark passes of test_scan_recorded(), logged before the 31-run path
+ * existed). A decoder change may decode more of them, but none may decode
+ * to a letter that was not printed on the course in that session.
+ */
+static void test_scan_replay(void)
+{
+    s3_barcode_t barcode;
+    uint32_t now = 60000000U;
+    unsigned int decoded = 0U;
+    bool b_never_wrong = true;
+
+    check(s3_barcode_init(&barcode), "replay pipeline initialises");
+    for (uint8_t idx = 0U; idx < RECORDED_CAPTURE_COUNT; ++idx)
+    {
+        char symbol = '\0';
+
+        if (S3_SCAN_DECODED == replay_capture(&barcode, &g_recorded[idx],
+                                              &now, &symbol))
+        {
+            ++decoded;
+            if (NULL == strchr(g_recorded[idx].p_letters, symbol))
+            {
+                b_never_wrong = false;
+                printf("replay %s decoded %c\n", g_recorded[idx].p_where,
+                       symbol);
+            }
+        }
+    }
+    printf("car captures replayed: %u, decoded: %u\n",
+           (unsigned int)RECORDED_CAPTURE_COUNT, decoded);
+    check(RECORDED_CAPTURE_COUNT >= 19U, "logged car captures are replayed");
+    check(2U <= decoded, "the two logged stray-mark passes decode");
+    check(b_never_wrong, "no logged car capture decodes to a wrong letter");
 }
 
 static void test_scan_decode(void)
@@ -1133,6 +1366,8 @@ int main(void)
     test_sampled_barcode();
     test_scan_robustness();
     test_scan_noise();
+    test_scan_extra_marks();
+    test_scan_replay();
     printf("%u checks, %u failures, %u known defects\n", g_checks, g_failures,
            g_known);
     return (0U == g_failures) ? 0 : 1;

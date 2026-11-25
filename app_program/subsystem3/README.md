@@ -170,15 +170,25 @@ powershell -ExecutionPolicy Bypass -File testing/subsystem3/run_tests.ps1
 These tests cover the adaptive analogue thresholds, filtering, the
 four-state steering table, the letter-to-command table and Code 39 A--Z
 decoding in both travel directions, including the recorded car captures,
-one misread element and speed changes (S3-U02) and noise blips and broken
-frames (S3-U03). On macOS or Linux, `make -C testing/host s3` runs the same
-cases. The summary line counts passed checks, failures and known defects:
-S3-U03 reports **one known defect, F-18**: a single 20 ms blip inside the
-code gives a wrong letter in 25 of 234 synthetic cases. That is a count of
-test cases, not a real-world error rate, and no wrong letter has been seen
-on the car. The fix is post-demo proposal P2
-([`f18_stray_mark_check.patch`](../../testing/subsystem3/prototypes/f18_stray_mark_check.patch),
-not applied). The host tests do not verify wiring, optical distance,
+one misread element and speed changes (S3-U02), noise blips and broken
+frames (S3-U03), stray marks and double faults (S3-U04), and a replay of
+the 19 captures logged on the car through `s3_barcode_update()` (S3-U05).
+On macOS or Linux, `make -C testing/host s3` runs the same cases. The
+summary line counts passed checks, failures and known defects.
+
+F-18 (fixed after the demo, S3 decision 9): in the demonstrated firmware a
+single 20 ms blip inside the code gave a wrong letter in 25 of 234
+synthetic payload cases. That was a count of test cases, not a real-world
+error rate, and no wrong letter was seen on the car. S3-U03 now checks
+10 ms and 20 ms blips at three places in every run of every letter (4,524
+cases): none gives a wrong letter and none is rejected.
+
+S3-U04 reports **one known defect, F-25**: a capture that has lost two runs
+at one end *and* holds a blip can still give a wrong letter (39 of 702
+synthetic cases). A 29-run capture cannot tell such a blip from a genuine
+short element, and repairing it made blurred narrow elements decode wrongly,
+so it is left as it is ([log](../../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)).
+The host tests do not verify wiring, optical distance,
 surface contrast, ambient light, sampling timing, line following, motor
 behaviour or the printed course barcodes.
 
@@ -191,14 +201,18 @@ behaviour or the printed course barcodes.
 - `s3_scan` frames captures from timestamped side-sensor edges, derives the
   narrow/wide boundary from each capture, and decodes forwards then reversed.
   A 24--29 run capture is accepted when one intact end supplies a
-  sentinel, both gaps and the full payload, and a 31-run capture with one
-  stray mark beside the code is read from its first and last 29 runs.
+  sentinel, both gaps and the full payload. A 31-run capture has one extra
+  bar and space: if its shortest run is at either end it is a stray mark
+  and is dropped; if it is inside the code it is a noise blip, and the
+  element it split is rebuilt from the blip and its two neighbours (F-18).
+  Only that one window is decoded.
 - `s3_code39` holds the standard Code 39 A--Z patterns and the `*` sentinel.
 - `s3_barcode` classifies each ADC2 sample with an unfiltered adaptive
   threshold (white baseline 154..184, black at baseline + 400, release at
   baseline + 300) and feeds level changes, timestamped from the 1 MHz
-  `TIMERAWL`, to `s3_scan`. A run over 800 ms aborts a capture and 700 ms of
-  white ends one. All of these values are provisional.
+  `TIMERAWL`, to `s3_scan`. A run over 2.5 s aborts a capture (raised from
+  800 ms on 2026-11-17, see `s3_barcode.c`) and 700 ms of white ends one.
+  All of these values are provisional.
 - `s3_scan`, `s3_code39`, the `s3_bar` near-match rule and the barcode
   thresholds were ported from `feature/subsystem3-ir-line-barcode` (commit
   `e6a7027`), where they were measured on 2026-11-11 at about 40 mm/s.

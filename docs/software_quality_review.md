@@ -7,11 +7,13 @@ maintainability for each subsystem and for the integrated system. Kernel,
 SDK, lwIP and CYW43 sources are third-party and are reviewed only where the
 application uses them.
 
-The review does not change the demonstrated firmware. Every finding that
-would change behaviour is a **proposal**; post-demo changes that were
-applied are marked **Applied** and change only tests, tools or the build,
-which we checked by rebuilding the mission image and comparing its
-checksum with the demo image (`8cf2c419…`).
+The review was first written against the demonstrated firmware. Changes
+made since are marked **Applied**. Until 2026-11-25 they touched only
+tests, tools or the build, and the rebuilt mission image stayed
+byte-identical to the demo image (`8cf2c419…`). From 2026-11-25 firmware
+corrections are also applied on `main` (S2 decision 35); each says whether
+it has been tested on the car. A finding still marked **Proposal** is not
+in the firmware.
 
 ## 1. Method
 
@@ -19,7 +21,7 @@ checksum with the demo image (`8cf2c419…`).
 |---|---|---|
 | Strict compile of every application file with the target compiler and flags, plus 18 extra warnings (`-Wconversion`, `-Wsign-conversion`, `-Wshadow`, `-Wnull-dereference`, `-Wduplicated-cond`, …) | `testing/host/target_static_check.py` | **0 warnings** in application code; 117 in kernel headers (third-party) |
 | GCC static analyser (`-fanalyzer`) on every application file | same script | 1 finding, a false positive (F-12) |
-| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 765 checks passed with 1 known defect (F-18) reported separately, S4 37/37, S5 48/48 (2026-11-25, after the post-demo tests) |
+| Host unit tests | `make -C testing/host` | All pass: S1 4/4, S2 52/52, S3 774 checks with 1 known defect (F-25) reported separately, S4 37/37, S5 48/48 (2026-11-25, after the F-18 fix; figures are updated with each later change in section 9) |
 | Line and branch coverage | `testing/host/coverage.sh` | 89.7% of lines, 78.0% of branches (27 host-built files; 78.2% before the unused S3 staging code, 23 of whose 24 branches were covered, was removed, F-20) |
 | Manual review | Reading the code against the requirements, the decisions and the demo logs | Findings below |
 | Evidence from the car | Demo-day dashboard logs, console logs | Used to confirm or rule out findings |
@@ -55,13 +57,14 @@ maintainability or documentation.
 | F-15 | S4 tests | Mission hump settings repeated in a test | Low | Proposal |
 | F-16 | Process | Barcode letter table entered wrongly on demo day | Low | Proposal |
 | F-17 | S2/S3 | A car that runs fully off the line reads as centred and is not stopped | High | Hardware proposal (P4) |
-| F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | Found by S3-U03; prototype fix (P2), not applied |
+| F-18 | S3 | A 20 ms noise blip inside a barcode can give a wrong letter (25 of 234 cases) | High | **Applied** (S3 d9): blip repaired; car test pending |
 | F-19 | Tests | S4 and S5 host recipes piped through `tee`, so a crashed test passed | Medium | **Applied** (`a618bef`) |
 | F-20 | S3 | `s3_nav_stage()` and `s3_nav_take()` held a command a second time, but nothing in the mission called them | Low | **Applied**: removed (mission UF2 unchanged) |
 | F-21 | S2 | `motion_init()` does not range-check the move and turn tolerances before they are cast to `int32_t` | Low | Safe today (build-time constants 5 and 2000); proposal |
 | F-22 | S4 | The `S4_RAW_LOG` stall print passed a `UW` to `%lx` | Low | **Applied** (`268e044`; debug builds only) |
 | F-23 | Tools | The BARR-C checker missed indented local declarations, so it under-counted short names (7.1e) | Low | **Applied**: fixed, and the names renamed (`268e044`) |
 | F-24 | S2 | Static stack estimate: the controller task's margin is about 400 bytes once `tm_printf` is counted; no run-time high-water mark | Medium | Proposal: measure on the car |
+| F-25 | S3 | A capture missing two runs at one end that also holds a noise blip can give a wrong letter (39 of 702 cases) | Medium | Open: known defect in S3-U04; no safe repair (S3 d9) |
 
 ## 3. Subsystem 1 — WiFi, MQTT and telemetry
 
@@ -224,23 +227,32 @@ letter in place of the start and stop characters is rejected, except P,
 which is the mirror image of `*` (P-x-P read backwards is exactly a
 reversed `*x*`, so no two-way decoder can tell them apart).
 
-**F-18 (High, proposal) — wrong letter from a noise blip.** S3-U03 puts a
+**F-18 (High, applied) — wrong letter from a noise blip.** S3-U03 put a
 20 ms blip (one sample at the real 20 ms sampling) inside each run of each
-letter. Inside the payload this makes a 31-run capture, which the decoder
-treats as a code with a stray mark beside it; one of the two 29-run
-windows it tries is then misaligned and, in 25 of 234 cases, matches a
-different letter exactly. FR3 requires that this never happens, so this is
-a real weakness, though no wrong letter was seen on the car. The 25 of
-234 is a count of synthetic cases, one blip in every run of every letter;
-it is not a real-world error rate, which would depend on how often a blip
-occurs on the course. Turning off
-the one-element correction does not help (the matches are exact);
-removing the 31-run path breaks the recorded stray-mark captures of
-2026-11-17. Accepting a 31-run window only when the run it leaves out is
-shorter than half the narrowest run in the window removed all 25 and
-passed every other check ([prototype](../testing/subsystem3/logs/2026-11-25_s3-f18-blip-prototype.txt);
-[proposal P2](post_demo_proposals.md)). Not applied: the firmware stays as
-demonstrated. S3-U03 reports it as a known defect on every run.
+letter. Inside the payload this made a 31-run capture, which the demo
+decoder treated as a code with a stray mark beside it; one of the two
+29-run windows it tried was then misaligned and, in 25 of 234 cases,
+matched a different letter exactly. FR3 requires that this never happens,
+though no wrong letter was seen on the car; 25 of 234 is a count of
+synthetic cases, not a real-world error rate. The earlier prototype (accept
+a window only when the run it leaves out is under half the narrowest run
+kept) removed the wrong letters but rejected almost every blipped capture
+(4,420 of 4,524 in the extended S3-U03), because it never repaired the
+blip. *Applied* (S3 decision 9): the shortest run of a 31-run capture is
+the extra mark; at either end it is a stray mark and is dropped, inside the
+code it is a blip and the element it split is rebuilt. Over 4,524 cases
+(10 and 20 ms blips at three places in every run) there is no wrong letter
+and no rejection, and the 19 logged car captures replay unchanged
+(S3-U05). Car test pending ([log](../testing/subsystem3/logs/2026-11-25_s3-f18-fix.txt)).
+
+**F-25 (Medium, open) — damaged end plus a blip.** Found while fixing
+F-18. A capture that has lost two runs at one end (the 24 to 29-run
+fallback) and also holds a blip can still give a wrong letter, 39 of 702
+synthetic cases, with the demo decoder and the fix alike. Such a capture
+has the right run count for a valid frame, so the blip cannot be found by
+count; finding it by length was tried and turned 63 of 468 frames with one
+blurred narrow element into wrong letters. It is a double fault, it stays a
+known defect in S3-U04, and the remedy is fewer blips (sensor height, P1).
 
 **F-01 (High, proposal) — 20 ms sampling.** `s3_follow_run()` loops with
 `tk_dly_tsk(10)`, but the kernel tick (`CNF_TIMER_PERIOD`) is 10 ms, so the
@@ -404,19 +416,18 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `032437c` | Range comments for every narrowing cast (BARR-C 1.6a) | None (comments only) | Mission UF2 byte-identical |
 | `cc72bd2` | Removed the unused S3 command staging (F-20); S2-U77 checks that STOP drops a held command; F-18 fix kept as a patch | None (unused code; `--gc-sections` had already dropped it) | Mission UF2 byte-identical; [log](../testing/host/logs/2026-11-25_s3-nav-cleanup-and-f18-recheck.txt) |
 | `268e044` | A range comment on every cast; BARR-C naming rules 7.1e, 7.1k, 7.1m; 8.1 in test files; F-22, F-23 | None (comments and names) | Mission UF2 byte-identical; every build option 0 warnings; [log](../testing/host/logs/2026-11-25_barr-c-changes-verification.txt) |
+| (F-18 commit) | F-18: 31-run captures repaired, not searched (S3 d9); S3-U03 extended, S3-U04, S3-U05; `verify_all.sh` | **Yes**: which barcode captures decode. Car test pending (SYS-02) | S3 774 checks, 0 failures, 1 known defect (F-25); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f18.txt)) |
 
 ## 10. Proposed changes not applied
 
-These change the car's behaviour, so they need team approval and car tests
-before use. They are listed in priority order.
-
-The team decided on 2026-11-25 to keep the submitted firmware identical to
-the demonstrated image. Each change below is worked out in
+These are not yet in the firmware. Each is worked out in
 [post_demo_proposals.md](post_demo_proposals.md) with its root cause,
-design, alternatives, risks and acceptance test.
+design, alternatives, risks and acceptance test. (An earlier version of
+this section said the team had decided to keep the firmware identical to
+the demonstrated image; no such decision was recorded. S2 decision 35
+records the decision to apply post-demo changes.)
 
 1. P1 (F-01): 10 ms sampling from a cyclic handler; SYS-01, SYS-02.
-2. P2 (F-18): stray-mark window check, ready as [`f18_stray_mark_check.patch`](../testing/subsystem3/prototypes/f18_stray_mark_check.patch); SYS-02.
 3. P3 (F-02, F-03): junction event in telemetry, then a bench test of the course junction; SYS-03.
 4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
 5. P5 (F-04): two-point hump calibration and a flat lap; SYS-04.
