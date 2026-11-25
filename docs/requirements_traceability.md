@@ -304,10 +304,10 @@ table shows the rest.
 
 | Level | Count and where | Latest result |
 |---|---|---|
-| Unit (host) | S1-U04 to U07; S2 56 cases; S3 779 checks; S4 38 cases plus S4-U44 (replay of 6 car logs); S5 48 cases + telemetry view; dashboard 27 | All pass, with one known defect reported (F-25) (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final.txt)) |
+| Unit (host) | S1-U04 to U07; S2 56 cases; S3 787 checks; S4 39 cases plus S4-U44 (replay of 6 car logs); S5 48 cases + telemetry view; dashboard 27 | All pass; no known defect reported (2026-11-26, [log](../testing/host/logs/2026-11-26_verify-final-refinement.txt)) |
 | Unit (target) | The same plus the target-only cases (for example S2-U01 to U19, S2-U37, U39, U71, U72) in the `TEST=1` image | Builds (2026-11-25); last on-target run 2026-11-17 (incomplete) |
 | Hardware | S1-H01 to H03, S2-H01 to H11, S3-H01 to H06, S4-H01 to H11, S5-U46 to U50 | Mixed; see each log |
-| Integration | INT-04 to INT-07, letters over MQTT (car); INT-08 to INT-16, the real Vehicle Controller with S1, S3, S4 and S5 interfaces on a kernel model (host) | Pass (car, before the demo); 30/30 (host, 2026-11-26) |
+| Integration | INT-04 to INT-07, letters over MQTT (car); INT-08 to INT-27, the real Vehicle Controller with S1, S3, S4 and S5 interfaces on a kernel model (host; 54 checks) | Pass (car, before the demo); 54/54 (host, 2026-11-26; simulated, not a car run) |
 | System | SYS-01 to SYS-11 | See section 4 |
 | Acceptance | The assessed demonstration | [demo report](DEMO_REPORT_2026-11-24.md) |
 
