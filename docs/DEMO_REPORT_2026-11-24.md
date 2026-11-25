@@ -228,14 +228,24 @@ give for this hump, and the 7 mm reading is one step above it. Measuring
 humps below 6 mm accurately would need a lower threshold, which we would
 have to re-test against false humps from the floor.
 
+**Assessor's feedback (team recollection).** During the demonstration, the
+assessor explained that functions not successfully demonstrated could
+potentially still receive marks after review of the source code,
+documentation and supporting evidence. We understood this as an
+opportunity to submit technical evidence and ask for reconsideration where
+appropriate, not as a promise of extra marks.
+
 **Request.** Attempt 3 read 7 mm, within the same ±2 mm engineering
 criterion that attempts 1 and 2 met, and it is recorded in the log above.
-Because of a verbal miscommunication between our team and the assessor when
-the attempt 3 value was reported, that attempt was not given the 0.5 mark
-awarded for attempts 1 and 2. We respectfully ask that attempt 3 be assessed
-from the logged reading on the same basis as attempts 1 and 2. We note that
-its error (2 mm) is larger than theirs (1 mm), and we do not know the exact
-partial-mark criterion.
+When the attempt 3 value was reported to the assessor, there was a verbal
+miscommunication. When our team tried to correct it, we were told it was
+already too late, and that attempt was not given the 0.5 mark awarded for
+attempts 1 and 2. The value said aloud and the value the car recorded
+should therefore be kept apart: the car detected the hump and recorded
+7 mm in both `hump_max_mm` and `hump_last_mm` (line 3140). We respectfully
+ask that attempt 3 be assessed from this logged reading on the same basis
+as attempts 1 and 2. We note that its error (2 mm) is larger than theirs
+(1 mm), and we do not know the exact partial-mark criterion.
 
 We were also told that another group reported 0.8 cm (8 mm) and received
 the full mark. We have not seen their hump height, conditions or reading, so
