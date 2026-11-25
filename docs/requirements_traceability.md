@@ -30,7 +30,7 @@ passes, is not enough on its own.
 | MR1 | Follow a line track autonomously | FR1, FR2 | SYS-01, SYS-09 | Pass on the track (SYS-01); FR2's 10 ms sampling not met; full course not passed |
 | MR2 | Detect and decode barcodes | FR3 | SYS-02 | Partial |
 | MR3 | Execute barcode commands (left, right, straight, U-turn) | FR4 | SYS-03 | Partial |
-| MR4 | Detect humps | FR5 | SYS-04 | Pass (detection) |
+| MR4 | Detect humps | FR5 | SYS-04 | Pass (a hump detected in each assessed attempt; crossing count not checked) |
 | MR5 | Measure and report the highest hump | FR5, FR10 | SYS-04 | Partial (accuracy within ±2 mm; flat lap not run) |
 | MR6 | Detect obstacles on or near the line | FR6 | SYS-05 | Pass |
 | MR7 | Profile obstacle shape and position | FR7 | SYS-06 | Fail (width), Pass (nearest point, side) |
@@ -123,7 +123,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Owner / design | S4; S4 d8, d10, d11, d12, d13, d16; S1 d7 |
 | Source | `subsystem4/terrain_logic.c` `s4_terrain_process()`, `s4_hump_update()`, `s4_hump_complete()`; `subsystem4/task_imu.c`; `subsystem2/robot_state.c` `s2_telemetry_add_hump()` |
 | Tests | S4-U05, U06, U12 to U14, U21, U23 to U33, U40, U41 (host); S4-H07, H08; SYS-04 |
-| Criterion | Highest hump within ±2 mm; every hump detected; no hump on a flat lap |
+| Criterion | Highest hump within ±2 mm (team engineering criterion, not the marking scheme); every hump detected; no hump on a flat lap |
 | Result | S4-H08 (2026-11-13): 11, 10, 10, 9 mm for a 10 mm hump. Demo: 6, 6, 7 mm for a 5 mm hump (+1, +1, +2 mm). S4-U41: no hump can read below 6 mm |
 | Status | **Partial**: height within ±2 mm on every recorded run; flat lap not run in SYS-04 |
 | Limitations | Minimum reportable height 6 mm. Single-point calibration (10 mm) cannot correct an offset; small humps read high |
@@ -150,7 +150,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Source | `subsystem5/src/scan_engine.c` `scan_engine_process()`; `subsystem5/src/scan_profile.c` `scan_profile_make()`; `subsystem5/src/bypass_plan.c` `bypass_plan_make_fine()` |
 | Tests | S5-U15, U23, U26, U59 to U63, U67, U72 (host); S5-U47 to U49; SYS-06 |
 | Criterion | As the requirement |
-| Result | Nearest point within 20 mm on 3/3 (SYS-05 runs). Width: shape never valid on 2026-11-20; demo practice widths 219 to 327 mm and assessed raw widths 166 to 332 mm for a 150 or 200 mm box |
+| Result | Nearest point within 20 mm on 3/3 (SYS-05 runs). Width: shape never valid on 2026-11-20; demo practice confirmed widths 219 to 327 mm (orientation not recorded) and assessed raw widths 166 to 332 mm (one edge missing, display only) for a 150 or 200 mm box |
 | Status | **Fail** (width, centre offset); nearest point and side **Pass** |
 | Limitations | The effective half-beam is about 21° (S2 d18), so the box is "seen" past its edges and the width is overstated; with the mission's 10° allowance a 150 mm box reads 246 mm in synthetic geometry (S5-U72). Even ideal rays are limited to about ±23 mm per edge by the 5° spacing at 240 mm. Planning does not use the width (proposal P6) |
 
@@ -304,7 +304,7 @@ table shows the rest.
 
 | Level | Count and where | Latest result |
 |---|---|---|
-| Unit (host) | S1-U04 to U07; S2 52 cases; S3 784 checks; S4 37 cases; S5 48 cases + telemetry view | All pass, with one known defect reported (F-18) (2026-11-25, [log](../testing/host/logs/2026-11-25_host-tests-final2.txt)) |
+| Unit (host) | S1-U04 to U07; S2 52 cases; S3 765 checks; S4 37 cases; S5 48 cases + telemetry view | All pass, with one known defect reported (F-18) (2026-11-25, [log](../testing/host/logs/2026-11-25_final-verification-3.txt)) |
 | Unit (target) | The same plus the target-only cases (for example S2-U01 to U19, S2-U37, U39, U71, U72) in the `TEST=1` image | Builds (2026-11-25); last on-target run 2026-11-17 (incomplete) |
 | Hardware | S1-H01 to H03, S2-H01 to H11, S3-H01 to H06, S4-H01 to H11, S5-U46 to U50 | Mixed; see each log |
 | Integration | INT-04 to INT-07, letters over MQTT | Pass |
@@ -392,7 +392,7 @@ against each, with where the evidence is:
 | Navigation accuracy | Straight 500 mm worst +10 mm; 90° turns inside ±5°; U-turn inside ±10° (S2-H10, small samples) | Partial | Few runs per motion; angles judged by eye |
 | Obstacle avoidance effectiveness | SYS-07 3/3; demo attempt 3 with no contact | Pass on the formal test | Attempts 1 and 2 of the demo did not complete the bypass |
 | Barcode recognition reliability | No wrong letter seen on the car; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01); a host-found wrong letter from a noise blip (F-18, fix P2 not applied) |
-| Hump measurement capability | Every hump detected; within ±2 mm on every recorded run | Partial | 6 mm minimum reading; no flat lap |
+| Hump measurement capability | A hump detected on every assessed attempt (crossing count not checked); within our ±2 mm criterion on every recorded run | Partial | 6 mm minimum reading; no flat lap |
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; a failing or crashing host test fails the build; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08); stack margins calculated, not measured (F-24) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |
 | Resource efficiency | No floating point; about 2 KB application RAM; 31-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |

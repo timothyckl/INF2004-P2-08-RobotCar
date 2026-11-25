@@ -25,9 +25,9 @@ would change the car's behaviour are written up as
 | Line following | Pass: 3 laps (SYS-01); the loop samples every 20 ms, not the required 10 ms (FR2 Partial, F-01) | [system test log](testing/system/TEST_LOG.md) |
 | Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car, but host tests found one input that gives one (F-18) | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
-| Hump detection and highest peak | Detected every time; 6, 6, 7 mm for a 5 mm hump (within ±2 mm) | D-03 |
+| Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion) | D-03 |
 | Obstacle detection | Pass (SYS-05) | system test log |
-| Obstacle profiling | Nearest point and side pass; width fails (SYS-06) | [software review](docs/software_quality_review.md) F-05 |
+| Obstacle profiling | Nearest point and side pass; width accuracy not shown (SYS-06 not met) | [software review](docs/software_quality_review.md) F-05 |
 | Bypass and line reacquisition | Pass 3/3 (SYS-07); attempt 3 of the demo | D-02 |
 | Telemetry over WiFi | Pass: 98.6% of frames received on demo day | [traceability](docs/requirements_traceability.md) FR10 |
 
