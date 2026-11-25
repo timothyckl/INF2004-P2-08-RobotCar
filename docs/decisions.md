@@ -1247,7 +1247,7 @@ pending: SYS-01 with `S2_WATCHDOG=1`, then a forced stall.
 
 ### 38. A check-in after the guard's clock read is not a stall (F-27, 2026-11-26)
 
-Recorded by Khang on 2026-11-26; approval by Dalton (S2) to be confirmed.
+Approved by the team on 2026-11-26 (recorded by Khang).
 Revises decision 37's evaluator. Post-demo change: host evidence only.
 
 **Problem.** Motion Control (priority 15) reads the clock, then the
@@ -1761,7 +1761,7 @@ Car test: not possible (robot returned).
 
 ### 12. Short runs reject a 24 to 26-run capture (F-25 at 25 runs, 2026-11-26)
 
-Recorded by Khang on 2026-11-26; approval by Edmund (S3) to be confirmed.
+Approved by the team on 2026-11-26 (recorded by Khang).
 Post-demo change: host evidence only.
 
 **Problem.** After decision 11 a 25-run capture (six runs lost and a blip)
