@@ -105,9 +105,10 @@ suite exit status 2
 suite exit status 2
 S1-U05 telemetry: FAIL
 
-## 8. evidence integrity
-a13f8c5f104f4da33b86fcb98b9ca2beeff2d976f831d1262c058c01d61ed2bb *testing/system/logs/2026-11-24_demo-dashboard-1.jsonl
-233af2f767619fa077fa8d4bbe33deb1f8ba47d915ba20c82822db0c06217c86 *testing/system/logs/2026-11-24_demo-dashboard-2.jsonl
-recorded: 2d845624...cf5c (dashboard-1), 4e450086...3441 (dashboard-2)
+## 8. evidence integrity (SHA-256 of the committed files; this Windows checkout converts
+##    their line endings to CRLF on disk, so they are hashed from git)
+2d8456242367b7f011a81f1df6d5eb6ce1ab495fd6c094fef64c803c0bf2cf5c  testing/system/logs/2026-11-24_demo-dashboard-1.jsonl
+4e45008633ee0749180ffca8f17bb0391597f1152dd417d43d95cb0a3f5b3441  testing/system/logs/2026-11-24_demo-dashboard-2.jsonl
+recorded: 2d845624...cf5c (dashboard-1), 4e450086...3441 (dashboard-2): match
 tag demo-2026-11-24 -> 4a53c23
 tag demo-2026-11-24-flashed -> a41c19c
