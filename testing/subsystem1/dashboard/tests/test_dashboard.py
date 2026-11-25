@@ -1,8 +1,8 @@
 """Unit tests for the dashboard's decoding and event logic.
 
 Run from testing/subsystem1/dashboard: python -m unittest discover tests
-Frames are synthetic, packed in the telemetry_encoder.h version 4 layout
-(and versions 2 and 3, which the decoder still reads).
+Frames are synthetic, packed in the telemetry_encoder.h version 5 layout
+(and versions 2 to 4, which the decoder still reads).
 """
 import struct
 import sys
@@ -26,7 +26,8 @@ import server  # noqa: E402
 def frame(f0=0x3F, t=1000, dist=10, f1=0x07, state=3, mode=1, fault=0,
           line=0, scan=0, side=0, left=40, right=38, heading=0, fwd=500,
           near=300, width=80, centre=-5, hump=0, letter=0, command=0,
-          cause=0, count=0, last=0, humps=0, version=4):
+          cause=0, count=0, last=0, humps=0, fault_detail=0, held=0,
+          junctions=0, version=5):
     v2_part = struct.pack("<BBIHBBBBhhhHHHhB", version, f0, t, dist, f1,
                           state | (mode << 4), fault | (line << 4),
                           scan | (side << 4), left, right, heading, fwd,
@@ -36,7 +37,10 @@ def frame(f0=0x3F, t=1000, dist=10, f1=0x07, state=3, mode=1, fault=0,
     v3_part = v2_part + bytes([letter | (command << 5), cause | (count << 4)])
     if version == 3:
         return v3_part
-    return v3_part + bytes([last, humps])
+    v4_part = v3_part + bytes([last, humps])
+    if version == 4:
+        return v4_part
+    return v4_part + bytes([fault_detail | (held << 3) | (junctions << 6)])
 
 
 class ParseTest(unittest.TestCase):
@@ -70,6 +74,33 @@ class ParseTest(unittest.TestCase):
         self.assertIn("hump_last=9 humps=3", text)
         text, _ = decoder.decode(frame(f0=0x00, last=9, humps=3), None)
         self.assertIn("hump_last=- humps=3", text)
+
+    def test_version_5_fields(self):
+        f = decoder.parse(frame(fault=2, fault_detail=7, held=2,
+                                junctions=3))
+        self.assertEqual((f["version"], f["motion_fault"], f["nav_held"],
+                          f["junction_count"]), (5, 7, 2, 3))
+        text, _ = decoder.decode(frame(fault=2, fault_detail=3, held=1,
+                                       junctions=1), None)
+        self.assertIn("detail=stall held=LEFT junctions=1", text)
+        # The car's golden frame (comms_test.c, S1-U05) decodes as built.
+        golden = bytes([5, 0xff, 0x78, 0x56, 0x34, 0x12, 0xcd, 0xab,
+                        0x0f, 0x43, 0x12, 0x21, 0x6a, 0xff, 0x40, 0x01,
+                        0xb0, 0xb9, 0xa0, 0x0f, 0x02, 0x01, 0x04, 0x03,
+                        0xfe, 0xff, 0xff, 0x99, 0xf4, 0xfe, 0x21, 0x57])
+        g = decoder.parse(golden)
+        self.assertEqual((g["motion_fault"], g["nav_held"],
+                          g["junction_count"], g["barcode_letter"],
+                          g["hump_count"]), (7, 2, 1, 25, 0x21))
+
+    def test_version_4_still_reads(self):
+        f = decoder.parse(frame(version=4, last=9, humps=3))
+        self.assertEqual((f["version"], f["hump_count"], f["motion_fault"],
+                          f["nav_held"], f["junction_count"]),
+                         (4, 3, 0, 0, 0))
+        self.assertIsNone(decoder.parse(b"\x05" + frame(version=4)[1:]))
+        text, _ = decoder.decode(frame(version=4), None)
+        self.assertNotIn("held=", text)
 
     def test_version_3_still_reads(self):
         f = decoder.parse(frame(version=3))
@@ -179,6 +210,25 @@ class ChangesTest(unittest.TestCase):
         new = self.d(f1=0x0F, letter=5, command=2, count=1, mode=2)
         self.assertIn("mode FOLLOW -> NAVIGATE (RIGHT)",
                       server.changes(old, new))
+
+    def test_v5_fault_detail_held_and_junctions(self):
+        events = server.changes(self.d(), self.d(state=5, fault=2,
+                                                 fault_detail=7))
+        self.assertIn("FAULT: motion (task stalled)", events)
+        self.assertIn("held for the next junction: RIGHT",
+                      server.changes(self.d(), self.d(held=2)))
+        self.assertEqual(server.changes(self.d(held=2), self.d()), [])
+        self.assertIn("junction confirmed",
+                      server.changes(self.d(junctions=3), self.d(junctions=0)))
+        self.assertIn("2 junctions confirmed",
+                      server.changes(self.d(junctions=1), self.d(junctions=3)))
+        d = server.describe(decoder.parse(frame(fault=2, fault_detail=3)))
+        self.assertEqual(d["motion_fault_name"], "stall")
+        self.assertIsNone(server.describe(decoder.parse(frame()))["held_name"])
+
+    def test_v4_frames_raise_no_v5_events(self):
+        self.assertEqual(server.changes(self.d(version=4),
+                                        self.d(version=4)), [])
 
     def test_fault_reported_not_cleared(self):
         self.assertIn("FAULT: motion",

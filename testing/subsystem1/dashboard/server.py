@@ -1,4 +1,4 @@
-"""Local MQTT dashboard for the P2-08 robot car (telemetry versions 2-4).
+"""Local MQTT dashboard for the P2-08 robot car (telemetry versions 2-5).
 
 Subscribes to the car's topics, decodes telemetry with the shared reference
 decoder (../decode_telemetry_v2.py), records every message to a JSON-lines
@@ -77,6 +77,15 @@ def describe(fields: dict[str, Any]) -> dict[str, Any]:
     out["stop_cause_name"] = (
         decoder.STOP.get(fields["stop_cause"], str(fields["stop_cause"]))
         if out["stop_latched"] and fields["stop_cause"] != 0 else None)
+    # Version 5: what Motion Control's fault was, the command held for the
+    # next junction, and the junction count (2 bits, wraps at 4).
+    out["motion_fault_name"] = (
+        decoder.MOTION_FAULT.get(fields["motion_fault"],
+                                 str(fields["motion_fault"]))
+        if fields["motion_fault"] != 0 else None)
+    out["held_name"] = (
+        decoder.COMMAND.get(fields["nav_held"], str(fields["nav_held"]))
+        if fields["nav_held"] != 0 else None)
     return out
 
 
@@ -131,12 +140,22 @@ def changes(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
                 else "")
         events.append(f"mode {old['mode_name']} -> {new['mode_name']}{turn}")
     if new["fault"] != old["fault"] and new["fault"] != 0:
-        events.append(f"FAULT: {new['fault_name']}")
+        detail = (f" ({new['motion_fault_name']})"
+                  if new["motion_fault_name"] else "")
+        events.append(f"FAULT: {new['fault_name']}{detail}")
     if new["barcode_valid"] and (
             not old["barcode_valid"]
             or new["barcode_count"] != old["barcode_count"]):
         events.append(f"barcode {new['barcode_text']} decoded: "
                       f"{new['command_name']}")
+    if new["version"] >= 5:
+        if new["nav_held"] != old["nav_held"] and new["held_name"]:
+            events.append(f"held for the next junction: {new['held_name']}")
+        if new["junction_count"] != old["junction_count"]:
+            # Two bits, so up to three junctions between frames are counted.
+            passed = (new["junction_count"] - old["junction_count"]) % 4
+            events.append("junction confirmed" if passed == 1
+                          else f"{passed} junctions confirmed")
     if new["stop_latched"] and not old["stop_latched"]:
         cause = new["stop_cause_name"]
         events.append(f"STOP latched: {cause}" if cause else "STOP latched")

@@ -19,7 +19,6 @@ been run on the car.
 | P5 (F-04) | FR5 | Small humps read high (the threshold part is fixed, S4 d17) | Two-point calibration on the car with the prepared tool | SYS-04 with a flat lap |
 | P6 (F-05) | FR7 | Width overstated (SYS-06) | Set the beam allowance from a measured beam, and report width only when both edges are clear | SYS-06 |
 | P7 (F-08) | NFR1, Tri2 Entry 4 | Watchdog off by default (the task check-ins and liveness guard are done, S2 d37) | Arm `S2_WATCHDOG=1` by default after one car run | One run with it armed |
-| P8 (F-06) | FR10, Tri2 Entries 11, 19 | One fault class in telemetry | Version 5 frame: fault detail and a junction bit | Dashboard and SYS-08 |
 | P9 (SYS-09) | FR1, MR1–MR10 | No full course completed in one run | A staged run plan that removes the known blockers first | SYS-09 |
 
 ### Cost and what stops each one going in now
@@ -29,12 +28,11 @@ the code.
 
 | ID | Complexity | Timing, memory, CPU | Host evidence today | What blocks it now |
 |---|---|---|---|---|
-| P3 | Step 1 is P8; step 3 is unknown until the bench test | — | S2-U58, U74 to U80 | Junction shape unknown; needs a bench drive with the console captured |
+| P3 | Step 1 done (telemetry v5, S1 d8); step 3 is unknown until the bench test | — | S2-U58, U74 to U80 | Junction shape unknown; needs a bench drive with the console captured |
 | P4 | Hardware: one sensor, one ADC input. No free ADC input is left (ADC3/GP29 is the radio), so it needs a digital sensor on a spare GPIO or a multiplexer | One more read per S3 pass | None | Needs new hardware and wiring |
 | P5 | Code done (offset in `s4_config.h`, tool `fit_hump_calibration.py`); the work left is measurement | None | S4-U41 to U44 | Needs reference humps of 5, 10 and 15 mm and a flat lap on the car |
 | P6 | Medium: allowance value, a validity rule, optional 2.5° fine steps | 2.5° steps add servo moves and echoes: a longer scan | S5-U72 | Needs beam measurements with the real box |
 | P7 | Code done (`task_health.c`, `S2_WATCHDOG` make option); the default is one line in the makefile | 20 bytes of RAM; a few loads per 10 ms | S2-U81, U82, INT-15 | A wrong limit would stop or reset the car mid-run; needs one armed car run first (S2 d28) |
-| P8 | Medium: encoder, decoder, dashboard and golden frame | +1 byte per frame (8 bit/s) | S1-U05 pattern | Changes the frame format; dashboard and SYS-08 must be re-run |
 | P9 | Process, no code | — | — | Needs the course and track time |
 
 ## P3 — Junction detection and the missing turn (F-02, F-03)
@@ -63,8 +61,8 @@ shape of the demo junction was not recorded.
 
 **Proposed changes, in order.**
 
-1. Add a "junction confirmed" bit and the held command to telemetry (P8),
-   so the next missed turn shows why.
+1. Done: telemetry version 5 carries the held command and a junction
+   count (S1 decision 8), so the next missed turn shows why.
 2. Bench test: drive the car slowly over a copy of the course junction with
    the console captured; record what the two sensors report.
 3. Only if a one-sided branch is confirmed: treat "one sensor black for
@@ -189,32 +187,6 @@ laps) with the console captured and confirm no `health:` line and no
 reset; then force a stall of each task in a test build and confirm the
 motors stop and the board resets. Only then make 1 the default.
 
-## P8 — Fault detail and junction events in telemetry (F-06)
-
-**Where.** `app_program/subsystem1/telemetry_encoder.c`, `robot_state.c`,
-`testing/subsystem1/dashboard/`.
-
-**Problem.** The frame carries one 4-bit fault class. On demo day four
-motion faults latched STOP correctly, but whether each was a stall, an
-encoder fault or a timeout is unknown. The junction and hold messages
-(P3) are console-only.
-
-**Proposed format (version 5, 32 bytes).** Append one byte: bits 0–2 the
-motion fault detail (`motion_status_t.fault`, 0..7), bit 3 junction
-confirmed since the last frame, bits 4–6 the held barcode command
-(`S2_NAV_*`, 0..4), bit 7 reserved. One byte per second, 8 bit/s more. The
-dashboard and `decode_telemetry_v2.py` already read older versions by
-length and version byte, so versions 2 to 4 still decode. The junction bit
-is set by the controller and cleared when the snapshot is taken, under the
-existing state mutex, so no event is lost between frames.
-
-**Not proposed.** A full independent fault bitmask (Tribunal 2 Entries 11
-and 19) adds more bits than the evidence needs today; Tribunal 2 asked for
-analysis, not implementation.
-
-**Acceptance.** S1-U05 golden frame for version 5; dashboard tests; SYS-08
-shows the detail on a forced stall.
-
 ## P9 — A full course in one run (SYS-09)
 
 **Where it stands.** Every mission element has worked on the car on its
@@ -224,11 +196,11 @@ times and measured the hump, but did not turn at the junction (section 4
 of the [demo report](DEMO_REPORT_2026-11-24.md)).
 
 **Why it has not been met.** The run depends on every element working in
-one go, so the blockers add up: the junction turn (P3), barcode reads
+one go, so the blockers add up: the junction turn (P3: the time limit is fixed; one-sided junctions remain), barcode reads
 below 4 of 5 (F-01 and F-18 are fixed, car test pending) and line loss going unnoticed (P4). There is no
 separate root cause to fix.
 
-**Proposed plan.** Apply and car-test P8, then the 10 ms sampling and F-18 fixes, then do the P3
+**Proposed plan.** Car-test telemetry version 5, then the 10 ms sampling and F-18 fixes, then do the P3
 bench test, one at a time, each with SYS-01 re-run to show line following
 is unchanged. Then three full-course runs with the console captured and
 the time recorded.

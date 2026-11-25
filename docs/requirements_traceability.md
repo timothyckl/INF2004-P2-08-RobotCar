@@ -246,7 +246,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Minimum bits for every field; packed where appropriate; compact binary MQTT; validity flags; independent faults as one bit each in a shared bitmask; race-free shared data |
 | Source | `subsystem1/telemetry_encoder.c`; interface records in `subsystem2/subsystem2.h`; [data_widths.md](data_widths.md) |
 | Tests | S1-U05; S2-U39 (record sizes); analysis in [data_widths.md](data_widths.md) |
-| Result | 31-byte binary frame with validity flags and sized fields. The independent fault bitmask is **not implemented**: one 4-bit fault code is sent (Tribunal 2 Entries 11, 19) |
+| Result | 32-byte binary frame (version 5) with validity flags and sized fields. One 4-bit fault class plus, since S1 decision 8, the 3-bit motion fault detail; the independent fault bitmask is **not implemented** (Tribunal 2 Entries 11, 19) |
 | Status | **Partial** |
 
 ### NFR4 — motion accuracy
@@ -395,7 +395,7 @@ against each, with where the evidence is:
 | Hump measurement capability | A hump detected on every assessed attempt (crossing count not checked); within our ±2 mm criterion on every recorded run | Partial | 6 mm minimum reading; no flat lap |
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; a failing or crashing host test fails the build; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08); stack margins calculated, not measured (F-24) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |
-| Resource efficiency | No floating point; about 2 KB application RAM; 31-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |
+| Resource efficiency | No floating point; about 2 KB application RAM; 32-byte frame; static stack estimate for every task; [data widths](data_widths.md) | Strong | Power and stack high-water marks not measured |
 | Team integration quality | 14 active interfaces (IF-06 to IF-21) in `TEAM.md` section 5; INT-04 to INT-07 pass; one mission image | Strong | — |
 | Demonstration performance | [Demo report](DEMO_REPORT_2026-11-24.md) | Partial | See the report |
 

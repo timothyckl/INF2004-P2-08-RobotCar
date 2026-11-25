@@ -209,6 +209,13 @@ nav_control_abort (nav_control_t * p_nav)
     }
 }
 
+uint8_t
+nav_control_held (nav_control_t const * p_nav)
+{
+    return (((NULL != p_nav) && (NAV_CONTROL_PENDING == p_nav->state))
+            ? p_nav->command : NAV_CONTROL_CMD_NONE);
+}
+
 bool
 nav_control_manoeuvring (nav_control_t const * p_nav)
 {

@@ -191,7 +191,11 @@ static void connection_cb (mqtt_client_t * p_client, void * p_arg,
 
         g_connecting = false;
         sys_untimeout(retry_timeout, NULL);
-        tm_printf((UB *) "mqtt: connected to " MQTT_BROKER_IP "\n");
+        /* The telemetry version identifies the firmware: version 5 is the
+           post-demo image; the demonstrated one sent version 4. */
+        tm_printf((UB *) "mqtt: connected to " MQTT_BROKER_IP
+                  " (telemetry version %u)\n",
+                  (unsigned int) TELEMETRY_ENCODER_VERSION);
 
         if (mqtt_service_init())
         {

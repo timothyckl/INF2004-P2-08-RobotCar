@@ -68,8 +68,8 @@ failures, is kept in the test logs.
 | Lecture 5 Requirements and design | Requirement review (shall, tolerance, verifiable, no design in the requirement) and requirement-to-box/arrow IDs ([traceability](docs/requirements_traceability.md) §10); sequence diagrams and statecharts ([architecture](docs/final_architecture.md) §4, §5) |
 | Lecture 6 Traceability and testing | [traceability](docs/requirements_traceability.md); unit, integration, system, boundary, negative and fault-injection tests; coverage |
 | W9 Sensor fusion | Encoder speed gates IMU pitch; encoder travel times the junction step; line sensors confirm the end of a bypass (no formal filter) |
-| W10 Optimisations | Minimum bit widths and a packed 31-byte frame; no floating point; unused code removed at link time; measured flash and RAM and a static stack estimate ([data widths](docs/data_widths.md), [architecture](docs/final_architecture.md) §8) |
-| W11 Edge computing | All sensing, decisions and safety on the Pico; only a 31-byte summary leaves the car; it keeps driving with the link lost (SYS-01) ([architecture](docs/final_architecture.md) §9) |
+| W10 Optimisations | Minimum bit widths and a packed 32-byte frame (version 5; 31 bytes in the demo); no floating point; unused code removed at link time; measured flash and RAM and a static stack estimate ([data widths](docs/data_widths.md), [architecture](docs/final_architecture.md) §8) |
+| W11 Edge computing | All sensing, decisions and safety on the Pico; only a 32-byte summary leaves the car; it keeps driving with the link lost (SYS-01) ([architecture](docs/final_architecture.md) §9) |
 
 ## Tests
 

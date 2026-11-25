@@ -18,20 +18,37 @@ not measured.
 
 | Data | Packed now? | Size now | Minimum (calculated) |
 |---|---|---|---|
-| Telemetry frame v4 (MQTT, since 2026-11-24, S1 decision 7) | **Yes**, masks and shifts | 31 bytes per frame | 29 bytes (same method: two 12-bit pairs left byte-aligned) |
+| Telemetry frame v5 (MQTT, since 2026-11-26, S1 decision 8) | **Yes**, masks and shifts | 32 bytes per frame | 30 bytes (same method: two 12-bit pairs left byte-aligned) |
+| Telemetry frame v4 (the demo, 2026-11-24, S1 decision 7) | **Yes** | 31 bytes | 29 bytes |
 | Same data unpacked (`telemetry_encoder_snapshot_t`) | reference | 48 bytes (44 in v3) | — |
 | Telemetry frame v3 (MQTT, until 2026-11-24) | **Yes** | 29 bytes | 27 bytes |
 | Interface queue records (IF-06, 09, 11, 21, motion_q) | No, whole-byte fields | 8 to 16 bytes each, 392 bytes of queue memory | about 300 bytes of queue memory |
 | `s2_robot_state_t` (shared state) | No | 32 bytes | 21 bytes |
 | Barcode capture (`s3_capture_t`) | No | 264 bytes (on the initial task's stack) | 136 bytes with 16-bit ms runs |
 
-The telemetry frame, the only data sent off the car, is packed: 31 bytes
-against 48 for the same fields in their C types, 35% smaller (version 3:
-29 against 44). The internal
+The telemetry frame, the only data sent off the car, is packed: 32 bytes
+against 52 for the same fields in their C types, 38% smaller (version 4:
+31 against 48; version 3: 29 against 44). The internal
 records keep whole-byte fields; packing all of them would save about 220
 bytes of RAM in total (below).
 
-## Telemetry frame version 4 (31 bytes)
+## Telemetry frame version 5 (32 bytes)
+
+Version 5 (S1 decision 8, post-demo) is version 4 with one byte appended;
+bytes 0 to 30 keep their meanings, so version 2 to 4 decoders still read
+the first part.
+
+| Byte, bits | Field | Range | Bits needed | Bits used |
+|---|---|---|---|---|
+| 31, 0-2 | motion fault detail (while the class is motion) | `MOTION_FAULT_*` 0..7 | 3 | 3 |
+| 31, 3-5 | command held for the next junction | `S2_NAV_*` 0..4 (7 invalid) | 3 | 3 |
+| 31, 6-7 | junctions confirmed, low bits | wraps; at most one per 100 ms+ | 2 | 2 |
+
+A count of 2 bits cannot lose a junction at one frame per second: four
+would have to be confirmed within a second, and each needs both sensors
+on black for 100 ms plus the crossing. The byte adds 8 bit/s.
+
+## Telemetry frame version 4 (31 bytes, the demo)
 
 Version 4 is version 3 with two bytes appended and two flag bits used
 (S1 decision 7); bytes 0 to 28 keep their meanings, so version 2 and 3
@@ -166,7 +183,7 @@ in the headers named.
 
 ## Shared state
 
-### `s2_robot_state_t` (`state_mutex`) — 32 bytes, 166 bits needed
+### `s2_robot_state_t` (`state_mutex`) — 36 bytes (32 until S1 d8), 180 bits needed
 
 | Field | Range | Bits needed | Bits used |
 |---|---|---|---|
@@ -187,6 +204,9 @@ in the headers named.
 | `barcode_command` | `S2_NAV_*` 0..4 | 3 | 8 |
 | `barcode_count` | wraps at 256 | 8 | 8 |
 | `stop_cause` | `S2_STOP_*` 0..11 | 4 | 8 |
+| `motion_fault` (S1 d8) | `MOTION_FAULT_*` 0..7 | 3 | 8 |
+| `nav_held` (S1 d8) | `S2_NAV_*` 0..4 | 3 | 8 |
+| `junction_count` (S1 d8) | wraps at 256 | 8 | 8 |
 
 Other measured snapshots, not packed: `motion_status_t` 28 bytes,
 `s4_terrain_result_t` 14 bytes, `scan_telemetry_t` 28 bytes,

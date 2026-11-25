@@ -75,7 +75,8 @@ INT_SRC := s2_integration_main.c stubs/kernel_model.c \
            $(APP)/subsystem2/motion_logic.c \
            $(APP)/subsystem2/pid.c \
            $(APP)/subsystem2/odometry.c \
-           $(APP)/subsystem3/s3_ir.c
+           $(APP)/subsystem3/s3_ir.c \
+           $(APP)/subsystem1/telemetry_encoder.c
 
 S5_SRC  := $(APP)/subsystem5/src/obstacle_test.c \
            $(APP)/subsystem5/src/scan_test_adapter.c \

@@ -287,6 +287,47 @@ both edges), the S5 telemetry view test and the dashboard unit tests pass
 on the host. S2-U71/U72 are updated but run only in the `TEST=1` image,
 which builds without warnings, as does the mission image.
 
+### 8. Telemetry version 5: fault detail, held command, junctions (2026-11-26)
+
+Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change.
+
+**Problem.** On demo day four motion faults latched STOP, but the frame
+carried only the class "motion", so whether each was a stall, an encoder
+fault or a timeout is unknown (review F-06). A barcode turn that never
+started could not be explained either: the held command and the junction
+confirmation were printed only on the USB console (F-03).
+
+**Decision.** Version 5 is version 4 with one byte appended (32 bytes):
+
+| Bits of byte 31 | Field | Range | Source |
+|---|---|---|---|
+| 0-2 | motion fault detail, while the fault class is motion, else 0 | `MOTION_FAULT_*` 0..7 (7 = a task stalled, S2 d37) | `motion_status_t.fault` |
+| 3-5 | command held for the next junction | `S2_NAV_*` 0..4; 7 invalid | `nav_control_held()` |
+| 6-7 | junctions confirmed while following, low 2 bits | wraps | controller count |
+
+The junction field is a count, not a "junction since the last frame" bit:
+a bit would have to be cleared by the WiFi task when it reads the state,
+which the controller writes, while a count has one writer and cannot lose
+an event at 1 Hz (it would need four junctions in one second). Each field
+uses the fewest bits its range needs; no existing byte changes, so
+version 2 to 4 decoders still read bytes 0 to 30, and the decoder and
+dashboard read every version by its length and version byte. One byte per
+second is 8 bit/s more. An independent fault bitmask (Tribunal 2 Entries
+11, 19) is still not sent: the detail answers the demo's question, and
+only one fault latches at a time.
+
+**Producers.** The controller fills `motion_fault`, `nav_held` and
+`junction_count` in `s2_robot_state_t` each period (36 bytes, was 32);
+`s2_telemetry_from_state()` copies them into the snapshot (52 bytes, was
+48), and `telemetry_encoder.c` packs byte 31.
+
+**Verification.** S1-U05 (golden version 5 frame; out-of-range detail and
+held command sent as 7; count low bits), INT-16 (the real controller's
+state through `robot_read_telemetry()` and the encoder: STRAIGHT held,
+then 1 junction, then detail 7 after a stalled task), dashboard tests (v5
+fields, events, the car's golden frame decodes; v4 frames raise no v5
+events). Car test pending: SYS-08 with a forced fault and a junction.
+
 ## Subsystem 2 — Vehicle and Motion Control (Dalton)
 
 ### 1. Encoder and IMU pins

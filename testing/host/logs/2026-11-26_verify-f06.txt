@@ -1,0 +1,79 @@
+# Verification, 2026-11-26 00:12 +0800, main at 24aaf7a plus uncommitted changes
+# host: Apple clang version 17.0.0 (clang-1700.6.4.2); target: arm-none-eabi-gcc (Arm GNU Toolchain 15.3.Rel1 (Build arm-15.149)) 15.3.1 20260627
+
+## 1. make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] subsystem2 SUMMARY 54 passed, 0 failed
+noise blip: 4524 cases, 0 wrong letters, 0 rejected
+damaged end plus blip: 39 of 702 cases gave a wrong letter
+KNOWN DEFECT (F-25): a blip in a capture with a damaged end is never wrong
+car captures replayed: 19, decoded: 2
+779 checks, 0 failures, 1 known defects
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 38 passed, 0 failed
+[TEST] S4-U44 PASS  2026-11-13_s4-h08-gated.txt: car [11, 10, 10, 9], replay [11, 10, 10, 9]
+[TEST] S4-U44 PASS  2026-11-13_s4-if18.txt: car [9, 9], replay [9, 9]
+[TEST] S4-U44 PASS  2026-11-17_s3-nav-drive-2.txt: car [], replay []
+[TEST] S4-U44 PASS  2026-11-17_s3-nav-drive-3.txt: car [], replay []
+[TEST] S4-U44 PASS  2026-11-17_s3-nav-drive-4.txt: car [], replay []
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] s2 integration SUMMARY 30 passed, 0 failed
+[HOST] all suites passed
+(exit status 0)
+
+## 2. dashboard unit tests
+Ran 27 tests in 0.001s
+
+OK
+(exit status 0)
+
+## 3. builds (make -B NET=lwip MQTT=1 S3_NAV_F=0 <option>)
+TEST=1: exit status 0, warnings 0
+TEST=1 S3_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S3_LINE_TEST=1: exit status 0, warnings 0
+TEST=1 S2_CAL_TEST=1: exit status 0, warnings 0
+TEST=1 S2_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S4_HW_TEST=1: exit status 0, warnings 0
+S2_MOTION_LOG=1: exit status 0, warnings 0
+S5_RANGE_DIAG=1: exit status 0, warnings 0
+S4_RAW_LOG=1: exit status 0, warnings 0
+S2_WATCHDOG=1: exit status 0, warnings 0
+mission: exit status 0, warnings 0
+size (text data bss dec hex file):  375818	    132	  80004	 455954	  6f512	build_make/mtk3pico_smp0_usb_cdc_wifi_lwip_mqtt.elf
+mission UF2 SHA-256: 11f68855ba0a140c3f3920e8dbfe5c0744eee10ca476e2dc0e54eba39c2fb228
+
+## 4. python3 testing/host/target_static_check.py
+
+== strict warnings: 1 in application code, 121 in third-party headers
+  app_program/subsystem2/task_motion.c:450: cast discards 'const' qualifier from pointer target type
+
+== gcc -fanalyzer: 1 in application code, 0 in third-party headers
+  app_program/subsystem3/s3_nav.c:49: buffer overflow [CWE-787]
+
+## 5. BARR-C checkers
+      2  1.6a cast to UB * for tm_printf (interface-required)
+    508  1.6a cast with an associated comment (production)
+     76  1.6a cast with an associated comment (test)
+      0  1.7a auto
+      0  1.7b register
+      0  1.7c goto
+      7  1.7d continue (preferred practice)
+      0  3.5a tab character
+      0  4.2 header without an include guard
+     12  6.2a function over 100 lines
+      4  7.1e variable name under 3 characters (production)
+    142  7.1e variable name under 3 characters (test)
+      4  7.1k pointer variable not named p_...
+      1  7.1m bool variable not named b_... (production)
+BARR-C check passed: 46 subsystem 5 files.
+
+## 6. evidence integrity
+2d8456242367b7f011a81f1df6d5eb6ce1ab495fd6c094fef64c803c0bf2cf5c  testing/system/logs/2026-11-24_demo-dashboard-1.jsonl
+4e45008633ee0749180ffca8f17bb0391597f1152dd417d43d95cb0a3f5b3441  testing/system/logs/2026-11-24_demo-dashboard-2.jsonl
+recorded: 2d845624...cf5c (dashboard-1), 4e450086...3441 (dashboard-2)
+tags: demo-2026-11-24 -> 4a53c23, demo-2026-11-24-flashed -> a41c19c
+
+VERIFY: all tests and builds passed with 0 warnings

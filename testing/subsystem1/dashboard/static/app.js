@@ -33,7 +33,9 @@ function render(s) {
     set("state", t.state_name,
         t.state_name === "FAULT" ? "off" : t.state_name === "RUNNING" ? "on" : "");
     set("mode", t.mode_name);
-    set("fault", t.fault_name, t.fault === 0 ? "" : "off");
+    // Version 5 adds what Motion Control's fault was (stall, task...).
+    set("fault", t.motion_fault_name ? `${t.fault_name} (${t.motion_fault_name})`
+        : t.fault_name, t.fault === 0 ? "" : "off");
     set("latched", t.stop_latched ? "LATCHED" : "clear",
         t.stop_latched ? "off" : "on");
     set("cause", t.stop_cause_name ? t.stop_cause_name : "");
@@ -42,6 +44,10 @@ function render(s) {
     set("barcode", t.barcode_valid ? t.barcode_text : DASH);
     set("command", t.barcode_valid ? t.command_name : DASH);
     set("barcount", t.barcode_valid ? `${t.barcode_count} (mod 16)` : DASH);
+    // Version 5: the command waiting for the next junction, and junctions
+    // confirmed (2 bits on the wire, so it wraps at 4).
+    set("held", t.version >= 5 ? (t.held_name ? t.held_name : "none") : DASH);
+    set("junctions", t.version >= 5 ? `${t.junction_count} (mod 4)` : DASH);
 
     set("left", t.motion_valid ? `${t.left_mm_s} mm/s` : DASH);
     set("right", t.motion_valid ? `${t.right_mm_s} mm/s` : DASH);

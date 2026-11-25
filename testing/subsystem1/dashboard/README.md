@@ -10,18 +10,20 @@ Fields whose validity flag is clear are shown as "—", not as zero.
 
 | Panel | Contents | Source |
 |---|---|---|
-| Header | broker link, frame age, state, mode, fault, STOP latched and its cause; START / STOP / RESET buttons | telemetry, command topic |
+| Header | broker link, frame age, state, mode, fault (with the motion fault detail, version 5), STOP latched and its cause; START / STOP / RESET buttons | telemetry, command topic |
 | Motion (S2) | left/right wheel speed, distance, heading, last 60 s of wheel speeds | telemetry |
-| Line & barcode (S3) | which front sensor is on black; last barcode letter, its command, letters read | telemetry (barcode: version 3) |
+| Line & barcode (S3) | which front sensor is on black; last barcode letter, its command, letters read; command held for the next junction and junctions confirmed | telemetry (barcode: version 3; held and junctions: version 5) |
 | Barcode letters | which letter means left, right, straight and U-turn; Send to car, A–D (fills in the boot letters) | command topic (S1 decision 6) |
 | Terrain (S4) | highest hump of the run, last hump, humps measured | telemetry (last hump and count: version 4) |
 | Obstacle (S5) | forward range, last scan result and bypass side, nearest point, width (a raw width, marked "raw, edge missing", when an edge was not found), centre offset | telemetry (raw width: version 4) |
-| Events | state, mode (with the barcode command on NAVIGATE), fault, STOP and its cause, each barcode read, scan and hump changes, commands sent, broker link | derived |
+| Events | state, mode (with the barcode command on NAVIGATE), fault (with its detail), STOP and its cause, each barcode read, a command held, each junction confirmed, scan and hump changes, commands sent, broker link | derived |
 | Link | good/bad frames, heartbeat, the car's telemetry counters, session log file | heartbeat, stats |
 
-A version 2 car shows no barcode and no stop cause. The junction outcome
-(turn finished, expired or failed) is not in telemetry; a failed turn
-shows as the stop cause "junction".
+A version 2 car shows no barcode and no stop cause; a version 4 car (the
+demo) shows no fault detail, held command or junction count. A command no
+longer expires (S2 decision 36); a failed turn shows as the stop cause
+"junction", and from version 5 each confirmed junction is an event, so a
+held command that is never used shows as "held" with no junction after it.
 
 The buttons only publish `START`, `STOP` or `RESET` to the command topic.
 The Vehicle Controller still decides whether to act, exactly as for the GP20

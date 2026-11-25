@@ -215,6 +215,12 @@ typedef struct
     uint8_t  barcode_command;   /* its S2_NAV_*, 0 if none is mapped */
     uint8_t  barcode_count;     /* letters decoded, wraps at 256 */
     uint8_t  stop_cause;        /* S2_STOP_* */
+    uint8_t  motion_fault;      /* MOTION_FAULT_* 0..7 while fault is
+                                   S2_FAULT_MOTION, else 0 (S1 d8) */
+    uint8_t  nav_held;          /* S2_NAV_* held for the next junction,
+                                   0 none (S1 d8) */
+    uint8_t  junction_count;    /* junctions confirmed while following,
+                                   wraps at 256 (S1 d8) */
 } s2_robot_state_t;
 
 ER s2_get_robot_state (s2_robot_state_t * p_state);

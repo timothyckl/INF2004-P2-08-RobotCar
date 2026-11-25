@@ -122,6 +122,10 @@ void nav_control_sent(nav_control_t * p_nav, uint16_t cmd_id);
 /** Drop any held command or manoeuvre (STOP, scan, not running). */
 void nav_control_abort(nav_control_t * p_nav);
 
+/** The command held for the next junction (NAV_CONTROL_CMD_*), or
+ * NAV_CONTROL_CMD_NONE when none is held or a manoeuvre runs. */
+uint8_t nav_control_held(nav_control_t const * p_nav);
+
 /** True from the junction stop until the car is still on the new line. */
 bool nav_control_manoeuvring(nav_control_t const * p_nav);
 

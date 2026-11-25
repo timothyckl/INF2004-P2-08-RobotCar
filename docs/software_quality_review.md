@@ -45,7 +45,7 @@ maintainability or documentation.
 | F-03 | S2 | No turn started after RIGHT was decoded on demo day | High | One cause found and **applied** (S2 d36): the 60 s hold expired at the obstacle; car test pending |
 | F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | **Partly applied** (S4 d17): detection threshold fixed; calibration needs the car |
 | F-05 | S5 | Obstacle width is overstated by the ultrasonic beam (SYS-06) | Medium | Explained; proposal |
-| F-06 | S1/S2 | Telemetry carries one fault class; the detail behind the four demo motion faults was lost | Medium | Proposal |
+| F-06 | S1/S2 | Telemetry carries one fault class; the detail behind the four demo motion faults was lost | Medium | **Applied** (S1 d8): version 5 frame; car test pending |
 | F-07 | Build | Subsystems 1 to 4 were built with no warning flags | Medium | **Applied** (S2 d34) |
 | F-08 | S2 | Watchdog off in the mission image | Medium | **Partly applied** (S2 d37): liveness guard on; watchdog armed only with `S2_WATCHDOG=1` until a car run |
 | F-09 | S3 | Barcode white limits measured at the old sensor height; baseline pinned at its upper limit on demo day | Low | Proposal |
@@ -78,7 +78,8 @@ RESET go through `remote_q`, and telemetry is read as a snapshot
 (`robot_read_telemetry()`) under a mutex with `TMO_POL`, so a slow network
 can never block a control task. `command_parser.c` parses commands with a
 fixed buffer and rejects anything malformed (S1-U04, 100% line coverage).
-`telemetry_encoder.c` packs a fixed 31-byte binary frame (version 4) with
+`telemetry_encoder.c` packs a fixed 32-byte binary frame (version 5 since
+2026-11-26; version 4, 31 bytes, in the demo) with
 validity flags, so the dashboard shows "—" rather than a stale or invalid
 value. WiFi rejoins every 5 s and MQTT reconnects every 3 s; a reconnection
 never restarts motion (S2-U52, S1-H03).
@@ -87,13 +88,17 @@ never restarts motion (S2-U52, S1-H03).
 (1863 of 1890) and the car's own counters showed 23 refused sends (`err
 -1`, lwIP buffer full). The loss is reported, not hidden.
 
-**F-06 (Medium) — one fault class only.** The frame carries a 4-bit fault
-class (`S2_FAULT_MOTION`, `S2_FAULT_SCAN`, …). The detail (stall, encoder,
-timeout) is printed on the console only. On demo day four motion faults
-(13:18:12, 13:41:22, 13:59:26, 14:43:33) latched STOP correctly, but with
-no console captured their cause is unknown. *Proposal:* add the motion
-fault detail (3 bits) or the independent fault bitmask from Tribunal 2
-Entries 11 and 19 in a version 5 frame (one extra byte).
+**F-06 (Medium, applied) — one fault class only.** The version 4 frame
+carried a 4-bit fault class (`S2_FAULT_MOTION`, `S2_FAULT_SCAN`, …); the
+detail (stall, encoder, timeout) was printed on the console only, so the
+cause of the four demo-day motion faults (13:18:12, 13:41:22, 13:59:26,
+14:43:33) is unknown. *Applied* (S1 decision 8): version 5 (32 bytes)
+appends one byte with the 3-bit motion fault detail, the command held for
+the next junction and a 2-bit junction count, so a missed turn now shows
+whether a command was held and whether a junction was confirmed (F-03).
+The dashboard and decoder read versions 2 to 5. S1-U05 (golden frame),
+INT-16 (from the real controller state) and the dashboard tests check
+it; SYS-08 on the car is pending.
 
 **F-11 (Low, applied) — duplicate heartbeats.** The dashboard subscribed
 to `<prefix>/#` and to `<prefix>/heartbeat`, so the broker delivered each
@@ -461,7 +466,9 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `f63a20a` | Host integration suite for the Vehicle Controller (INT-08 to INT-14): the real controller with S1, S3, S4 and S5 interfaces on a kernel model; `controller_cycle()` extracted | None (structure only; +216 bytes for the call) | 20 integration checks pass; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-int-harness.txt)) |
 | `b5d380e` | F-03, F-10: a held barcode command waits for the next junction with no time limit (S2 d36); INT-11 | **Yes**: a command is no longer dropped after 60 s. Car test pending (SYS-03) | S2 52/52; 23 integration checks; INT-11 fails with the limit put back ([mutations](../testing/host/logs/2026-11-25_int-mutations.txt), [log](../testing/host/logs/2026-11-25_verify-f03.txt)) |
 | `26842cc` | F-04 (part), F-15: hump detection on the uncalibrated height, FOLLOW only; calibration offset and fitting tool; settings in `s4_config.h`; S4 replay tool (S4 d17) | **Yes**: detection starts at 6 mm of measured height (was 7.05 mm) and not during junction turns. Car test pending (calibration, SYS-04) | S4 38/38 and S4-U44 (six logged drives give the car's own readings, no new hump); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f04.txt), [analysis](../testing/subsystem4/logs/2026-11-25_s4-replay-analysis.txt)) |
-| (F-08 commit) | F-08 (part): task check-ins and a liveness guard on Motion Control; watchdog fed only while healthy; `S2_WATCHDOG` make option (S2 d37) | **Yes**: a task stalled past its limit stops the motors (Fault). Watchdog still off by default. Car test pending | S2 54/54, integration 27/27, two mutations caught; every build incl. `S2_WATCHDOG=1` 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f08.txt)) |
+| `7c040f9` | F-08 (part): task check-ins and a liveness guard on Motion Control; watchdog fed only while healthy; `S2_WATCHDOG` make option (S2 d37) | **Yes**: a task stalled past its limit stops the motors (Fault). Watchdog still off by default. Car test pending | S2 54/54, integration 27/27, two mutations caught; every build incl. `S2_WATCHDOG=1` 0 warnings ([log](../testing/host/logs/2026-11-26_verify-f08.txt)) |
+| `24aaf7a` | F-05 re-assessed: width accuracy and confirmation blocked on car data (no firmware change) | None | Synthetic sweep ([log](../testing/subsystem5/logs/2026-11-26_s5-width-feasibility.txt)) |
+| (F-06 commit) | F-06: telemetry version 5 (fault detail, held command, junction count) end to end: firmware, decoder, dashboard (S1 d8) | **Yes**: 32-byte frame. Car test pending (SYS-08) | S1 4/4, dashboard 27/27, integration 30/30 incl. INT-16 ([log](../testing/host/logs/2026-11-26_verify-f06.txt)) |
 
 ## 10. Proposed changes not applied
 
@@ -477,8 +484,7 @@ records the decision to apply post-demo changes.)
 5. P5 (F-04): two-point hump calibration on the car (procedure and tool ready) and a flat lap; SYS-04.
 6. P6 (F-05): measured beam allowance; SYS-06.
 7. P7 (F-08): one car run with `S2_WATCHDOG=1`, then arm it by default.
-8. P8 (F-06): version 5 frame with fault detail and a junction bit.
 9. F-09, F-16: re-measure barcode white; show the letter table on the dashboard.
-10. P9 (SYS-09): a staged plan to a full course in one run, after P8, P1, P2 and P3.
+10. P9 (SYS-09): a staged plan to a full course in one run, now that F-01, F-03, F-06 and F-18 are applied.
 11. F-21: range-check the motion tolerances in `motion_init()`.
 12. F-24: measure the stack high-water marks on the car.

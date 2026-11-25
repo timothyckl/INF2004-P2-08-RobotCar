@@ -10,7 +10,7 @@ The defaults below may be overridden in `config/wifi_secrets.h`:
 | Direction | Topic | QoS | Retained | Payload |
 |---|---|---:|---:|---|
 | Broker to robot | `p2-08/p2-08-car-01/command` | 1 | no | Exactly `START`, `STOP` or `RESET`, or a barcode letter assignment `L=A`, `R=A`, `S=A` or `U=A` (any letter `A`–`Z`; S1 decision 6) |
-| Robot to broker | `p2-08/p2-08-car-01/telemetry` | 0 | no | 31-byte binary frame, version 4 |
+| Robot to broker | `p2-08/p2-08-car-01/telemetry` | 0 | no | 32-byte binary frame, version 5 (S1 decision 8; the demo ran version 4) |
 | Robot to broker | `p2-08/p2-08-car-01/heartbeat` | 0 | no | ASCII `hb N`, every 5 s |
 | Robot to broker | `p2-08/p2-08-car-01/stats` | 0 | no | ASCII telemetry counters since boot, every 10 s (S1 decision 4) |
 

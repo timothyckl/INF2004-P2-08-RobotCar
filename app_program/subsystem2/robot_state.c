@@ -26,7 +26,9 @@ s2_robot_state_create (void)
                                    S2_FAULT_NONE, S2_RS_STOP_LATCHED,
                                    0u, S2_RESULT_NONE, 0u, S2_MODE_NONE,
                                    S2_LINE_STOP, 0, 0, 0, '\0', S2_NAV_NONE,
-                                   0u, S2_STOP_BOOT};
+                                   0u, S2_STOP_BOOT,
+                                   0u, S2_NAV_NONE, 0u};  /* no motion
+                                   fault, nothing held, no junction */
 
     g_state      = boot;
     cmtx.mtxatr  = TA_INHERIT;
@@ -245,6 +247,10 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
     p_out->barcode_count  = b_barcode ? p_state->barcode_count : 0u;
     p_out->stop_cause     = (0u != (flag_bits & S2_RS_STOP_LATCHED))
                             ? p_state->stop_cause : S2_STOP_NONE;
+    p_out->motion_fault   = (S2_FAULT_MOTION == p_state->fault)
+                            ? p_state->motion_fault : 0u;
+    p_out->nav_held       = p_state->nav_held;
+    p_out->junction_count = p_state->junction_count;
 }
 
 /* End of file. */

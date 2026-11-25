@@ -23,7 +23,7 @@ and shifts where appropriate."
 
 | Area | Tribunal 1 position | Final implementation | Evidence | Status |
 |---|---|---|---|---|
-| Telemetry (Buddy 1) | Binary summaries with agreed ranges, bit positions and byte order; raw data stays local | 31-byte little-endian frame, codes packed two per byte with masks and shifts, 5-bit letter + 3-bit command, validity flags (S1 d1, d5, d7) | [data_widths.md](data_widths.md) field table; S1-U05 golden frame; 98.6% of frames received on demo day | **Closed** |
+| Telemetry (Buddy 1) | Binary summaries with agreed ranges, bit positions and byte order; raw data stays local | 32-byte little-endian frame (version 5), codes packed two per byte with masks and shifts, 5-bit letter + 3-bit command, validity flags (S1 d1, d5, d7) | [data_widths.md](data_widths.md) field table; S1-U05 golden frame; 98.6% of frames received on demo day | **Closed** |
 | Internal records and shared state (Buddy 2) | Reduce fields while keeping range, STOP priority and safe concurrency | Kept whole-byte fields. Packing every record would save about 220 bytes (under 0.1% of SRAM) but add pack/unpack work in the 10 ms loops and lengthen mutex hold time | Calculated and measured sizes in [data_widths.md](data_widths.md) | **Closed as a justified deviation** |
 | Barcode bar durations (Buddy 3) | 8-bit millisecond durations, if the car stays above about 50 mm/s | Rejected: the car crosses barcodes at 40 mm/s and runs reach 2.5 s, which needs 12 bits in ms. Kept as 32-bit µs; 16-bit ms is the measured-safe option | [data_widths.md](data_widths.md) | **Closed as a justified deviation** |
 | Hump data (Buddy 4) | Height in mm with validity, range from tests | 8-bit mm, saturating at 255, with a validity flag; last hump and count added in v4 | S2-U71, S4-U40; demo readings | **Closed** |
@@ -92,7 +92,10 @@ whether the behaviour it relies on exists in the demonstrated firmware.
 Correction to the Tribunal 2 record: Entries 11 and 19 cite "the current
 29-byte version 3 frame". Since 2026-11-24 the frame is 31 bytes
 (version 4, S1 d7). The two added bytes carry hump data; they are **not**
-the fault mask those entries proposed.
+the fault mask those entries proposed. Since 2026-11-26 version 5 (32
+bytes, S1 d8) adds the motion fault detail (stall, encoder, timeout, task
+stall...), the held junction command and a junction count; still one
+fault at a time, not a bitmask.
 
 ## 3. Fault handling
 
@@ -147,4 +150,4 @@ the latch-to-PWM-off part is measured (S2-H11, worst 952 µs).
 | Controller, S3 loop or IMU task stalls | Before the demo: watchdog off, and only Motion Control fed it | **Applied after the demo** (S2 d37): check-ins and a liveness guard on Motion Control; the watchdog is fed only while all are healthy. Arming the watchdog by default awaits one car run |
 | Stack overflow in a task | No high-water check; the controller's static margin is about 400 bytes once `tm_printf` is counted | Measure the high-water marks on the car (review F-24) |
 | IMU fault while driving | `task_imu.c` recovers locally and does not raise a flag | Raise an IMU-fault flag; gate START on IMU ready (Entries 9, 16) |
-| Simultaneous faults | One fault class in telemetry | Fault detail in a version 5 frame (P8); a full bitmask only if needed (Entries 11, 19) |
+| Simultaneous faults | One fault class in telemetry | **Fault detail applied after the demo** (version 5, S1 d8: motion fault detail, held command, junction count); one fault at a time, a full bitmask only if needed (Entries 11, 19) |

@@ -58,6 +58,11 @@ typedef struct
     uint8_t  barcode_command;   /* S2_NAV_*; barcode_valid */
     uint8_t  barcode_count;     /* letters decoded, wraps; barcode_valid */
     uint8_t  stop_cause;        /* S2_STOP_*; stop_latched */
+    uint8_t  motion_fault;      /* MOTION_FAULT_* 0..7 while fault is
+                                   motion, else 0 (version 5) */
+    uint8_t  nav_held;          /* S2_NAV_* held for the next junction,
+                                   0 none (version 5) */
+    uint8_t  junction_count;    /* junctions confirmed, wraps (version 5) */
     bool     b_distance_valid;
     bool     b_stopped;           /* both wheels confirmed still */
     bool     b_link_up;           /* set by subsystem 1 */

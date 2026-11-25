@@ -9,6 +9,9 @@
 #define LETTER_INVALID   31u     /* 5-bit letter field */
 #define COMMAND_MAX      6u      /* 3-bit command field */
 #define COMMAND_INVALID  7u
+#define HELD_MAX         4u      /* S2_NAV_UTURN */
+#define HELD_INVALID     7u      /* 3-bit held-command field */
+#define MOTION_FAULT_MASK 0x07u  /* MOTION_FAULT_* fit in 3 bits */
 
 static uint8_t pack_codes (uint8_t low, uint8_t high);
 static uint8_t pack_barcode (char letter, uint8_t command);
@@ -16,6 +19,8 @@ static void    put_u16 (uint8_t * p_out, uint16_t value);
 static void    put_s16 (uint8_t * p_out, int16_t value);
 static void    put_u32 (uint8_t * p_out, uint32_t value);
 static uint8_t flag_if (bool b_set, uint8_t flag);
+static uint8_t pack_diag (uint8_t motion_fault, uint8_t held,
+                          uint8_t junctions);
 
 size_t telemetry_encoder_encode (
     const telemetry_encoder_snapshot_t * p_snapshot,
@@ -90,6 +95,8 @@ size_t telemetry_encoder_encode (
         p_output[29] = (uint8_t)(p_s->b_hump_last_valid
                                  ? p_s->hump_last_mm : 0u);
         p_output[30] = p_s->hump_count;
+        p_output[31] = pack_diag(p_s->motion_fault, p_s->nav_held,
+                                 p_s->junction_count);
         written = TELEMETRY_ENCODER_SIZE;
     }
 
@@ -118,6 +125,22 @@ static uint8_t pack_barcode (char letter, uint8_t command)
 
     /* code is at most 31 and cmd at most 7, so the byte is at most 0xFF. */
     return (uint8_t)(code | (uint8_t)(cmd << 5u));
+}
+
+/** @brief Version 5 diagnostics: fault detail, held command, junctions. A
+ *  fault detail above 7 or a held command above 4 is sent as 7 (invalid);
+ *  the junction count is a wrapping counter, so its low 2 bits are kept. */
+static uint8_t pack_diag (uint8_t motion_fault, uint8_t held,
+                          uint8_t junctions)
+{
+    uint8_t const fault = (motion_fault > MOTION_FAULT_MASK)
+                          ? MOTION_FAULT_MASK : motion_fault;
+    uint8_t const cmd = (held > HELD_MAX) ? HELD_INVALID : held;
+
+    /* fault <= 7, cmd <= 7 and junctions & 3 <= 3, so the shifted fields
+       fill bits 0-2, 3-5 and 6-7 and the byte is at most 0xFF. */
+    return (uint8_t)(fault | (uint8_t)(cmd << 3u)
+                     | (uint8_t)((junctions & 0x03u) << 6u));
 }
 
 static void put_u16 (uint8_t * p_out, uint16_t value)

@@ -16,6 +16,8 @@ static void int_12_pickup_drops_command (void);
 static void int_13_barcode_records (void);
 static void int_14_scan_failure (void);
 static void int_15_task_stall (void);
+static void int_16_telemetry_v5 (void);
+static bool int_frame (uint8_t * p_frame);
 static bool int_turned_right (void);
 static bool int_turn_to (uint8_t command, int32_t * p_heading_mdeg,
                          uint32_t * p_navigate_periods);
@@ -34,6 +36,7 @@ s2_integration_cases (void)
     int_13_barcode_records();
     int_14_scan_failure();
     int_15_task_stall();
+    int_16_telemetry_v5();
 }
 
 /* INT-08 (S1 -> S2): MQTT STOP through the bridge latches STOP at once;
@@ -335,6 +338,65 @@ int_15_task_stall (void)
     b_ok = sim_run_until(sim_running, 1000u);
     sim_run_ms(1000u);
     sim_check(b_ok && sim_following(), "INT-15", "RESET then START runs again");
+}
+
+/* INT-16 (S2 -> S1, telemetry version 5, S1 decision 8): the frame S1
+   would publish, from the real controller's published state through
+   robot_read_telemetry() and the real encoder. Byte 31 shows the command
+   held for the junction (bits 3-5), the junction count once it is crossed
+   (bits 6-7) and, after a stalled controller, the motion fault detail
+   (bits 0-2 = 7, task) with fault class motion in byte 10. */
+static void
+int_16_telemetry_v5 (void)
+{
+    uint8_t frame[TELEMETRY_ENCODER_SIZE];
+    uint32_t blocked_at;
+    bool b_ok;
+
+    sim_init(&g_cross);
+    sim_start();
+    while ((sim_x_mm() < 200) && sim_running())
+    {
+        sim_step();
+    }
+    (void)s2_nav_submit(S2_NAV_STRAIGHT, 'C', 1u, g_sim.now_ms);
+    sim_run_ms(100u);
+    b_ok = int_frame(frame) && (5u == frame[0])
+           && (S2_NAV_STRAIGHT == ((frame[31] >> 3) & 7u))
+           && (0u == (frame[31] >> 6)) && (0u == (frame[31] & 7u));
+    sim_check(b_ok, "INT-16", "v5 frame: STRAIGHT held, no junction yet");
+
+    while ((sim_x_mm() < (g_cross.junction_mm + 300)) && sim_running())
+    {
+        sim_step();
+    }
+    b_ok = int_frame(frame) && (0u == ((frame[31] >> 3) & 7u))
+           && (1u == (frame[31] >> 6));
+    sim_check(b_ok, "INT-16", "after the junction: nothing held, count 1");
+
+    g_sim.b_controller_blocked = true;
+    blocked_at = g_sim.now_ms;
+    while ((g_sim.now_ms - blocked_at) < 600u)
+    {
+        sim_step();
+    }
+    g_sim.b_controller_blocked = false;
+    sim_run_ms(200u);
+    b_ok = int_frame(frame) && (S2_FAULT_MOTION == (frame[10] & 15u))
+           && (MOTION_FAULT_TASK == (frame[31] & 7u));
+    sim_check(b_ok, "INT-16", "stalled task: fault motion, detail 7 (task)");
+}
+
+/* The frame S1 would publish now (service_bridge path). */
+static bool
+int_frame (uint8_t * p_frame)
+{
+    telemetry_encoder_snapshot_t snapshot;
+
+    return robot_read_telemetry(NULL, &snapshot)
+           && (TELEMETRY_ENCODER_SIZE
+               == telemetry_encoder_encode(&snapshot, p_frame,
+                                           TELEMETRY_ENCODER_SIZE));
 }
 
 /* Run the + junction with one command; report the final heading. */

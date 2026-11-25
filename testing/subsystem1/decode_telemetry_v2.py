@@ -1,10 +1,12 @@
-"""Decode telemetry frames, versions 2 to 4 (S1 decisions 1, 5 and 7).
+"""Decode telemetry frames, versions 2 to 5 (S1 decisions 1, 5, 7 and 8).
 
 Reference decoder used to record the 2026-11-17 S1-H01/H02 results; it
 still reads those version 2 logs. Version 3 adds the last barcode letter,
 its command and count, and the cause of a STOP latch. Version 4 adds the
-last hump's height, the hump count and a raw (unconfirmed) width. The
-authoritative
+last hump's height, the hump count and a raw (unconfirmed) width. Version
+5 (post-demo, 2026-11-26) adds a diagnostics byte: the motion fault detail,
+the barcode command held for the next junction and a count of junctions
+confirmed (low 2 bits). The authoritative
 layout is the comment in app_program/subsystem1/telemetry_encoder.h. The
 file keeps its name because earlier test records cite it.
 
@@ -25,8 +27,8 @@ import struct
 import sys
 
 # Version -> frame length. Version 3 appends bytes 27-28 to version 2,
-# version 4 bytes 29-30 to version 3.
-SIZES = {2: 27, 3: 29, 4: 31}
+# version 4 bytes 29-30 to version 3, version 5 byte 31 to version 4.
+SIZES = {2: 27, 3: 29, 4: 31, 5: 32}
 
 STATE = {1: "INIT", 2: "READY", 3: "RUNNING", 4: "STOPPED", 5: "FAULT"}
 MODE = {0: "-", 1: "FOLLOW", 2: "NAVIGATE", 3: "SCAN", 4: "BYPASS",
@@ -37,6 +39,9 @@ SCAN = {0: "none", 1: "plan", 2: "clear", 3: "no-route", 4: "fault",
         5: "cancelled"}
 SIDE = {0: "-", 1: "L", 2: "R"}
 COMMAND = {0: "none", 1: "LEFT", 2: "RIGHT", 3: "STRAIGHT", 4: "UTURN"}
+# MOTION_FAULT_* (motion_api.h), sent while the fault class is motion.
+MOTION_FAULT = {0: "-", 1: "init", 2: "encoder", 3: "stall", 4: "timeout",
+                5: "stop timeout", 6: "external", 7: "task stalled"}
 STOP = {0: "-", 1: "start-up", 2: "remote", 3: "button", 4: "pick-up",
         5: "hazard", 6: "line", 7: "scan", 8: "bypass", 9: "junction",
         10: "fault", 11: "script done"}
@@ -68,6 +73,7 @@ def parse(data):
      width, centre, hump) = struct.unpack("<BBIHBBBBhhhHHHhB", data[:27])
     bc, sc = (data[27], data[28]) if data[0] >= 3 else (0, 0)
     last, count = (data[29], data[30]) if data[0] >= 4 else (0, 0)
+    diag = data[31] if data[0] >= 5 else 0
     return {
         "version": data[0],
         "flags0": f0, "flags1": f1, "captured_ms": t, "distance_mm": dist,
@@ -79,6 +85,8 @@ def parse(data):
         "barcode_letter": bc & 31, "barcode_command": bc >> 5,
         "stop_cause": sc & 15, "barcode_count": sc >> 4,
         "hump_last_mm": last, "hump_count": count,
+        "motion_fault": diag & 7, "nav_held": (diag >> 3) & 7,
+        "junction_count": diag >> 6,
     }
 
 
@@ -120,6 +128,12 @@ def decode(data, previous_ms):
         last = (str(fields["hump_last_mm"]) if f0 & HUMP_LAST_VALID
                 else "-")
         text += f" hump_last={last} humps={fields['hump_count']}"
+    if fields["version"] >= 5:
+        detail = MOTION_FAULT.get(fields["motion_fault"],
+                                  fields["motion_fault"])
+        held = COMMAND.get(fields["nav_held"], fields["nav_held"])
+        text += (f" detail={detail} held={held}"
+                 f" junctions={fields['junction_count']}")
     return (text, t)
 
 

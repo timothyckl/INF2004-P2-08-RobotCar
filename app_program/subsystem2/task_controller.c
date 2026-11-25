@@ -244,6 +244,10 @@ typedef struct
 } ctrl_barcode_t;
 
 static ctrl_barcode_t      g_barcode;
+
+/* Junctions confirmed while following, for telemetry (S1 decision 8);
+   written only by the controller task, wraps at 256. */
+static uint8_t             g_junction_count;
 #endif
 
 /* Cause of the next CTRL_FLG_LOCAL_STOP this task raises (S2_STOP_*).
@@ -284,6 +288,8 @@ static bool     line_barcode_soft (uint32_t now);
 static bool     line_is_fresh (uint32_t now);
 static void     line_telemetry (s2_robot_state_t * p_state, uint32_t now);
 static void     barcode_telemetry (s2_robot_state_t * p_state);
+static void     diag_telemetry (s2_robot_state_t * p_state,
+                                ctrl_input_t const * p_input);
 static int16_t  line_correction_speed (uint8_t strength);
 static bool     line_apply_action (line_control_action_t action,
                                    int16_t correction_mm_s);
@@ -550,6 +556,7 @@ controller_cycle (UINT ptn, ctrl_input_t * p_inputs)
     line_step(&state, p_inputs);
     line_telemetry(&state, p_inputs->now_ms);
     barcode_telemetry(&state);
+    diag_telemetry(&state, p_inputs);
 #endif
     s2_robot_state_publish(&state);
     demo(&state, p_inputs);
@@ -1605,6 +1612,19 @@ line_is_fresh (uint32_t now)
 }
 
 /* Latest line position for telemetry (S1 decision 1). */
+/* Diagnostic fields for telemetry version 5 (S1 decision 8): the motion
+   fault detail while the fault is Motion Control's, the command held for
+   the next junction, and the junction count. */
+static void
+diag_telemetry (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
+{
+    p_state->motion_fault = ((S2_FAULT_MOTION == p_state->fault)
+                             && p_input->b_status_ok)
+                            ? p_input->status.fault : MOTION_FAULT_NONE;
+    p_state->nav_held = nav_control_held(&g_nav);
+    p_state->junction_count = g_junction_count;
+}
+
 /* The last letter from nav_q, kept until the next one. */
 static void
 barcode_telemetry (s2_robot_state_t * p_state)
@@ -1750,6 +1770,8 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
         && (LINE_CONTROL_MODE_CROSSING == new_mode))
     {
         g_line_runtime.b_junction = true;
+        /* A wrapping counter: telemetry sends its low 2 bits. */
+        g_junction_count = (uint8_t)(g_junction_count + 1u);
     }
 
     correction_mm_s = line_correction_speed(g_line_runtime.strength);

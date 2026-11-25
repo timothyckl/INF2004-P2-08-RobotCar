@@ -1,8 +1,8 @@
 /**
  * @file telemetry_encoder.h
- * @brief Telemetry wire format, version 4 (S1 decisions 1, 5 and 7).
+ * @brief Telemetry wire format, version 5 (S1 decisions 1, 5, 7 and 8).
  *
- * 31 bytes, multi-byte fields little-endian:
+ * 32 bytes, multi-byte fields little-endian:
  *
  *   Byte   Field
  *   0      version (4)
@@ -31,9 +31,14 @@
  *          | barcode count (bits 4-7: low 4 bits, wraps)
  *   29     hump_last_mm        uint8_t (last completed hump, saturated)
  *   30     hump_count          uint8_t (humps this run, saturates)
+ *   31     diagnostics (version 5): bits 0-2 motion fault detail
+ *          (MOTION_FAULT_* 0..7, while fault is motion, else 0),
+ *          bits 3-5 command held for the next junction (S2_NAV_* 0..4;
+ *          7 invalid), bits 6-7 junctions confirmed (low 2 bits, wraps)
  *
  * Bytes 0-7 keep their version 1 positions and meanings; bytes 1-26 keep
- * their version 2 ones and 27-28 their version 3 ones. Width raw is set
+ * their version 2 ones, 27-28 their version 3 ones and 29-30 their
+ * version 4 ones. Width raw is set
  * only when shape valid is not. A letter outside 'A'..'Z' is sent as 31 and a
  * command above 6 as 7 (invalid), never masked.
  */
@@ -45,8 +50,8 @@
 
 #include "telemetry_snapshot.h"
 
-#define TELEMETRY_ENCODER_SIZE           31u
-#define TELEMETRY_ENCODER_VERSION        4u
+#define TELEMETRY_ENCODER_SIZE           32u
+#define TELEMETRY_ENCODER_VERSION        5u
 
 /* flags0 (byte 1) */
 #define TELEMETRY_ENCODER_DISTANCE_VALID 0x01u

@@ -33,6 +33,8 @@
 #include <string.h>
 
 #include "kernel_model.h"
+#include "../../app_program/subsystem1/telemetry_encoder.h"
+#include "../../app_program/subsystem2/s2_s1_adapter.h"
 #include "../../app_program/subsystem2/s2_bridge.h"
 /* Included, not linked, so a case can clear its records as a boot does. */
 #include "../../app_program/subsystem2/task_health.c"
@@ -269,6 +271,7 @@ sim_init (sim_track_t const * p_track)
         g_barcode = barcode_zero;
         g_button = button_zero;
         g_local_cause = S2_STOP_NONE;
+        g_junction_count = 0u;
     }
     (void)motion_init(&g_sim.motion, &g_sim_motion_cfg);
     motion_output_clear(&out);
