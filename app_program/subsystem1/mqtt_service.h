@@ -31,7 +31,7 @@
 #define S1_MQTT_STATS_TOPIC     "p2-08/p2-08-car-01/stats"
 #endif
 
-#define S1_MQTT_TELEMETRY_MS    1000u   /* proposed period, unvalidated */
+#define S1_MQTT_TELEMETRY_MS    1000u   /* NFR2; 98.6% received on demo day */
 #define S1_MQTT_TELEMETRY_MAX   TELEMETRY_ENCODER_SIZE
 
 /**
@@ -54,7 +54,7 @@ bool mqtt_service_topic (const char * p_topic, size_t total_length);
  *        The receipt time is taken from the controller's clock,
  *        s2_clock_ms(), never lwIP's sys_now() (S1 decision 3).
  */
-void mqtt_service_data (const void * p_data, size_t length, bool is_last);
+void mqtt_service_data (const void * p_data, size_t length, bool b_last);
 
 /**
  * @brief Encode one telemetry snapshot.

@@ -139,6 +139,7 @@ test_bypass_control_motion (void)
     b_passed = b_passed && (BYPASS_CONTROL_ACT_NONE == out.action);
     in.b_status_ok = true;
 
+    /* failures has a few one-byte entries, so its size fits uint8_t. */
     for (uint8_t i = 0u; i < (uint8_t)sizeof(failures); i++)
     {
         test_bypass_setup(&bypass, &plan, &in);
@@ -483,6 +484,8 @@ test_bypass_send (bypass_control_t * p_bypass,
 
     if (BYPASS_CONTROL_ACT_NONE != p_out->action)
     {
+        /* Command IDs are uint16_t and wrap by design; the cast keeps the
+           low 16 bits (well defined for unsigned types). */
         *p_id = (uint16_t)(*p_id + 1u);
         bypass_control_sent(p_bypass, true, *p_id, &sent);
     }

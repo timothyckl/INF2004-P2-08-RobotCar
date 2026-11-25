@@ -1,0 +1,37 @@
+# Verification of the BARR-C cast-comment and naming changes, 2026-11-25 16:04 +0800, branch final/refinement at 3d023cd plus this commit
+# Only comments and identifier names change in production code, so the mission UF2 must stay byte-identical
+
+## make -C testing/host
+S1-U04 commands: PASS
+S1-U05 telemetry: PASS
+S1-U06 timers: PASS
+S1-U07 bridge: PASS
+[HOST] subsystem2 SUMMARY 52 passed, 0 failed
+765 checks, 0 failures, 1 known defects
+[TEST] S4-H01 BLOCKED  build with TEST=1 S4_HW_TEST=1 and connected IMU
+[TEST] subsystem4 SUMMARY 37 passed, 0 failed
+[TEST] subsystem5 SUMMARY 48 passed, 0 failed, 0 blocked
+[HOST] all suites passed
+(exit status 0)
+
+## dashboard unit tests
+OK
+(exit status 0)
+
+## every build option (make -B NET=lwip MQTT=1 S3_NAV_F=0 <option>)
+TEST=1: exit status 0, warnings 0
+TEST=1 S3_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S3_LINE_TEST=1: exit status 0, warnings 0
+TEST=1 S2_CAL_TEST=1: exit status 0, warnings 0
+TEST=1 S2_HW_TEST=1: exit status 0, warnings 0
+TEST=1 S4_HW_TEST=1: exit status 0, warnings 0
+S2_MOTION_LOG=1: exit status 0, warnings 0
+S5_RANGE_DIAG=1: exit status 0, warnings 0
+S4_RAW_LOG=1: exit status 0, warnings 0
+NET=none MQTT=0 TEST=1: exit status 0, warnings 0
+mission (no option): exit status 0, warnings 0
+mission UF2 SHA-256: 8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+demo image SHA-256:  8cf2c419ae181224b0c3c7ec78f7bf651e6c17350860a7ce3198b198f416bf3f
+
+## python3 tools/check_subsystem5_barr_c.py
+BARR-C check passed: 46 subsystem 5 files.

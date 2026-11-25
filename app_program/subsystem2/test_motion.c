@@ -86,6 +86,9 @@ sim_record (sim_t * p_s)
 static void
 sim_counts (sim_t * p_s)
 {
+    /* Conversion to unsigned is defined modulo 2^32 (C99 6.3.1.3), so a
+       negative simulated position becomes a wrapped free-running count,
+       exactly as the real encoder counter behaves. */
     p_s->in.count_l = (uint32_t)((p_s->pos_um_l * SIM_CPR) / SIM_CIRC_UM);
     p_s->in.count_r = (uint32_t)((p_s->pos_um_r * SIM_CPR) / SIM_CIRC_UM);
 }
@@ -168,6 +171,7 @@ sim_step (sim_t * p_s)
                         * p_s->left_pct) / 100;
     int32_t const vr = sim_wheel(p_s, p_s->out.duty_r, false);
 
+    /* Widening: speed x time step is formed in 64 bits, matching pos_um. */
     p_s->pos_um_l += ((int64_t)vl * SIM_DT_US) / 1000;
     p_s->pos_um_r += ((int64_t)vr * SIM_DT_US) / 1000;
     p_s->in.now_us += SIM_DT_US;
@@ -193,6 +197,8 @@ sim_cmd (sim_t * p_s, uint8_t cmd, int32_t a, int32_t b)
 
     if (S2_CMD_SPEED == cmd)
     {
+        /* The tests pass speeds and distances inside int16_t (a few hundred
+           mm or mm/s), so each value is kept. */
         c.u.speed.left_mm_s  = (int16_t)a;
         c.u.speed.right_mm_s = (int16_t)b;
     }
@@ -302,7 +308,7 @@ test_motion_speed (void)
     sim_run(p_s, 100);
     motion_get_status_logic(&p_s->m, &o);
 
-    bool ok = b_sign && (MOTION_SPEED == motion_state(&p_s->m))
+    bool b_ok = b_sign && (MOTION_SPEED == motion_state(&p_s->m))
               && (abs_i(o.left_mm_s - 200) <= 20)
               && (abs_i(o.right_mm_s - 100) <= 20);
 
@@ -310,19 +316,19 @@ test_motion_speed (void)
        reverse drive) while the other wheel stays driven. */
     (void)sim_cmd(p_s, S2_CMD_SPEED, 0, 100);
     sim_step(p_s);
-    ok = ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
+    b_ok = b_ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
     sim_run(p_s, 5);
-    ok = ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
+    b_ok = b_ok && (0 == p_s->out.duty_l) && (p_s->out.duty_r > 0);
 
     /* The braked wheel drives again once its measured speed (averaged
        over the speed window) falls below the new target. */
     (void)sim_cmd(p_s, S2_CMD_SPEED, 100, 0);
     sim_step(p_s);
-    ok = ok && (0 == p_s->out.duty_r);
+    b_ok = b_ok && (0 == p_s->out.duty_r);
     sim_run(p_s, 5);
-    ok = ok && (p_s->out.duty_l > 0) && (0 == p_s->out.duty_r);
+    b_ok = b_ok && (p_s->out.duty_l > 0) && (0 == p_s->out.duty_r);
 
-    return (ok);
+    return (b_ok);
 }
 
 bool
@@ -452,6 +458,8 @@ stale_ids (void)
 
     uint16_t const old = sim_cmd(p_s, S2_CMD_MOVE, 100, 100);
 
+    /* IDs are uint16_t and wrap by design; the cast keeps the low 16 bits
+       (well defined for unsigned types). */
     p_s->next_id = (uint16_t)(a + 1u);
     p_s->in.b_stop = true;
     (void)sim_until(p_s, MOTION_EVT_STOPPED, 0u, 300u);
@@ -461,6 +469,7 @@ stale_ids (void)
 
     uint16_t const late = sim_cmd(p_s, S2_CMD_SPEED, 100, 100);
 
+    /* IDs are uint16_t and wrap by design. */
     p_s->next_id = (uint16_t)(a + 5u);
 
     uint16_t const fresh = sim_cmd(p_s, S2_CMD_SPEED, 100, 100);
@@ -507,6 +516,7 @@ test_motion_stall (void)
 
     bool const b_early = (sim_find(p_s, MOTION_EVT_FAULT, 0u) < 0);
     int32_t const f = sim_until(p_s, MOTION_EVT_FAULT, 0u, 150u);
+    /* MOTION_SPEED is a motion_state_t value (0..6), which uint8_t holds. */
     bool const b_diag = (MOTION_FAULT_STALL == p_s->out.fault_reason)
                         && ((uint8_t)MOTION_SPEED == p_s->out.fault_state)
                         && (MOTION_STALL_LEFT == p_s->out.stalled_wheels)
@@ -757,7 +767,13 @@ test_motion_straight (void)
 bool
 test_motion_api (void)
 {
-    s2_motion_cmd_t f, b, l, r, speed, st, keep = {0};
+    s2_motion_cmd_t f;
+    s2_motion_cmd_t b;
+    s2_motion_cmd_t l;
+    s2_motion_cmd_t r;
+    s2_motion_cmd_t speed;
+    s2_motion_cmd_t st;
+    s2_motion_cmd_t keep = {0};
 
     keep.cmd_id = 77u;
 
@@ -807,25 +823,25 @@ test_motion_ramp (void)
 {
     int32_t const st = 300;
     int32_t       d  = 0;
-    bool          ok = true;
+    bool          b_ok = true;
 
     /* Increase limited per step, both signs. */
-    ok = ok && (300 == motion_ramp(0, 6250, st));
-    ok = ok && (600 == motion_ramp(300, 6250, st));
-    ok = ok && (6250 == motion_ramp(6100, 6250, st));
-    ok = ok && (-300 == motion_ramp(0, -6250, st));
-    ok = ok && (-1300 == motion_ramp(-1000, -6250, st));
+    b_ok = b_ok && (300 == motion_ramp(0, 6250, st));
+    b_ok = b_ok && (600 == motion_ramp(300, 6250, st));
+    b_ok = b_ok && (6250 == motion_ramp(6100, 6250, st));
+    b_ok = b_ok && (-300 == motion_ramp(0, -6250, st));
+    b_ok = b_ok && (-1300 == motion_ramp(-1000, -6250, st));
 
     /* Sign change: 0 first, then ramps from 0. */
-    ok = ok && (0 == motion_ramp(2000, -2000, st));
-    ok = ok && (0 == motion_ramp(-2000, 2000, st));
-    ok = ok && (-300 == motion_ramp(0, -2000, st));
+    b_ok = b_ok && (0 == motion_ramp(2000, -2000, st));
+    b_ok = b_ok && (0 == motion_ramp(-2000, 2000, st));
+    b_ok = b_ok && (-300 == motion_ramp(0, -2000, st));
 
     /* Decrease, STOP and Fault (target 0) are immediate. */
-    ok = ok && (500 == motion_ramp(6250, 500, st));
-    ok = ok && (-500 == motion_ramp(-6250, -500, st));
-    ok = ok && (0 == motion_ramp(6250, 0, st));
-    ok = ok && (0 == motion_ramp(-6250, 0, st));
+    b_ok = b_ok && (500 == motion_ramp(6250, 500, st));
+    b_ok = b_ok && (-500 == motion_ramp(-6250, -500, st));
+    b_ok = b_ok && (0 == motion_ramp(6250, 0, st));
+    b_ok = b_ok && (0 == motion_ramp(-6250, 0, st));
 
     /* Full scale from 0 takes ceil(6250 / 300) = 21 steps. */
     for (uint32_t i = 0u; i < 20u; i++)
@@ -833,9 +849,9 @@ test_motion_ramp (void)
         d = motion_ramp(d, 6250, st);
     }
 
-    ok = ok && (6000 == d) && (6250 == motion_ramp(d, 6250, st));
+    b_ok = b_ok && (6000 == d) && (6250 == motion_ramp(d, 6250, st));
 
-    return (ok && (6250 == motion_ramp(0, 6250, 0)));   /* 0 = no limit */
+    return (b_ok && (6250 == motion_ramp(0, 6250, 0)));   /* 0 = no limit */
 }
 
 bool

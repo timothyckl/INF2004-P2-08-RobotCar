@@ -1,0 +1,53 @@
+# python3 tools/barr_c_report.py, 2026-11-25 16:04 +0800, branch final/refinement at 3d023cd plus the cast-comment and naming changes of this commit
+# checker change: 7.1e now also matches indented local declarations; 7.1m accepts the g_b_ prefix
+BARR-C report: 128 files under app_program/
+      1  1.6a cast to UB * for tm_printf (interface-required)
+    478  1.6a cast with an associated comment (production)
+     63  1.6a cast with an associated comment (test)
+      0  1.7a auto
+      0  1.7b register
+      0  1.7c goto
+      7  1.7d continue (preferred practice)
+           app_program/subsystem2/drv_encoder.c:97
+           app_program/subsystem2/drv_encoder.c:173
+           app_program/subsystem2/drv_gpio_irq.c:173
+           app_program/subsystem3/s3_follow.c:147
+           app_program/subsystem3/s3_follow.c:166
+           app_program/subsystem3/s3_follow.c:175
+           app_program/subsystem4/task_imu.c:157
+      0  3.5a tab character
+      0  4.2 header without an include guard
+     13  6.2a function over 100 lines
+      4  7.1e variable name under 3 characters (production)
+           app_program/subsystem2/pid.h:26
+           app_program/subsystem2/pid.h:27
+           app_program/subsystem2/pid.h:28
+           app_program/subsystem5/include/scan_look.h:64
+    142  7.1e variable name under 3 characters (test)
+      3  7.1k pointer variable not named p_...
+           app_program/subsystem2/task_controller.c:1374
+           app_program/subsystem2/task_controller.c:1409
+           app_program/subsystem4/task_imu.c:523
+  functions over 100 lines:
+           comms_test_telemetry (168 lines, app_program/subsystem1/comms_test.c)
+           comms_test_bridge (115 lines, app_program/subsystem1/comms_test.c)
+           motion_command (117 lines, app_program/subsystem2/motion_logic.c)
+           control (120 lines, app_program/subsystem2/motion_logic.c)
+           nav_control_step (126 lines, app_program/subsystem2/nav_control.c)
+           subsystem2_test (169 lines, app_program/subsystem2/subsystem2_test.c)
+           controller_task (108 lines, app_program/subsystem2/task_controller.c)
+           line_step (153 lines, app_program/subsystem2/task_controller.c)
+           test_bypass_control_reacquire (175 lines, app_program/subsystem2/test_bypass_control.c)
+           test_line_control_junction (111 lines, app_program/subsystem2/test_line_control.c)
+           s3_follow_run (175 lines, app_program/subsystem3/s3_follow.c)
+           s4_imu_task (110 lines, app_program/subsystem4/task_imu.c)
+           obstacle_scan_task (154 lines, app_program/subsystem5/src/scan_task.c)
+
+## 7.1e (production) and 7.1k findings left: structure members and string tables
+app_program/subsystem2/pid.h:26   int32_t kp;         /* proportional gain, PID_GAIN_SCALE = 1.0 */
+app_program/subsystem2/pid.h:27   int32_t ki;         /* integral gain per sample */
+app_program/subsystem2/pid.h:28   int32_t kd;         /* derivative gain per sample */
+app_program/subsystem5/include/scan_look.h:64   uint32_t          id;
+app_program/subsystem2/task_controller.c:1374   static char const * const reasons[] =
+app_program/subsystem2/task_controller.c:1409   static char const * const names[] =
+app_program/subsystem4/task_imu.c:523   static char const * const s_contact_names[] =

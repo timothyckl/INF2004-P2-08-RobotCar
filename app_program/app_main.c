@@ -54,11 +54,11 @@
  * Create and start one task (declared in app.h for every subsystem).
  *   prc = TP_PRC1 (core 0), TP_PRC2 (core 1), or 0 for "any core".
  */
-EXPORT ID app_start_task (FP entry, PRI pri, UW prc, const char *name)
+EXPORT ID app_start_task (FP entry, PRI pri, UW prc, const char *p_name)
 {
     T_CTSK  ctsk = {0};
     ID      tid;
-    ER      er;
+    ER      ercd;
 
     ctsk.task    = entry;           /* function the task runs */
     ctsk.itskpri = pri;             /* initial priority (1 = highest) */
@@ -79,13 +79,13 @@ EXPORT ID app_start_task (FP entry, PRI pri, UW prc, const char *name)
     tid = tk_cre_tsk(&ctsk);
     if (tid < E_OK)
     {
-        CHECK(tid, name);
+        CHECK(tid, p_name);
         return tid;
     }
 
     /* tk_sta_tsk: DORMANT -> READY.  The int is passed as stacd. */
-    er = tk_sta_tsk(tid, 0);
-    CHECK(er, name);
+    ercd = tk_sta_tsk(tid, 0);
+    CHECK(ercd, p_name);
     return tid;
 }
 

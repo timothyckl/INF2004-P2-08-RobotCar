@@ -55,7 +55,7 @@ typedef void (*drv_gpio_irq_cb_t)(uint32_t gpio, uint32_t events,
 
 ER drv_gpio_irq_init (void);
 ER drv_gpio_irq_register (uint32_t gpio, uint32_t events,
-                          drv_gpio_irq_cb_t cb);
+                          drv_gpio_irq_cb_t p_callback);
 ER drv_gpio_irq_unregister (uint32_t gpio);
 
 #endif /* DRV_GPIO_IRQ_H */

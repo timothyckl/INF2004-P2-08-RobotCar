@@ -29,38 +29,38 @@ drv_servo_init (void)
 
     out_w(slice_base + PWM_CHx_DIV, DRV_SERVO_DIV);
 
-    ER er = pwm_set_wrap(DRV_SERVO_PIN, DRV_SERVO_TOP);
+    ER ercd = pwm_set_wrap(DRV_SERVO_PIN, DRV_SERVO_TOP);
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
-        er = pwm_set_cc(DRV_SERVO_PIN, drv_servo_pulse(0));
+        ercd = pwm_set_cc(DRV_SERVO_PIN, drv_servo_pulse(0));
     }
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
-        er = pwm_set_enabled(DRV_SERVO_PIN, TRUE);
+        ercd = pwm_set_enabled(DRV_SERVO_PIN, TRUE);
     }
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
-        er = pwm_set_pin(DRV_SERVO_PIN);
+        ercd = pwm_set_pin(DRV_SERVO_PIN);
     }
 
-    return (er);
+    return (ercd);
 }
 
 ER
 drv_servo_set_angle (int16_t angle_deg)
 {
-    ER er = E_PAR;
+    ER ercd = E_PAR;
 
     if ((angle_deg >= -DRV_SERVO_ANGLE_MAX)
         && (angle_deg <= DRV_SERVO_ANGLE_MAX))
     {
-        er = pwm_set_cc(DRV_SERVO_PIN, drv_servo_pulse(angle_deg));
+        ercd = pwm_set_cc(DRV_SERVO_PIN, drv_servo_pulse(angle_deg));
     }
 
-    return (er);
+    return (ercd);
 }
 
 static uint32_t

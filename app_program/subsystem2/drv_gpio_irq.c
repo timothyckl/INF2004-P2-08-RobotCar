@@ -74,16 +74,16 @@ drv_gpio_irq_init (void)
         g_ints_base = IO_BANK0_BASE + IO_BANK0_PROC1_INTS0_OFFSET;
     }
 
-    for (UW r = 0u; r < DRV_GPIO_IRQ_REGS; r++)
+    for (UW reg = 0u; reg < DRV_GPIO_IRQ_REGS; reg++)
     {
-        out_w(g_inte_base + (r * DRV_GPIO_IRQ_REG_STRIDE), 0u);
+        out_w(g_inte_base + (reg * DRV_GPIO_IRQ_REG_STRIDE), 0u);
     }
 
-    ER const er = tk_def_int(IO_IRQ_BANK0, &dint);
+    ER const ercd = tk_def_int(IO_IRQ_BANK0, &dint);
 
-    if (er < E_OK)
+    if (ercd < E_OK)
     {
-        return (er);
+        return (ercd);
     }
 
     g_b_ready = true;
@@ -99,12 +99,13 @@ drv_gpio_irq_init (void)
  *         E_OBJ if the dispatcher is not initialised or the pin is taken.
  */
 ER
-drv_gpio_irq_register (uint32_t gpio, uint32_t events, drv_gpio_irq_cb_t cb)
+drv_gpio_irq_register (uint32_t gpio, uint32_t events,
+                       drv_gpio_irq_cb_t p_callback)
 {
     if ((gpio >= (uint32_t)GPIO_NUM)
         || (0u != ((1u << gpio) & DRV_GPIO_IRQ_RADIO_MASK))
         || (0u == events) || (0u != (events & ~DRV_GPIO_IRQ_EDGES))
-        || (NULL == cb))
+        || (NULL == p_callback))
     {
         return (E_PAR);
     }
@@ -116,7 +117,7 @@ drv_gpio_irq_register (uint32_t gpio, uint32_t events, drv_gpio_irq_cb_t cb)
 
     UW const bits = drv_gpio_irq_bits(gpio, events);
 
-    g_callbacks[gpio] = cb;
+    g_callbacks[gpio] = p_callback;
 
     /* Drop any edge latched before registration, then enable. */
     out_w(drv_gpio_irq_reg(IO_BANK0_BASE + IO_BANK0_INTR0_OFFSET, gpio),
@@ -162,9 +163,9 @@ drv_gpio_irq_isr (UINT intno)
 
     (void)intno;
 
-    for (UW r = 0u; r < DRV_GPIO_IRQ_REGS; r++)
+    for (UW reg = 0u; reg < DRV_GPIO_IRQ_REGS; reg++)
     {
-        UW const ints = in_w(g_ints_base + (r * DRV_GPIO_IRQ_REG_STRIDE))
+        UW const ints = in_w(g_ints_base + (reg * DRV_GPIO_IRQ_REG_STRIDE))
                         & DRV_GPIO_IRQ_ALL_EDGES;
 
         if (0u == ints)
@@ -173,21 +174,23 @@ drv_gpio_irq_isr (UINT intno)
         }
 
         out_w(IO_BANK0_BASE + IO_BANK0_INTR0_OFFSET
-              + (r * DRV_GPIO_IRQ_REG_STRIDE), ints);
+              + (reg * DRV_GPIO_IRQ_REG_STRIDE), ints);
 
-        for (UW p = 0u; p < DRV_GPIO_IRQ_PER_REG; p++)
+        for (UW pin = 0u; pin < DRV_GPIO_IRQ_PER_REG; pin++)
         {
-            UW const events = (ints >> (p * DRV_GPIO_IRQ_BITS))
+            UW const events = (ints >> (pin * DRV_GPIO_IRQ_BITS))
                               & DRV_GPIO_IRQ_EDGES;
-            uint32_t const gpio = (r * DRV_GPIO_IRQ_PER_REG) + p;
+            uint32_t const gpio = (reg * DRV_GPIO_IRQ_PER_REG) + pin;
 
+            /* GPIO_NUM is 30, a positive constant: the cast only gives both
+               sides of < the same unsigned type. */
             if ((0u != events) && (gpio < (uint32_t)GPIO_NUM))
             {
-                drv_gpio_irq_cb_t const cb = g_callbacks[gpio];
+                drv_gpio_irq_cb_t const p_callback = g_callbacks[gpio];
 
-                if (NULL != cb)
+                if (NULL != p_callback)
                 {
-                    cb(gpio, events, now_us);
+                    p_callback(gpio, events, now_us);
                 }
             }
         }

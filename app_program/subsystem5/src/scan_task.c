@@ -174,6 +174,8 @@ scan_task_create (void)
 
     g_task_mtx  = mtx;
     ccyc.cycatr = TA_HLNG;
+    /* FP is the kernel's generic handler type; the cast changes only the
+       pointer type. */
     ccyc.cychdr = (FP) scan_task_cyclic;
     ccyc.cyctim = SCAN_TASK_PERIOD_MS;
     ccyc.cycphs = SCAN_TASK_PERIOD_MS;
@@ -189,16 +191,16 @@ scan_task_start (void)
                                          scan_task_publish};
     scan_engine_config_t const config = {g_task_settling_us,
                                          g_task_plan_config.depth_mm};
-    ER er = drv_servo_init();
+    ER ercd = drv_servo_init();
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
-        er = drv_ultrasonic_init();
+        ercd = drv_ultrasonic_init();
     }
 
-    if (E_OK != er)
+    if (E_OK != ercd)
     {
-        return (er);
+        return (ercd);
     }
 
     /* Side look: the scan's settling; UNMEASURED 1 s for the wheels to
@@ -213,6 +215,8 @@ scan_task_start (void)
     g_start_us         = g_monitor_since_us;
     gb_warm            = false;
 
+    /* FP: pointer type only; the kernel calls the task with its own
+       parameters. */
     ID const tid = app_start_task((FP) obstacle_scan_task,
                                   OBSTACLE_SCAN_PRIORITY, 0u,
                                   "obstacle_scan");
@@ -231,13 +235,13 @@ ER
 scan_task_get (scan_task_status_t * p_status)
 {
     ID const mtx = g_task_mtx;
-    ER       er  = E_PAR;
+    ER       ercd  = E_PAR;
 
     if (NULL != p_status)
     {
-        er = (mtx <= 0) ? E_OBJ : tk_loc_mtx(mtx, TMO_POL);
+        ercd = (mtx <= 0) ? E_OBJ : tk_loc_mtx(mtx, TMO_POL);
 
-        if (E_OK == er)
+        if (E_OK == ercd)
         {
             *p_status = g_task_status;
             (void) tk_unl_mtx(mtx);
@@ -253,7 +257,7 @@ scan_task_get (scan_task_status_t * p_status)
 
     }
 
-    return (er);
+    return (ercd);
 }
 
 static void
@@ -461,6 +465,10 @@ scan_task_publish (scan_engine_output_t const * p_output)
 
         case SCAN_ENGINE_DISTANCE:
         {
+            /* Widening: angle_deg is int16_t (servo limit +/-45) and the
+               result an enumeration with small non-negative values; int32_t
+               holds both. BYPASS_PLAN_FINE_ANGLES is a small positive
+               constant. */
             int32_t const angle = (int32_t)p_output->angle_deg
                                   + SCAN_PROFILE_HALF_DEG;
             int32_t const index = angle / SCAN_PROFILE_STEP_DEG;
@@ -499,11 +507,14 @@ scan_task_publish (scan_engine_output_t const * p_output)
                 g_work.result = SCAN_TASK_RESULT_NO_ROUTE;
             }
 
+            /* result is an enumeration with small non-negative values, which
+               int32_t holds. */
             scan_task_scan_diag("result", (int32_t)g_work.result,
                                 g_work.plan.obstacle_mm);
         break;
 
         case SCAN_ENGINE_FAULT:
+            /* Widening: angle_deg is int16_t, which int32_t holds. */
             scan_task_scan_diag("fault", (int32_t)p_output->angle_deg, 0u);
             g_work.result = SCAN_TASK_RESULT_FAULT;
             (void) tk_set_flg(controller_flags, CTRL_FLG_SCAN_FAULT);
@@ -748,6 +759,8 @@ scan_task_scan_diag (char const * p_kind, int32_t angle_deg,
                      uint16_t distance_mm)
 {
 #if S5_RANGE_DIAGNOSTIC
+    /* Console arguments: angle_deg is int32_t (INT, 32-bit) and distance_mm
+       uint16_t, which UW holds. */
     tm_printf((UB *)"[S5] scan %s %d %u mm\n", p_kind, (INT)angle_deg,
               (UW)distance_mm);
 #else

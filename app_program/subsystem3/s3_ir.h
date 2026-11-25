@@ -25,7 +25,7 @@ typedef struct
     uint8_t candidate;
     uint8_t repetitions;
     uint8_t stable;
-    bool    ready;
+    bool    b_ready;
 } s3_filter_t;
 
 typedef struct

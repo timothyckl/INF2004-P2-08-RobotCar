@@ -241,6 +241,9 @@ ctrl_get_state (ctrl_t const * p_c, ctrl_input_t const * p_in,
     if (p_c->b_run_valid && b_valid)
     {
         flags |= S2_RS_DISTANCE_VALID;
+        /* Both travels are int32_t, so their difference is formed in 64 bits
+           without overflow. It fits int32_t for any run shorter than 2,147 km;
+           one run is a few metres. */
         p_state->run_distance_mm = (int32_t)((int64_t)p_in->status.travel_mm
                                              - p_c->run_start_mm);
     }

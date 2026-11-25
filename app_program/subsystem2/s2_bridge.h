@@ -9,7 +9,7 @@
 #include "subsystem2.h"
 
 bool s2_bridge_raise_stop (ID flg, uint32_t received_ms);
-bool s2_bridge_send_command (ID q, uint8_t command, uint32_t request_id,
+bool s2_bridge_send_command (ID queue, uint8_t command, uint32_t request_id,
                              uint32_t received_ms);
 
 #endif /* S2_BRIDGE_H */

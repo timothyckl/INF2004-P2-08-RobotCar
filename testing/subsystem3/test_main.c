@@ -68,7 +68,7 @@ static void test_ir(void)
     check(!s3_ir_filter(&filter, 1U, 3U), "filter second sample");
     check(s3_ir_filter(&filter, 1U, 3U), "filter settled");
     check(!s3_ir_filter(&filter, 2U, 3U), "glitch not settled");
-    check(!filter.ready, "no stale readiness");
+    check(!filter.b_ready, "no stale readiness");
     check(!s3_ir_filter(&filter, 2U, 0U), "zero filter requirement");
     for (uint16_t idx = 0U; idx < 300U; ++idx)
     {
@@ -157,7 +157,7 @@ static void feed_symbol(s3_capture_t * p_capture, uint16_t pattern,
         bool wide = (0U != (pattern & (1U << (8U - idx))));
 
         *p_now += wide ? 300U : 100U;
-        check(s3_bar_edge(p_capture, !p_capture->black, *p_now, 500U),
+        check(s3_bar_edge(p_capture, !p_capture->b_black, *p_now, 500U),
               "symbol edge accepted");
     }
 }
@@ -214,15 +214,15 @@ static void test_barcode(void)
     check(!s3_bar_finish(&capture), "cannot finish timed-out frame");
     s3_bar_begin(&capture, 0U);
     check(!s3_bar_edge(&capture, false, 0U, 500U), "zero run rejected");
-    check(capture.failed, "zero run aborts");
+    check(capture.b_failed, "zero run aborts");
     s3_bar_begin(&capture, 0U);
     for (uint32_t idx = 1U; idx <= S3_BAR_CAPACITY; ++idx)
     {
-        check(s3_bar_edge(&capture, !capture.black, idx, 500U),
+        check(s3_bar_edge(&capture, !capture.b_black, idx, 500U),
               "bounded capture");
     }
-    check(!s3_bar_edge(&capture, !capture.black, 65U, 500U), "overflow");
-    check(capture.failed && (!capture.active), "overflow aborts");
+    check(!s3_bar_edge(&capture, !capture.b_black, 65U, 500U), "overflow");
+    check(capture.b_failed && (!capture.b_active), "overflow aborts");
     check(!s3_bar_finish(NULL), "null finish");
     check(!s3_bar_edge(NULL, true, 0U, 1U), "null edge");
 }

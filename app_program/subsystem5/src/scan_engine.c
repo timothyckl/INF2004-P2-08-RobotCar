@@ -566,6 +566,8 @@ scan_engine_next_angle (scan_engine_t * p_engine)
 static void
 scan_engine_prepare_fine (scan_engine_t * p_engine)
 {
+    /* Widening: both distances are uint16_t, so their sum is below 131,072
+       and fits uint32_t. */
     uint32_t const pass_mm =
         (uint32_t)p_engine->coarse_mm[SCAN_ENGINE_ANGLES / 2u]
         + (uint32_t)p_engine->config.depth_mm;
@@ -632,18 +634,18 @@ scan_engine_angle (scan_engine_t const * p_engine)
 static uint16_t
 scan_engine_median (uint16_t const * p_samples)
 {
-    uint16_t const a = p_samples[0];
-    uint16_t const b = p_samples[1];
-    uint16_t const c = p_samples[2];
-    uint16_t       median = c;
+    uint16_t const s_a = p_samples[0];
+    uint16_t const s_b = p_samples[1];
+    uint16_t const s_c = p_samples[2];
+    uint16_t       median = s_c;
 
-    if (((a <= b) && (b <= c)) || ((c <= b) && (b <= a)))
+    if (((s_a <= s_b) && (s_b <= s_c)) || ((s_c <= s_b) && (s_b <= s_a)))
     {
-        median = b;
+        median = s_b;
     }
-    else if (((b <= a) && (a <= c)) || ((c <= a) && (a <= b)))
+    else if (((s_b <= s_a) && (s_a <= s_c)) || ((s_c <= s_a) && (s_a <= s_b)))
     {
-        median = a;
+        median = s_a;
     }
     else
     {

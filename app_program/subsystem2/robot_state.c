@@ -69,11 +69,11 @@ s2_get_robot_state (s2_robot_state_t * p_state)
         return (E_OBJ);
     }
 
-    ER const er = tk_loc_mtx(mtx, S2_STATE_LOCK_TMO_MS);
+    ER const ercd = tk_loc_mtx(mtx, S2_STATE_LOCK_TMO_MS);
 
-    if (er < E_OK)
+    if (ercd < E_OK)
     {
-        return (er);
+        return (ercd);
     }
 
     *p_state = g_state;
@@ -88,7 +88,7 @@ robot_read_telemetry (void * p_context,
                       telemetry_encoder_snapshot_t * p_snapshot)
 {
     ID const               mtx = g_state_mtx;
-    s2_robot_state_t       st;
+    s2_robot_state_t       state;
     s4_terrain_result_t    hump;
     scan_telemetry_t       scan;
 
@@ -100,7 +100,7 @@ robot_read_telemetry (void * p_context,
         return (false);
     }
 
-    st = g_state;
+    state = g_state;
     (void)tk_unl_mtx(mtx);
 
     /* The S4 and S5 locks are taken after state_mutex is released, so no
@@ -108,7 +108,7 @@ robot_read_telemetry (void * p_context,
     bool const b_hump = (E_OK == subsystem4_get_status(&hump));
     bool const b_scan = scan_telemetry_get(&scan);
 
-    s2_telemetry_from_state(&st, p_snapshot);
+    s2_telemetry_from_state(&state, p_snapshot);
     s2_telemetry_add_hump(p_snapshot, b_hump ? hump.maximum_height_mm : 0u,
                           b_hump && hump.b_maximum_height_valid,
                           b_hump ? hump.current_height_mm : 0u,
@@ -130,9 +130,9 @@ s2_telemetry_add_hump (telemetry_encoder_snapshot_t * p_out,
         return;
     }
 
-    p_out->hump_valid      = b_max_valid;
+    p_out->b_hump_valid      = b_max_valid;
     p_out->hump_max_mm     = b_max_valid ? s2_hump_mm8(max_mm) : 0u;
-    p_out->hump_last_valid = b_last_valid;
+    p_out->b_hump_last_valid = b_last_valid;
     p_out->hump_last_mm    = b_last_valid ? s2_hump_mm8(last_mm) : 0u;
     p_out->hump_count      = count;
 }
@@ -154,10 +154,10 @@ s2_telemetry_add_scan (telemetry_encoder_snapshot_t * p_out,
         return;
     }
 
-    p_out->forward_valid    = false;
-    p_out->profile_valid    = false;
-    p_out->shape_valid      = false;
-    p_out->width_raw        = false;
+    p_out->b_forward_valid    = false;
+    p_out->b_profile_valid    = false;
+    p_out->b_shape_valid      = false;
+    p_out->b_width_raw        = false;
     p_out->forward_mm       = 0u;
     p_out->nearest_mm       = 0u;
     p_out->width_mm         = 0u;
@@ -175,26 +175,26 @@ s2_telemetry_add_scan (telemetry_encoder_snapshot_t * p_out,
 
     if (0u != (p_scan->flags & SCAN_TELEMETRY_FORWARD_VALID))
     {
-        p_out->forward_valid = true;
+        p_out->b_forward_valid = true;
         p_out->forward_mm    = p_scan->forward_mm;
     }
 
     if (0u != (p_scan->flags & SCAN_TELEMETRY_PROFILE_SEEN))
     {
-        p_out->profile_valid = true;
+        p_out->b_profile_valid = true;
         p_out->nearest_mm    = p_scan->nearest_observed_mm;
     }
 
     if (0u != (p_scan->flags & SCAN_TELEMETRY_SHAPE_ESTIMATE))
     {
-        p_out->shape_valid      = true;
+        p_out->b_shape_valid      = true;
         p_out->width_mm         = p_scan->observed_width_mm;
         p_out->centre_offset_mm = p_scan->centre_offset_mm;
     }
     else if (0u != (p_scan->flags & SCAN_TELEMETRY_WIDTH_RAW))
     {
         /* Display only: an edge is missing (S1 decision 7). */
-        p_out->width_raw = true;
+        p_out->b_width_raw = true;
         p_out->width_mm  = p_scan->observed_width_mm;
     }
     else
@@ -212,38 +212,38 @@ s2_telemetry_from_state (s2_robot_state_t const * p_state,
         return;
     }
 
-    int32_t const d = p_state->run_distance_mm;
-    uint8_t const f = p_state->flags;
-    bool const    b_known = (0u != (f & S2_RS_DISTANCE_VALID));
-    bool const    b_motion = (0u != (f & S2_RS_MOTION_VALID));
-    bool const    b_line = (0u != (f & S2_RS_LINE_FRESH));
-    bool const    b_barcode = (0u != (f & S2_RS_BARCODE_VALID));
+    int32_t const distance = p_state->run_distance_mm;
+    uint8_t const flag_bits = p_state->flags;
+    bool const    b_known = (0u != (flag_bits & S2_RS_DISTANCE_VALID));
+    bool const    b_motion = (0u != (flag_bits & S2_RS_MOTION_VALID));
+    bool const    b_line = (0u != (flag_bits & S2_RS_LINE_FRESH));
+    bool const    b_barcode = (0u != (flag_bits & S2_RS_BARCODE_VALID));
 
     p_out->captured_ms    = p_state->captured_ms;
-    p_out->distance_valid = b_known && (d >= 0)
-                            && (d <= S2_DISTANCE_MAX_MM);
-    /* d is saturated at S2_DISTANCE_MAX_MM (65535) before the cast. */
-    p_out->distance_mm    = (!b_known || (d < 0)) ? 0u
-                            : ((d > S2_DISTANCE_MAX_MM)
+    p_out->b_distance_valid = b_known && (distance >= 0)
+                            && (distance <= S2_DISTANCE_MAX_MM);
+    /* distance is saturated at S2_DISTANCE_MAX_MM (65535) before the cast. */
+    p_out->distance_mm    = (!b_known || (distance < 0)) ? 0u
+                            : ((distance > S2_DISTANCE_MAX_MM)
                                ? (uint16_t)S2_DISTANCE_MAX_MM
-                               : (uint16_t)d);
-    p_out->stopped        = (0u != (f & S2_RS_STOPPED));
-    p_out->stop_latched   = (0u != (f & S2_RS_STOP_LATCHED));
+                               : (uint16_t)distance);
+    p_out->b_stopped        = (0u != (flag_bits & S2_RS_STOPPED));
+    p_out->b_stop_latched   = (0u != (flag_bits & S2_RS_STOP_LATCHED));
     p_out->state          = p_state->state;
     p_out->mode           = p_state->mode;
     p_out->fault          = p_state->fault;
-    p_out->motion_valid   = b_motion;
+    p_out->b_motion_valid   = b_motion;
     p_out->left_mm_s      = b_motion ? p_state->left_mm_s : 0;
     p_out->right_mm_s     = b_motion ? p_state->right_mm_s : 0;
     p_out->heading_cdeg   = b_motion ? p_state->heading_cdeg : 0;
-    p_out->line_fresh     = b_line;
+    p_out->b_line_fresh     = b_line;
     p_out->line           = b_line ? p_state->line : 0u;
-    p_out->barcode_valid  = b_barcode;
+    p_out->b_barcode_valid  = b_barcode;
     p_out->barcode        = b_barcode ? p_state->barcode : '\0';
     p_out->barcode_command = b_barcode ? p_state->barcode_command
                                        : S2_NAV_NONE;
     p_out->barcode_count  = b_barcode ? p_state->barcode_count : 0u;
-    p_out->stop_cause     = (0u != (f & S2_RS_STOP_LATCHED))
+    p_out->stop_cause     = (0u != (flag_bits & S2_RS_STOP_LATCHED))
                             ? p_state->stop_cause : S2_STOP_NONE;
 }
 

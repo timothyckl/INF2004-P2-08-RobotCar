@@ -25,7 +25,7 @@ bool mqtt_service_init (void)
         NULL
     };
 
-    if (!g_bridge.initialised)
+    if (!g_bridge.b_initialised)
     {
         /* The adapters fail safely until subsystem2_init() has run, so a
            command arriving early is rejected, never queued for later. */
@@ -34,28 +34,28 @@ bool mqtt_service_init (void)
                                    &port);
     }
 
-    return g_bridge.initialised;
+    return g_bridge.b_initialised;
 }
 
 bool mqtt_service_topic (const char * p_topic, size_t total_length)
 {
-    bool accepted = false;
+    bool b_accepted = false;
 
-    if ((NULL != p_topic) && g_bridge.initialised)
+    if ((NULL != p_topic) && g_bridge.b_initialised)
     {
-        accepted = service_bridge_begin(&g_bridge, p_topic,
+        b_accepted = service_bridge_begin(&g_bridge, p_topic,
                                         strlen(p_topic), total_length);
     }
 
-    return accepted;
+    return b_accepted;
 }
 
-void mqtt_service_data (const void * p_data, size_t length, bool is_last)
+void mqtt_service_data (const void * p_data, size_t length, bool b_last)
 {
-    if (g_bridge.initialised)
+    if (g_bridge.b_initialised)
     {
         /* Controller clock: the age check compares against tk_get_tim. */
-        (void) service_bridge_data(&g_bridge, p_data, length, is_last,
+        (void) service_bridge_data(&g_bridge, p_data, length, b_last,
                                    s2_clock_ms());
     }
 }
@@ -64,7 +64,7 @@ size_t mqtt_service_telemetry (uint8_t * p_output, size_t capacity)
 {
     size_t length = 0u;
 
-    if (g_bridge.initialised)
+    if (g_bridge.b_initialised)
     {
         length = service_bridge_telemetry(&g_bridge, p_output, capacity);
     }

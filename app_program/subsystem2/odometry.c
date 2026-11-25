@@ -47,6 +47,9 @@ odom_count_delta (uint32_t now, uint32_t prev)
     uint32_t const diff = now - prev;
     int32_t        delta;
 
+    /* Each branch converts only values in int32_t range: diff <= INT32_MAX
+       here, and UINT32_MAX - diff < INT32_MAX in the else branch, so no
+       implementation-defined conversion occurs. */
     if (diff <= (uint32_t)INT32_MAX)
     {
         delta = (int32_t)diff;
@@ -71,15 +74,18 @@ odom_counts_to_mm (odom_cfg_t const * p_cfg, int32_t counts, int32_t * p_mm)
         return (false);
     }
 
-    int64_t const mm = ((int64_t)counts * p_cfg->wheel_circ_um)
+    /* Widening to 64 bits: an int32_t count times a uint32_t circumference
+       fits int64_t. The result is narrowed only after odom_fits_i32() confirms
+       it is in int32_t range. */
+    int64_t const dist_mm = ((int64_t)counts * p_cfg->wheel_circ_um)
                        / ((int64_t)p_cfg->counts_per_rev * ODOM_UM_PER_MM);
 
-    if (!odom_fits_i32(mm))
+    if (!odom_fits_i32(dist_mm))
     {
         return (false);
     }
 
-    *p_mm = (int32_t)mm;
+    *p_mm = (int32_t)dist_mm;
 
     return (true);
 }
@@ -99,6 +105,8 @@ odom_speed_mm_s (odom_cfg_t const * p_cfg, int32_t counts,
     }
 
     /* mm/s = (counts * circ_um / cpr) um / interval_us us * 1000 */
+    /* Narrowed to int32_t below only after odom_fits_i32() confirms the
+       range. */
     int64_t const speed = ((int64_t)counts * p_cfg->wheel_circ_um
                            * ODOM_MS_PER_S)
                           / ((int64_t)p_cfg->counts_per_rev * interval_us);
@@ -130,6 +138,8 @@ odom_turn_mdeg (odom_cfg_t const * p_cfg, int32_t left_mm, int32_t right_mm,
     }
 
     /* angle_rad = (right - left) / track; degrees = rad * 180 / pi */
+    /* Widened to 64 bits so the difference and product cannot overflow;
+       narrowed only after odom_fits_i32() confirms the range. */
     int64_t const diff = (int64_t)right_mm - left_mm;
     int64_t const mdeg = (diff * ODOM_MDEG_HALF * ODOM_PI_DEN)
                          / ((int64_t)p_cfg->track_mm * ODOM_PI_NUM);

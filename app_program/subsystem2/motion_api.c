@@ -21,18 +21,23 @@ static ER motion_queue (s2_motion_cmd_t * p_cmd);
 ER
 motion_move_forward (uint16_t distance_mm)
 {
+    /* Widening: distance_mm is uint16_t (0..65535), so int32_t holds it and
+       its negation. */
     return (motion_send(S2_CMD_MOVE, (int32_t)distance_mm));
 }
 
 ER
 motion_move_backward (uint16_t distance_mm)
 {
+    /* Widening: uint16_t to int32_t holds every value and its negation. */
     return (motion_send(S2_CMD_MOVE, -(int32_t)distance_mm));
 }
 
 ER
 motion_turn_left (uint32_t angle_mdeg)
 {
+    /* angle_mdeg is checked against MOTION_ANGLE_MAX_MDEG first, so the
+       int32_t value and its negation are in range. */
     return ((angle_mdeg > MOTION_ANGLE_MAX_MDEG) ? E_PAR
             : motion_send(S2_CMD_TURN, (int32_t)angle_mdeg));
 }
@@ -40,6 +45,8 @@ motion_turn_left (uint32_t angle_mdeg)
 ER
 motion_turn_right (uint32_t angle_mdeg)
 {
+    /* angle_mdeg is checked against MOTION_ANGLE_MAX_MDEG first, so the
+       int32_t value and its negation are in range. */
     return ((angle_mdeg > MOTION_ANGLE_MAX_MDEG) ? E_PAR
             : motion_send(S2_CMD_TURN, -(int32_t)angle_mdeg));
 }
@@ -91,7 +98,7 @@ bool
 motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
                  s2_motion_cmd_t * p_cmd)
 {
-    s2_motion_cmd_t c = {0};
+    s2_motion_cmd_t motion_cmd = {0};
     int32_t const   mag = (value < 0) ? -value : value;
 
     if ((NULL == p_cmd) || (INT32_MIN == value))
@@ -99,11 +106,13 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
         return (false);
     }
 
-    c.cmd    = cmd;
-    c.cmd_id = cmd_id;
+    motion_cmd.cmd    = cmd;
+    motion_cmd.cmd_id = cmd_id;
 
     if (S2_CMD_MOVE == cmd)
     {
+        /* MOTION_DISTANCE_MAX_MM is a small positive constant: the cast only
+           gives the comparison one signed type. */
         if ((0 == mag) || (mag > (int32_t)MOTION_DISTANCE_MAX_MM))
         {
             return (false);
@@ -111,8 +120,8 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
 
         /* |value| <= MOTION_DISTANCE_MAX_MM (checked above) and the speeds are
            small constants, all inside int16_t. */
-        c.u.move.distance_mm = (int16_t)value;
-        c.u.move.speed_mm_s  = (int16_t)MC_MOVE_SPEED_MM_S;
+        motion_cmd.u.move.distance_mm = (int16_t)value;
+        motion_cmd.u.move.speed_mm_s  = (int16_t)MC_MOVE_SPEED_MM_S;
     }
     else if (S2_CMD_TURN == cmd)
     {
@@ -121,9 +130,9 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
             return (false);
         }
 
-        c.u.turn.angle_mdeg = value;
+        motion_cmd.u.turn.angle_mdeg = value;
         /* A small positive constant (motion_config.h), inside int16_t. */
-        c.u.turn.speed_mm_s = (int16_t)MC_TURN_SPEED_MM_S;
+        motion_cmd.u.turn.speed_mm_s = (int16_t)MC_TURN_SPEED_MM_S;
     }
     else if ((S2_CMD_STOP != cmd) && (S2_CMD_RESET != cmd)
              && (S2_CMD_NEW_RUN != cmd))
@@ -135,7 +144,7 @@ motion_api_make (uint8_t cmd, int32_t value, uint16_t cmd_id,
         /* No payload. */
     }
 
-    *p_cmd = c;
+    *p_cmd = motion_cmd;
 
     return (true);
 }
@@ -167,14 +176,14 @@ motion_api_make_speed (int16_t left_mm_s, int16_t right_mm_s,
 static ER
 motion_send (uint8_t cmd, int32_t value)
 {
-    s2_motion_cmd_t c;
+    s2_motion_cmd_t motion_cmd;
 
-    if (!motion_api_make(cmd, value, g_next_id, &c))
+    if (!motion_api_make(cmd, value, g_next_id, &motion_cmd))
     {
         return (E_PAR);
     }
 
-    return (motion_queue(&c));
+    return (motion_queue(&motion_cmd));
 }
 
 static ER
@@ -187,13 +196,16 @@ motion_queue (s2_motion_cmd_t * p_cmd)
         return (E_OBJ);
     }
 
+    /* tim.lo is the 32-bit low word of the ms clock (UW), so uint32_t holds
+       it; it wraps every 49.7 days and all users subtract with unsigned
+       arithmetic. sizeof the message is a few bytes, which INT holds. */
     p_cmd->time_ms = (tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u;
 
-    ER const er = tk_snd_mbf(motion_q, p_cmd, (INT)sizeof(*p_cmd), TMO_POL);
+    ER const ercd = tk_snd_mbf(motion_q, p_cmd, (INT)sizeof(*p_cmd), TMO_POL);
 
-    if (er < E_OK)
+    if (ercd < E_OK)
     {
-        return (er);
+        return (ercd);
     }
 
     g_last_id = g_next_id;
@@ -227,15 +239,17 @@ s2_distance_delta (motion_status_t const * p_prev,
         return (false);
     }
 
-    int64_t const d = (int64_t)p_now->travel_mm - p_prev->travel_mm;
+    /* Two int32_t travels are subtracted in 64 bits so the difference cannot
+       overflow; it is then checked against 0..UINT16_MAX before use. */
+    int64_t const delta = (int64_t)p_now->travel_mm - p_prev->travel_mm;
 
-    if ((d < 0) || (d > (int64_t)UINT16_MAX))
+    if ((delta < 0) || (delta > (int64_t)UINT16_MAX))
     {
         return (false);
     }
 
-    /* d is 0..UINT16_MAX (checked above). */
-    *p_delta_mm = (uint16_t)d;
+    /* delta is 0..UINT16_MAX (checked above). */
+    *p_delta_mm = (uint16_t)delta;
 
     return (true);
 }

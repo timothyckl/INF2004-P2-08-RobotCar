@@ -20,9 +20,9 @@ typedef struct
     uint32_t retry_ms;
     uint32_t last_heartbeat_ms;
     uint32_t last_retry_ms;
-    bool     heartbeat_armed;
-    bool     retry_armed;
-    bool     initialised;
+    bool     b_heartbeat_armed;
+    bool     b_retry_armed;
+    bool     b_initialised;
 } comms_timer_t;
 
 /**
@@ -47,7 +47,7 @@ bool comms_timer_init (comms_timer_t * p_timer, uint32_t heartbeat_ms,
  * The caller executes network actions only inside the WiFi service task.
  */
 comms_timer_action_t comms_timer_poll (comms_timer_t * p_timer,
-    uint32_t now_ms, bool wifi_up, bool mqtt_up, bool attempt_pending);
+    uint32_t now_ms, bool b_wifi_up, bool b_mqtt_up, bool b_attempt_pending);
 
 #endif /* COMMS_TIMER_H */
 

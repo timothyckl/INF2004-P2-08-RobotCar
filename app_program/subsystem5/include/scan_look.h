@@ -81,7 +81,7 @@ bool scan_look_active (scan_look_t const * p_look);
 bool scan_look_capturing (scan_look_t const * p_look);
 
 /** Start a look; an angle beyond the servo's limit faults at once. */
-void scan_look_start (scan_look_t * p_look, uint32_t id, int16_t angle_deg,
+void scan_look_start (scan_look_t * p_look, uint32_t look_id, int16_t angle_deg,
                       uint32_t now_us, scan_look_output_t * p_out);
 
 /** Advance the look's timing; b_still is motion_stop_confirmed(). */

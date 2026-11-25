@@ -23,6 +23,8 @@ s2_clock_ms (void)
 {
     SYSTIM tim;
 
+    /* tim.lo is the 32-bit low word of the ms clock (UW): same width, so no
+       value changes; it wraps every 49.7 days. */
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 
@@ -73,13 +75,16 @@ s2_bridge_raise_stop (ID flg, uint32_t received_ms)
 
 /* A full queue drops the command: it is never retried later. */
 bool
-s2_bridge_send_command (ID q, uint8_t command, uint32_t request_id,
+s2_bridge_send_command (ID queue, uint8_t command, uint32_t request_id,
                         uint32_t received_ms)
 {
     s2_remote_cmd_t msg;
 
-    return ((q > 0) && s2_remote_make(command, request_id, received_ms, &msg)
-            && (tk_snd_mbf(q, &msg, (INT)sizeof(msg), TMO_POL) >= E_OK));
+    /* sizeof(msg) is a few bytes, which INT holds; tk_snd_mbf() takes the size
+       as INT. */
+    return ((queue > 0)
+            && s2_remote_make(command, request_id, received_ms, &msg)
+            && (tk_snd_mbf(queue, &msg, (INT)sizeof(msg), TMO_POL) >= E_OK));
 }
 
 bool
@@ -128,10 +133,12 @@ bool
 s2_line_submit (uint8_t position, uint32_t captured_ms)
 {
     s2_line_report_t report;
-    ID const q = line_q;
+    ID const queue = line_q;
 
-    return ((q > 0) && s2_line_make(position, captured_ms, &report)
-            && (tk_snd_mbf(q, &report, (INT)sizeof(report), TMO_POL)
+    /* sizeof(report) is a few bytes, which INT holds (tk_snd_mbf() size
+       argument). */
+    return ((queue > 0) && s2_line_make(position, captured_ms, &report)
+            && (tk_snd_mbf(queue, &report, (INT)sizeof(report), TMO_POL)
                 >= E_OK));
 }
 
@@ -164,12 +171,14 @@ s2_line_submit_scaled (uint8_t position, uint8_t strength, uint8_t flags,
                        uint32_t captured_ms)
 {
     s2_line_report_t report;
-    ID const q = line_q;
+    ID const queue = line_q;
 
-    return ((q > 0)
+    /* sizeof(report) is a few bytes, which INT holds (tk_snd_mbf() size
+       argument). */
+    return ((queue > 0)
             && s2_line_make_scaled(position, strength, flags, captured_ms,
                                    &report)
-            && (tk_snd_mbf(q, &report, (INT)sizeof(report), TMO_POL)
+            && (tk_snd_mbf(queue, &report, (INT)sizeof(report), TMO_POL)
                 >= E_OK));
 }
 
@@ -178,9 +187,9 @@ s2_nav_submit (uint8_t command, char symbol, uint32_t scan_id,
                uint32_t staged_ms)
 {
     s2_nav_request_t request;
-    ID const q = nav_q;
+    ID const queue = nav_q;
 
-    if ((q <= 0) || (command > S2_NAV_UTURN)
+    if ((queue <= 0) || (command > S2_NAV_UTURN)
         || (symbol < 'A') || (symbol > 'Z'))
     {
         return (false);
@@ -193,7 +202,8 @@ s2_nav_submit (uint8_t command, char symbol, uint32_t scan_id,
     request.reserved[0] = 0u;
     request.reserved[1] = 0u;
 
-    return (tk_snd_mbf(q, &request, (INT)sizeof(request), TMO_POL) >= E_OK);
+    /* sizeof(request) is a few bytes, which INT holds. */
+    return (tk_snd_mbf(queue, &request, (INT)sizeof(request), TMO_POL) >= E_OK);
 }
 
 bool

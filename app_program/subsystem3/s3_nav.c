@@ -31,11 +31,11 @@ s3_command_t s3_nav_command(char symbol)
 
 bool s3_nav_set_letter(s3_command_t command, char letter)
 {
-    bool const valid = (command >= S3_NAV_LEFT) &&
+    bool const b_valid = (command >= S3_NAV_LEFT) &&
                        (command <= S3_NAV_UTURN) &&
                        (letter >= 'A') && (letter <= 'Z');
 
-    if (valid)
+    if (b_valid)
     {
         /* command is S3_NAV_LEFT..S3_NAV_UTURN (checked above) and letter
            'A'..'Z', so both casts below are in range. */
@@ -49,7 +49,7 @@ bool s3_nav_set_letter(s3_command_t command, char letter)
         g_s3_nav_map[(uint8_t)(letter - 'A')] = (uint8_t)command;
     }
 
-    return valid;
+    return b_valid;
 }
 
 /** End of file. */

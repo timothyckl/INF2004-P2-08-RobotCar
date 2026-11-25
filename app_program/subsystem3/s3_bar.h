@@ -14,9 +14,9 @@ typedef struct
     uint32_t runs[S3_BAR_CAPACITY];
     uint32_t last_us;
     uint8_t  count;
-    bool     black;
-    bool     active;
-    bool     failed;
+    bool     b_black;
+    bool     b_active;
+    bool     b_failed;
 } s3_capture_t;
 
 typedef struct
@@ -33,7 +33,7 @@ void s3_bar_begin(s3_capture_t * p_capture, uint32_t now_us);
  * Calls must be ordered and less than one timer wrap apart.
  * timeout_us is an unvalidated caller-selected maximum run duration.
  */
-bool s3_bar_edge(s3_capture_t * p_capture, bool black, uint32_t now_us,
+bool s3_bar_edge(s3_capture_t * p_capture, bool b_black, uint32_t now_us,
                  uint32_t timeout_us);
 /** Poll even when there are no edges. Timeout aborts, never decodes. */
 bool s3_bar_expire(s3_capture_t * p_capture, uint32_t now_us,

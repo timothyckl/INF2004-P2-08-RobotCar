@@ -49,21 +49,23 @@ static void drv_encoder_input (uint32_t pin);
 ER
 drv_encoder_init (void)
 {
-    for (UINT e = 0u; e < (UINT)DRV_ENCODER_COUNT; e++)
+    for (UINT enc = 0u; enc < (UINT)DRV_ENCODER_COUNT; enc++)
     {
-        drv_encoder_input(g_encoder_hw[e].pin_a);
-        drv_encoder_input(g_encoder_hw[e].pin_b);
+        drv_encoder_input(g_encoder_hw[enc].pin_a);
+        drv_encoder_input(g_encoder_hw[enc].pin_b);
     }
 
-    for (UINT e = 0u; e < (UINT)DRV_ENCODER_COUNT; e++)
+    /* DRV_ENCODER_COUNT is 2, which UINT holds; the cast only matches the loop
+       counter's type. */
+    for (UINT enc = 0u; enc < (UINT)DRV_ENCODER_COUNT; enc++)
     {
-        ER const er = drv_gpio_irq_register(g_encoder_hw[e].pin_a,
+        ER const ercd = drv_gpio_irq_register(g_encoder_hw[enc].pin_a,
                                             DRV_ENCODER_EDGES,
                                             drv_encoder_isr);
 
-        if (er < E_OK)
+        if (ercd < E_OK)
         {
-            return (er);
+            return (ercd);
         }
     }
 
@@ -83,7 +85,7 @@ drv_encoder_snapshot (drv_encoder_snapshot_t * p_snap)
         return (E_PAR);
     }
 
-    for (uint32_t t = 0u; t < DRV_ENCODER_SNAP_TRIES; t++)
+    for (uint32_t attempt = 0u; attempt < DRV_ENCODER_SNAP_TRIES; attempt++)
     {
         drv_encoder_snapshot_t copy;
         uint32_t const before = g_seq;
@@ -95,11 +97,13 @@ drv_encoder_snapshot (drv_encoder_snapshot_t * p_snap)
             continue;   /* update in progress */
         }
 
-        for (UINT e = 0u; e < (UINT)DRV_ENCODER_COUNT; e++)
+        /* DRV_ENCODER_COUNT is 2: the cast only matches the loop counter's
+           type. */
+        for (UINT enc = 0u; enc < (UINT)DRV_ENCODER_COUNT; enc++)
         {
-            copy.count[e]   = g_count[e];
-            copy.edge_us[e] = g_edge_us[e];
-            copy.errors[e]  = g_errors[e];
+            copy.count[enc]   = g_count[enc];
+            copy.edge_us[enc] = g_edge_us[enc];
+            copy.errors[enc]  = g_errors[enc];
         }
 
         drv_encoder_barrier();
@@ -161,17 +165,18 @@ drv_encoder_isr (uint32_t gpio, uint32_t events, uint32_t now_us)
 {
     UW const levels = in_w(GPIO_IN);
 
-    for (UINT e = 0u; e < (UINT)DRV_ENCODER_COUNT; e++)
+    /* DRV_ENCODER_COUNT is 2: the cast only matches the loop counter's type. */
+    for (UINT enc = 0u; enc < (UINT)DRV_ENCODER_COUNT; enc++)
     {
-        if (gpio != g_encoder_hw[e].pin_a)
+        if (gpio != g_encoder_hw[enc].pin_a)
         {
             continue;
         }
 
         bool const b_level_a =
-            (0u != (levels & (UINT32_C(1) << g_encoder_hw[e].pin_a)));
+            (0u != (levels & (UINT32_C(1) << g_encoder_hw[enc].pin_a)));
         bool const b_level_b =
-            (0u != (levels & (UINT32_C(1) << g_encoder_hw[e].pin_b)));
+            (0u != (levels & (UINT32_C(1) << g_encoder_hw[enc].pin_b)));
         int32_t const step = drv_encoder_step(events, b_level_a, b_level_b);
 
         g_seq = g_seq + 1u;
@@ -180,12 +185,12 @@ drv_encoder_isr (uint32_t gpio, uint32_t events, uint32_t now_us)
         if (0 != step)
         {
             /* Unsigned wrap is defined; -1 wraps to UINT32_MAX. */
-            g_count[e]   = g_count[e] + (uint32_t)step;
-            g_edge_us[e] = now_us;
+            g_count[enc]   = g_count[enc] + (uint32_t)step;
+            g_edge_us[enc] = now_us;
         }
         else if (0u != (events & DRV_ENCODER_EDGES))
         {
-            g_errors[e] = g_errors[e] + 1u;
+            g_errors[enc] = g_errors[enc] + 1u;
         }
         else
         {

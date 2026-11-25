@@ -512,6 +512,7 @@ s4_test_hump_floor (void)
             time_us += S4_TEST_SAMPLE_PERIOD_US;
         }
 
+        /* pitch_mg is 1..200, so its negation fits int16_t. */
         b_complete = s4_test_hump(&context, &time_us, (int16_t) -pitch_mg,
                                   0, true)
                      && context.result.b_current_height_valid;
@@ -565,6 +566,7 @@ s4_test_hump_monotonic (void)
             time_us += S4_TEST_SAMPLE_PERIOD_US;
         }
 
+        /* pitch_mg is 90..1000, so its negation fits int16_t. */
         b_ok = s4_test_hump(&context, &time_us, (int16_t) -pitch_mg, 0,
                             true)
                && context.result.b_current_height_valid
@@ -801,6 +803,8 @@ s4_test_average_length_checked (void)
     s4_terrain_init(&context, &config);
     b_zero_rejected = (S4_TERRAIN_STATE_FAULT == context.result.state);
 
+    /* 17 fits uint8_t; the test checks that one more than the maximum is
+       rejected. */
     config.average_samples = (uint8_t) (S4_AVERAGE_MAX_SAMPLES + 1u);
     s4_terrain_init(&context, &config);
 
@@ -883,6 +887,8 @@ s4_test_height_scale_checked (void)
     s4_terrain_init(&context, &config);
     b_zero_rejected = (S4_TERRAIN_STATE_FAULT == context.result.state);
 
+    /* 2001 fits uint16_t; the test checks that one more than the maximum is
+       rejected. */
     config.height_scale_permille =
         (uint16_t) (S4_HEIGHT_SCALE_MAX_PERMILLE + 1u);
     s4_terrain_init(&context, &config);

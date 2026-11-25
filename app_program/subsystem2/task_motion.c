@@ -103,16 +103,17 @@ s2_motion_create (void)
 
     cmbf.mbfatr = TA_TFIFO;
     cmbf.bufsz  = MC_MOTION_Q_BYTES;
+    /* sizeof the command is a few bytes, which INT holds. */
     cmbf.maxmsz = (INT)sizeof(s2_motion_cmd_t);
 
-    ID const q = tk_cre_mbf(&cmbf);
+    ID const motion_mbf = tk_cre_mbf(&cmbf);
 
-    if (q < E_OK)
+    if (motion_mbf < E_OK)
     {
-        return (q);
+        return (motion_mbf);
     }
 
-    motion_q     = q;
+    motion_q     = motion_mbf;
     cmtx.mtxatr  = TA_INHERIT;
     g_status_mtx = tk_cre_mtx(&cmtx);
 
@@ -194,11 +195,11 @@ motion_get_status (motion_status_t * p_status)
         return (E_OBJ);
     }
 
-    ER const er = tk_loc_mtx(g_status_mtx, MC_LOCK_TMO_MS);
+    ER const ercd = tk_loc_mtx(g_status_mtx, MC_LOCK_TMO_MS);
 
-    if (er < E_OK)
+    if (ercd < E_OK)
     {
-        return (er);
+        return (ercd);
     }
 
     *p_status = g_status;
@@ -211,16 +212,16 @@ motion_get_status (motion_status_t * p_status)
 bool
 motion_stop_confirmed (void)
 {
-    motion_status_t st;
+    motion_status_t status;
 
-    return ((E_OK == motion_get_status(&st))
-            && (0u != (st.flags & MOTION_ST_STOPPED)));
+    return ((E_OK == motion_get_status(&status))
+            && (0u != (status.flags & MOTION_ST_STOPPED)));
 }
 
 static void
 motion_task (INT stacd, void * exinf)
 {
-    motion_input_t  in  = {0};
+    motion_input_t  inputs  = {0};
     motion_output_t out;
     s2_motion_cmd_t cmd;
 
@@ -250,22 +251,24 @@ motion_task (INT stacd, void * exinf)
         (void)tk_slp_tsk(TMO_FEVR);
         (void)tk_can_wup(TSK_SELF);     /* drop wake-ups queued meanwhile */
 
-        read_input(&in);
+        read_input(&inputs);
         motion_output_clear(&out);
 
+        /* sizeof the command is a few bytes, which INT holds; tk_rcv_mbf()
+           returns the size as INT. */
         while (tk_rcv_mbf(motion_q, &cmd, TMO_POL)
                == (INT)sizeof(s2_motion_cmd_t))
         {
-            motion_command(&g_motion, &cmd, &in, &out);
+            motion_command(&g_motion, &cmd, &inputs, &out);
         }
 
-        motion_step(&g_motion, &in, &out);
+        motion_step(&g_motion, &inputs, &out);
         apply_duty(out.duty_l, out.duty_r);
 #if MC_USE_WATCHDOG
         drv_watchdog_kick();    /* the only kick: a hung task resets */
 #endif
 
-        if (g_b_off_due && in.b_stop && (0 == out.duty_l)
+        if (g_b_off_due && inputs.b_stop && (0 == out.duty_l)
             && (0 == out.duty_r))
         {
             g_off_us    = in_w(TIMER_TIMERAWL);  /* duties now zero */
@@ -274,12 +277,12 @@ motion_task (INT stacd, void * exinf)
 
         if (out.b_raise_fault)
         {
-            log_fault(&in, &out);
+            log_fault(&inputs, &out);
         }
 
         raise_fault(&out);
         publish_status();
-        motion_log(&in, &out);
+        motion_log(&inputs, &out);
     }
 }
 
@@ -338,12 +341,14 @@ read_input (motion_input_t * p_in)
 
     if (p_in->b_counts_valid)
     {
-        uint32_t const l = snap.count[MC_LEFT_ENCODER];
-        uint32_t const r = snap.count[MC_RIGHT_ENCODER];
+        uint32_t const count_left = snap.count[MC_LEFT_ENCODER];
+        uint32_t const count_right = snap.count[MC_RIGHT_ENCODER];
 
         /* Unsigned negation reverses the count direction modulo 2^32. */
-        p_in->count_l  = (0 != MC_LEFT_ENC_INVERT) ? (0u - l) : l;
-        p_in->count_r  = (0 != MC_RIGHT_ENC_INVERT) ? (0u - r) : r;
+        p_in->count_l  = (0 != MC_LEFT_ENC_INVERT) ? (0u - count_left)
+                                                   : count_left;
+        p_in->count_r  = (0 != MC_RIGHT_ENC_INVERT) ? (0u - count_right)
+                                                    : count_right;
         p_in->errors_l = snap.errors[MC_LEFT_ENCODER];
         p_in->errors_r = snap.errors[MC_RIGHT_ENCODER];
     }
@@ -365,6 +370,9 @@ static void
 log_fault (motion_input_t const * p_input,
            motion_output_t const * p_output)
 {
+    /* Console arguments for %u and %d: uint8_t, bool and uint32_t values
+       become UINT and int32_t values INT. Both are 32-bit on the RP2040, so
+       every value prints unchanged. */
     tm_printf((UB *)"[S2] motion fault=%u from state=%u; valid=%u; "
                       "stalled L/R=%u/%u; prior PWM duty=%d/%d; "
                       "speed=%d/%d mm/s; "
@@ -419,6 +427,8 @@ now_ms (void)
 {
     SYSTIM tim;
 
+    /* tim.lo is the 32-bit low word of the ms clock (UW): same width, no value
+       changes; it wraps every 49.7 days. */
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 

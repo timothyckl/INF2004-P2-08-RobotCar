@@ -401,6 +401,9 @@ test_nav_to_spin (nav_control_t * p_nav, nav_control_input_t * p_in,
     p_in->b_still = true;
     nav_control_step(p_nav, p_in, &out);
     b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_MOVE,
+                                        /* TEST_NAV_AHEAD_MM is 133, which
+                                           int32_t holds; the subtraction is
+                                           then signed. */
                                         (int32_t)TEST_NAV_AHEAD_MM - 10,
                                         NAV_CONTROL_OUT_NONE);
     nav_control_sent(p_nav, 3u);

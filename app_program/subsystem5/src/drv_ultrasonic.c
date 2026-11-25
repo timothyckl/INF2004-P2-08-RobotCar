@@ -28,30 +28,30 @@ static void drv_ultrasonic_barrier (void);
 ER
 drv_ultrasonic_init (void)
 {
-    ER er = gpio_set_val(DRV_US_TRIG_PIN, 0u);
+    ER ercd = gpio_set_val(DRV_US_TRIG_PIN, 0u);
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
-        er = gpio_set_pin(DRV_US_TRIG_PIN, GPIO_MODE_OUT);
+        ercd = gpio_set_pin(DRV_US_TRIG_PIN, GPIO_MODE_OUT);
     }
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
-        er = gpio_set_pin(DRV_US_ECHO_PIN, GPIO_MODE_IN);
+        ercd = gpio_set_pin(DRV_US_ECHO_PIN, GPIO_MODE_IN);
     }
 
-    if (E_OK == er)
+    if (E_OK == ercd)
     {
         /* Pull-down: an unconnected ECHO reads low, never as a pulse. */
         clr_w(GPIO(DRV_US_ECHO_PIN), GPIO_PUE);
         set_w(GPIO(DRV_US_ECHO_PIN), GPIO_PDE);
-        er = drv_gpio_irq_register(DRV_US_ECHO_PIN,
+        ercd = drv_gpio_irq_register(DRV_US_ECHO_PIN,
                                    DRV_GPIO_IRQ_EDGE_RISE
                                    | DRV_GPIO_IRQ_EDGE_FALL,
                                    drv_ultrasonic_isr);
     }
 
-    return (er);
+    return (ercd);
 }
 
 uint32_t

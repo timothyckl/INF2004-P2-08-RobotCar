@@ -30,12 +30,15 @@ subsystem4_init (void)
 EXPORT ER
 subsystem4_start (void)
 {
+    /* FP is the kernel's generic task-entry type; the cast changes only the
+       pointer type and the kernel calls the task with its own parameters. */
     ID task_id = app_start_task((FP) s4_imu_task, S4_PRI_IMU, 0u,
                                 "s4_imu_task");
 
 #if S4_RAW_LOG
     if (task_id >= E_OK)
     {
+        /* FP: pointer type only, as for the IMU task above. */
         ID const watch_id = app_start_task((FP) s4_watch_task,
                                            S4_PRI_IMU + 1, 0u,
                                            "s4_watch_task");

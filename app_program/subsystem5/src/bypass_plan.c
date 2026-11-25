@@ -123,7 +123,7 @@ static bool bypass_plan_turn_clear (bypass_plan_geom_t const * p_geom,
 
 /** True if one obstacle point is clear of the body at one heading. */
 static bool bypass_plan_point_clear (bypass_plan_geom_t const * p_geom,
-                                     int32_t dx, int32_t dy,
+                                     int32_t dx_mm, int32_t dy_mm,
                                      int32_t sin_pm, int32_t cos_pm);
 
 /** True if the geometry fits the overflow analysis. */
@@ -311,6 +311,8 @@ bypass_plan_edge (uint16_t const * p_distances,
                   bypass_plan_config_t const * p_config,
                   bool b_left, uint32_t * p_edge_mm)
 {
+    /* Widening: both distances are uint16_t, so their sum is below 131,072
+       and fits uint32_t. */
     uint32_t const pass_mm =
         (uint32_t) p_distances[BYPASS_PLAN_FORWARD]
         + (uint32_t) p_config->depth_mm;
@@ -381,6 +383,9 @@ bypass_plan_route (bypass_plan_config_t const * p_config, uint32_t edge_mm,
     bool b_found = false;
 
     geom.near_mm  = side_mm;
+    /* Widening: the body sizes are uint16_t and edge_mm is at most a range
+       plus the depth (below 131,072), so int32_t holds each for the signed
+       geometry. */
     geom.far_mm   = b_left ? (int32_t)p_config->left_side_mm
                            : (int32_t)p_config->right_side_mm;
     geom.front_mm = (int32_t)p_config->front_mm;
@@ -456,35 +461,40 @@ bypass_plan_turn_clear (bypass_plan_geom_t const * p_geom, int32_t axle_x,
     bool b_clear = true;
 
     for (uint32_t step = 0u;
+         /* BYPASS_PLAN_HEADINGS is a small positive constant: the cast only
+            matches the loop counter's type. */
          b_clear && (step < (uint32_t)BYPASS_PLAN_HEADINGS); step++)
     {
-        int32_t const s = sign * g_plan_sin_45[step];
-        int32_t const c = g_plan_cos_45[step];
+        int32_t const sin_pm = sign * g_plan_sin_45[step];
+        int32_t const cos_pm = g_plan_cos_45[step];
 
         /* The side facing the bypass, from the near face to the far. */
-        for (int32_t y = p_geom->face_mm; b_clear && (y <= p_geom->end_mm);
-             y += BYPASS_PLAN_OUTLINE_MM)
+        for (int32_t y_mm = p_geom->face_mm;
+             b_clear && (y_mm <= p_geom->end_mm);
+             y_mm += BYPASS_PLAN_OUTLINE_MM)
         {
             b_clear = bypass_plan_point_clear(p_geom,
                                               p_geom->edge_mm - axle_x,
-                                              y - axle_y, s, c);
+                                              y_mm - axle_y, sin_pm, cos_pm);
         }
 
         b_clear = b_clear
                   && bypass_plan_point_clear(p_geom,
                                              p_geom->edge_mm - axle_x,
-                                             p_geom->end_mm - axle_y, s, c);
+                                             p_geom->end_mm - axle_y,
+                                             sin_pm, cos_pm);
 
         /* The near and far faces, inwards from that side. */
-        for (int32_t x = p_geom->edge_mm - BYPASS_PLAN_OUTLINE_MM;
-             b_clear && (x >= (p_geom->edge_mm - BYPASS_PLAN_FACE_MM));
-             x -= BYPASS_PLAN_OUTLINE_MM)
+        for (int32_t x_mm = p_geom->edge_mm - BYPASS_PLAN_OUTLINE_MM;
+             b_clear && (x_mm >= (p_geom->edge_mm - BYPASS_PLAN_FACE_MM));
+             x_mm -= BYPASS_PLAN_OUTLINE_MM)
         {
-            b_clear = bypass_plan_point_clear(p_geom, x - axle_x,
-                                              p_geom->face_mm - axle_y, s, c)
-                      && bypass_plan_point_clear(p_geom, x - axle_x,
+            b_clear = bypass_plan_point_clear(p_geom, x_mm - axle_x,
+                                              p_geom->face_mm - axle_y,
+                                              sin_pm, cos_pm)
+                      && bypass_plan_point_clear(p_geom, x_mm - axle_x,
                                                  p_geom->end_mm - axle_y,
-                                                 s, c);
+                                                 sin_pm, cos_pm);
         }
     }
 
@@ -492,43 +502,44 @@ bypass_plan_turn_clear (bypass_plan_geom_t const * p_geom, int32_t axle_x,
 }
 
 static bool
-bypass_plan_point_clear (bypass_plan_geom_t const * p_geom, int32_t dx,
-                         int32_t dy, int32_t sin_pm, int32_t cos_pm)
+bypass_plan_point_clear (bypass_plan_geom_t const * p_geom, int32_t dx_mm,
+                         int32_t dy_mm, int32_t sin_pm, int32_t cos_pm)
 {
     /* The point in body coordinates: u across (+ = bypass side), v along
        the heading, rotated by the heading whose sine is sin_pm. */
-    int32_t const u = ((dx * cos_pm) - (dy * sin_pm)) / 1000;
-    int32_t const v = ((dx * sin_pm) + (dy * cos_pm)) / 1000;
-    int32_t du = 0;
-    int32_t dv = 0;
+    int32_t const along_mm = ((dx_mm * cos_pm) - (dy_mm * sin_pm)) / 1000;
+    int32_t const across_mm = ((dx_mm * sin_pm) + (dy_mm * cos_pm)) / 1000;
+    int32_t d_along = 0;
+    int32_t d_across = 0;
 
-    if (u < -p_geom->near_mm)
+    if (along_mm < -p_geom->near_mm)
     {
-        du = -p_geom->near_mm - u;
+        d_along = -p_geom->near_mm - along_mm;
     }
-    else if (u > p_geom->far_mm)
+    else if (along_mm > p_geom->far_mm)
     {
-        du = u - p_geom->far_mm;
+        d_along = along_mm - p_geom->far_mm;
     }
     else
     {
         /* Within the body's width. */
     }
 
-    if (v < -p_geom->rear_mm)
+    if (across_mm < -p_geom->rear_mm)
     {
-        dv = -p_geom->rear_mm - v;
+        d_across = -p_geom->rear_mm - across_mm;
     }
-    else if (v > p_geom->front_mm)
+    else if (across_mm > p_geom->front_mm)
     {
-        dv = v - p_geom->front_mm;
+        d_across = across_mm - p_geom->front_mm;
     }
     else
     {
         /* Within the body's length. */
     }
 
-    return (((du * du) + (dv * dv)) >= (p_geom->check_mm * p_geom->check_mm));
+    return (((d_along * d_along) + (d_across * d_across))
+            >= (p_geom->check_mm * p_geom->check_mm));
 }
 
 static void
@@ -537,6 +548,8 @@ bypass_plan_fill (bypass_plan_config_t const * p_config, bool b_left,
 {
     int32_t const turn = b_left ? g_plan_eighth_mdeg : -g_plan_eighth_mdeg;
     int32_t const side = p_route->side_mm;
+    /* Widening: sensor_mm is uint16_t and the permille factors are at most
+       1000, so each product is below 6.6 x 10^7 and fits int32_t. */
     int32_t const sensor_side = ((int32_t)p_config->sensor_mm
                                  * g_plan_look_sin_permille) / 1000;
     int32_t const sensor_ahead = ((int32_t)p_config->sensor_mm

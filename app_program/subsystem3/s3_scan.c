@@ -41,13 +41,13 @@ void s3_scan_abort(s3_scan_t * p_scan)
 {
     if (NULL != p_scan)
     {
-        p_scan->capture.active = false;
-        p_scan->capture.failed = false;
+        p_scan->capture.b_active = false;
+        p_scan->capture.b_failed = false;
     }
 }
 
 s3_scan_result_t s3_scan_edge(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
-                              bool black, uint32_t now_us)
+                              bool b_black, uint32_t now_us)
 {
     s3_scan_result_t result = S3_SCAN_NONE;
 
@@ -56,16 +56,16 @@ s3_scan_result_t s3_scan_edge(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
         return result;
     }
 
-    if (p_scan->capture.active)
+    if (p_scan->capture.b_active)
     {
-        (void)s3_bar_edge(&p_scan->capture, black, now_us, p_cfg->run_max_us);
+        (void)s3_bar_edge(&p_scan->capture, b_black, now_us, p_cfg->run_max_us);
 
-        if ((!p_scan->capture.active) && p_scan->capture.failed)
+        if ((!p_scan->capture.b_active) && p_scan->capture.b_failed)
         {
             result = S3_SCAN_ERROR;     /* overflow or an over-long run */
         }
     }
-    else if (black && (!p_scan->black))
+    else if (b_black && (!p_scan->b_black))
     {
         s3_bar_begin(&p_scan->capture, now_us);
     }
@@ -74,7 +74,7 @@ s3_scan_result_t s3_scan_edge(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
         /* White while idle, or a repeated level. */
     }
 
-    p_scan->black = black;
+    p_scan->b_black = b_black;
 
     return result;
 }
@@ -85,14 +85,14 @@ s3_scan_result_t s3_scan_poll(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
     s3_scan_result_t result = S3_SCAN_NONE;
 
     if ((NULL == p_scan) || (NULL == p_cfg) || (NULL == p_symbol)
-        || (!p_scan->capture.active))
+        || (!p_scan->capture.b_active))
     {
         return result;
     }
 
     uint32_t const idle_us = now_us - p_scan->capture.last_us;
 
-    if ((!p_scan->capture.black) && (idle_us >= p_cfg->quiet_us))
+    if ((!p_scan->capture.b_black) && (idle_us >= p_cfg->quiet_us))
     {
         uint8_t const count = p_scan->capture.count;
 
@@ -128,33 +128,33 @@ s3_scan_result_t s3_scan_poll(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
 static bool s3_scan_decode(s3_capture_t const * p_capture,
                            s3_scan_cfg_t const * p_cfg, char * p_symbol)
 {
-    bool decoded = false;
+    bool b_decoded = false;
 
     if (S3_BAR_FRAME_RUNS == p_capture->count)
     {
-        decoded = s3_scan_decode_29(p_capture, p_cfg, p_symbol);
+        b_decoded = s3_scan_decode_29(p_capture, p_cfg, p_symbol);
     }
     else if ((p_capture->count >= S3_SCAN_PARTIAL_MIN_RUNS)
              && (p_capture->count < S3_BAR_FRAME_RUNS))
     {
-        decoded = s3_scan_decode_partial(p_capture, p_cfg, p_symbol);
+        b_decoded = s3_scan_decode_partial(p_capture, p_cfg, p_symbol);
     }
     else if ((S3_BAR_FRAME_RUNS + S3_SCAN_STRAY_RUNS) == p_capture->count)
     {
         char first = '\0';
         char last = '\0';
-        bool const first_ok = s3_scan_decode_window(p_capture, 0U, p_cfg,
+        bool const b_first_ok = s3_scan_decode_window(p_capture, 0U, p_cfg,
                                                     &first);
-        bool const last_ok = s3_scan_decode_window(p_capture,
+        bool const b_last_ok = s3_scan_decode_window(p_capture,
                                                    S3_SCAN_STRAY_RUNS,
                                                    p_cfg, &last);
 
         /* Two different letters from one pass is ambiguous. */
-        if ((first_ok || last_ok) && !(first_ok && last_ok
+        if ((b_first_ok || b_last_ok) && !(b_first_ok && b_last_ok
                                        && (first != last)))
         {
-            *p_symbol = first_ok ? first : last;
-            decoded = true;
+            *p_symbol = b_first_ok ? first : last;
+            b_decoded = true;
         }
     }
     else
@@ -162,7 +162,7 @@ static bool s3_scan_decode(s3_capture_t const * p_capture,
         /* Less than 80 percent cannot use the bounded partial fallback. */
     }
 
-    return decoded;
+    return b_decoded;
 }
 
 /* A complete 29-run frame; if one sentinel is damaged, the partial
@@ -198,7 +198,7 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
 {
     uint32_t narrowest = UINT32_MAX;
     uint32_t widest = 0U;
-    bool decoded = false;
+    bool b_decoded = false;
 
     if (S3_BAR_FRAME_RUNS != p_capture->count)
     {
@@ -221,11 +221,11 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
                                                / 2U);
         s3_capture_t reversed = *p_capture;
 
-        decoded = s3_bar_decode(p_capture, narrow_max, narrow_max + 1U,
+        b_decoded = s3_bar_decode(p_capture, narrow_max, narrow_max + 1U,
                                 widest, p_cfg->sentinel, p_cfg->p_symbols,
                                 p_cfg->symbol_count, p_symbol);
 
-        if (!decoded)
+        if (!b_decoded)
         {
             /* Driven past the code the other way: same runs, reversed. */
             for (uint8_t idx = 0U; idx < p_capture->count; ++idx)
@@ -234,14 +234,14 @@ static bool s3_scan_decode_frame(s3_capture_t const * p_capture,
                     p_capture->runs[p_capture->count - 1U - idx];
             }
 
-            decoded = s3_bar_decode(&reversed, narrow_max, narrow_max + 1U,
+            b_decoded = s3_bar_decode(&reversed, narrow_max, narrow_max + 1U,
                                     widest, p_cfg->sentinel,
                                     p_cfg->p_symbols, p_cfg->symbol_count,
                                     p_symbol);
         }
     }
 
-    return decoded;
+    return b_decoded;
 }
 
 static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
@@ -255,8 +255,8 @@ static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
         (uint8_t)(p_capture->count - S3_SCAN_CORE_RUNS);
     char prefix_symbol = '\0';
     char suffix_symbol = '\0';
-    bool prefix_ok;
-    bool suffix_ok;
+    bool b_prefix_ok;
+    bool b_suffix_ok;
 
     /* Repair only the terminal sentinel. The retained 20-run core is still
      * sentinel, gap, payload, gap, so no payload element is guessed. */
@@ -277,16 +277,16 @@ static bool s3_scan_decode_partial(s3_capture_t const * p_capture,
     }
     suffix.count = S3_BAR_FRAME_RUNS;
 
-    prefix_ok = s3_scan_decode_frame(&prefix, p_cfg, &prefix_symbol);
-    suffix_ok = s3_scan_decode_frame(&suffix, p_cfg, &suffix_symbol);
+    b_prefix_ok = s3_scan_decode_frame(&prefix, p_cfg, &prefix_symbol);
+    b_suffix_ok = s3_scan_decode_frame(&suffix, p_cfg, &suffix_symbol);
 
-    if (prefix_ok && suffix_ok && (prefix_symbol != suffix_symbol))
+    if (b_prefix_ok && b_suffix_ok && (prefix_symbol != suffix_symbol))
     {
         return false;
     }
-    if (prefix_ok || suffix_ok)
+    if (b_prefix_ok || b_suffix_ok)
     {
-        *p_symbol = prefix_ok ? prefix_symbol : suffix_symbol;
+        *p_symbol = b_prefix_ok ? prefix_symbol : suffix_symbol;
         return true;
     }
 

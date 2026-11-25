@@ -12,7 +12,7 @@
 
 #include <string.h>
 
-static void check (bool condition, bool * p_passed);
+static void check (bool b_condition, bool * p_passed);
 
 typedef struct
 {
@@ -24,8 +24,8 @@ typedef struct
     uint8_t                    last_route;
     char                       last_letter;
     telemetry_encoder_snapshot_t snapshot;
-    bool                       deliver;
-    bool                       snapshot_ready;
+    bool                       b_deliver;
+    bool                       b_snapshot_ready;
 } comms_test_context_t;
 
 static bool fake_stop (void * p_context, uint32_t received_ms);
@@ -49,49 +49,52 @@ bool comms_test_commands (void)
                                     4u, 9u, 2u, 9u};
     static const uint8_t raw_stop[] = {'S', 'T', 'O', 'P'};
     static const uint8_t embedded_null[] = {'S', 'T', 0u, 'P'};
-    bool passed = true;
+    bool b_passed = true;
 
     check((COMMAND_PARSER_START == command_parser_parse("START", 5u)),
-              &passed);
-    check((COMMAND_PARSER_RESET == command_parser_parse("RESET", 5u)), &passed);
+              &b_passed);
+    check((COMMAND_PARSER_RESET == command_parser_parse("RESET", 5u)),
+          &b_passed);
     check((COMMAND_PARSER_STOP ==
-               command_parser_parse(raw_stop, sizeof(raw_stop))), &passed);
-    check((COMMAND_PARSER_INVALID == command_parser_parse(NULL, 4u)), &passed);
-    check((COMMAND_PARSER_INVALID == command_parser_parse(NULL, 0u)), &passed);
+               command_parser_parse(raw_stop, sizeof(raw_stop))), &b_passed);
+    check((COMMAND_PARSER_INVALID == command_parser_parse(NULL, 4u)),
+          &b_passed);
+    check((COMMAND_PARSER_INVALID == command_parser_parse(NULL, 0u)),
+          &b_passed);
     check((COMMAND_PARSER_INVALID == command_parser_parse("S", SIZE_MAX)),
-              &passed);
+              &b_passed);
     check((COMMAND_PARSER_INVALID ==
                command_parser_parse(embedded_null, sizeof(embedded_null))),
-              &passed);
+              &b_passed);
     check((COMMAND_PARSER_INVALID == command_parser_parse("STOP", 5u)),
-              &passed);
+              &b_passed);
 
     for (size_t idx = 0u; idx < (sizeof(lengths) / sizeof(lengths[0])); ++idx)
     {
         check((COMMAND_PARSER_INVALID ==
                    command_parser_parse(p_invalid[idx], lengths[idx])),
-              &passed);
+              &b_passed);
     }
 
     /* Barcode letter assignments (S1 decision 6). */
-    check(assign_is("L=A", 3u, COMMAND_PARSER_ROUTE_LEFT, 'A'), &passed);
-    check(assign_is("R=Z", 3u, COMMAND_PARSER_ROUTE_RIGHT, 'Z'), &passed);
+    check(assign_is("L=A", 3u, COMMAND_PARSER_ROUTE_LEFT, 'A'), &b_passed);
+    check(assign_is("R=Z", 3u, COMMAND_PARSER_ROUTE_RIGHT, 'Z'), &b_passed);
     check(assign_is("S=F", 3u, COMMAND_PARSER_ROUTE_STRAIGHT, 'F'),
-          &passed);
-    check(assign_is("U=D", 3u, COMMAND_PARSER_ROUTE_UTURN, 'D'), &passed);
-    check(assign_rejects("L=a", 3u), &passed);
-    check(assign_rejects("L=@", 3u), &passed);
-    check(assign_rejects("L=[", 3u), &passed);
-    check(assign_rejects("X=A", 3u), &passed);
-    check(assign_rejects("l=A", 3u), &passed);
-    check(assign_rejects("L:A", 3u), &passed);
-    check(assign_rejects("L=AB", 4u), &passed);
-    check(assign_rejects("L=", 2u), &passed);
-    check(assign_rejects(NULL, 3u), &passed);
+          &b_passed);
+    check(assign_is("U=D", 3u, COMMAND_PARSER_ROUTE_UTURN, 'D'), &b_passed);
+    check(assign_rejects("L=a", 3u), &b_passed);
+    check(assign_rejects("L=@", 3u), &b_passed);
+    check(assign_rejects("L=[", 3u), &b_passed);
+    check(assign_rejects("X=A", 3u), &b_passed);
+    check(assign_rejects("l=A", 3u), &b_passed);
+    check(assign_rejects("L:A", 3u), &b_passed);
+    check(assign_rejects("L=AB", 4u), &b_passed);
+    check(assign_rejects("L=", 2u), &b_passed);
+    check(assign_rejects(NULL, 3u), &b_passed);
     check((COMMAND_PARSER_INVALID == command_parser_parse("L=A", 3u)),
-          &passed);
+          &b_passed);
 
-    return passed;
+    return b_passed;
 }
 
 bool comms_test_telemetry (void)
@@ -120,14 +123,14 @@ bool comms_test_telemetry (void)
     };
     telemetry_encoder_snapshot_t snapshot = full;
     uint8_t output[TELEMETRY_ENCODER_SIZE + 1u] = {0u};
-    bool    passed = true;
+    bool    b_passed = true;
 
     output[TELEMETRY_ENCODER_SIZE] = 0xa5u;
     check((TELEMETRY_ENCODER_SIZE ==
                telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-          &passed);
-    check((0 == memcmp(output, golden, sizeof(golden))), &passed);
-    check((0xa5u == output[TELEMETRY_ENCODER_SIZE]), &passed);
+          &b_passed);
+    check((0 == memcmp(output, golden, sizeof(golden))), &b_passed);
+    check((0xa5u == output[TELEMETRY_ENCODER_SIZE]), &b_passed);
 
     /* Too little space, or a NULL argument, leaves the output alone. */
     for (size_t capacity = 0u; capacity < TELEMETRY_ENCODER_SIZE; ++capacity)
@@ -135,35 +138,35 @@ bool comms_test_telemetry (void)
         memset(output, 0xa5, sizeof(output));
         check((0u ==
                    telemetry_encoder_encode(&snapshot, output, capacity)),
-              &passed);
+              &b_passed);
 
         for (size_t idx = 0u; idx < sizeof(output); ++idx)
         {
-            check((0xa5u == output[idx]), &passed);
+            check((0xa5u == output[idx]), &b_passed);
         }
     }
 
     check((0u == telemetry_encoder_encode(NULL, output, sizeof(output))),
-          &passed);
-    check((0xa5u == output[0]), &passed);
+          &b_passed);
+    check((0xa5u == output[0]), &b_passed);
     check((0u == telemetry_encoder_encode(&snapshot, NULL,
                                           TELEMETRY_ENCODER_SIZE)),
-          &passed);
+          &b_passed);
 
     /* Every validity flag clear: each guarded field is sent as zero. */
-    snapshot.distance_valid = false;
-    snapshot.stopped        = false;
-    snapshot.link_up        = false;
-    snapshot.stop_latched   = false;
-    snapshot.motion_valid   = false;
-    snapshot.line_fresh     = false;
-    snapshot.hump_valid     = false;
-    snapshot.forward_valid  = false;
-    snapshot.profile_valid  = false;
-    snapshot.shape_valid    = false;
-    snapshot.barcode_valid  = false;
-    snapshot.hump_last_valid = false;
-    snapshot.width_raw      = false;
+    snapshot.b_distance_valid = false;
+    snapshot.b_stopped        = false;
+    snapshot.b_link_up        = false;
+    snapshot.b_stop_latched   = false;
+    snapshot.b_motion_valid   = false;
+    snapshot.b_line_fresh     = false;
+    snapshot.b_hump_valid     = false;
+    snapshot.b_forward_valid  = false;
+    snapshot.b_profile_valid  = false;
+    snapshot.b_shape_valid    = false;
+    snapshot.b_barcode_valid  = false;
+    snapshot.b_hump_last_valid = false;
+    snapshot.b_width_raw      = false;
     snapshot.hump_count     = 0u;
     snapshot.captured_ms    = 0u;
     snapshot.state          = 0u;
@@ -173,55 +176,55 @@ bool comms_test_telemetry (void)
     snapshot.bypass_side    = 0u;
     check((TELEMETRY_ENCODER_SIZE ==
                telemetry_encoder_encode(&snapshot, output, sizeof(output))),
-          &passed);
-    check((TELEMETRY_ENCODER_VERSION == output[0]), &passed);
+          &b_passed);
+    check((TELEMETRY_ENCODER_VERSION == output[0]), &b_passed);
 
     for (size_t idx = 1u; idx < TELEMETRY_ENCODER_SIZE; ++idx)
     {
-        check((0u == output[idx]), &passed);
+        check((0u == output[idx]), &b_passed);
     }
 
     /* Single flags land on their own bits. */
-    snapshot.stopped = true;
+    snapshot.b_stopped = true;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((TELEMETRY_ENCODER_STOPPED == output[1]), &passed);
-    snapshot.stopped = false;
-    snapshot.link_up = true;
+    check((TELEMETRY_ENCODER_STOPPED == output[1]), &b_passed);
+    snapshot.b_stopped = false;
+    snapshot.b_link_up = true;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((TELEMETRY_ENCODER_LINK_UP == output[1]), &passed);
-    snapshot.link_up     = false;
-    snapshot.shape_valid = true;
+    check((TELEMETRY_ENCODER_LINK_UP == output[1]), &b_passed);
+    snapshot.b_link_up     = false;
+    snapshot.b_shape_valid = true;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((0u == output[1]), &passed);
-    check((TELEMETRY_ENCODER_SHAPE_VALID == output[8]), &passed);
-    check((0x04u == output[22]) && (0x03u == output[23]), &passed);
+    check((0u == output[1]), &b_passed);
+    check((TELEMETRY_ENCODER_SHAPE_VALID == output[8]), &b_passed);
+    check((0x04u == output[22]) && (0x03u == output[23]), &b_passed);
 
     /* Version 4: a raw width is sent, with its flag, only without a
        shape; the centre stays zero. */
-    snapshot.shape_valid = false;
-    snapshot.width_raw   = true;
+    snapshot.b_shape_valid = false;
+    snapshot.b_width_raw   = true;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((TELEMETRY_ENCODER_WIDTH_RAW == output[8]), &passed);
-    check((0x04u == output[22]) && (0x03u == output[23]), &passed);
-    check((0u == output[24]) && (0u == output[25]), &passed);
-    snapshot.width_raw   = false;
-    snapshot.hump_last_valid = true;
+    check((TELEMETRY_ENCODER_WIDTH_RAW == output[8]), &b_passed);
+    check((0x04u == output[22]) && (0x03u == output[23]), &b_passed);
+    check((0u == output[24]) && (0u == output[25]), &b_passed);
+    snapshot.b_width_raw   = false;
+    snapshot.b_hump_last_valid = true;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((TELEMETRY_ENCODER_HUMP_LAST_VALID == output[1]), &passed);
-    check((0xfeu == output[29]) && (0u == output[30]), &passed);
-    snapshot.hump_last_valid = false;
-    snapshot.shape_valid = true;
+    check((TELEMETRY_ENCODER_HUMP_LAST_VALID == output[1]), &b_passed);
+    check((0xfeu == output[29]) && (0u == output[30]), &b_passed);
+    snapshot.b_hump_last_valid = false;
+    snapshot.b_shape_valid = true;
 
     /* A code above 14 is sent as 15 (invalid), never masked. */
     snapshot.state       = 16u;
     snapshot.mode        = 14u;
-    snapshot.line_fresh  = true;
+    snapshot.b_line_fresh  = true;
     snapshot.line        = 200u;
     snapshot.scan_result = 15u;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((0xefu == output[9]), &passed);
-    check((0xf0u == output[10]), &passed);
-    check((0x0fu == output[11]), &passed);
+    check((0xefu == output[9]), &b_passed);
+    check((0xf0u == output[10]), &b_passed);
+    check((0x0fu == output[11]), &b_passed);
 
     /* Extremes of the signed and unsigned ranges. */
     snapshot = full;
@@ -231,11 +234,11 @@ bool comms_test_telemetry (void)
     snapshot.centre_offset_mm = INT16_MIN;
     snapshot.captured_ms      = UINT32_MAX;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((0x00u == output[12]) && (0x80u == output[13]), &passed);
-    check((0xffu == output[14]) && (0x7fu == output[15]), &passed);
-    check((0xffu == output[6]) && (0xffu == output[7]), &passed);
-    check((0x00u == output[24]) && (0x80u == output[25]), &passed);
-    check((0xffu == output[2]) && (0xffu == output[5]), &passed);
+    check((0x00u == output[12]) && (0x80u == output[13]), &b_passed);
+    check((0xffu == output[14]) && (0x7fu == output[15]), &b_passed);
+    check((0xffu == output[6]) && (0xffu == output[7]), &b_passed);
+    check((0x00u == output[24]) && (0x80u == output[25]), &b_passed);
+    check((0xffu == output[2]) && (0xffu == output[5]), &b_passed);
 
     /* Version 3: an invalid letter is 31 and a command above 6 is 7; the
        count keeps its low bits; the cause is sent only while latched. */
@@ -245,89 +248,89 @@ bool comms_test_telemetry (void)
     snapshot.barcode_count   = 0x10u;
     snapshot.stop_cause      = 20u;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((0xffu == output[27]), &passed);
-    check((0x0fu == output[28]), &passed);
+    check((0xffu == output[27]), &b_passed);
+    check((0x0fu == output[28]), &b_passed);
     snapshot.barcode         = 'A';
     snapshot.barcode_command = 6u;
-    snapshot.stop_latched    = false;
+    snapshot.b_stop_latched    = false;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((0xc0u == output[27]), &passed);
-    check((0x00u == output[28]), &passed);
-    snapshot.barcode_valid   = false;
-    snapshot.stop_latched    = true;
+    check((0xc0u == output[27]), &b_passed);
+    check((0x00u == output[28]), &b_passed);
+    snapshot.b_barcode_valid   = false;
+    snapshot.b_stop_latched    = true;
     snapshot.stop_cause      = 4u;
     (void) telemetry_encoder_encode(&snapshot, output, sizeof(output));
-    check((0x07u == output[8]), &passed);
-    check((0x00u == output[27]), &passed);
-    check((0x04u == output[28]), &passed);
+    check((0x07u == output[8]), &b_passed);
+    check((0x00u == output[27]), &b_passed);
+    check((0x04u == output[28]), &b_passed);
 
-    return passed;
+    return b_passed;
 }
 
 bool comms_test_timers (void)
 {
     comms_timer_t timer = {0};
-    bool          passed = true;
+    bool          b_passed = true;
 
-    check(!comms_timer_init(NULL, 100u, 50u), &passed);
-    check(!comms_timer_init(&timer, 0u, 50u), &passed);
-    check(!comms_timer_init(&timer, 100u, 0u), &passed);
-    check(!comms_timer_init(&timer, UINT32_MAX, 50u), &passed);
-    check(!comms_timer_init(&timer, 100u, UINT32_MAX), &passed);
+    check(!comms_timer_init(NULL, 100u, 50u), &b_passed);
+    check(!comms_timer_init(&timer, 0u, 50u), &b_passed);
+    check(!comms_timer_init(&timer, 100u, 0u), &b_passed);
+    check(!comms_timer_init(&timer, UINT32_MAX, 50u), &b_passed);
+    check(!comms_timer_init(&timer, 100u, UINT32_MAX), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 0u, false, false, false)), &passed);
+               comms_timer_poll(&timer, 0u, false, false, false)), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(NULL, 0u, true, true, false)), &passed);
-    check(comms_timer_init(&timer, 100u, 50u), &passed);
+               comms_timer_poll(NULL, 0u, true, true, false)), &b_passed);
+    check(comms_timer_init(&timer, 100u, 50u), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 0u, false, false, true)), &passed);
+               comms_timer_poll(&timer, 0u, false, false, true)), &b_passed);
     check((COMMS_TIMER_WIFI ==
-               comms_timer_poll(&timer, 0u, false, false, false)), &passed);
+               comms_timer_poll(&timer, 0u, false, false, false)), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 49u, false, false, false)), &passed);
+               comms_timer_poll(&timer, 49u, false, false, false)), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 50u, false, false, true)), &passed);
+               comms_timer_poll(&timer, 50u, false, false, true)), &b_passed);
     check((COMMS_TIMER_MQTT ==
-               comms_timer_poll(&timer, 50u, true, false, false)), &passed);
+               comms_timer_poll(&timer, 50u, true, false, false)), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 50u, true, false, false)), &passed);
+               comms_timer_poll(&timer, 50u, true, false, false)), &b_passed);
     check((COMMS_TIMER_HEARTBEAT ==
-               comms_timer_poll(&timer, 51u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 51u, true, true, false)), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 150u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 150u, true, true, false)), &b_passed);
     check((COMMS_TIMER_HEARTBEAT ==
-               comms_timer_poll(&timer, 151u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 151u, true, true, false)), &b_passed);
     check((COMMS_TIMER_WIFI ==
-               comms_timer_poll(&timer, 152u, false, false, false)), &passed);
+               comms_timer_poll(&timer, 152u, false, false, false)), &b_passed);
     check((COMMS_TIMER_HEARTBEAT ==
-               comms_timer_poll(&timer, 153u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 153u, true, true, false)), &b_passed);
 
     /* Start near clock wrap, then cross it for both independent schedules. */
-    check(comms_timer_init(&timer, 100u, 50u), &passed);
+    check(comms_timer_init(&timer, 100u, 50u), &b_passed);
     check((COMMS_TIMER_WIFI ==
         comms_timer_poll(&timer, UINT32_MAX - 24u, false, false, false)),
-              &passed);
+              &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 24u, false, false, false)), &passed);
+               comms_timer_poll(&timer, 24u, false, false, false)), &b_passed);
     check((COMMS_TIMER_WIFI ==
-               comms_timer_poll(&timer, 25u, false, false, false)), &passed);
-    check(comms_timer_init(&timer, 100u, 50u), &passed);
+               comms_timer_poll(&timer, 25u, false, false, false)), &b_passed);
+    check(comms_timer_init(&timer, 100u, 50u), &b_passed);
     check((COMMS_TIMER_HEARTBEAT ==
         comms_timer_poll(&timer, UINT32_MAX - 49u, true, true, false)),
-              &passed);
+              &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 49u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 49u, true, true, false)), &b_passed);
     check((COMMS_TIMER_HEARTBEAT ==
-               comms_timer_poll(&timer, 50u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 50u, true, true, false)), &b_passed);
     check((COMMS_TIMER_HEARTBEAT ==
-               comms_timer_poll(&timer, 1000u, true, true, false)), &passed);
+               comms_timer_poll(&timer, 1000u, true, true, false)), &b_passed);
     check((COMMS_TIMER_NONE ==
-               comms_timer_poll(&timer, 1000u, true, true, false)), &passed);
-    check(comms_timer_init(&timer, UINT32_C(0x7fffffff), 1u), &passed);
+               comms_timer_poll(&timer, 1000u, true, true, false)), &b_passed);
+    check(comms_timer_init(&timer, UINT32_C(0x7fffffff), 1u), &b_passed);
     check((COMMS_TIMER_WIFI ==
-               comms_timer_poll(&timer, 0u, false, true, false)), &passed);
+               comms_timer_poll(&timer, 0u, false, true, false)), &b_passed);
 
-    return passed;
+    return b_passed;
 }
 
 bool comms_test_bridge (void)
@@ -340,111 +343,111 @@ bool comms_test_bridge (void)
     service_bridge_t bridge = {0};
     service_bridge_stats_t stats = {0};
     uint8_t output[TELEMETRY_ENCODER_SIZE] = {0u};
-    bool    passed = true;
+    bool    b_passed = true;
 
-    check(!service_bridge_init(NULL, "robot/cmd", 9u, &port), &passed);
-    check(!service_bridge_init(&bridge, NULL, 9u, &port), &passed);
-    check(!service_bridge_init(&bridge, "", 0u, &port), &passed);
-    check(!service_bridge_init(&bridge, "robot/cmd", 9u, NULL), &passed);
+    check(!service_bridge_init(NULL, "robot/cmd", 9u, &port), &b_passed);
+    check(!service_bridge_init(&bridge, NULL, 9u, &port), &b_passed);
+    check(!service_bridge_init(&bridge, "", 0u, &port), &b_passed);
+    check(!service_bridge_init(&bridge, "robot/cmd", 9u, NULL), &b_passed);
     port.p_raise_remote_stop = NULL;
-    check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
+    check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &b_passed);
     port.p_raise_remote_stop = fake_stop;
     port.p_assign_letter = NULL;
-    check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
+    check(!service_bridge_init(&bridge, "robot/cmd", 9u, &port), &b_passed);
     port.p_assign_letter = fake_assign;
-    check(service_bridge_init(&bridge, "robot/cmd", 9u, &port), &passed);
+    check(service_bridge_init(&bridge, "robot/cmd", 9u, &port), &b_passed);
 
-    check(!service_bridge_begin(&bridge, "other/cmd", 9u, 4u), &passed);
+    check(!service_bridge_begin(&bridge, "other/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_IGNORED == service_bridge_data(
-        &bridge, "STOP", 4u, true, 1u)), &passed);
-    check(!service_bridge_begin(&bridge, "robot/cmd", 9u, 0u), &passed);
-    check(!service_bridge_begin(&bridge, "robot/cmd", 9u, 6u), &passed);
-    check(!service_bridge_begin(&bridge, NULL, 9u, 4u), &passed);
+        &bridge, "STOP", 4u, true, 1u)), &b_passed);
+    check(!service_bridge_begin(&bridge, "robot/cmd", 9u, 0u), &b_passed);
+    check(!service_bridge_begin(&bridge, "robot/cmd", 9u, 6u), &b_passed);
+    check(!service_bridge_begin(&bridge, NULL, 9u, 4u), &b_passed);
 
-    context.deliver = true;
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    context.b_deliver = true;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_MORE == service_bridge_data(
-        &bridge, "ST", 2u, false, 10u)), &passed);
+        &bridge, "ST", 2u, false, 10u)), &b_passed);
     check((SERVICE_BRIDGE_FORWARDED == service_bridge_data(
-        &bridge, "OP", 2u, true, 11u)), &passed);
-    check((1u == context.stop_calls), &passed);
-    check((0u == context.command_calls), &passed);
-    check((11u == context.last_received_ms), &passed);
+        &bridge, "OP", 2u, true, 11u)), &b_passed);
+    check((1u == context.stop_calls), &b_passed);
+    check((0u == context.command_calls), &b_passed);
+    check((11u == context.last_received_ms), &b_passed);
 
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 5u), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 5u), &b_passed);
     check((SERVICE_BRIDGE_FORWARDED == service_bridge_data(
-        &bridge, "START", 5u, true, 20u)), &passed);
-    check((1u == context.command_calls), &passed);
-    check((COMMAND_PARSER_START == context.last_command), &passed);
-    check((20u == context.last_received_ms), &passed);
+        &bridge, "START", 5u, true, 20u)), &b_passed);
+    check((1u == context.command_calls), &b_passed);
+    check((COMMAND_PARSER_START == context.last_command), &b_passed);
+    check((20u == context.last_received_ms), &b_passed);
 
-    context.deliver = false;
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 5u), &passed);
+    context.b_deliver = false;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 5u), &b_passed);
     check((SERVICE_BRIDGE_UNDELIVERED == service_bridge_data(
-        &bridge, "RESET", 5u, true, 30u)), &passed);
-    check((2u == context.command_calls), &passed);
-    check((COMMAND_PARSER_RESET == context.last_command), &passed);
+        &bridge, "RESET", 5u, true, 30u)), &b_passed);
+    check((2u == context.command_calls), &b_passed);
+    check((COMMAND_PARSER_RESET == context.last_command), &b_passed);
 
-    context.deliver = true;
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &passed);
+    context.b_deliver = true;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &b_passed);
     check((SERVICE_BRIDGE_FORWARDED == service_bridge_data(
-        &bridge, "U=K", 3u, true, 35u)), &passed);
-    check((1u == context.assign_calls), &passed);
-    check((COMMAND_PARSER_ROUTE_UTURN == context.last_route), &passed);
-    check(('K' == context.last_letter), &passed);
-    check((2u == context.command_calls), &passed);
-    context.deliver = false;
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &passed);
+        &bridge, "U=K", 3u, true, 35u)), &b_passed);
+    check((1u == context.assign_calls), &b_passed);
+    check((COMMAND_PARSER_ROUTE_UTURN == context.last_route), &b_passed);
+    check(('K' == context.last_letter), &b_passed);
+    check((2u == context.command_calls), &b_passed);
+    context.b_deliver = false;
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &b_passed);
     check((SERVICE_BRIDGE_UNDELIVERED == service_bridge_data(
-        &bridge, "L=Q", 3u, true, 36u)), &passed);
-    check((2u == context.assign_calls), &passed);
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &passed);
+        &bridge, "L=Q", 3u, true, 36u)), &b_passed);
+    check((2u == context.assign_calls), &b_passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 3u), &b_passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
-        &bridge, "L=q", 3u, true, 37u)), &passed);
-    check((2u == context.assign_calls), &passed);
+        &bridge, "L=q", 3u, true, 37u)), &b_passed);
+    check((2u == context.assign_calls), &b_passed);
 
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
-        &bridge, "NOPE", 4u, true, 40u)), &passed);
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+        &bridge, "NOPE", 4u, true, 40u)), &b_passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
-        &bridge, NULL, 1u, true, 41u)), &passed);
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+        &bridge, NULL, 1u, true, 41u)), &b_passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
-        &bridge, "STOPX", 5u, true, 42u)), &passed);
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+        &bridge, "STOPX", 5u, true, 42u)), &b_passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
-        &bridge, "STOP", 4u, false, 43u)), &passed);
-    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &passed);
+        &bridge, "STOP", 4u, false, 43u)), &b_passed);
+    check(service_bridge_begin(&bridge, "robot/cmd", 9u, 4u), &b_passed);
     check((SERVICE_BRIDGE_INVALID == service_bridge_data(
-        &bridge, "ST", 2u, true, 44u)), &passed);
+        &bridge, "ST", 2u, true, 44u)), &b_passed);
 
     context.snapshot = (telemetry_encoder_snapshot_t) {0};
     context.snapshot.captured_ms    = 100u;
     context.snapshot.distance_mm    = 250u;
-    context.snapshot.distance_valid = true;
-    context.snapshot.stopped        = true;
-    context.snapshot_ready = false;
+    context.snapshot.b_distance_valid = true;
+    context.snapshot.b_stopped        = true;
+    context.b_snapshot_ready = false;
     check((0u == service_bridge_telemetry(&bridge, output,
-                                          sizeof(output))), &passed);
-    context.snapshot_ready = true;
+                                          sizeof(output))), &b_passed);
+    context.b_snapshot_ready = true;
     check((TELEMETRY_ENCODER_SIZE == service_bridge_telemetry(
-        &bridge, output, sizeof(output))), &passed);
-    check((TELEMETRY_ENCODER_VERSION == output[0]), &passed);
+        &bridge, output, sizeof(output))), &b_passed);
+    check((TELEMETRY_ENCODER_VERSION == output[0]), &b_passed);
     /* The bridge sets link up: distance valid, stopped and link up. */
-    check((7u == output[1]), &passed);
-    check((100u == output[2]), &passed);
-    check((250u == output[6]), &passed);
+    check((7u == output[1]), &b_passed);
+    check((100u == output[2]), &b_passed);
+    check((250u == output[6]), &b_passed);
 
-    check(service_bridge_get_stats(&bridge, &stats), &passed);
-    check((3u == stats.valid_commands), &passed);
-    check((8u == stats.invalid_messages), &passed);
-    check((2u == stats.delivery_failures), &passed);
-    check((2u == stats.ignored_topics), &passed);
-    check(!service_bridge_get_stats(NULL, &stats), &passed);
-    check(!service_bridge_get_stats(&bridge, NULL), &passed);
+    check(service_bridge_get_stats(&bridge, &stats), &b_passed);
+    check((3u == stats.valid_commands), &b_passed);
+    check((8u == stats.invalid_messages), &b_passed);
+    check((2u == stats.delivery_failures), &b_passed);
+    check((2u == stats.ignored_topics), &b_passed);
+    check(!service_bridge_get_stats(NULL, &stats), &b_passed);
+    check(!service_bridge_get_stats(&bridge, NULL), &b_passed);
 
-    return passed;
+    return b_passed;
 }
 
 static bool fake_stop (void * p_context, uint32_t received_ms)
@@ -454,7 +457,7 @@ static bool fake_stop (void * p_context, uint32_t received_ms)
     ++p_test->stop_calls;
     p_test->last_received_ms = received_ms;
 
-    return p_test->deliver;
+    return p_test->b_deliver;
 }
 
 static bool fake_command (void * p_context,
@@ -466,22 +469,22 @@ static bool fake_command (void * p_context,
     p_test->last_command = command;
     p_test->last_received_ms = received_ms;
 
-    return p_test->deliver;
+    return p_test->b_deliver;
 }
 
 static bool fake_snapshot (void * p_context,
     telemetry_encoder_snapshot_t * p_snapshot)
 {
     comms_test_context_t * const p_test = p_context;
-    bool copied = false;
+    bool b_copied = false;
 
-    if (p_test->snapshot_ready)
+    if (p_test->b_snapshot_ready)
     {
         *p_snapshot = p_test->snapshot;
-        copied = true;
+        b_copied = true;
     }
 
-    return copied;
+    return b_copied;
 }
 
 static bool fake_assign (void * p_context, uint8_t route, char letter)
@@ -492,7 +495,7 @@ static bool fake_assign (void * p_context, uint8_t route, char letter)
     p_test->last_route = route;
     p_test->last_letter = letter;
 
-    return p_test->deliver;
+    return p_test->b_deliver;
 }
 
 /** @brief True if the payload parses to exactly this route and letter. */
@@ -519,9 +522,9 @@ static bool assign_rejects (const char * p_payload, size_t length)
 }
 
 /** @brief Accumulate a failed check without skipping subsequent cases. */
-static void check (bool condition, bool * p_passed)
+static void check (bool b_condition, bool * p_passed)
 {
-    if (!condition)
+    if (!b_condition)
     {
         *p_passed = false;
     }

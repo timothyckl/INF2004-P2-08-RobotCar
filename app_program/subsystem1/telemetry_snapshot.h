@@ -58,19 +58,19 @@ typedef struct
     uint8_t  barcode_command;   /* S2_NAV_*; barcode_valid */
     uint8_t  barcode_count;     /* letters decoded, wraps; barcode_valid */
     uint8_t  stop_cause;        /* S2_STOP_*; stop_latched */
-    bool     distance_valid;
-    bool     stopped;           /* both wheels confirmed still */
-    bool     link_up;           /* set by subsystem 1 */
-    bool     stop_latched;
-    bool     motion_valid;
-    bool     line_fresh;        /* line report no older than 100 ms */
-    bool     hump_valid;
-    bool     forward_valid;
-    bool     profile_valid;
-    bool     shape_valid;
-    bool     barcode_valid;     /* a letter was decoded since power-up */
-    bool     hump_last_valid;
-    bool     width_raw;         /* width_mm is the raw span (an edge is
+    bool     b_distance_valid;
+    bool     b_stopped;           /* both wheels confirmed still */
+    bool     b_link_up;           /* set by subsystem 1 */
+    bool     b_stop_latched;
+    bool     b_motion_valid;
+    bool     b_line_fresh;        /* line report no older than 100 ms */
+    bool     b_hump_valid;
+    bool     b_forward_valid;
+    bool     b_profile_valid;
+    bool     b_shape_valid;
+    bool     b_barcode_valid;     /* a letter was decoded since power-up */
+    bool     b_hump_last_valid;
+    bool     b_width_raw;         /* width_mm is the raw span (an edge is
                                    missing); ignored when shape_valid */
 } telemetry_encoder_snapshot_t;
 

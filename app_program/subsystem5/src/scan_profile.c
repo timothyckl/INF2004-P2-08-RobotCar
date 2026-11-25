@@ -78,6 +78,9 @@ scan_profile_make (uint16_t const * p_distances,
         }
         else
         {
+            /* Widening: both distances are uint16_t, so their sum is below
+               131,072 and fits uint32_t. Each ray is uint16_t and beam_deg
+               uint16_t, so widening them to uint32_t keeps every value. */
             uint32_t const pass_mm = (uint32_t)forward_mm
                                      + (uint32_t)p_config->depth_mm;
             uint16_t nearest_mm = forward_mm;
@@ -155,6 +158,8 @@ scan_profile_side (uint16_t const * p_distances, uint32_t pass_mm,
          (step <= SCAN_PROFILE_SIDE_BINS) && (0u == coarse_pass);
          step += SCAN_PROFILE_COARSE_BINS)
     {
+        /* Widening: a ray is uint16_t, so uint32_t holds it for the
+           comparison. */
         if ((uint32_t)scan_profile_ray(p_distances, b_left, step) > pass_mm)
         {
             coarse_pass = step;
@@ -191,6 +196,7 @@ scan_profile_side (uint16_t const * p_distances, uint32_t pass_mm,
          b_valid && (step <= SCAN_PROFILE_SIDE_BINS);
          step += SCAN_PROFILE_COARSE_BINS)
     {
+        /* Widening: a ray is uint16_t, so uint32_t holds it. */
         if ((uint32_t)scan_profile_ray(p_distances, b_left, step)
             <= pass_mm)
         {

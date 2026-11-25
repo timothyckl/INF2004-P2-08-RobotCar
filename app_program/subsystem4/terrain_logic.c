@@ -87,6 +87,8 @@ s4_terrain_process (s4_terrain_context_t * p_context,
             {
                 uint32_t elapsed_us = p_sample->capture_time_us -
                                       p_context->previous_time_us;
+                /* Widening: max_sample_gap_ms is uint16_t, so x 1000 is at
+                   most 65,535,000 and fits uint32_t. */
                 uint32_t max_gap_us =
                     (uint32_t) p_context->config.max_sample_gap_ms * 1000u;
 
@@ -278,6 +280,8 @@ s4_calibration_add (s4_terrain_context_t * p_context,
 static void
 s4_calibration_finish (s4_terrain_context_t * p_context)
 {
+    /* Widening: the limits are int16_t, so each difference is within
+       +/-65535 and fits int32_t. */
     int32_t span_x = (int32_t) p_context->calibration_max_x -
                      p_context->calibration_min_x;
     int32_t span_y = (int32_t) p_context->calibration_max_y -
@@ -326,6 +330,8 @@ s4_monitor_sample (s4_terrain_context_t * p_context,
                    s4_terrain_sample_t const * p_sample,
                    bool b_pitch_valid)
 {
+    /* Widening: samples and offsets are int16_t, so each difference (and
+       minus 1000 mg of gravity) fits int32_t. */
     int32_t forward_mg = (int32_t) p_sample->acceleration_x_mg -
                          p_context->offset_x_mg;
     int32_t lateral_mg = (int32_t) p_sample->acceleration_y_mg -
@@ -430,6 +436,9 @@ s4_hump_height_um (s4_terrain_context_t const * p_context,
 
     if (b_pitch_valid)
     {
+        /* filtered_x_mg is an average of +/-2 g samples (|x| <= 2000 mg) and
+           wheelbase_mm is uint16_t, so the product is below 1.4 x 10^8 and
+           fits int32_t. */
         caster_um = p_context->filtered_x_mg *
                     (int32_t) p_context->config.wheelbase_mm;
     }
@@ -473,6 +482,7 @@ s4_hump_update (s4_terrain_context_t * p_context,
                 int32_t height_um,
                 s4_hump_contact_t contact)
 {
+    /* Widening: max_hump_ms is uint16_t, so x 1000 fits uint32_t. */
     uint32_t max_hump_us =
         (uint32_t) p_context->config.max_hump_ms * 1000u;
 
@@ -619,6 +629,8 @@ s4_lift_update (s4_terrain_context_t * p_context,
     }
     else
     {
+        /* Widening: the lift limits are uint16_t, which int32_t holds, so
+           they compare with signed readings. */
         p_context->lift_count =
             s4_count_at(p_context->lift_count, vertical_mg,
                         (int32_t) p_config->lift_up_mg);

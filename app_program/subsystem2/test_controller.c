@@ -106,6 +106,7 @@ h_new (bool b_script)
 {
     h_t * p_h = &g_h;
     h_t const zero = {0};
+    /* The script length is 3 or 0, which uint8_t holds. */
     ctrl_cfg_t const cfg = {H_INIT_MS, H_RESULT_MS, H_AGE_MS,
                             b_script ? g_script : NULL,
                             b_script ? (uint8_t)3u : (uint8_t)0u};
@@ -250,45 +251,45 @@ bool
 test_ctrl_start (void)
 {
     h_t *   p_h = h_new(false);
-    bool    ok  = (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
+    bool    b_ok  = (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
 
     h_motion_ok(p_h);
     h_tick(p_h, 10u);
     p_h->in.status.flags = MOTION_ST_VALID;     /* wheels not confirmed */
-    ok = ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
+    b_ok = b_ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
     h_motion_ok(p_h);
     p_h->in.status.state = (uint8_t)MOTION_FAULT;   /* motion unhealthy */
-    ok = ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
+    b_ok = b_ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
     h_motion_ok(p_h);
 
     uint8_t const r = h_remote(p_h, S2_REMOTE_START, 0u);
 
-    ok = ok && (S2_RESULT_COMPLETED == r) && h_state(p_h, S2_SYS_RUNNING)
+    b_ok = b_ok && (S2_RESULT_COMPLETED == r) && h_state(p_h, S2_SYS_RUNNING)
          && (!p_h->b_stop) && (1u == p_h->n_drain) && (1u == p_h->n_clear)
          && (1u == p_h->n_act) && (CTRL_ACT_NEW_RUN == p_h->act[0]);
 
     /* START again while Running, then in Stopped and Fault. */
-    ok = ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
+    b_ok = b_ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
     h_flags(p_h, CTRL_FLG_LOCAL_STOP);
-    ok = ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
+    b_ok = b_ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
     h_flags(p_h, CTRL_FLG_MOTION_FAULT);
-    ok = ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
+    b_ok = b_ok && (S2_RESULT_REJECTED == h_remote(p_h, S2_REMOTE_START, 0u));
 
-    return (ok && p_h->b_stop && (1u == p_h->n_clear));
+    return (b_ok && p_h->b_stop && (1u == p_h->n_clear));
 }
 
 bool
 test_ctrl_script (void)
 {
     h_t * p_h = h_running(true);
-    bool  ok  = true;
+    bool  b_ok  = true;
 
     for (uint32_t s = 0u; s < 3u; s++)
     {
         h_tick(p_h, 10u);   /* sends step s */
-        ok = ok && (p_h->n_act == (2u + s));
+        b_ok = b_ok && (p_h->n_act == (2u + s));
         h_tick(p_h, 10u);   /* no result yet: nothing new */
-        ok = ok && (p_h->n_act == (2u + s));
+        b_ok = b_ok && (p_h->n_act == (2u + s));
         h_result(p_h, MOTION_EVT_DONE);
         h_tick(p_h, 10u);   /* result seen */
     }
@@ -299,7 +300,7 @@ test_ctrl_script (void)
 
     h_tick(p_h, 10u);       /* script finished */
 
-    return (ok && b_order && h_state(p_h, S2_SYS_STOPPED) && p_h->b_stop);
+    return (b_ok && b_order && h_state(p_h, S2_SYS_STOPPED) && p_h->b_stop);
 }
 
 static bool
@@ -336,22 +337,22 @@ bool
 test_ctrl_stop_other (void)
 {
     h_t * p_h = h_new(false);
-    bool  ok;
+    bool  b_ok;
 
     h_flags(p_h, CTRL_FLG_REMOTE_STOP);
-    ok = h_state(p_h, S2_SYS_INITIALISING) && p_h->out.b_latch_stop;
+    b_ok = h_state(p_h, S2_SYS_INITIALISING) && p_h->out.b_latch_stop;
     h_motion_ok(p_h);
     h_tick(p_h, 10u);
     h_flags(p_h, CTRL_FLG_LOCAL_STOP);
-    ok = ok && h_state(p_h, S2_SYS_READY) && p_h->out.b_latch_stop;
+    b_ok = b_ok && h_state(p_h, S2_SYS_READY) && p_h->out.b_latch_stop;
     (void)h_remote(p_h, S2_REMOTE_START, 0u);
     h_flags(p_h, CTRL_FLG_REMOTE_STOP);
     h_flags(p_h, CTRL_FLG_REMOTE_STOP);
-    ok = ok && h_state(p_h, S2_SYS_STOPPED) && p_h->out.b_latch_stop;
+    b_ok = b_ok && h_state(p_h, S2_SYS_STOPPED) && p_h->out.b_latch_stop;
     h_flags(p_h, CTRL_FLG_MOTION_FAULT);
     h_flags(p_h, CTRL_FLG_LOCAL_STOP);
 
-    return (ok && h_state(p_h, S2_SYS_FAULT) && p_h->out.b_latch_stop
+    return (b_ok && h_state(p_h, S2_SYS_FAULT) && p_h->out.b_latch_stop
             && p_h->b_stop);
 }
 
@@ -366,37 +367,37 @@ bool
 test_ctrl_faults (void)
 {
     h_t * p_h = h_running(true);
-    bool  ok;
+    bool  b_ok;
 
     h_flags(p_h, CTRL_FLG_MOTION_FAULT);
-    ok = fault_is(p_h, S2_FAULT_MOTION);
+    b_ok = fault_is(p_h, S2_FAULT_MOTION);
     p_h = h_ready(false);
     h_flags(p_h, CTRL_FLG_MOTION_FAULT);
-    ok = ok && fault_is(p_h, S2_FAULT_MOTION);
+    b_ok = b_ok && fault_is(p_h, S2_FAULT_MOTION);
     p_h = h_running(true);
     h_flags(p_h, CTRL_FLG_SCAN_FAULT);
-    ok = ok && fault_is(p_h, S2_FAULT_SCAN);
+    b_ok = b_ok && fault_is(p_h, S2_FAULT_SCAN);
     p_h = h_running(true);
     h_tick(p_h, 10u);
     h_result(p_h, MOTION_EVT_REJECTED);
     h_tick(p_h, 10u);
-    ok = ok && fault_is(p_h, S2_FAULT_MOTION);
+    b_ok = b_ok && fault_is(p_h, S2_FAULT_MOTION);
     p_h = h_running(true);
     h_tick(p_h, 10u);
     h_result(p_h, MOTION_EVT_FAULT);
     h_tick(p_h, 10u);
-    ok = ok && fault_is(p_h, S2_FAULT_MOTION);
+    b_ok = b_ok && fault_is(p_h, S2_FAULT_MOTION);
     p_h = h_running(true);
     p_h->b_send_ok = false;
     h_tick(p_h, 10u);
-    ok = ok && fault_is(p_h, S2_FAULT_DELIVERY);
+    b_ok = b_ok && fault_is(p_h, S2_FAULT_DELIVERY);
     p_h = h_running(true);
     h_tick(p_h, 10u);
     h_tick(p_h, H_RESULT_MS);
-    ok = ok && h_state(p_h, S2_SYS_RUNNING);    /* at the limit: waiting */
+    b_ok = b_ok && h_state(p_h, S2_SYS_RUNNING);    /* at the limit: waiting */
     h_tick(p_h, 10u);
 
-    return (ok && fault_is(p_h, S2_FAULT_MOTION));
+    return (b_ok && fault_is(p_h, S2_FAULT_MOTION));
 }
 
 bool
@@ -425,6 +426,7 @@ test_ctrl_reset_fault (void)
 {
     h_t * p_h = h_running(false);
 
+    /* MOTION_FAULT is a motion_state_t value (0..6), which uint8_t holds. */
     p_h->in.status.state = (uint8_t)MOTION_FAULT;
     p_h->in.status.fault = MOTION_FAULT_STALL;
     p_h->in.status.flags = MOTION_ST_VALID;     /* wheels not still */
@@ -459,24 +461,24 @@ test_ctrl_remote_rules (void)
 {
     h_t *            p_h = h_ready(false);
     s2_robot_state_t st;
-    bool             ok;
+    bool             b_ok;
 
-    ok = (S2_RESULT_EXPIRED == h_remote(p_h, S2_REMOTE_START, H_AGE_MS + 1u))
+    b_ok = (S2_RESULT_EXPIRED == h_remote(p_h, S2_REMOTE_START, H_AGE_MS + 1u))
          && h_state(p_h, S2_SYS_READY);
-    ok = ok && (S2_RESULT_REJECTED == h_remote(p_h, 9u, 0u));
+    b_ok = b_ok && (S2_RESULT_REJECTED == h_remote(p_h, 9u, 0u));
 
     /* Replay the previous request ID. */
     p_h->next_req--;
-    ok = ok && (S2_RESULT_DUPLICATE == h_remote(p_h, S2_REMOTE_START, 0u))
+    b_ok = b_ok && (S2_RESULT_DUPLICATE == h_remote(p_h, S2_REMOTE_START, 0u))
          && h_state(p_h, S2_SYS_READY);
 
     uint32_t const id = p_h->next_req;
 
-    ok = ok && (S2_RESULT_COMPLETED == h_remote(p_h, S2_REMOTE_START,
+    b_ok = b_ok && (S2_RESULT_COMPLETED == h_remote(p_h, S2_REMOTE_START,
                                                 H_AGE_MS));
     ctrl_get_state(&p_h->c, &p_h->in, &st);
 
-    return (ok && (st.last_request_id == id)
+    return (b_ok && (st.last_request_id == id)
             && (S2_REMOTE_START == st.last_command)
             && (S2_RESULT_COMPLETED == st.last_result));
 }
@@ -589,25 +591,25 @@ bool
 test_ctrl_stop_cause (void)
 {
     h_t * p_h = h_ready(false);
-    bool  ok  = (S2_STOP_BOOT == h_cause(p_h));
+    bool  b_ok  = (S2_STOP_BOOT == h_cause(p_h));
 
     (void)h_remote(p_h, S2_REMOTE_START, 0u);
-    ok = ok && (S2_STOP_NONE == h_cause(p_h));
+    b_ok = b_ok && (S2_STOP_NONE == h_cause(p_h));
 
     /* Picked up, then a dashboard STOP: still the pick-up. */
     h_flags(p_h, CTRL_FLG_PICKUP);
     h_flags(p_h, CTRL_FLG_REMOTE_STOP);
-    ok = ok && (S2_STOP_PICKUP == h_cause(p_h));
+    b_ok = b_ok && (S2_STOP_PICKUP == h_cause(p_h));
 
     /* RESET keeps the latch and its cause; START clears both. */
-    ok = ok && (S2_RESULT_COMPLETED == h_remote(p_h, S2_REMOTE_RESET, 0u))
+    b_ok = b_ok && (S2_RESULT_COMPLETED == h_remote(p_h, S2_REMOTE_RESET, 0u))
          && h_state(p_h, S2_SYS_READY)
          && (S2_STOP_PICKUP == h_cause(p_h));
     (void)h_remote(p_h, S2_REMOTE_START, 0u);
-    ok = ok && (S2_STOP_NONE == h_cause(p_h));
+    b_ok = b_ok && (S2_STOP_NONE == h_cause(p_h));
 
     /* One cause per bit; the pick-up wins a shared cycle. */
-    ok = ok
+    b_ok = b_ok
          && (S2_STOP_REMOTE == h_stop_cause(CTRL_FLG_REMOTE_STOP, 0u))
          && (S2_STOP_BUTTON == h_stop_cause(CTRL_FLG_LOCAL_STOP,
                                             S2_STOP_NONE))
@@ -620,17 +622,17 @@ test_ctrl_stop_cause (void)
     /* A remote STOP record (not the flag) is also REMOTE. */
     p_h = h_running(false);
     (void)h_remote(p_h, S2_REMOTE_STOP, 0u);
-    ok = ok && (S2_STOP_REMOTE == h_cause(p_h));
+    b_ok = b_ok && (S2_STOP_REMOTE == h_cause(p_h));
 
     /* A fault after a stop replaces the cause; RESET gives BOOT. */
     h_flags(p_h, CTRL_FLG_MOTION_FAULT);
-    ok = ok && h_state(p_h, S2_SYS_FAULT)
+    b_ok = b_ok && h_state(p_h, S2_SYS_FAULT)
          && (S2_STOP_FAULT == h_cause(p_h));
     (void)h_remote(p_h, S2_REMOTE_RESET, 0u);
-    ok = ok && h_state(p_h, S2_SYS_INITIALISING)
+    b_ok = b_ok && h_state(p_h, S2_SYS_INITIALISING)
          && (S2_STOP_BOOT == h_cause(p_h));
 
-    return (ok && p_h->b_stop);
+    return (b_ok && p_h->b_stop);
 }
 
 #endif /* APP_TEST */

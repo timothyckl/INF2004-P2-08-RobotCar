@@ -341,62 +341,70 @@ s2_controller_create (void)
     cflg.flgatr  = TA_TFIFO | TA_WSGL;  /* only the controller waits */
     cflg.iflgptn = 0u;
 
-    ID const cf = tk_cre_flg(&cflg);
+    ID const flg_id = tk_cre_flg(&cflg);
 
-    if (cf < E_OK)
+    if (flg_id < E_OK)
     {
-        return (cf);
+        return (flg_id);
     }
 
-    controller_flags = cf;
+    controller_flags = flg_id;
     cmbf.mbfatr = TA_TFIFO;
     cmbf.bufsz  = S2_REMOTE_Q_BYTES;
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
     cmbf.maxmsz = (INT)sizeof(s2_remote_cmd_t);
 
-    ID const q = tk_cre_mbf(&cmbf);
+    ID const remote_mbf = tk_cre_mbf(&cmbf);
 
-    if (q < E_OK)
+    if (remote_mbf < E_OK)
     {
-        return (q);
+        return (remote_mbf);
     }
 
-    remote_q = q;
+    remote_q = remote_mbf;
 
     cmbf.bufsz  = S2_LINE_Q_BYTES;
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
     cmbf.maxmsz = (INT)sizeof(s2_line_report_t);
 
-    ID const lq = tk_cre_mbf(&cmbf);
+    ID const line_mbf = tk_cre_mbf(&cmbf);
 
-    if (lq < E_OK)
+    if (line_mbf < E_OK)
     {
-        return (lq);
+        return (line_mbf);
     }
 
-    line_q = lq;
+    line_q = line_mbf;
 
     cmbf.bufsz  = S2_SCAN_Q_BYTES;
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
     cmbf.maxmsz = (INT)sizeof(s2_scan_cmd_t);
 
-    ID const sq = tk_cre_mbf(&cmbf);
+    ID const scan_mbf = tk_cre_mbf(&cmbf);
 
-    if (sq < E_OK)
+    if (scan_mbf < E_OK)
     {
-        return (sq);
+        return (scan_mbf);
     }
 
-    scan_q = sq;
+    scan_q = scan_mbf;
 
     cmbf.bufsz  = S2_NAV_Q_BYTES;
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
     cmbf.maxmsz = (INT)sizeof(s2_nav_request_t);
 
-    ID const nq = tk_cre_mbf(&cmbf);
+    ID const nav_mbf = tk_cre_mbf(&cmbf);
 
-    if (nq < E_OK)
+    if (nav_mbf < E_OK)
     {
-        return (nq);
+        return (nav_mbf);
     }
 
-    nav_q = nq;
+    nav_q = nav_mbf;
 
     return (s2_robot_state_create());
 }
@@ -404,6 +412,9 @@ s2_controller_create (void)
 ER
 s2_controller_start (void)
 {
+    /* FP is the kernel's generic task-entry type; the cast changes only the
+       pointer type, and the kernel calls the task with the parameters it was
+       written for. */
     ID const tid = app_start_task((FP)controller_task, S2_PRI_CONTROLLER,
                                   CTRL_TASK_CORE, "controller");
 
@@ -416,10 +427,10 @@ controller_task (INT stacd, void * exinf)
     ctrl_cfg_t const cfg = {CTRL_INIT_LIMIT_MS, CTRL_RESULT_LIMIT_MS,
                             S2_REMOTE_MAX_AGE_MS, CTRL_SCRIPT,
                             CTRL_SCRIPT_LEN};
-    ctrl_input_t     in  = {0};
+    ctrl_input_t     inputs  = {0};
     ctrl_output_t    out;
     s2_remote_cmd_t  cmd;
-    s2_robot_state_t st;
+    s2_robot_state_t state;
     UINT             ptn;
 
     (void)stacd;
@@ -448,10 +459,10 @@ controller_task (INT stacd, void * exinf)
             ptn = 0u;   /* watchdog timeout */
         }
 
-        read_input(&in);
+        read_input(&inputs);
 #if APP_MISSION
-        ctrl_get_state(&g_ctrl, &in, &st);
-        ptn = scan_hazard(ptn, &st);    /* a hazard while following scans */
+        ctrl_get_state(&g_ctrl, &inputs, &state);
+        ptn = scan_hazard(ptn, &state);    /* a hazard while following scans */
 #endif
 
         if ((0u != (ptn & (CTRL_FLG_HAZARD | CTRL_FLG_SCAN_FAULT)))
@@ -475,45 +486,49 @@ controller_task (INT stacd, void * exinf)
         }
 
         ctrl_output_clear(&out);
-        in.local_cause = g_local_cause;
-        ctrl_flags(&g_ctrl, (uint32_t)ptn, &in, &out);
-        apply(&out, &in);
+        inputs.local_cause = g_local_cause;
+        /* ptn is a UINT flag pattern; UINT and uint32_t are both 32-bit
+           unsigned, so no bit changes. */
+        ctrl_flags(&g_ctrl, (uint32_t)ptn, &inputs, &out);
+        apply(&out, &inputs);
 
         if (0u != (ptn & CTRL_FLG_LOCAL_STOP))
         {
             g_local_cause = S2_STOP_NONE;   /* that STOP is handled */
         }
 
+        /* sizeof the message is a few bytes, which INT holds (kernel message
+           buffer size argument). */
         while (tk_rcv_mbf(remote_q, &cmd, TMO_POL)
                == (INT)sizeof(s2_remote_cmd_t))
         {
             ctrl_output_clear(&out);
-            ctrl_remote(&g_ctrl, &cmd, &in, &out);
-            apply(&out, &in);
+            ctrl_remote(&g_ctrl, &cmd, &inputs, &out);
+            apply(&out, &inputs);
         }
 
         ctrl_output_clear(&out);
-        ctrl_tick(&g_ctrl, &in, &out);
-        apply(&out, &in);
+        ctrl_tick(&g_ctrl, &inputs, &out);
+        apply(&out, &inputs);
 
-        ctrl_get_state(&g_ctrl, &in, &st);
+        ctrl_get_state(&g_ctrl, &inputs, &state);
 #if APP_MISSION
         /* Running is line following (or a scan) in the mission image. */
-        scan_update(&st, &in);
+        scan_update(&state, &inputs);
 #endif
 #if CTRL_BUTTON
-        button_step(&st, &in);
+        button_step(&state, &inputs);
 #endif
 #if S2_CAL_TEST
-        cal_report(&st, &in);
+        cal_report(&state, &inputs);
 #endif
 #if APP_MISSION
-        line_step(&st, &in);
-        line_telemetry(&st, in.now_ms);
-        barcode_telemetry(&st);
+        line_step(&state, &inputs);
+        line_telemetry(&state, inputs.now_ms);
+        barcode_telemetry(&state);
 #endif
-        s2_robot_state_publish(&st);
-        demo(&st, &in);
+        s2_robot_state_publish(&state);
+        demo(&state, &inputs);
     }
 }
 
@@ -552,6 +567,9 @@ demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in)
     if ((p_in->now_ms - last_ms) >= CTRL_LOG_MS)
     {
         last_ms = p_in->now_ms;
+        /* Console arguments: every value is an 8- to 32-bit integer field; INT
+           and UINT are 32-bit on the RP2040, so signed fields go to INT and
+           unsigned ones to UINT with no change of value. */
         tm_printf((UB *)"[S2] state %d fault %d motion %d dist %d mm"
                   " flags 0x%x\n", (INT)p_st->state, (INT)p_st->fault,
                   (INT)p_st->motion_state, (INT)p_st->run_distance_mm,
@@ -559,6 +577,9 @@ demo (s2_robot_state_t const * p_st, ctrl_input_t const * p_in)
 
         if (s2_stop_timing(&latch_us, &off_us))
         {
+            /* The latch-to-off time is microseconds from the same 32-bit
+               timer; a STOP that takes effect is measured in under 1 ms
+               (S2-H11), far below INT32_MAX, so INT holds it. */
             tm_printf((UB *)"[S2] last STOP: latch to motor off %d us\n",
                       (INT)(off_us - latch_us));
         }
@@ -599,16 +620,19 @@ apply (ctrl_output_t * p_out, ctrl_input_t const * p_in)
 
     if (p_out->b_clear_stop)
     {
+        /* SAFETY_FLG_STOP is a single-bit unsigned mask; converting it to
+           UINT (32-bit) before ~ gives a full-width mask that clears only
+           that bit. */
         (void)tk_clr_flg(safety_flags, ~(UINT)SAFETY_FLG_STOP);
     }
 
     if (CTRL_ACT_NONE != p_out->action)
     {
-        ER const er = send_action(p_out->action, p_out->value);
+        ER const ercd = send_action(p_out->action, p_out->value);
         ctrl_output_t again;
 
         ctrl_output_clear(&again);
-        ctrl_motion_sent(&g_ctrl, (E_OK == er), motion_last_command_id(),
+        ctrl_motion_sent(&g_ctrl, (E_OK == ercd), motion_last_command_id(),
                          p_in->now_ms, &again);
 
         if (again.b_latch_stop)
@@ -621,6 +645,8 @@ apply (ctrl_output_t * p_out, ctrl_input_t const * p_in)
 
     if (0u != p_out->clear_flags)
     {
+        /* clear_flags is a uint32_t bit mask, the same width as UINT, so ~
+           clears exactly those bits. */
         (void)tk_clr_flg(controller_flags, ~(UINT)p_out->clear_flags);
     }
 }
@@ -628,38 +654,38 @@ apply (ctrl_output_t * p_out, ctrl_input_t const * p_in)
 static ER
 send_action (ctrl_action_t action, uint32_t value)
 {
-    ER er;
+    ER ercd;
 
     switch (action)
     {
         case CTRL_ACT_NEW_RUN:
-            er = motion_new_run();
+            ercd = motion_new_run();
             break;
         case CTRL_ACT_RESET:
-            er = motion_reset();
+            ercd = motion_reset();
             break;
         case CTRL_ACT_FORWARD:
             /* value is checked against MOTION_DISTANCE_MAX_MM before each
                cast. */
-            er = (value > MOTION_DISTANCE_MAX_MM) ? E_PAR
+            ercd = (value > MOTION_DISTANCE_MAX_MM) ? E_PAR
                  : motion_move_forward((uint16_t)value);
             break;
         case CTRL_ACT_BACKWARD:
-            er = (value > MOTION_DISTANCE_MAX_MM) ? E_PAR
+            ercd = (value > MOTION_DISTANCE_MAX_MM) ? E_PAR
                  : motion_move_backward((uint16_t)value);
             break;
         case CTRL_ACT_LEFT:
-            er = motion_turn_left(value);
+            ercd = motion_turn_left(value);
             break;
         case CTRL_ACT_RIGHT:
-            er = motion_turn_right(value);
+            ercd = motion_turn_right(value);
             break;
         default:
-            er = E_PAR;
+            ercd = E_PAR;
             break;
     }
 
-    return (er);
+    return (ercd);
 }
 
 static uint32_t
@@ -667,6 +693,8 @@ now_ms (void)
 {
     SYSTIM tim;
 
+    /* tim.lo is the 32-bit low word of the ms clock (UW): same width, no value
+       changes; it wraps every 49.7 days. */
     return ((tk_get_tim(&tim) >= E_OK) ? (uint32_t)tim.lo : 0u);
 }
 
@@ -694,12 +722,14 @@ run_summary (void)
 
     if (robot_read_telemetry(NULL, &summary))
     {
+        /* Console arguments: distance_mm is uint16_t and hump_max_mm uint8_t,
+           so UINT (32-bit) holds both unchanged. */
         tm_printf((UB *)"[S2] run summary: distance %u mm%s, "
                   "highest hump %u mm%s\n",
                   (UINT)summary.distance_mm,
-                  summary.distance_valid ? "" : " (invalid)",
+                  summary.b_distance_valid ? "" : " (invalid)",
                   (UINT)summary.hump_max_mm,
-                  summary.hump_valid ? "" : " (none)");
+                  summary.b_hump_valid ? "" : " (none)");
     }
 }
 
@@ -707,15 +737,15 @@ run_summary (void)
 static ER
 button_init (void)
 {
-    ER const er = gpio_set_pin(CTRL_BUTTON_PIN, GPIO_MODE_IN);
+    ER const ercd = gpio_set_pin(CTRL_BUTTON_PIN, GPIO_MODE_IN);
 
-    if (er >= E_OK)
+    if (ercd >= E_OK)
     {
         clr_w(GPIO(CTRL_BUTTON_PIN), GPIO_PDE);
         set_w(GPIO(CTRL_BUTTON_PIN), GPIO_PUE);
     }
 
-    return (er);
+    return (ercd);
 }
 
 static bool
@@ -851,6 +881,9 @@ button_step (s2_robot_state_t const * p_state,
         }
         else
         {
+            /* Console arguments: every value is an 8- to 32-bit integer field;
+               INT and UINT are 32-bit on the RP2040, so signed fields go to
+               INT and unsigned ones to UINT with no change of value. */
             tm_printf((UB *)"[S2] GP20: ignored; controller state=%u"
                       " fault=%u, status_ok=%u flags=0x%x,"
                       " motion state=%u fault=%u, speed=%d/%d mm/s\n",
@@ -883,6 +916,8 @@ cal_timer_start (void)
 static void
 cal_timer_print (uint32_t now)
 {
+    /* Both differences are uint32_t and wrap correctly; UINT is the same
+       32-bit unsigned type. */
     tm_printf((UB *)"[S2] CAL timer: %u us in %u ms of kernel time"
               " (expect 1000 us per ms)\n",
               (UINT)(in_w(TIMER_TIMERAWL) - g_cal_boot_us),
@@ -905,6 +940,9 @@ cal_report (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
     if ((S2_SYS_RUNNING == last_state) && (S2_SYS_RUNNING != p_state->state))
     {
         tm_printf((UB *)"[S2] CAL %s finished\n", (UB *)CTRL_CAL_NAME);
+        /* Console arguments: every value is an 8- to 32-bit integer field; INT
+           and UINT are 32-bit on the RP2040, so signed fields go to INT and
+           unsigned ones to UINT with no change of value. */
         tm_printf((UB *)"[S2] CAL odometry: x=%d mm y=%d mm heading=%d mdeg;"
                   " result=%u reason=%u state=%u fault=%u\n",
                   (INT)p_input->status.x_mm, (INT)p_input->status.y_mm,
@@ -947,6 +985,7 @@ scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
     if ((!scan_control_active(&g_scan)) && (!bypass_control_active(&g_bypass)))
     {
         scan_control_begin(&g_scan, p_state->captured_ms, &out);
+        /* request_id is uint32_t, the same width as UINT. */
         tm_printf((UB *)"[S2] S5 HAZARD: stopping to scan, request %u\n",
                   (UINT)g_scan.request_id);
         if (nav_control_manoeuvring(&g_nav))
@@ -958,6 +997,9 @@ scan_hazard (uint32_t ptn, s2_robot_state_t const * p_state)
         scan_send(&out, p_state->captured_ms);
     }
 
+    /* CTRL_FLG_HAZARD is a single-bit unsigned mask; widening it to 32 bits
+       before ~ gives a mask that clears only that bit, for both the kernel
+       flag and the returned pattern. */
     (void)tk_clr_flg(controller_flags, ~(UINT)CTRL_FLG_HAZARD);
 
     return (ptn & ~(uint32_t)CTRL_FLG_HAZARD);
@@ -996,12 +1038,12 @@ scan_update (s2_robot_state_t * p_state, ctrl_input_t const * p_input)
     }
     else if (bypass_control_active(&g_bypass))
     {
-        bypass_control_input_t  in;
+        bypass_control_input_t  inputs;
         bypass_control_output_t bout;
 
         (void)scan_task_get(&g_scan_status);  /* keeps the last on E_TMOUT */
-        bypass_input(p_input, &in);
-        bypass_control_step(&g_bypass, &in, &bout);
+        bypass_input(p_input, &inputs);
+        bypass_control_step(&g_bypass, &inputs, &bout);
         bypass_send(&bout);
     }
     else
@@ -1036,12 +1078,12 @@ scan_send (scan_control_output_t const * p_out, uint32_t now)
         (void)motion_stop();
     }
 
-    for (uint8_t i = 0u; i < p_out->n_msg; i++)
+    for (uint8_t msg_idx = 0u; msg_idx < p_out->n_msg; msg_idx++)
     {
         s2_scan_cmd_t const msg =
         {
-            g_scan.request_id, now, p_out->msg[i].kind,
-            p_out->msg[i].b_asserted ? 1u : 0u, 0, 0u
+            g_scan.request_id, now, p_out->msg[msg_idx].kind,
+            p_out->msg[msg_idx].b_asserted ? 1u : 0u, 0, 0u
         };
 
         /* Best effort: S5 also checks robot_state for authority. */
@@ -1100,9 +1142,12 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
     if (SCAN_CONTROL_PLAN == outcome)
     {
         bypass_control_plan_t   plan;
-        bypass_control_input_t  in;
+        bypass_control_input_t  inputs;
         bypass_control_output_t out;
 
+        /* Console arguments: every value is an 8- to 32-bit integer field; INT
+           and UINT are 32-bit on the RP2040, so signed fields go to INT and
+           unsigned ones to UINT with no change of value. */
         tm_printf((UB *)"[S2] scan %u: PLAN side=%s obstacle=%u mm"
                   " lateral=%u mm, %u segments:\n",
                   (UINT)g_scan.request_id,
@@ -1110,17 +1155,23 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
                   (UINT)p_plan->obstacle_mm, (UINT)p_plan->lateral_mm,
                   (UINT)p_plan->count);
 
-        for (uint8_t i = 0u; (i < p_plan->count)
-                             && (i < BYPASS_PLAN_SEGMENTS); i++)
+        for (uint8_t seg_idx = 0u; (seg_idx < p_plan->count)
+                             && (seg_idx < BYPASS_PLAN_SEGMENTS); seg_idx++)
         {
-            tm_printf((UB *)"[S2]   %u: %s %d %s\n", (UINT)i,
-                      (BYPASS_PLAN_TURN == p_plan->segments[i].kind)
+            /* Console arguments: seg_idx is below the segment count
+               (uint8_t) and value an int32_t, which UINT and INT (32-bit)
+               hold. */
+            tm_printf((UB *)"[S2]   %u: %s %d %s\n", (UINT)seg_idx,
+                      (BYPASS_PLAN_TURN == p_plan->segments[seg_idx].kind)
                           ? "TURN" : "MOVE",
-                      (INT)p_plan->segments[i].value,
-                      (BYPASS_PLAN_TURN == p_plan->segments[i].kind)
+                      (INT)p_plan->segments[seg_idx].value,
+                      (BYPASS_PLAN_TURN == p_plan->segments[seg_idx].kind)
                           ? "mdeg" : "mm");
         }
 
+        /* Console arguments: every value is an 8- to 32-bit integer field; INT
+           and UINT are 32-bit on the RP2040, so signed fields go to INT and
+           unsigned ones to UINT with no change of value. */
         tm_printf((UB *)"[S2]   then pass: turn %d mdeg, look %d deg,"
                   " passed beyond %u mm after %u mm, then %u mm"
                   " (stepping at most %u mm)\n",
@@ -1144,24 +1195,27 @@ scan_report (scan_control_outcome_t outcome, ctrl_input_t const * p_input)
         plan.extra_mm = p_plan->extra_mm;
         plan.pass_max_mm = p_plan->pass_max_mm;
 
-        for (uint8_t i = 0u; i < BYPASS_CONTROL_SEGMENTS; i++)
+        for (uint8_t seg_idx = 0u; seg_idx < BYPASS_CONTROL_SEGMENTS; seg_idx++)
         {
-            plan.seg[i].kind = p_plan->segments[i].kind;
-            plan.seg[i].value = p_plan->segments[i].value;
+            plan.seg[seg_idx].kind = p_plan->segments[seg_idx].kind;
+            plan.seg[seg_idx].value = p_plan->segments[seg_idx].value;
         }
 
-        bypass_input(p_input, &in);
-        bypass_control_begin(&g_bypass, &plan, &in, &out);
+        bypass_input(p_input, &inputs);
+        bypass_control_begin(&g_bypass, &plan, &inputs, &out);
         bypass_send(&out);
     }
     else if (SCAN_CONTROL_CLEAR == outcome)
     {
+        /* request_id is uint32_t, the same width as UINT. */
         tm_printf((UB *)"[S2] scan %u: CLEAR, resuming line following\n",
                   (UINT)g_scan.request_id);
     }
     else if ((SCAN_CONTROL_FAILED == outcome)
              || (SCAN_CONTROL_TIMEOUT == outcome))
     {
+        /* request_id is uint32_t and result uint8_t; UINT (32-bit) holds both
+           unchanged. */
         tm_printf((UB *)"[S2] scan %u: %s (S5 result %u); STOP\n",
                   (UINT)g_scan.request_id,
                   (SCAN_CONTROL_TIMEOUT == outcome) ? "TIMEOUT" : "FAILED",
@@ -1216,7 +1270,7 @@ static void
 bypass_send (bypass_control_output_t const * p_out)
 {
     bypass_control_output_t sent;
-    ER                      er = E_OK;
+    ER                      ercd = E_OK;
     uint16_t                cmd_id = 0u;
 
     switch (p_out->action)
@@ -1225,21 +1279,21 @@ bypass_send (bypass_control_output_t const * p_out)
             /* Plan distances are below 1000 mm (bypass_plan.c), inside
                uint16_t; a SPIN value is +1 or -1, so value x 30 mm/s fits
                int16_t; look IDs wrap at 65536 by design. */
-            er = (p_out->value >= 0)
+            ercd = (p_out->value >= 0)
                  ? motion_move_forward((uint16_t)p_out->value)
                  : motion_move_backward((uint16_t)(-p_out->value));
             tm_printf((UB *)"[S2] bypass: MOVE %d mm\n", (INT)p_out->value);
         break;
 
         case BYPASS_CONTROL_ACT_TURN:
-            er = (p_out->value >= 0)
+            ercd = (p_out->value >= 0)
                  ? motion_turn_left((uint32_t)p_out->value)
                  : motion_turn_right((uint32_t)(-p_out->value));
             tm_printf((UB *)"[S2] bypass: TURN %d mdeg\n", (INT)p_out->value);
         break;
 
         case BYPASS_CONTROL_ACT_SEARCH:
-            er = motion_set_speeds(CTRL_BYPASS_SEARCH_MM_S,
+            ercd = motion_set_speeds(CTRL_BYPASS_SEARCH_MM_S,
                                    CTRL_BYPASS_SEARCH_MM_S);
             tm_printf((UB *)"[S2] bypass: searching for the line at %d mm/s\n",
                       (INT)CTRL_BYPASS_SEARCH_MM_S);
@@ -1249,12 +1303,12 @@ bypass_send (bypass_control_output_t const * p_out)
             /* The motion STOP command, not the safety latch: it brakes
                and returns to Idle, so motion_stop_confirmed() can hold
                (a zero SPEED target stays in a moving state). */
-            er = motion_stop();
+            ercd = motion_stop();
             tm_printf((UB *)"[S2] bypass: line found, stopping\n");
         break;
 
         case BYPASS_CONTROL_ACT_SPIN:
-            er = motion_set_speeds(
+            ercd = motion_set_speeds(
                 (int16_t)(-p_out->value * CTRL_BYPASS_SPIN_MM_S),
                 (int16_t)(p_out->value * CTRL_BYPASS_SPIN_MM_S));
             tm_printf((UB *)"[S2] bypass: spinning %s until a sensor sees the"
@@ -1275,7 +1329,7 @@ bypass_send (bypass_control_output_t const * p_out)
             msg.b_asserted = 1u;
             msg.angle_deg = (int8_t)p_out->value;
             msg.reserved = 0u;
-            er = tk_snd_mbf(scan_q, &msg, (INT)sizeof(msg), TMO_POL);
+            ercd = tk_snd_mbf(scan_q, &msg, (INT)sizeof(msg), TMO_POL);
             cmd_id = g_bypass_look_id;
             tm_printf((UB *)"[S2] bypass: look %d deg\n", (INT)p_out->value);
         }
@@ -1288,12 +1342,12 @@ bypass_send (bypass_control_output_t const * p_out)
 
     if (BYPASS_CONTROL_ACT_NONE != p_out->action)
     {
-        motion_status_t st;
+        motion_status_t status;
 
-        if (E_OK == motion_get_status(&st))
+        if (E_OK == motion_get_status(&status))
         {
             tm_printf((UB *)"[S2]   at %d mm, %d mdeg\n",
-                      (INT)st.travel_mm, (INT)st.heading_mdeg);
+                      (INT)status.travel_mm, (INT)status.heading_mdeg);
         }
     }
 
@@ -1308,7 +1362,7 @@ bypass_send (bypass_control_output_t const * p_out)
             cmd_id = motion_last_command_id();
         }
 
-        bypass_control_sent(&g_bypass, (E_OK == er), cmd_id, &sent);
+        bypass_control_sent(&g_bypass, (E_OK == ercd), cmd_id, &sent);
         bypass_report(&sent);
     }
 }
@@ -1331,6 +1385,8 @@ bypass_report (bypass_control_output_t const * p_out)
     }
     else if (BYPASS_CONTROL_FAILED == p_out->outcome)
     {
+        /* fail is an enumeration with non-negative values, so uint32_t holds
+           it; the comparison then keeps the table index in range. */
         tm_printf((UB *)"[S2] bypass: FAILED, %s; STOP\n",
                   ((uint32_t)p_out->fail
                    < (sizeof(reasons) / sizeof(reasons[0])))
@@ -1356,6 +1412,8 @@ nav_receive (bool b_running, uint32_t now)
     };
     s2_nav_request_t request;
 
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
     while (tk_rcv_mbf(nav_q, &request, TMO_POL)
            == (INT)sizeof(s2_nav_request_t))
     {
@@ -1401,25 +1459,25 @@ static void
 nav_update (ctrl_input_t const * p_input)
 {
     uint8_t const        position = g_line_runtime.position;
-    nav_control_input_t  in;
+    nav_control_input_t  inputs;
     nav_control_output_t out;
 
-    in.now_ms = p_input->now_ms;
-    in.travel_mm = p_input->status.travel_mm;
-    in.heading_mdeg = p_input->status.heading_mdeg;
-    in.junction_travel_mm = g_line_runtime.junction_travel_mm;
-    in.last_id = p_input->status.last_id;
-    in.last_result = p_input->status.last_result;
-    in.b_status_ok = p_input->b_status_ok;
-    in.b_still = motion_stop_confirmed();
-    in.b_on_line = line_is_fresh(p_input->now_ms)
+    inputs.now_ms = p_input->now_ms;
+    inputs.travel_mm = p_input->status.travel_mm;
+    inputs.heading_mdeg = p_input->status.heading_mdeg;
+    inputs.junction_travel_mm = g_line_runtime.junction_travel_mm;
+    inputs.last_id = p_input->status.last_id;
+    inputs.last_result = p_input->status.last_result;
+    inputs.b_status_ok = p_input->b_status_ok;
+    inputs.b_still = motion_stop_confirmed();
+    inputs.b_on_line = line_is_fresh(p_input->now_ms)
                    && ((S2_LINE_LEFT == position)
                        || (S2_LINE_RIGHT == position)
                        || (S2_LINE_BOTH_BLACK == position));
-    in.b_junction = g_line_runtime.b_junction;
+    inputs.b_junction = g_line_runtime.b_junction;
     g_line_runtime.b_junction = false;
 
-    nav_control_step(&g_nav, &in, &out);
+    nav_control_step(&g_nav, &inputs, &out);
     nav_send(&out);
     nav_report(&out);
 }
@@ -1428,21 +1486,21 @@ nav_update (ctrl_input_t const * p_input)
 static void
 nav_send (nav_control_output_t const * p_out)
 {
-    ER er = E_OK;
+    ER ercd = E_OK;
 
     switch (p_out->action)
     {
         case NAV_CONTROL_ACT_STOP:
             /* The motion STOP command, not the safety latch (decision
                20): it brakes and returns to Idle. */
-            er = motion_stop();
+            ercd = motion_stop();
         break;
 
         case NAV_CONTROL_ACT_MOVE:
             /* The step is at most sensor_ahead_mm (133 mm) and a SPIN value is
                +1 or -1, so both casts below are in range. */
-            er = motion_move_forward((uint16_t)p_out->value);
-            if (E_OK == er)
+            ercd = motion_move_forward((uint16_t)p_out->value);
+            if (E_OK == ercd)
             {
                 nav_control_sent(&g_nav, motion_last_command_id());
             }
@@ -1451,7 +1509,7 @@ nav_send (nav_control_output_t const * p_out)
         break;
 
         case NAV_CONTROL_ACT_SPIN:
-            er = motion_set_speeds(
+            ercd = motion_set_speeds(
                 (int16_t)(-p_out->value * CTRL_BYPASS_SPIN_MM_S),
                 (int16_t)(p_out->value * CTRL_BYPASS_SPIN_MM_S));
             tm_printf((UB *)"[S2] nav: spinning %s until a sensor sees the "
@@ -1465,19 +1523,19 @@ nav_send (nav_control_output_t const * p_out)
 
     if (NAV_CONTROL_ACT_NONE != p_out->action)
     {
-        motion_status_t st;
+        motion_status_t status;
 
-        if (E_OK == motion_get_status(&st))
+        if (E_OK == motion_get_status(&status))
         {
             tm_printf((UB *)"[S2]   at %d mm, %d mdeg\n",
-                      (INT)st.travel_mm, (INT)st.heading_mdeg);
+                      (INT)status.travel_mm, (INT)status.heading_mdeg);
         }
     }
 
-    if (E_OK != er)
+    if (E_OK != ercd)
     {
         tm_printf((UB *)"[S2] nav: motion command failed (%d); STOP\n",
-                  (INT)er);
+                  (INT)ercd);
         nav_control_abort(&g_nav);
         (void)local_stop(S2_STOP_NAV);
     }
@@ -1501,6 +1559,7 @@ nav_report (nav_control_output_t const * p_out)
         break;
 
         case NAV_CONTROL_OUT_EXPIRED:
+            /* CTRL_NAV_PENDING_MS is 60000, which UINT holds. */
             tm_printf((UB *)"[S2] nav: no junction within %u ms; command "
                               "dropped\n", (UINT)CTRL_NAV_PENDING_MS);
         break;
@@ -1574,6 +1633,8 @@ line_step (s2_robot_state_t const * p_state, ctrl_input_t const * p_input)
         g_line_runtime.running_since_ms = p_input->now_ms;
     }
 
+    /* sizeof the message is a few bytes, which INT holds (kernel message
+       buffer size argument). */
     while (tk_rcv_mbf(line_q, &report, TMO_POL)
            == (INT)sizeof(s2_line_report_t))
     {
@@ -1791,45 +1852,45 @@ line_correction_speed (uint8_t strength)
 static bool
 line_apply_action (line_control_action_t action, int16_t correction_mm_s)
 {
-    ER er = E_PAR;
+    ER ercd = E_PAR;
 
     switch (action)
     {
         case LINE_CONTROL_ACTION_STRAIGHT:
-            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+            ercd = motion_set_speeds(CTRL_LINE_BASE_MM_S,
                                    CTRL_LINE_BASE_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_CORRECT_LEFT:
-            er = motion_set_speeds(correction_mm_s,
+            ercd = motion_set_speeds(correction_mm_s,
                                    CTRL_LINE_BASE_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_CORRECT_RIGHT:
-            er = motion_set_speeds(CTRL_LINE_BASE_MM_S,
+            ercd = motion_set_speeds(CTRL_LINE_BASE_MM_S,
                                    correction_mm_s);
         break;
 
         case LINE_CONTROL_ACTION_CURVE_LEFT:
-            er = motion_set_speeds(CTRL_LINE_LEFT_CURVE_MM_S,
+            ercd = motion_set_speeds(CTRL_LINE_LEFT_CURVE_MM_S,
                                    CTRL_LINE_CURVE_OUTER_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_CURVE_RIGHT:
-            er = motion_set_speeds(CTRL_LINE_CURVE_OUTER_MM_S,
+            ercd = motion_set_speeds(CTRL_LINE_CURVE_OUTER_MM_S,
                                    CTRL_LINE_RIGHT_CURVE_MM_S);
         break;
 
         case LINE_CONTROL_ACTION_STOP:
-            er = s2_line_stop() ? E_OK : E_OBJ;
+            ercd = s2_line_stop() ? E_OK : E_OBJ;
         break;
 
         default:
-            er = E_PAR;
+            ercd = E_PAR;
         break;
     }
 
-    return (E_OK == er);
+    return (E_OK == ercd);
 }
 
 static void
@@ -1875,6 +1936,8 @@ line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
 
         if (LINE_CONTROL_ACTION_CURVE_LEFT == action)
         {
+            /* The curve speeds are small constants (5 and 35 mm/s),
+               which INT holds. */
             tm_printf((UB *)"[S2] line: sustained %s; "
                               "strong curve target=%d/%d mm/s\n",
                       p_direction, (INT)CTRL_LINE_LEFT_CURVE_MM_S,
@@ -1882,6 +1945,8 @@ line_log_mode (line_control_mode_t old_mode, line_control_mode_t new_mode,
         }
         else
         {
+            /* The curve speeds are small constants (35 and 5 mm/s),
+               which INT holds. */
             tm_printf((UB *)"[S2] line: sustained %s; "
                               "strong curve target=%d/%d mm/s\n",
                       p_direction, (INT)CTRL_LINE_CURVE_OUTER_MM_S,

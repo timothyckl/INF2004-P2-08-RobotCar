@@ -294,9 +294,9 @@ bypass_plan_valid (bypass_control_plan_t const * p_plan)
                              && (p_plan->align_mdeg >= -turn_max)
                              && (p_plan->align_mdeg <= turn_max);
 
-    for (uint8_t i = 0u; b_valid && (i < p_plan->count); i++)
+    for (uint8_t seg_idx = 0u; b_valid && (seg_idx < p_plan->count); seg_idx++)
     {
-        bypass_control_segment_t const * p_seg = &p_plan->seg[i];
+        bypass_control_segment_t const * p_seg = &p_plan->seg[seg_idx];
         int32_t const max = (BYPASS_CONTROL_TURN == p_seg->kind) ? turn_max
                                                                  : move_max;
 
@@ -393,6 +393,8 @@ bypass_look_send (bypass_control_t * p_bypass,
     p_bypass->b_looking = true;
     p_bypass->b_have_look = false;
     p_bypass->wait_since_ms = p_in->now_ms;
+    /* Widening: look_deg is int16_t (servo limit +/-45), so int32_t holds
+       every value. */
     bypass_request(p_bypass, p_out, BYPASS_CONTROL_ACT_LOOK,
                    (int32_t)p_bypass->plan.look_deg);
 }
@@ -422,6 +424,9 @@ bypass_pass_decide (bypass_control_t * p_bypass,
         p_bypass->side_mm = p_bypass->look_mm;
     }
 
+    /* Widening: extra_mm and pass_max_mm are uint16_t (0..65535 mm), so
+       int32_t holds every value; stepped_mm + step_mm stays far below
+       INT32_MAX because stepping stops past pass_max_mm. */
     if (b_clear && (0u == p_bypass->plan.extra_mm))
     {
         p_bypass->b_passed = true;
@@ -526,6 +531,8 @@ bypass_search (bypass_control_t * p_bypass,
 {
     int32_t const travel_mm = p_in->travel_mm - p_bypass->start_mm;
 
+    /* Widening: search_mm is uint16_t (0..65535 mm), so int32_t holds every
+       value. The ms subtraction is unsigned and wraps correctly. */
     if (((p_in->now_ms - p_bypass->since_ms) > p_bypass->cfg.search_limit_ms)
         || (travel_mm > (int32_t)p_bypass->plan.search_mm))
     {

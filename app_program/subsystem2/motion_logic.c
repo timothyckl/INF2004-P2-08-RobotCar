@@ -39,33 +39,34 @@ static const int16_t g_sin_q15[91] =
 };
 
 static void    add_event (motion_output_t * p_out, uint8_t type,
-                          uint8_t reason, uint16_t id);
+                          uint8_t reason, uint16_t cmd_id);
 static void    note_result (motion_t * p_m, uint8_t type, uint8_t reason,
-                            uint16_t id);
+                            uint16_t cmd_id);
 static void    emit (motion_t * p_m, motion_output_t * p_out, uint8_t type,
-                     uint8_t reason, uint16_t id);
+                     uint8_t reason, uint16_t cmd_id);
 static void    enter_fault (motion_t * p_m, uint8_t reason,
                             motion_output_t * p_out);
-static void    enter_stopping (motion_t * p_m, uint8_t type, uint16_t id,
+static void    enter_stopping (motion_t * p_m, uint8_t type, uint16_t cmd_id,
                                uint32_t now_us);
 static void    start_motion (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
                              motion_input_t const * p_in);
 static bool    params_valid (motion_t const * p_m,
                              s2_motion_cmd_t const * p_cmd);
-static bool    id_newer (uint16_t id, uint16_t last);
+static bool    id_newer (uint16_t cmd_id, uint16_t last);
 static bool    is_moving (motion_state_t state);
 static void    measure (motion_t * p_m, motion_input_t const * p_in,
                         motion_output_t * p_out);
-static void    integrate_pose (motion_t * p_m, int32_t dl, int32_t dr);
+static void    integrate_pose (motion_t * p_m, int32_t delta_l,
+                               int32_t delta_r);
 static void    control (motion_t * p_m, motion_input_t const * p_in,
                         motion_output_t * p_out);
 static void    check_stall (motion_t * p_m, uint32_t now_us,
                             motion_output_t * p_out);
 static int32_t mm_since (motion_t const * p_m, uint32_t now, uint32_t start);
 static int32_t counts_mm (motion_t const * p_m, int32_t counts);
-static int32_t abs32 (int32_t v);
-static int32_t clamp32 (int32_t v, int32_t lo, int32_t hi);
-static int32_t wrap_mdeg (int64_t a);
+static int32_t abs32 (int32_t value);
+static int32_t clamp32 (int32_t value, int32_t low, int32_t high);
+static int32_t wrap_mdeg (int64_t angle);
 static int32_t sin_q15 (int32_t mdeg);
 
 /**
@@ -75,22 +76,22 @@ static int32_t sin_q15 (int32_t mdeg);
 bool
 motion_init (motion_t * p_m, motion_cfg_t const * p_cfg)
 {
-    motion_t m = {0};
+    motion_t fresh = {0};
 
     if ((NULL == p_m) || (NULL == p_cfg) || (!odom_cfg_valid(&p_cfg->odom))
         || (p_cfg->speed_window < 1u)
         || (p_cfg->speed_window > MOTION_WINDOW_MAX)
         || (p_cfg->speed_max_mm_s <= 0) || (p_cfg->duty_step_max <= 0)
-        || (!pid_init(&m.pid_l, &p_cfg->pid))
-        || (!pid_init(&m.pid_r, &p_cfg->pid))
-        || (!pid_init(&m.pid_diff, &p_cfg->straight_pid)))
+        || (!pid_init(&fresh.pid_l, &p_cfg->pid))
+        || (!pid_init(&fresh.pid_r, &p_cfg->pid))
+        || (!pid_init(&fresh.pid_diff, &p_cfg->straight_pid)))
     {
         return (false);
     }
 
-    m.cfg   = *p_cfg;
-    m.state = MOTION_INIT;
-    *p_m    = m;
+    fresh.cfg   = *p_cfg;
+    fresh.state = MOTION_INIT;
+    *p_m    = fresh;
 
     return (true);
 }
@@ -140,19 +141,19 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
         return;
     }
 
-    uint16_t const id = p_cmd->cmd_id;
+    uint16_t const cmd_id = p_cmd->cmd_id;
 
     /* STOP is always obeyed, whatever its ID; others must be newer. */
     if ((S2_CMD_STOP != p_cmd->cmd) && p_m->b_have_id
-        && (!id_newer(id, p_m->last_id)))
+        && (!id_newer(cmd_id, p_m->last_id)))
     {
-        emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STALE, id);
+        emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STALE, cmd_id);
         return;
     }
 
-    if ((!p_m->b_have_id) || id_newer(id, p_m->last_id))
+    if ((!p_m->b_have_id) || id_newer(cmd_id, p_m->last_id))
     {
-        p_m->last_id   = id;
+        p_m->last_id   = cmd_id;
         p_m->b_have_id = true;
     }
 
@@ -161,21 +162,21 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
         case S2_CMD_STOP:
             if (MOTION_FAULT == p_m->state)
             {
-                emit(p_m, p_out, MOTION_EVT_REJECTED, p_m->fault, id);
+                emit(p_m, p_out, MOTION_EVT_REJECTED, p_m->fault, cmd_id);
             }
             else if (MOTION_INIT == p_m->state)
             {
-                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STATE, id);
+                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STATE, cmd_id);
             }
             else if (MOTION_STOPPING == p_m->state)
             {
                 p_m->pending_type = MOTION_EVT_STOPPED;
-                p_m->pending_id   = id;
+                p_m->pending_id   = cmd_id;
             }
             else
             {
-                p_m->cmd_id = id;
-                enter_stopping(p_m, MOTION_EVT_STOPPED, id, p_in->now_us);
+                p_m->cmd_id = cmd_id;
+                enter_stopping(p_m, MOTION_EVT_STOPPED, cmd_id, p_in->now_us);
             }
             break;
 
@@ -186,20 +187,20 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
                 {
                     p_m->state = MOTION_IDLE;
                     p_m->fault = MOTION_FAULT_NONE;
-                    emit(p_m, p_out, MOTION_EVT_DONE, 0u, id);
+                    emit(p_m, p_out, MOTION_EVT_DONE, 0u, cmd_id);
                 }
                 else
                 {
-                    emit(p_m, p_out, MOTION_EVT_REJECTED, p_m->fault, id);
+                    emit(p_m, p_out, MOTION_EVT_REJECTED, p_m->fault, cmd_id);
                 }
             }
             else if (MOTION_IDLE == p_m->state)
             {
-                emit(p_m, p_out, MOTION_EVT_DONE, 0u, id);
+                emit(p_m, p_out, MOTION_EVT_DONE, 0u, cmd_id);
             }
             else
             {
-                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STATE, id);
+                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STATE, cmd_id);
             }
             break;
 
@@ -214,11 +215,11 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
                 /* run_id wraps at 256 by design; consumers only test for a
                    change. */
                 p_m->run_id       = (uint8_t)(p_m->run_id + 1u);
-                emit(p_m, p_out, MOTION_EVT_DONE, 0u, id);
+                emit(p_m, p_out, MOTION_EVT_DONE, 0u, cmd_id);
             }
             else
             {
-                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STATE, id);
+                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STATE, cmd_id);
             }
             break;
 
@@ -229,15 +230,16 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
             {
                 emit(p_m, p_out, MOTION_EVT_REJECTED,
                           (MOTION_FAULT == p_m->state) ? p_m->fault
-                                                       : MOTION_REJ_STATE, id);
+                                                       : MOTION_REJ_STATE,
+                          cmd_id);
             }
             else if (p_in->b_stop)
             {
-                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STOP, id);
+                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_STOP, cmd_id);
             }
             else if (!params_valid(p_m, p_cmd))
             {
-                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_PARAM, id);
+                emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_PARAM, cmd_id);
             }
             else
             {
@@ -246,7 +248,7 @@ motion_command (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
             break;
 
         default:
-            emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_PARAM, id);
+            emit(p_m, p_out, MOTION_EVT_REJECTED, MOTION_REJ_PARAM, cmd_id);
             break;
     }
 }
@@ -305,9 +307,12 @@ motion_get_status_logic (motion_t const * p_m, motion_status_t * p_status)
         return;
     }
 
+    /* The mean of two int32_t distances, summed in 64 bits, always lies
+       between them, so the narrowing back to int32_t keeps the value. */
     int64_t const travel = ((int64_t)counts_mm(p_m, p_m->tot_l)
                             + counts_mm(p_m, p_m->tot_r)) / 2;
 
+    /* travel is the mean of two int32_t values (above), so it fits int32_t. */
     p_status->travel_mm    = (int32_t)travel;
     /* clamp32() limits each value to int16_t; state is a motion_state_t
        (0..6) and the flags are two single-bit masks, inside uint8_t. */
@@ -387,13 +392,14 @@ motion_fault_code (motion_t const * p_m)
  * ------------------------------------------------------------------------ */
 
 static void
-add_event (motion_output_t * p_out, uint8_t type, uint8_t reason, uint16_t id)
+add_event (motion_output_t * p_out, uint8_t type, uint8_t reason,
+           uint16_t cmd_id)
 {
     if (p_out->n_events < MOTION_EVENTS_MAX)
     {
         p_out->events[p_out->n_events].type   = type;
         p_out->events[p_out->n_events].reason = reason;
-        p_out->events[p_out->n_events].cmd_id = id;
+        p_out->events[p_out->n_events].cmd_id = cmd_id;
         p_out->n_events++;
     }
 }
@@ -401,20 +407,20 @@ add_event (motion_output_t * p_out, uint8_t type, uint8_t reason, uint16_t id)
 /* Remember the latest result for motion_status_t (READY is not one). */
 static void
 emit (motion_t * p_m, motion_output_t * p_out, uint8_t type, uint8_t reason,
-      uint16_t id)
+      uint16_t cmd_id)
 {
-    add_event(p_out, type, reason, id);
-    note_result(p_m, type, reason, id);
+    add_event(p_out, type, reason, cmd_id);
+    note_result(p_m, type, reason, cmd_id);
 }
 
 static void
-note_result (motion_t * p_m, uint8_t type, uint8_t reason, uint16_t id)
+note_result (motion_t * p_m, uint8_t type, uint8_t reason, uint16_t cmd_id)
 {
     if (MOTION_EVT_READY != type)
     {
         p_m->res_type   = type;
         p_m->res_reason = reason;
-        p_m->res_id     = id;
+        p_m->res_id     = cmd_id;
     }
 }
 
@@ -441,11 +447,11 @@ enter_fault (motion_t * p_m, uint8_t reason, motion_output_t * p_out)
 }
 
 static void
-enter_stopping (motion_t * p_m, uint8_t type, uint16_t id, uint32_t now_us)
+enter_stopping (motion_t * p_m, uint8_t type, uint16_t cmd_id, uint32_t now_us)
 {
     p_m->state         = MOTION_STOPPING;
     p_m->pending_type  = type;
-    p_m->pending_id    = id;
+    p_m->pending_id    = cmd_id;
     p_m->stop_start_us = now_us;
     p_m->duty_l        = 0;
     p_m->duty_r        = 0;
@@ -482,6 +488,8 @@ start_motion (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
         p_m->state  = MOTION_MOVE;
         p_m->goal   = p_cmd->u.move.distance_mm;
         p_m->speed  = p_cmd->u.move.speed_mm_s;
+        /* Widening to 64 bits: a goal of at most 32767 mm times 10^6 is about
+           3.3 x 10^10, beyond int32_t but well inside int64_t. */
         expected_us = ((int64_t)abs32(p_m->goal) * US_PER_S) / p_m->speed;
     }
     else
@@ -497,6 +505,9 @@ start_motion (motion_t * p_m, s2_motion_cmd_t const * p_cmd,
         expected_us = (arc_um * UM_PER_MM) / p_m->speed;
     }
 
+    /* limit is not negative (expected time, factor and extra are all >= 0) and
+       is clamped to LIMIT_US_MAX (0x7FFFFFFF) below, so the uint32_t result
+       holds it exactly. The extra time is widened to 64 bits before scaling. */
     int64_t limit = (expected_us * p_m->cfg.timeout_factor)
                     + ((int64_t)p_m->cfg.timeout_extra_ms * US_PER_MS);
 
@@ -538,11 +549,11 @@ params_valid (motion_t const * p_m, s2_motion_cmd_t const * p_cmd)
 
 /* Serial-number comparison: newer if ahead by 1..32767 (wraps). */
 static bool
-id_newer (uint16_t id, uint16_t last)
+id_newer (uint16_t cmd_id, uint16_t last)
 {
-    uint16_t const d = (uint16_t)(id - last);
+    uint16_t const delta = (uint16_t)(cmd_id - last);
 
-    return ((0u != d) && (d < ID_HALF_RANGE));
+    return ((0u != delta) && (delta < ID_HALF_RANGE));
 }
 
 static bool
@@ -578,14 +589,14 @@ measure (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
     if (p_m->b_have_prev)
     {
-        int32_t const  dl = odom_count_delta(p_in->count_l, p_m->prev_l);
-        int32_t const  dr = odom_count_delta(p_in->count_r, p_m->prev_r);
+        int32_t const  delta_l = odom_count_delta(p_in->count_l, p_m->prev_l);
+        int32_t const  delta_r = odom_count_delta(p_in->count_r, p_m->prev_r);
         uint32_t const new_errors = (p_in->errors_l - p_m->prev_err_l)
                                     + (p_in->errors_r - p_m->prev_err_r);
 
-        p_m->tot_l += dl;
-        p_m->tot_r += dr;
-        integrate_pose(p_m, dl, dr);
+        p_m->tot_l += delta_l;
+        p_m->tot_r += delta_r;
+        integrate_pose(p_m, delta_l, delta_r);
 
         if (b_can_fault && (new_errors > p_m->cfg.enc_errors_max))
         {
@@ -614,28 +625,30 @@ measure (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
     uint32_t const oldest = (p_m->win_head + size - p_m->win_fill) % size;
     uint32_t const dt_us  = p_in->now_us - p_m->win_us[oldest];
-    int32_t        sl     = 0;
-    int32_t        sr     = 0;
+    int32_t        speed_l     = 0;
+    int32_t        speed_r     = 0;
 
     if ((p_m->win_fill < 2u)
         || (!odom_speed_mm_s(&p_m->cfg.odom,
                              odom_count_delta(p_in->count_l,
                                               p_m->win_l[oldest]),
-                             dt_us, &sl))
+                             dt_us, &speed_l))
         || (!odom_speed_mm_s(&p_m->cfg.odom,
                              odom_count_delta(p_in->count_r,
                                               p_m->win_r[oldest]),
-                             dt_us, &sr)))
+                             dt_us, &speed_r)))
     {
-        sl = 0;
-        sr = 0;
+        speed_l = 0;
+        speed_r = 0;
     }
 
-    p_m->speed_l = sl;
-    p_m->speed_r = sr;
+    p_m->speed_l = speed_l;
+    p_m->speed_r = speed_r;
 
-    if (((uint32_t)abs32(sl) <= p_m->cfg.still_mm_s)
-        && ((uint32_t)abs32(sr) <= p_m->cfg.still_mm_s))
+    /* abs32() never returns a negative value (INT32_MIN saturates to
+       INT32_MAX), so converting it to uint32_t keeps the value. */
+    if (((uint32_t)abs32(speed_l) <= p_m->cfg.still_mm_s)
+        && ((uint32_t)abs32(speed_r) <= p_m->cfg.still_mm_s))
     {
         if (!p_m->b_still_run)
         {
@@ -656,7 +669,7 @@ measure (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 /* Dead reckoning: heading from the run's wheel difference, position
    advanced along the mid-step heading. */
 static void
-integrate_pose (motion_t * p_m, int32_t dl, int32_t dr)
+integrate_pose (motion_t * p_m, int32_t delta_l, int32_t delta_r)
 {
     int32_t h_new = 0;
 
@@ -669,10 +682,16 @@ integrate_pose (motion_t * p_m, int32_t dl, int32_t dr)
 
     h_new = wrap_mdeg(h_new);
 
+    /* Headings are summed in 64 bits so the sum cannot overflow before
+       wrap_mdeg() brings it back to -180000..180000. One 10 ms step moves the
+       wheels a few mm, so d_um x sin_q15 (at most 32768) / 32768 is no larger
+       than d_um and fits int32_t; x_um and y_um would overflow only after
+       2,147 m from the start. */
     int32_t const h_mid = wrap_mdeg((int64_t)p_m->heading_mdeg
                                     + (wrap_mdeg((int64_t)h_new
                                                  - p_m->heading_mdeg) / 2));
-    int64_t const d_um  = (((int64_t)dl + dr) * p_m->cfg.odom.wheel_circ_um)
+    int64_t const d_um  = (((int64_t)delta_l + delta_r)
+                           * p_m->cfg.odom.wheel_circ_um)
                           / ((int64_t)2 * p_m->cfg.odom.counts_per_rev);
 
     p_m->x_um += (int32_t)((d_um * sin_q15(h_mid + MDEG_90)) / Q15_ONE);
@@ -688,8 +707,8 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
     if ((MOTION_MOVE == p_m->state) || (MOTION_TURN == p_m->state))
     {
-        int32_t const ml = mm_since(p_m, p_in->count_l, p_m->start_l);
-        int32_t const mr = mm_since(p_m, p_in->count_r, p_m->start_r);
+        int32_t const mm_l = mm_since(p_m, p_in->count_l, p_m->start_l);
+        int32_t const mm_r = mm_since(p_m, p_in->count_r, p_m->start_r);
         int32_t const sign = (p_m->goal > 0) ? 1 : -1;
         int32_t       done_at;
         int32_t       progress = 0;
@@ -702,19 +721,23 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
 
             if (p_in->b_counts_valid)
             {
-                (void)pid_update(&p_m->pid_diff, 0, clamp32(ml - mr,
+                (void)pid_update(&p_m->pid_diff, 0, clamp32(mm_l - mm_r,
                                  -PID_INPUT_MAX, PID_INPUT_MAX), &corr);
             }
 
             corr       = clamp32(corr, -p_m->speed, p_m->speed);
-            progress   = (int32_t)(((int64_t)ml + mr) / 2);
+            /* The mean of two int32_t values, summed in 64 bits, lies between
+               them, so it fits int32_t. The tolerances are build-time
+               constants (MC_MOVE_TOL_MM 5, MC_TURN_TOL_MDEG 2000), far below
+               INT32_MAX. */
+            progress   = (int32_t)(((int64_t)mm_l + mm_r) / 2);
             done_at    = abs32(p_m->goal) - (int32_t)p_m->cfg.move_tol_mm;
             p_m->tgt_l = (sign * p_m->speed) + corr;
             p_m->tgt_r = (sign * p_m->speed) - corr;
         }
         else
         {
-            (void)odom_turn_mdeg(&p_m->cfg.odom, ml, mr, &progress);
+            (void)odom_turn_mdeg(&p_m->cfg.odom, mm_l, mm_r, &progress);
             done_at    = abs32(p_m->goal) - (int32_t)p_m->cfg.turn_tol_mdeg;
             p_m->tgt_l = -sign * p_m->speed;
             p_m->tgt_r = sign * p_m->speed;
@@ -739,14 +762,15 @@ control (motion_t * p_m, motion_input_t const * p_in, motion_output_t * p_out)
         /* Hold the last duty through a bad sample (fault after a few). */
         if (p_in->b_counts_valid)
         {
-            int32_t dl = p_m->duty_l;
-            int32_t dr = p_m->duty_r;
+            int32_t duty_left = p_m->duty_l;
+            int32_t duty_right = p_m->duty_r;
 
-            (void)pid_update(&p_m->pid_l, p_m->tgt_l, p_m->speed_l, &dl);
-            (void)pid_update(&p_m->pid_r, p_m->tgt_r, p_m->speed_r, &dr);
-            p_m->duty_l = motion_ramp(p_m->duty_l, dl,
+            (void)pid_update(&p_m->pid_l, p_m->tgt_l, p_m->speed_l, &duty_left);
+            (void)pid_update(&p_m->pid_r, p_m->tgt_r, p_m->speed_r,
+                             &duty_right);
+            p_m->duty_l = motion_ramp(p_m->duty_l, duty_left,
                                       p_m->cfg.duty_step_max);
-            p_m->duty_r = motion_ramp(p_m->duty_r, dr,
+            p_m->duty_r = motion_ramp(p_m->duty_r, duty_right,
                                       p_m->cfg.duty_step_max);
 
             /* In SPEED, a zero wheel target brakes that wheel (duty 0,
@@ -841,78 +865,79 @@ mm_since (motion_t const * p_m, uint32_t now, uint32_t start)
 static int32_t
 counts_mm (motion_t const * p_m, int32_t counts)
 {
-    int32_t mm = 0;
+    int32_t dist_mm = 0;
 
-    if (!odom_counts_to_mm(&p_m->cfg.odom, counts, &mm))
+    if (!odom_counts_to_mm(&p_m->cfg.odom, counts, &dist_mm))
     {
-        mm = (counts < 0) ? INT32_MIN : INT32_MAX;
+        dist_mm = (counts < 0) ? INT32_MIN : INT32_MAX;
     }
 
-    return (mm);
+    return (dist_mm);
 }
 
 static int32_t
-abs32 (int32_t v)
+abs32 (int32_t value)
 {
-    return ((v < 0) ? ((INT32_MIN == v) ? INT32_MAX : -v) : v);
+    return ((value < 0) ? ((INT32_MIN == value) ? INT32_MAX : -value) : value);
 }
 
 static int32_t
-clamp32 (int32_t v, int32_t lo, int32_t hi)
+clamp32 (int32_t value, int32_t low, int32_t high)
 {
-    return ((v < lo) ? lo : ((v > hi) ? hi : v));
+    return ((value < low) ? low : ((value > high) ? high : value));
 }
 
-/* Wrap to -180000 < a <= 180000. */
+/* Wrap to -180000 < angle <= 180000; the result is in int32_t range. */
 static int32_t
-wrap_mdeg (int64_t a)
+wrap_mdeg (int64_t angle)
 {
-    int64_t r = a % MDEG_360;
+    int64_t wrapped = angle % MDEG_360;
 
-    if (r > MDEG_180)
+    if (wrapped > MDEG_180)
     {
-        r -= MDEG_360;
+        wrapped -= MDEG_360;
     }
-    else if (r <= -MDEG_180)
+    else if (wrapped <= -MDEG_180)
     {
-        r += MDEG_360;
+        wrapped += MDEG_360;
     }
     else
     {
         /* In range. */
     }
 
-    return ((int32_t)r);
+    return ((int32_t)wrapped);
 }
 
 /* sin(mdeg) x 32767 by quarter-wave table and linear interpolation. */
 static int32_t
 sin_q15 (int32_t mdeg)
 {
-    int32_t a = (int32_t)(((int64_t)mdeg % MDEG_360 + MDEG_360) % MDEG_360);
+    int32_t wrapped =
+        (int32_t)(((int64_t)mdeg % MDEG_360 + MDEG_360) % MDEG_360);
     int32_t sign = 1;
 
-    if (a >= MDEG_180)
+    if (wrapped >= MDEG_180)
     {
-        a -= MDEG_180;
+        wrapped -= MDEG_180;
         sign = -1;
     }
 
-    if (a > MDEG_90)
+    if (wrapped > MDEG_90)
     {
-        a = MDEG_180 - a;
+        wrapped = MDEG_180 - wrapped;
     }
 
-    int32_t const idx  = a / MDEG_PER_DEG;
-    int32_t const frac = a % MDEG_PER_DEG;
-    int32_t       s    = g_sin_q15[idx];
+    int32_t const idx  = wrapped / MDEG_PER_DEG;
+    int32_t const frac = wrapped % MDEG_PER_DEG;
+    int32_t       sine    = g_sin_q15[idx];
 
     if (idx < MDEG_90 / MDEG_PER_DEG)
     {
-        s += ((g_sin_q15[idx + 1] - g_sin_q15[idx]) * frac) / MDEG_PER_DEG;
+        sine += ((g_sin_q15[idx + 1] - g_sin_q15[idx]) * frac) / MDEG_PER_DEG;
     }
 
-    return (sign * s);
+    return (sign * sine);
 }
 
 /* End of file. */

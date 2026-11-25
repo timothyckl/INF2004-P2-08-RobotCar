@@ -213,6 +213,9 @@ s3_follow_run (void)
                 if ((position != last_position)
                     || ((now_ms - last_log_ms) >= S3_LINE_LOG_MS))
                 {
+                    /* Console arguments: ADC values, filters and thresholds
+                       are uint16_t (0..4095), and the mask and strength are
+                       small unsigned values; UINT (32-bit) holds them all. */
                     tm_printf((UB *)"s3 line: adc=%u/%u filtered=%u/%u "
                                       "threshold=%u/%u left=%s right=%s "
                                       "mask=%u strength=%u command=%s\n",
@@ -279,11 +282,14 @@ s3_follow_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
         s3_command_t const command = s3_nav_command(symbol);
 
         decoded_count++;
+        /* Console arguments: symbol is a char A..Z, which INT holds for %c;
+           the counts are uint16_t, which UINT holds. */
         tm_printf((UB *)"s3 bar: DECODED %c (decoded=%u errors=%u)\n",
                   (INT)symbol, (UINT)decoded_count, (UINT)error_count);
 
         if (S3_NAV_NONE == command)
         {
+            /* symbol is a char A..Z, which INT holds for %c. */
             tm_printf((UB *)"s3 bar: no command mapped to %c; reported "
                             "only\n", (INT)symbol);
         }
@@ -301,6 +307,8 @@ s3_follow_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
         s3_capture_t const * const p_capture = &p_barcode->scan.capture;
 
         error_count++;
+        /* Console arguments: the run count is at most 31, the threshold a
+           12-bit ADC value and the counts uint16_t, so UINT holds them all. */
         tm_printf((UB *)"s3 bar: capture rejected, runs=%u threshold=%u "
                         "(decoded=%u errors=%u)\n",
                   (UINT)p_capture->count,
@@ -321,7 +329,7 @@ s3_follow_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
             tm_printf((UB *)"\n");
         }
         tm_printf((UB *)"s3 bar:  open run %s for %u ms\n",
-                  p_capture->black ? "BLACK" : "WHITE",
+                  p_capture->b_black ? "BLACK" : "WHITE",
                   (UINT)((now_us - p_capture->last_us) / 1000u));
     }
     else if (S3_SCAN_SINGLE_BAR == result)
@@ -358,6 +366,8 @@ s3_follow_now_ms (void)
 {
     SYSTIM time;
 
+    /* time.lo is the 32-bit low word of the ms clock (UW): same width, no
+       value changes; it wraps every 49.7 days. */
     return ((tk_get_tim(&time) >= E_OK) ? (uint32_t)time.lo : 0u);
 }
 

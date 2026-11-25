@@ -289,12 +289,15 @@ s4_watch_task (INT start_code,
                 ER const error =
                     tk_ref_tsk(g_s4_watch_list[index].task_id, &info);
 
+                /* Console arguments: 8- to 32-bit integer values go to UINT
+                   (unsigned) or INT (signed); both are 32-bit on the RP2040,
+                   so no value changes. */
                 tm_printf((UB *) "s4 watch: %s loop stalled (imu stage %u; "
-                          "ref %d, stat 0x%x, wait 0x%lx, wid %d)\n",
+                          "ref %d, stat 0x%x, wait 0x%x, wid %d)\n",
                           g_s4_watch_list[index].p_name,
                           (UINT) g_s4_diag_stage, (INT) error,
                           (UINT) info.tskstat,
-                          (UW) info.tskwait, (INT) info.wid);
+                          (UINT) info.tskwait, (INT) info.wid);
             }
         }
     }
@@ -379,6 +382,8 @@ s4_motion_read (s4_motion_t * p_motion,
     }
     else
     {
+        /* Widening: the wheel speeds are int16_t, so their sum fits int32_t
+           without overflow and the mean lies between them. */
         int32_t speed_mm_s = ((int32_t) current.left_mm_s +
                               (int32_t) current.right_mm_s) / 2;
 
@@ -389,6 +394,7 @@ s4_motion_read (s4_motion_t * p_motion,
             if (current.run_id != p_motion->run_id)
             {
                 s4_terrain_start_new_run(p_terrain);
+                /* run_id is uint8_t, which UINT holds. */
                 tm_printf((UB *) "s4: new run %u; hump maximum cleared\n",
                           (UINT) current.run_id);
             }

@@ -22,6 +22,8 @@ s3_ir_gpio_init (void)
 
     if (device < E_OK)
     {
+        /* device is negative here, a kernel error code; ID and ER are both
+           32-bit signed, so the code is returned unchanged. */
         return ((ER)device);
     }
     g_s3_ir_adc_device = device;

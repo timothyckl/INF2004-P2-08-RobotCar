@@ -65,7 +65,7 @@ DECL_BOOL = re.compile(r"\bbool\s+(?:const\s+)?([a-z_][a-z0-9_]*)\s*[=;,)\[]")
 DECL_POINTER = re.compile(
     TYPE + r"\s*(?:const\s*)?\*\s*(?:const\s+)?([a-z_][a-z0-9_]*)\s*[=;,)\[]")
 DECL_ANY = re.compile(
-    r"(?:^|[(,;{]\s*)(?:static\s+|const\s+|volatile\s+)*" + TYPE +
+    r"(?:^\s*|[(,;{]\s*)(?:static\s+|const\s+|volatile\s+)*" + TYPE +
     r"\s+(?:const\s+)?([a-z_][a-z0-9_]*)\s*[=;,)\[]")
 
 
@@ -108,7 +108,7 @@ def check(path: Path, counts: Counter, where: dict) -> None:
         if CONST_ON_RIGHT.search(line):
             hit("8.6a constant on the right of == or !=", no)
         for match in DECL_BOOL.finditer(line):
-            if not match.group(1).startswith(("b_", "gb_")):
+            if not match.group(1).startswith(("b_", "gb_", "g_b_")):
                 hit("7.1m bool variable not named b_... ("
                     + ("test" if is_test else "production") + ")", no)
         for match in DECL_POINTER.finditer(line):

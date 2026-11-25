@@ -115,7 +115,7 @@ s3_barcode_abort (s3_barcode_t * p_barcode)
 bool
 s3_barcode_active (s3_barcode_t const * p_barcode)
 {
-    bool b_active = (NULL != p_barcode) && p_barcode->scan.capture.active
+    bool b_active = (NULL != p_barcode) && p_barcode->scan.capture.b_active
                     && (p_barcode->scan.capture.count
                         >= S3_BARCODE_ACTIVE_RUNS);
 

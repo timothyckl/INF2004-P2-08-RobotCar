@@ -11,6 +11,8 @@
  */
 #include "drv_motor.h"
 
+/* DRV_MOTOR_DUTY_MAX is a positive constant below 65536, so UW holds it and
+   the - 1u cannot wrap. */
 #define DRV_MOTOR_TOP       ((UW)DRV_MOTOR_DUTY_MAX - 1u)
 #define DRV_MOTOR_DIV_ONE   (1u << 4)   /* DIV is 8.4 fixed point: 1.0 */
 #define DRV_MOTOR_CC_B_SHIFT 16u        /* B compare is CC bits 31:16 */
@@ -58,28 +60,30 @@ drv_motor_init (void)
         /* Wait a few clock cycles for the block to come out of reset. */
     }
 
-    for (UINT m = 0u; m < (UINT)DRV_MOTOR_COUNT; m++)
+    /* DRV_MOTOR_COUNT is 2: the cast only matches the loop counter's type. */
+    for (UINT motor = 0u; motor < (UINT)DRV_MOTOR_COUNT; motor++)
     {
-        drv_motor_hw_t const * p_hw = &g_motor_hw[m];
+        drv_motor_hw_t const * p_hw = &g_motor_hw[motor];
 
         out_w(drv_motor_reg(p_hw->slice, PWM_CHx_DIV), DRV_MOTOR_DIV_ONE);
         (void)pwm_set_wrap(p_hw->pin_a, DRV_MOTOR_TOP);
-        drv_motor_write_cc((drv_motor_id_t)m, &brake);
+        drv_motor_write_cc((drv_motor_id_t)motor, &brake);
         (void)pwm_set_enabled(p_hw->pin_a, TRUE);
     }
 
     /* Let one PWM period (50 us) pass so the buffered CC = 0 is live. */
-    ER const er = tk_dly_tsk(1);
+    ER const ercd = tk_dly_tsk(1);
 
-    if (er < E_OK)
+    if (ercd < E_OK)
     {
-        return (er);
+        return (ercd);
     }
 
-    for (UINT m = 0u; m < (UINT)DRV_MOTOR_COUNT; m++)
+    /* DRV_MOTOR_COUNT is 2: the cast only matches the loop counter's type. */
+    for (UINT motor = 0u; motor < (UINT)DRV_MOTOR_COUNT; motor++)
     {
-        (void)pwm_set_pin(g_motor_hw[m].pin_a);
-        (void)pwm_set_pin(g_motor_hw[m].pin_b);
+        (void)pwm_set_pin(g_motor_hw[motor].pin_a);
+        (void)pwm_set_pin(g_motor_hw[motor].pin_b);
     }
 
     return (E_OK);
@@ -92,14 +96,14 @@ drv_motor_init (void)
 ER
 drv_motor_set (drv_motor_id_t motor, int32_t duty)
 {
-    drv_motor_cc_t cc;
+    drv_motor_cc_t duty_cc;
 
-    if ((motor >= DRV_MOTOR_COUNT) || (!drv_motor_map(duty, &cc)))
+    if ((motor >= DRV_MOTOR_COUNT) || (!drv_motor_map(duty, &duty_cc)))
     {
         return (E_PAR);
     }
 
-    drv_motor_write_cc(motor, &cc);
+    drv_motor_write_cc(motor, &duty_cc);
 
     return (E_OK);
 }
@@ -172,6 +176,8 @@ drv_motor_reg (UW slice, UW offset)
 static void
 drv_motor_write_cc (drv_motor_id_t motor, drv_motor_cc_t const * p_cc)
 {
+    /* Widening: cc_a and cc_b are uint16_t, so the 16-bit shift of cc_b fits
+       the 32-bit UW exactly (the CC register's two halves). */
     UW const value = ((UW)p_cc->cc_b << DRV_MOTOR_CC_B_SHIFT)
                      | (UW)p_cc->cc_a;
 

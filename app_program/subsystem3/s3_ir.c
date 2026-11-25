@@ -11,7 +11,7 @@ static bool s3_ir_adaptive_classify(s3_ir_adaptive_t * p_state,
 
 bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required)
 {
-    bool settled = false;
+    bool b_settled = false;
 
     if ((NULL != p_filter) && (mask < S3_IR_PATTERNS) && (required > 0U))
     {
@@ -30,16 +30,16 @@ bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required)
             /* Saturation prevents counter wrap on a steady surface. */
         }
 
-        settled = (p_filter->repetitions >= required);
-        if (settled)
+        b_settled = (p_filter->repetitions >= required);
+        if (b_settled)
         {
             p_filter->stable = mask;
         }
-        p_filter->ready = settled;
+        p_filter->b_ready = b_settled;
     }
     else if (NULL != p_filter)
     {
-        p_filter->ready = false;
+        p_filter->b_ready = false;
         p_filter->repetitions = 0U;
     }
     else
@@ -47,7 +47,7 @@ bool s3_ir_filter(s3_filter_t * p_filter, uint8_t mask, uint8_t required)
         /* An absent filter cannot produce a settled sample. */
     }
 
-    return settled;
+    return b_settled;
 }
 
 bool
@@ -201,6 +201,9 @@ s3_ir_adaptive_strength (s3_ir_adaptive_t const * p_state,
         }
         else
         {
+            /* Widening: difference < span <= 65535, so difference x 100 +
+               span / 2 is below 6.6 million and fits uint32_t; the result
+               divided by span is below 100 and fits uint8_t. */
             uint32_t const scaled = ((uint32_t)difference * UINT32_C(100))
                                   + ((uint32_t)span / UINT32_C(2));
 

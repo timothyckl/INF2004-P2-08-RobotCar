@@ -276,7 +276,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Requirement | Pico W with Robo Pico, C with the Pico SDK and µT-Kernel 3.0, BARR-C with every deviation recorded |
 | Tests | Code review; [barr_c_compliance.md](barr_c_compliance.md); `testing/host/target_static_check.py` |
 | Result | Builds with `arm-none-eabi-gcc` 15.3.1 for the RP2040. Zero warnings in application code under 18 strict flags. Deviations recorded in S2 d30 and the BARR-C report |
-| Status | **Partial**: rule 1.6a (comment on every cast) and 6.2a (function length) are known open items |
+| Status | **Partial**: every cast now has a range comment and the naming rules are met (2026-11-25, mission UF2 unchanged); open items are 13 long functions (6.2a, an agreed deviation), short names in test code and four structure members (7.1e) and four rules met only in part (1.8b, 2.2, 6.3, 6.4a) |
 
 ## 5. Buddy tasks from the brief
 
@@ -388,7 +388,7 @@ against each, with where the evidence is:
 | Barcode recognition reliability | No wrong letter seen on the car; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01); a host-found wrong letter from a noise blip (F-18, fix P2 not applied) |
 | Hump measurement capability | Every hump detected; within ±2 mm on every recorded run | Partial | 6 mm minimum reading; no flat lap |
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08) |
-| Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; [review](software_quality_review.md) | Strong | Cast comments (BARR-C 1.6a); long functions |
+| Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |
 | Resource efficiency | No floating point; 2 KB application RAM; 31-byte frame; [data widths](data_widths.md) | Strong | Power not measured |
 | Team integration quality | 14 active interfaces (IF-06 to IF-21) in `TEAM.md` section 5; INT-04 to INT-07 pass; one mission image | Strong | — |
 | Demonstration performance | [Demo report](DEMO_REPORT_2026-11-24.md) | Partial | See the report |

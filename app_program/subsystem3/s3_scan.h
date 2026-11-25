@@ -47,14 +47,14 @@ typedef struct
 typedef struct
 {
     s3_capture_t capture;
-    bool         black;     /* last level fed */
+    bool         b_black;     /* last level fed */
 } s3_scan_t;
 
 /** Start idle with the sensor assumed white. */
 void s3_scan_init(s3_scan_t * p_scan);
 /** Feed one level change. Edges must be in time order. */
 s3_scan_result_t s3_scan_edge(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
-                              bool black, uint32_t now_us);
+                              bool b_black, uint32_t now_us);
 /** Poll once per sample period, with or without edges. */
 s3_scan_result_t s3_scan_poll(s3_scan_t * p_scan, s3_scan_cfg_t const * p_cfg,
                               uint32_t now_us, char * p_symbol);

@@ -66,6 +66,8 @@ s3_test_raw_monitor (void)
 
         if (E_OK == error)
         {
+            /* Console arguments: the ADC readings are 12-bit (0..4095),
+               which UINT holds. */
             tm_printf(g_s3_raw_result,
                       (UINT)sample.left,
                       (UINT)sample.right,

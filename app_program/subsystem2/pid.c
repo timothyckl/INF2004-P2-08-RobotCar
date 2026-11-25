@@ -68,6 +68,9 @@ pid_update (pid_ctrl_t * p_pid, int32_t setpoint, int32_t measurement,
     }
 
     pid_cfg_t const * p_cfg = &p_pid->cfg;
+    /* Widening to 64 bits: gains and limits are int32_t and the error is
+       within +/-2 x PID_INPUT_MAX (2,000,000), so each product is below 2^53
+       and cannot overflow int64_t. */
     int64_t const i_min = (int64_t)p_cfg->out_min * PID_GAIN_SCALE;
     int64_t const i_max = (int64_t)p_cfg->out_max * PID_GAIN_SCALE;
     int32_t const error = setpoint - measurement;
@@ -79,6 +82,9 @@ pid_update (pid_ctrl_t * p_pid, int32_t setpoint, int32_t measurement,
 
     if (p_pid->b_has_prev)
     {
+        /* Both measurements are within +/-PID_INPUT_MAX, so their int32_t
+           difference cannot overflow; the product with kd is formed in 64
+           bits. */
         d_term = -((int64_t)p_cfg->kd * (measurement - p_pid->prev_meas));
     }
 

@@ -60,8 +60,8 @@ typedef struct
     size_t                 topic_length;
     size_t                 expected_length;
     size_t                 received_length;
-    bool                   receiving;
-    bool                   initialised;
+    bool                   b_receiving;
+    bool                   b_initialised;
 } service_bridge_t;
 
 /**
@@ -102,7 +102,7 @@ bool service_bridge_begin (service_bridge_t * p_bridge,
  * p_assign_letter. No callback authorises motion by itself.
  */
 service_bridge_result_t service_bridge_data (service_bridge_t * p_bridge,
-    const void * p_data, size_t data_length, bool is_last,
+    const void * p_data, size_t data_length, bool b_last,
     uint32_t received_ms);
 
 /**

@@ -52,7 +52,7 @@ scan_look_capturing (scan_look_t const * p_look)
 }
 
 void
-scan_look_start (scan_look_t * p_look, uint32_t id, int16_t angle_deg,
+scan_look_start (scan_look_t * p_look, uint32_t look_id, int16_t angle_deg,
                  uint32_t now_us, scan_look_output_t * p_out)
 {
     if ((NULL == p_look) || (NULL == p_out))
@@ -64,7 +64,7 @@ scan_look_start (scan_look_t * p_look, uint32_t id, int16_t angle_deg,
 
     if (SCAN_LOOK_IDLE == p_look->state)
     {
-        p_look->id = id;
+        p_look->id = look_id;
         p_look->angle_deg = angle_deg;
         p_look->started_us = now_us;
         p_look->since_us = now_us;
@@ -212,18 +212,18 @@ scan_look_fault (scan_look_t * p_look, scan_look_output_t * p_out)
 static uint16_t
 scan_look_median (uint16_t const * p_samples)
 {
-    uint16_t const a = p_samples[0];
-    uint16_t const b = p_samples[1];
-    uint16_t const c = p_samples[2];
-    uint16_t median = c;
+    uint16_t const s_a = p_samples[0];
+    uint16_t const s_b = p_samples[1];
+    uint16_t const s_c = p_samples[2];
+    uint16_t median = s_c;
 
-    if (((a <= b) && (b <= c)) || ((c <= b) && (b <= a)))
+    if (((s_a <= s_b) && (s_b <= s_c)) || ((s_c <= s_b) && (s_b <= s_a)))
     {
-        median = b;
+        median = s_b;
     }
-    else if (((b <= a) && (a <= c)) || ((c <= a) && (a <= b)))
+    else if (((s_b <= s_a) && (s_a <= s_c)) || ((s_c <= s_a) && (s_a <= s_b)))
     {
-        median = a;
+        median = s_a;
     }
     else
     {
