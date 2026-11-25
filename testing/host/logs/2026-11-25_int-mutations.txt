@@ -1,0 +1,28 @@
+# Integration-suite mutation check, 2026-11-25 21:29 +0800, main at f63a20a plus the S2 decision 36 change
+# Each run copies app_program, breaks one thing, rebuilds the INT suite and lists the failures. Every mutation must fail at least one case.
+
+== mutation: 60 s hold expiry restored (demo firmware behaviour)
+[HOST] INT-11 FAIL  RIGHT held through the scan, turned at 3.0 m
+[HOST] s2 integration SUMMARY 22 passed, 1 failed
+== mutation: line_q back to 48 bytes
+[HOST] INT-09 FAIL  line_q holds six reports, then refuses (180 ms at 30 ms)
+[HOST] s2 integration SUMMARY 22 passed, 1 failed
+== mutation: scan authorised before the wheels stop
+[HOST] INT-11 FAIL  scan authorised once, only with the wheels still
+[HOST] INT-14 FAIL  no route: STOP latched with cause scan
+[HOST] s2 integration SUMMARY 21 passed, 2 failed
+== mutation: STOP latch never raised
+[HOST] INT-08 FAIL  no duty while latched; wheels still within 3 s
+[HOST] INT-08 FAIL  RESET then START runs again
+[HOST] INT-12 FAIL  after restart the junction is crossed, no turn
+[HOST] s2 integration SUMMARY 20 passed, 3 failed
+== mutation: held command kept through STOP
+[HOST] INT-12 FAIL  pick-up latches STOP and drops the held command
+[HOST] INT-12 FAIL  after restart the junction is crossed, no turn
+[HOST] s2 integration SUMMARY 21 passed, 2 failed
+== mutation: junction confirmed during any mode (not only FOLLOW)
+[HOST] INT-10 FAIL  RIGHT: NAVIGATE, then following at -90 degrees
+[HOST] INT-10 FAIL  LEFT: NAVIGATE, then following at +90 degrees
+[HOST] INT-10 FAIL  U-TURN: NAVIGATE, then following back
+[HOST] INT-11 FAIL  RIGHT held through the scan, turned at 3.0 m
+[HOST] s2 integration SUMMARY 19 passed, 4 failed

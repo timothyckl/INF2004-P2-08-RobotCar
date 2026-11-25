@@ -11,9 +11,11 @@ static sim_track_t const g_cross = {1500, true, true, true, 0, 0u};
 static void int_08_remote_stop (void);
 static void int_09_line_reports (void);
 static void int_10_junction_commands (void);
+static void int_11_hold_through_scan (void);
 static void int_12_pickup_drops_command (void);
 static void int_13_barcode_records (void);
 static void int_14_scan_failure (void);
+static bool int_turned_right (void);
 static bool int_turn_to (uint8_t command, int32_t * p_heading_mdeg,
                          uint32_t * p_navigate_periods);
 static void int_send_remote (uint8_t command);
@@ -26,6 +28,7 @@ s2_integration_cases (void)
     int_08_remote_stop();
     int_09_line_reports();
     int_10_junction_commands();
+    int_11_hold_through_scan();
     int_12_pickup_drops_command();
     int_13_barcode_records();
     int_14_scan_failure();
@@ -138,6 +141,36 @@ int_10_junction_commands (void)
     sim_check(b_ok && (0u == navigate) && (abs(heading) < 5000)
               && (sim_x_mm() > (g_cross.junction_mm + 200)),
               "INT-10", "STRAIGHT: no stop, crosses the junction");
+}
+
+/* INT-11 (S3 <-> S5 through S2): RIGHT decoded 0.6 m in; an obstacle at
+   1.0 m is scanned (CLEAR after 5 s); the junction is 3.0 m in, so it is
+   reached about 70 s after the decode (on demo day the obstacle came 58 s
+   after it and the 60 s hold expired during the scan). The scan must wait
+   for the wheels to stop, and the held command must survive it. */
+static void
+int_11_hold_through_scan (void)
+{
+    sim_track_t const track = {3000, false, true, true, 1000,
+                               SCAN_TASK_RESULT_CLEAR};
+    bool b_ok;
+
+    sim_init(&track);
+    sim_start();
+    while ((sim_x_mm() < 600) && sim_running())
+    {
+        sim_step();
+    }
+    (void)s2_nav_submit(S2_NAV_RIGHT, 'O', 1u, g_sim.now_ms);
+    b_ok = sim_run_until(int_turned_right, 150000u);
+
+    sim_check((1u == g_sim.authorise_count) && g_sim.b_still_at_authorise,
+              "INT-11", "scan authorised once, only with the wheels still");
+    sim_check(g_sim.scan_periods >= (SIM_SCAN_MS / SIM_PERIOD_MS),
+              "INT-11", "SCAN mode for the whole scan");
+    sim_check(b_ok && (abs(sim_heading_mdeg() + 90000) < 20000)
+              && ((g_sim.now_ms - 1000u) > 60000u),
+              "INT-11", "RIGHT held through the scan, turned at 3.0 m");
 }
 
 /* INT-12 (S4 -> S2): a pick-up latches STOP with cause pick-up and drops
@@ -280,6 +313,14 @@ int_turn_to (uint8_t command, int32_t * p_heading_mdeg,
     *p_navigate_periods = g_sim.navigate_periods;
 
     return (b_done);
+}
+
+/* Following again after a manoeuvre that ended facing right. */
+static bool
+int_turned_right (void)
+{
+    return (sim_following() && (sim_heading_mdeg() < -60000)
+            && (g_sim.navigate_periods > 0u));
 }
 
 /* S1's START and RESET path: the bridge puts them on remote_q. */

@@ -30,8 +30,8 @@ nav_control_init (nav_control_t * p_nav, nav_control_cfg_t const * p_cfg)
     }
 
     p_nav->cfg = *p_cfg;
+    p_nav->staged_ms = 0u;
     p_nav->b_valid = (p_cfg->sensor_ahead_mm > 0u)
-                     && (p_cfg->pending_max_ms > 0u)
                      && (p_cfg->phase_limit_ms > 0u)
                      && (p_cfg->accept_mdeg > 0)
                      && (p_cfg->accept_mdeg < NAV_QUARTER_TURN_MDEG)
@@ -81,13 +81,10 @@ nav_control_step (nav_control_t * p_nav, nav_control_input_t const * p_in,
     switch (p_nav->state)
     {
         case NAV_CONTROL_PENDING:
-            if ((p_in->now_ms - p_nav->staged_ms) > p_nav->cfg.pending_max_ms)
-            {
-                nav_control_abort(p_nav);
-                p_out->outcome = NAV_CONTROL_OUT_EXPIRED;
-            }
-            else if (p_in->b_junction
-                     && (NAV_CONTROL_CMD_STRAIGHT == p_nav->command))
+            /* No time limit (S2 decision 36): the command is for the next
+               junction, wherever it is. */
+            if (p_in->b_junction
+                && (NAV_CONTROL_CMD_STRAIGHT == p_nav->command))
             {
                 nav_control_abort(p_nav);
                 p_out->outcome = NAV_CONTROL_OUT_STRAIGHT;

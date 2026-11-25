@@ -243,7 +243,7 @@ sequenceDiagram
   participant M as Motion Control
   S3->>S3: capture bar runs, decode Code 39
   S3->>C: nav_q (IF-21): letter and command
-  C->>C: hold the command for up to 60 s (nav_control.c)
+  C->>C: hold the command until the next junction (nav_control.c, S2 d36)
   S3->>C: line_q (IF-06): BOTH_BLACK reports
   C->>C: BOTH_BLACK for 100 ms confirms a junction
   C->>M: motion_q: STOP, then MOVE the axle onto the junction

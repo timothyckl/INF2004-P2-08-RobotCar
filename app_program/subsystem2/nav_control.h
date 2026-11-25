@@ -3,7 +3,11 @@
  * @brief Pure barcode-command policy: act at the next junction.
  *
  * S2 decision 26. A decoded barcode command is held until line following
- * confirms the next junction. STRAIGHT then lets the normal crossing
+ * confirms the next junction, however long that takes (S2 decision 36: a
+ * time limit expired before the junction on the course twice). A newer
+ * command replaces it; abort (STOP, not running) drops it. A scan and
+ * bypass do not: the policy is simply not stepped while they run, and
+ * line following does not confirm junctions off the line. STRAIGHT then lets the normal crossing
  * proceed. LEFT, RIGHT and UTURN stop the car, step forward so the axle
  * is on the junction (decision 20: the step subtracts the travel since the
  * junction was seen), then spin in place towards the turn until a sensor
@@ -43,7 +47,6 @@ typedef enum
     NAV_CONTROL_OUT_STARTED,    /* junction reached; manoeuvre begins */
     NAV_CONTROL_OUT_STRAIGHT,   /* STRAIGHT consumed at the junction */
     NAV_CONTROL_OUT_DONE,       /* on the new line and still */
-    NAV_CONTROL_OUT_EXPIRED,    /* no junction in time; dropped */
     NAV_CONTROL_OUT_FAILED      /* the caller must latch STOP */
 } nav_control_outcome_t;
 
@@ -57,7 +60,6 @@ typedef enum
 typedef struct
 {
     uint16_t sensor_ahead_mm;   /* front line sensors ahead of the axle */
-    uint32_t pending_max_ms;    /* a held command expires after this */
     uint32_t phase_limit_ms;    /* bound on each stop, step and spin */
     int32_t  accept_mdeg;       /* black accepted this short of the turn */
     int32_t  over_mdeg;         /* fail this far past the turn */
@@ -88,7 +90,7 @@ typedef struct
 {
     nav_control_cfg_t   cfg;
     nav_control_state_t state;
-    uint32_t            staged_ms;
+    uint32_t            staged_ms;      /* when the held command arrived */
     uint32_t            phase_ms;
     int32_t             spin_last_mdeg;
     int32_t             turned_mdeg;    /* towards the turn, accumulated */
@@ -102,6 +104,7 @@ bool nav_control_init(nav_control_t * p_nav, nav_control_cfg_t const * p_cfg);
 
 /** Hold a command for the next junction; a newer one replaces a held one.
  * Refused while a manoeuvre runs, and for NONE or unknown commands.
+ * now_ms is kept in staged_ms for the caller's log only; it never expires.
  */
 bool nav_control_stage(nav_control_t * p_nav, uint8_t command,
                        uint32_t now_ms);

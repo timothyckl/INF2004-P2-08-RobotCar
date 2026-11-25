@@ -139,13 +139,11 @@
    about 40 to 70 ms of the ~140 ms each sensor spent on the tape. */
 #define CTRL_BYPASS_SPIN_MM_S        30
 #define CTRL_BYPASS_WAIT_MS        3000u
-/* S2 decision 26: barcode command at the next junction. UNMEASURED: a held
-   command expires after 60 s (on 2026-11-17 the + after barcode F came
-   21.4 s after the decode, so 20 s was too short); each stop, step
-   and spin is bounded by 12 s (a 180 + 45 degree spin at about 30 deg/s
-   takes under 8 s). Black is accepted from 30 degrees short of the turn,
+/* S2 decision 26: barcode command at the next junction. A held command has
+   no time limit (S2 decision 36: 20 s, then 60 s, both expired before the
+   junction on the course). UNMEASURED: each stop, step and spin is bounded
+   by 12 s (a 180 + 45 degree spin at about 30 deg/s takes under 8 s). Black is accepted from 30 degrees short of the turn,
    and 45 degrees past it fails, as for the bypass align (decision 21). */
-#define CTRL_NAV_PENDING_MS       60000u
 #define CTRL_NAV_PHASE_MS         12000u
 #define CTRL_NAV_ACCEPT_MDEG      30000
 #define CTRL_NAV_OVER_MDEG        45000
@@ -225,7 +223,7 @@ static uint16_t            g_bypass_look_id;   /* last LOOK request ID */
 
 static nav_control_cfg_t const g_nav_cfg =
 {
-    CTRL_BYPASS_SENSOR_AHEAD_MM, CTRL_NAV_PENDING_MS, CTRL_NAV_PHASE_MS,
+    CTRL_BYPASS_SENSOR_AHEAD_MM, CTRL_NAV_PHASE_MS,
     CTRL_NAV_ACCEPT_MDEG, CTRL_NAV_OVER_MDEG
 };
 
@@ -302,7 +300,8 @@ static void     bypass_report (bypass_control_output_t const * p_out);
 static void     nav_receive (bool b_running, uint32_t now);
 static void     nav_update (ctrl_input_t const * p_input);
 static void     nav_send (nav_control_output_t const * p_out);
-static void     nav_report (nav_control_output_t const * p_out);
+static void     nav_report (nav_control_output_t const * p_out,
+                            uint32_t now);
 static void     line_log_mode (line_control_mode_t old_mode,
                                line_control_mode_t new_mode,
                                line_control_action_t action);
@@ -1500,7 +1499,7 @@ nav_update (ctrl_input_t const * p_input)
 
     nav_control_step(&g_nav, &inputs, &out);
     nav_send(&out);
-    nav_report(&out);
+    nav_report(&out, p_input->now_ms);
 }
 
 /* Send the requested motion command; a failure ends the run. */
@@ -1563,26 +1562,24 @@ nav_send (nav_control_output_t const * p_out)
 }
 
 static void
-nav_report (nav_control_output_t const * p_out)
+nav_report (nav_control_output_t const * p_out, uint32_t now)
 {
     switch (p_out->outcome)
     {
         case NAV_CONTROL_OUT_STARTED:
-            tm_printf((UB *)"[S2] nav: junction; stopping to turn\n");
+            /* The hold time is a wrapping uint32_t ms difference; UINT is
+               32-bit. */
+            tm_printf((UB *)"[S2] nav: junction; stopping to turn (held "
+                              "%u ms)\n", (UINT)(now - g_nav.staged_ms));
         break;
 
         case NAV_CONTROL_OUT_STRAIGHT:
-            tm_printf((UB *)"[S2] nav: junction; STRAIGHT, crossing\n");
+            tm_printf((UB *)"[S2] nav: junction; STRAIGHT, crossing (held "
+                              "%u ms)\n", (UINT)(now - g_nav.staged_ms));
         break;
 
         case NAV_CONTROL_OUT_DONE:
             tm_printf((UB *)"[S2] nav: on the new line; following\n");
-        break;
-
-        case NAV_CONTROL_OUT_EXPIRED:
-            /* CTRL_NAV_PENDING_MS is 60000, which UINT holds. */
-            tm_printf((UB *)"[S2] nav: no junction within %u ms; command "
-                              "dropped\n", (UINT)CTRL_NAV_PENDING_MS);
         break;
 
         case NAV_CONTROL_OUT_FAILED:

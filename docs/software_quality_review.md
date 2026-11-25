@@ -42,14 +42,14 @@ maintainability or documentation.
 |---|---|---|---|---|
 | F-01 | S3 | The barcode and line loop samples every **20 ms**, not 10 ms | High | **Applied** (S3 d10): 10 ms cyclic handler; car test pending |
 | F-02 | S2 | A junction is recognised only when **both** front sensors are black, so a one-sided branch reads as a curve | High | Proposal (needs a car test) |
-| F-03 | S2 | No turn started after RIGHT was decoded on demo day; the cause cannot be shown from telemetry | High | Open |
+| F-03 | S2 | No turn started after RIGHT was decoded on demo day | High | One cause found and **applied** (S2 d36): the 60 s hold expired at the obstacle; car test pending |
 | F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | Explained; proposal |
 | F-05 | S5 | Obstacle width is overstated by the ultrasonic beam (SYS-06) | Medium | Explained; proposal |
 | F-06 | S1/S2 | Telemetry carries one fault class; the detail behind the four demo motion faults was lost | Medium | Proposal |
 | F-07 | Build | Subsystems 1 to 4 were built with no warning flags | Medium | **Applied** (S2 d34) |
 | F-08 | S2 | Watchdog off in the mission image | Medium | Proposal (Tribunal 2 Entry 4) |
 | F-09 | S3 | Barcode white limits measured at the old sensor height; baseline pinned at its upper limit on demo day | Low | Proposal |
-| F-10 | S2 | A held barcode command keeps ageing during a scan and bypass | Low | Documented trade-off |
+| F-10 | S2 | A held barcode command keeps ageing during a scan and bypass | Low | **Applied** with F-03: no time limit (S2 d36) |
 | F-11 | Tools | Dashboard received every heartbeat twice | Low | **Applied** (`47a7147`) |
 | F-12 | S3 | `-fanalyzer` reports an out-of-bounds write in `s3_nav.c` | — | False positive |
 | F-13 | S3 | The letter table can change while the S3 loop reads it | Low | Safe by design; documented |
@@ -124,24 +124,28 @@ JUNCTION_CONFIRM only on `S2_LINE_BOTH_BLACK` and confirms after 100 ms
 tape, so each sits about 6 mm outside the tape. At a cross or a T, the
 crossing line covers both sensors. At a branch that leaves on one side
 while the main line carries on, only that side's sensor goes black, which
-the line follower treats as a curve; no junction is confirmed and a held
-command is never acted on. This fits the demo-day log (F-03) but is not
-proven: the course junction's shape was not recorded. *Proposal:* test the
+the line follower treats as a curve; no junction is confirmed. In the
+host integration model (INT-11) the follower then steers into the branch
+as on a curve. Since S2 decision 36 a held command is not dropped by time,
+so a missed branch means the command is used at the next confirmed
+junction instead. The course junction's shape was not recorded. *Proposal:* test the
 course junction shape on the bench with the console captured; if it is a
 one-sided branch, confirm a junction on "one sensor black for longer than
 a curve entry while the other stays on the line edge", or use a third
 sensor.
 
-**F-03 (High, open) — no turn on demo day.** In the assessed session,
-RIGHT was decoded five times but `NAVIGATE` never appeared. In the 1 Hz
-frames after each decode, the line position never read BOTH, whereas BOTH
-did appear at other times (9 frames in the practice log). The frames are
-1 s apart, so a short junction crossing could fall between them; this
-suggests, but does not prove, that no junction was confirmed while the
-command was held. The junction and hold messages are console-only. In the
-practice session, the same logic completed a U-turn (13:42:33 to 13:42:50).
-*Proposal:* add a "junction confirmed" event to telemetry (one flag bit),
-and repeat SYS-03 with the console captured.
+**F-03 (High, cause found and applied) — no turn on demo day.** In the
+assessed session RIGHT was decoded five times but `NAVIGATE` never
+appeared. Re-reading the telemetry after the demo (S2 decision 36): in both
+full runs of attempt 3 the car reached the obstacle 58 s after the decode
+(614 to 2,581 mm, then 592 to 2,589 mm), and the 60 s hold expired 2 s into
+the scan. No junction after the obstacle could therefore be turned at.
+*Applied:* the time limit is removed; a held command waits for the next
+junction and is dropped only by a newer barcode or a STOP. INT-11 runs this
+case through the real controller (and fails with the limit put back). The
+junction's position relative to the obstacle was not recorded, so F-02 may
+also have applied. Car test pending (SYS-03 with an obstacle before the
+junction).
 
 **F-17 (High, proposal) — line loss not detected.** The two front sensors
 straddle the 18 mm tape, so both white is the normal "centred" reading
@@ -188,11 +192,11 @@ overflow on 2026-11-17 (S3 test log), so the risk is not theoretical. *Proposal:
 and print the unused depth after a full SYS-01 lap; raise
 `TASK_STACK_SIZE` if any margin is under 25%.
 
-**F-10 (Low, trade-off) — command age during a bypass.**
-`nav_control_step()` runs only while following, but the 60 s hold limit
-counts from the decode. A long scan and bypass can use most of it.
-Junctions passed during BYPASS or REACQUIRE are not used, which is correct:
-the car is off the line. We keep this behaviour and record it here.
+**F-10 (Low, applied) — command age during a bypass.** The 60 s hold
+counted from the decode, so a scan and bypass used it up while the car
+could not reach a junction. Removed with F-03 (S2 decision 36). Junctions
+passed during BYPASS or REACQUIRE are still not used: line following
+confirms junctions only while following.
 
 **Coverage gaps.** `pid.c`, `odometry.c` and `motion_api.c` have 52% to 53%
 branch coverage on the host because their unit tests (S2-U03 to U14) run
@@ -392,7 +396,7 @@ consider 2.5° fine steps near each edge.
 | Single core | Since S2 d33 the mission runs on one core; about 100 min of demo-day logs show no line-loop stall (system test log) |
 
 **Hardcoded values.** We counted 33 constants marked UNMEASURED or
-PROVISIONAL in the code (for example the 60 s hold, the 12 s manoeuvre
+PROVISIONAL in the code (for example the 12 s manoeuvre
 limit, the barcode white limits). Each says so where it is defined, and the
 measured ones cite the test that set them (for example
 `S4_HEIGHT_SCALE_PERMILLE` cites S4-H08). The broker address is compiled in
@@ -414,7 +418,9 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `cc72bd2` | Removed the unused S3 command staging (F-20); S2-U77 checks that STOP drops a held command; F-18 fix kept as a patch | None (unused code; `--gc-sections` had already dropped it) | Mission UF2 byte-identical; [log](../testing/host/logs/2026-11-25_s3-nav-cleanup-and-f18-recheck.txt) |
 | `268e044` | A range comment on every cast; BARR-C naming rules 7.1e, 7.1k, 7.1m; 8.1 in test files; F-22, F-23 | None (comments and names) | Mission UF2 byte-identical; every build option 0 warnings; [log](../testing/host/logs/2026-11-25_barr-c-changes-verification.txt) |
 | `2fddf92` | F-18: 31-run captures repaired, not searched (S3 d9); S3-U03 extended, S3-U04, S3-U05; `verify_all.sh` | **Yes**: which barcode captures decode. Car test pending (SYS-02) | S3 774 checks, 0 failures, 1 known defect (F-25); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f18.txt)) |
-| (F-01 commit) | F-01: S3 loop woken by a 10 ms cyclic handler; overruns counted and dropped; filter, baseline step and `line_q` margin kept in time (S3 d10); S3-U06 | **Yes**: S3 samples every 10 ms instead of 20 ms. Car test pending (SYS-01, SYS-02) | S3 779 checks, 0 failures; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f01.txt)) |
+| `4bec493` | F-01: S3 loop woken by a 10 ms cyclic handler; overruns counted and dropped; filter, baseline step and `line_q` margin kept in time (S3 d10); S3-U06 | **Yes**: S3 samples every 10 ms instead of 20 ms. Car test pending (SYS-01, SYS-02) | S3 779 checks, 0 failures; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f01.txt)) |
+| `f63a20a` | Host integration suite for the Vehicle Controller (INT-08 to INT-14): the real controller with S1, S3, S4 and S5 interfaces on a kernel model; `controller_cycle()` extracted | None (structure only; +216 bytes for the call) | 20 integration checks pass; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-int-harness.txt)) |
+| (F-03 commit) | F-03, F-10: a held barcode command waits for the next junction with no time limit (S2 d36); INT-11 | **Yes**: a command is no longer dropped after 60 s. Car test pending (SYS-03) | S2 52/52; 23 integration checks; INT-11 fails with the limit put back ([mutations](../testing/host/logs/2026-11-25_int-mutations.txt), [log](../testing/host/logs/2026-11-25_verify-f03.txt)) |
 
 ## 10. Proposed changes not applied
 
@@ -425,7 +431,7 @@ this section said the team had decided to keep the firmware identical to
 the demonstrated image; no such decision was recorded. S2 decision 35
 records the decision to apply post-demo changes.)
 
-3. P3 (F-02, F-03): junction event in telemetry, then a bench test of the course junction; SYS-03.
+3. P3 (F-02): junction event in telemetry, then a bench test of the course junction; SYS-03.
 4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
 5. P5 (F-04): two-point hump calibration and a flat lap; SYS-04.
 6. P6 (F-05): measured beam allowance; SYS-06.

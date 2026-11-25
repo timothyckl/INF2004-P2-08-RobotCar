@@ -12,14 +12,15 @@
 #include "nav_control.h"
 
 #define TEST_NAV_AHEAD_MM   133u
-#define TEST_NAV_PENDING_MS 20000u
 #define TEST_NAV_PHASE_MS   8000u
+/* Longer than any hold limit the car has used (60 s, S2 decision 36). */
+#define TEST_NAV_LONG_MS    600000u
 #define TEST_NAV_ACCEPT     30000
 #define TEST_NAV_OVER       45000
 
 static nav_control_cfg_t const g_cfg =
 {
-    TEST_NAV_AHEAD_MM, TEST_NAV_PENDING_MS, TEST_NAV_PHASE_MS,
+    TEST_NAV_AHEAD_MM, TEST_NAV_PHASE_MS,
     TEST_NAV_ACCEPT, TEST_NAV_OVER
 };
 
@@ -34,8 +35,8 @@ static bool test_nav_spin_to(nav_control_t * p_nav,
                              nav_control_input_t * p_in, int32_t step_mdeg,
                              int32_t stop_mdeg);
 
-/* S2-U74: a command is held until a junction; STRAIGHT is consumed there;
-   an unanswered command expires; bad commands are refused. */
+/* S2-U74: a command is held until a junction, with no time limit (S2
+   decision 36); STRAIGHT is consumed there; bad commands are refused. */
 bool
 test_nav_control_hold (void)
 {
@@ -64,33 +65,35 @@ test_nav_control_hold (void)
                                         NAV_CONTROL_OUT_STRAIGHT)
                && (NAV_CONTROL_IDLE == nav.state);
 
-    /* A newer command replaces a held one; expiry drops it. */
+    /* A newer command replaces a held one, which never expires. */
     in.b_junction = false;
     b_passed = b_passed && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 0u)
                && nav_control_stage(&nav, NAV_CONTROL_CMD_RIGHT, 10u)
-               && (NAV_CONTROL_CMD_RIGHT == nav.command);
-    in.now_ms = TEST_NAV_PENDING_MS + 10u;
-    nav_control_step(&nav, &in, &out);
-    b_passed = b_passed && (NAV_CONTROL_OUT_NONE == out.outcome);
-    in.now_ms++;
-    nav_control_step(&nav, &in, &out);
-    b_passed = b_passed && (NAV_CONTROL_OUT_EXPIRED == out.outcome)
-               && (NAV_CONTROL_IDLE == nav.state);
+               && (NAV_CONTROL_CMD_RIGHT == nav.command)
+               && (10u == nav.staged_ms);
+    for (in.now_ms = 0u; in.now_ms <= TEST_NAV_LONG_MS; in.now_ms += 1000u)
+    {
+        nav_control_step(&nav, &in, &out);
+        b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_NONE, 0,
+                                            NAV_CONTROL_OUT_NONE)
+                   && (NAV_CONTROL_PENDING == nav.state);
+    }
 
-    /* Nothing held: a junction does nothing. */
-    in.b_junction = true;
-    nav_control_step(&nav, &in, &out);
-    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_NONE, 0,
-                                        NAV_CONTROL_OUT_NONE);
-
-    /* Expiry across the timer wrap. */
+    /* Held across the timer wrap too. */
     b_passed = b_passed
                && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT,
                                     UINT32_MAX - 100u);
-    in.b_junction = false;
     in.now_ms = 1000u;
     nav_control_step(&nav, &in, &out);
     b_passed = b_passed && (NAV_CONTROL_PENDING == nav.state);
+
+    /* Abort drops it; with nothing held, a junction does nothing. */
+    nav_control_abort(&nav);
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_NONE, 0,
+                                        NAV_CONTROL_OUT_NONE)
+               && (NAV_CONTROL_IDLE == nav.state);
 
     return (b_passed);
 }
@@ -311,13 +314,14 @@ test_nav_control_phase_limits (void)
     return (b_passed);
 }
 
-/* S2-U80 (post-demo test, 2026-11-25): the hold limit counts from the
-   decode, whatever happens in between. While the car scans and bypasses,
-   the controller does not step the policy (task_controller.c), so the
-   first step after a bypass may come late. A junction at exactly the
-   limit is still taken; one ms later the command has expired. A repeat
-   decode of the same command restarts the hold (it replaces the held
-   one). LEFT here; any held command behaves the same. */
+/* S2-U80 (post-demo test, 2026-11-25; redefined with S2 decision 36):
+   on demo day the car reached the obstacle 58 s after the decode both
+   times, and the 60 s hold expired during the scan. While the car scans
+   and bypasses, the controller does not step the policy
+   (task_controller.c), so the first step after a bypass may come minutes
+   later. The held command must then still be acted on at the next
+   junction; a repeat decode replaces it with the same command. LEFT here;
+   any held command behaves the same. */
 bool
 test_nav_control_hold_window (void)
 {
@@ -326,34 +330,29 @@ test_nav_control_hold_window (void)
     nav_control_output_t out;
     bool b_passed;
 
-    /* No step at all until the junction, at exactly the limit. */
+    /* Followed 58 s, then no step for a long scan and bypass. */
     test_nav_setup(&nav, &in);
     b_passed = nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 1000u);
-    in.now_ms = 1000u + TEST_NAV_PENDING_MS;
-    in.b_junction = true;
+    in.now_ms = 59000u;
     nav_control_step(&nav, &in, &out);
-    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_STOP, 0,
-                                        NAV_CONTROL_OUT_STARTED);
-
-    /* One ms later the same junction finds nothing held. */
-    test_nav_setup(&nav, &in);
-    b_passed = b_passed && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT,
-                                             1000u);
-    in.now_ms = 1000u + TEST_NAV_PENDING_MS + 1u;
-    in.b_junction = true;
-    nav_control_step(&nav, &in, &out);
-    b_passed = b_passed && (NAV_CONTROL_OUT_EXPIRED == out.outcome)
-               && (NAV_CONTROL_ACT_NONE == out.action);
-
-    /* A repeat decode restarts the hold. */
-    test_nav_setup(&nav, &in);
-    b_passed = b_passed
-               && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 1000u)
-               && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 15000u);
-    in.now_ms = 1000u + TEST_NAV_PENDING_MS + 1u;
+    b_passed = b_passed && (NAV_CONTROL_PENDING == nav.state);
+    in.now_ms = 59000u + TEST_NAV_LONG_MS;
     nav_control_step(&nav, &in, &out);
     b_passed = b_passed && (NAV_CONTROL_OUT_NONE == out.outcome)
                && (NAV_CONTROL_PENDING == nav.state);
+    in.b_junction = true;
+    nav_control_step(&nav, &in, &out);
+    b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_STOP, 0,
+                                        NAV_CONTROL_OUT_STARTED)
+               && nav_control_manoeuvring(&nav);
+
+    /* A repeat decode replaces the held command (same command). */
+    test_nav_setup(&nav, &in);
+    b_passed = b_passed
+               && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 1000u)
+               && nav_control_stage(&nav, NAV_CONTROL_CMD_LEFT, 15000u)
+               && (15000u == nav.staged_ms);
+    in.now_ms = 15000u + TEST_NAV_LONG_MS;
     in.b_junction = true;
     nav_control_step(&nav, &in, &out);
     b_passed = b_passed && test_nav_out(&out, NAV_CONTROL_ACT_STOP, 0,

@@ -297,7 +297,7 @@ IMPORT ID scan_q;
 typedef struct
 {
     uint32_t scan_id;       /* S3's unique barcode scan ID */
-    uint32_t staged_ms;     /* when S3 staged it, for expiry */
+    uint32_t staged_ms;     /* when S3 staged it (log only; no expiry) */
     uint8_t  command;       /* S2_NAV_* */
     char     symbol;        /* decoded letter, 'A'..'Z' */
     uint8_t  reserved[2];

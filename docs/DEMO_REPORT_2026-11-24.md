@@ -172,6 +172,15 @@ The shape of the demo junction was not recorded. The two short repeat runs
 ended with a pick-up stop 3 to 5 s after the decode, so they were too short
 to show a turn either way.
 
+*Post-demo analysis (2026-11-25).* The frames show one cause that does not
+depend on the console. In both full runs the car reached the obstacle 58 s
+after the decode (14:51:46 to 14:52:44, and 14:54:57 to 14:55:55), and the
+demonstrated firmware dropped a held command 60 s after the decode, so the
+command expired 2 s into each scan. No junction after the obstacle could
+have been turned at. Whether the junction was after the obstacle is not
+recorded. The firmware on `main` no longer has this limit (S2 decision 36);
+the demonstrated firmware did.
+
 **Earlier evidence.**
 
 - 17 Nov, `85bdf28`: [right turn](../testing/subsystem3/logs/2026-11-17_s3-nav-right.txt):

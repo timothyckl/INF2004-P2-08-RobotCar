@@ -14,7 +14,7 @@ been run on the car.
 
 | ID | Requirement | Problem | Proposed change | Car test needed |
 |---|---|---|---|---|
-| P3 (F-02, F-03) | FR4 | One-sided branches are not junctions; no record of why no turn happened | Junction event in telemetry first; then a bench test of the course junction | SYS-03 |
+| P3 (F-02) | FR4 | One-sided branches are not junctions (the hold time limit, part of F-03, is fixed) | Junction event in telemetry first; then a bench test of the course junction | SYS-03 |
 | P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor; software alone cannot see it | SYS-01 |
 | P5 (F-04) | FR5 | No hump reads below 6 mm; small humps read high | Two-point calibration, then review the 6 mm rise | SYS-04 with a flat lap |
 | P6 (F-05) | FR7 | Width overstated (SYS-06) | Set the beam allowance from a measured beam, and report width only when both edges are clear | SYS-06 |
@@ -42,15 +42,18 @@ the code.
 **Where.** `app_program/subsystem2/line_control.c` (junction confirmation),
 `nav_control.c`, `task_controller.c` `nav_receive()`, `nav_update()`.
 
-**What the demo logs show.** RIGHT was decoded five times in the assessed
-session and the car never entered NAVIGATE. In the 1 Hz frames after each
-decode the line position never read BOTH, while BOTH frames appear at other
-times. The practice session completed a U-turn with the same logic. The
-held command lasts 60 s from the decode and the policy is not stepped
-during a scan or bypass (S2-U80); the hold, the junction confirmation and
-any expiry are printed only on the USB console, which was not captured.
-**The cause of the missing turn is therefore not established**, and we do
-not claim that the command expired.
+**What is already done.** The demo-day telemetry shows the held RIGHT
+expired 2 s into the obstacle stop in both assessed runs (58 s from the
+decode), so no junction after the obstacle could be turned at. That limit
+is removed (S2 decision 36) and INT-11 tests the case. Whether the course
+junction came before or after the obstacle is not in the logs, so a
+one-sided junction (below) may also have played a part.
+
+**Model evidence.** In the host integration model (INT-11), a junction
+whose branch leaves to the right while the line carries on is first seen
+as "sustained RIGHT": the follower steers into the branch as on a curve
+before both sensors go black. That is the behaviour described below; it
+was not measured on the car.
 
 **Design limitation.** A junction is confirmed only when both front
 sensors read black for 100 ms. The sensors are 30 mm apart over 18 mm tape.

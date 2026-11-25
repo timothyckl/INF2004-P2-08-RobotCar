@@ -787,7 +787,8 @@ deferred.
 The Line Sensor sends each mapped command once on `nav_q`
 (`s2_nav_request_t`). The controller holds it while following, a newer
 command replacing an older one, and drops it after 60 s without a
-junction, or at once if the car is not running. The junction is the
+junction, or at once if the car is not running. *(The 60 s limit was
+removed on 2026-11-25, decision 36.)* The junction is the
 existing both-black confirmation (`line_control`, JUNCTION_CONFIRM to
 CROSSING). There, `nav_control`:
 
@@ -1104,6 +1105,54 @@ option with no warnings, static analysis, BARR-C checkers, evidence hashes)
 before it is committed. A change that alters what the car does is marked
 "car test pending" until it has been run on the car; host tests are not
 evidence that the robot works.
+
+### 36. A held barcode command waits for the next junction, with no time limit (2026-11-25)
+
+Approved by Dalton on 2026-11-25 (decision 35). Post-demo change; revises
+the hold limit of decision 26.
+
+**Evidence.** Decision 26 dropped a held command after 20 s, then 60 s
+after a held LEFT expired 1.3 s before its junction on 2026-11-17. The
+demo-day telemetry ([dashboard log 2](../testing/system/logs/2026-11-24_demo-dashboard-2.jsonl),
+attempt 3) shows the 60 s limit failing the same way:
+
+| Run | RIGHT decoded | Obstacle stop (mode SCAN) | Hold expired | Back to FOLLOW |
+|---|---|---|---|---|
+| Before the lift | 14:51:46, 614 mm from START | 14:52:44, 2,581 mm | 14:52:46, during the scan | 14:53:08 |
+| After the restart | 14:54:57, 592 mm | 14:55:55, 2,589 mm | 14:55:57, during the scan | 14:56:25 |
+
+Both times the car took 58 s at line speed from the barcode to the
+obstacle, and the hold ran out 2 s into the stop. So no junction after the
+obstacle could have been turned at in the assessed session. Whether the
+course junction came before or after the obstacle is not in the logs (no
+BOTH frame appears in the 58 s, but frames are 1 s apart), so this is one
+confirmed cause, not proof that it was the only one (F-02 may also apply).
+
+**Decision.** The time limit is removed (`pending_max_ms`,
+`CTRL_NAV_PENDING_MS` and the EXPIRED outcome are gone). Decision 26's rule
+is "the next junction", and a clock cannot know where that is: line speed,
+softened curves, scans and bypasses all change how long the car takes. A
+held command now ends only when it is used at the next confirmed junction,
+replaced by a newer barcode, or dropped by abort (any STOP, a pick-up,
+leaving RUNNING). A scan and bypass leave it held; junction confirmation
+runs only while following (`line_step()` resets line following in any
+other mode), so a crossing seen during a bypass is never taken for the
+junction. When a turn starts, the console prints how long the command was
+held.
+
+**Risk.** A command whose junction is missed (for example a one-sided
+branch, F-02) is acted on at a later junction instead of expiring. Without
+the limit that is a wrong turn rather than none; with it, the right turn
+was impossible after any obstacle. The pick-up and STOP rules still clear
+it between attempts.
+
+**Verification.** S2-U74 (held 600 s, across the timer wrap, dropped by
+abort) and S2-U80 (no policy step for 600 s, as in a scan and bypass, then
+the turn) on the host; INT-11 runs the demo case through the real
+controller: RIGHT decoded 0.6 m in, a 5 s scan at 1.0 m, the junction at
+3.0 m reached 61 s after the decode, and the car turns right. With the
+60 s limit put back, INT-11 fails. Car test pending: SYS-03 with an
+obstacle between the barcode and the junction.
 
 ## Subsystem 3 — Line Following and Barcodes (Edmund)
 

@@ -106,7 +106,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 
 | Item | Detail |
 |---|---|
-| Requirement | Hold LEFT, RIGHT, STRAIGHT or U-TURN for up to 60 s; act at the next confirmed junction with encoder-based turns; an unmapped letter never turns |
+| Requirement | Hold LEFT, RIGHT, STRAIGHT or U-TURN until the next confirmed junction (no time limit since S2 decision 36; dropped by STOP or pick-up) and act there with encoder-based turns; an unmapped letter never turns |
 | Owner / design | S2, S3; S2 d26, d27; S1 d6 (letters set over MQTT) |
 | Source | `subsystem2/nav_control.c` `nav_control_stage()`, `nav_control_step()`; `subsystem2/task_controller.c` `nav_receive()`, `nav_update()`; `subsystem2/line_control.c` (junction confirmation); `subsystem3/s3_nav.c` `s3_nav_command()`, `s3_nav_set_letter()` |
 | Tests | S2-U58, U74 to U77, U79, U80 (host); INT (letters over MQTT, 2026-11-23); SYS-03 |
