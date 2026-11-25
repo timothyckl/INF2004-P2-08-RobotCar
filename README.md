@@ -24,7 +24,7 @@ a row says otherwise. The demo evidence is unchanged.
 
 | Mission requirement | Result | Evidence |
 |---|---|---|
-| Line following | Pass: 3 laps (SYS-01); the loop samples every 20 ms, not the required 10 ms (FR2 Partial, F-01) | [system test log](testing/system/TEST_LOG.md) |
+| Line following | Pass: 3 laps (SYS-01). The demo loop sampled every 20 ms, not the required 10 ms (F-01); post-demo: 10 ms cyclic period, car test pending | [system test log](testing/system/TEST_LOG.md) |
 | Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; one double fault remains (F-25); car test pending | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
 | Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion) | D-03 |
@@ -61,7 +61,7 @@ failures, is kept in the test logs.
 | W1 Embedded systems fundamentals | A Cortex-M0+ at 133 MHz with 264 KB SRAM and no FPU, so all maths is integer or fixed point; hard timing (10 ms motion loop, STOP to motors off in under 1 ms, S2-H11); safety by design (latched STOP, stop before scan); measured flash, RAM and a static stack estimate ([architecture](docs/final_architecture.md) §8) |
 | W2.1 GPIO, W2.2 Interrupts | Encoder and echo ISRs with sequence counters and a ring buffer; one shared GPIO dispatcher ([architecture](docs/final_architecture.md) §7, [BARR-C](docs/barr_c_compliance.md) §3) |
 | W3.1 Digital communication | I2C to the LSM303DLHC; MQTT binary telemetry ([data widths](docs/data_widths.md)) |
-| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; the 10 ms tick behind the 20 ms barcode sampling (review F-01, proposal P1) ([architecture](docs/final_architecture.md) §7) |
+| W3.2 Timers | 10 ms cyclic Motion Control, 1 µs timestamps, 20 kHz motor and 50 Hz servo PWM; a 10 ms cyclic S3 loop since the post-demo fix of the 20 ms barcode sampling (review F-01) ([architecture](docs/final_architecture.md) §7) |
 | W3.3 ADC | 12-bit line and barcode sensing on ADC0–2 with adaptive white baselines and hysteresis (`s3_ir.c`, `s3_barcode.c`; [architecture](docs/final_architecture.md) §6, §7) |
 | W4.1 Embedded OS | µT-Kernel tasks and priorities, mutexes with priority inheritance, event flags for urgent stops, message buffers for commands and reports ([architecture](docs/final_architecture.md) §2, §3) |
 | W4.2 State machines | Vehicle Controller and mode statecharts ([architecture](docs/final_architecture.md) §4), with the transitions tested on the host (S2-U41 to U52, U78) |

@@ -86,8 +86,8 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Tests | S2-U57 to U59, U73 (host); S3 host checks (765); S3-H01, H02, H04; SYS-01 |
 | Criterion | 3 laps, no wheel leaves the track, no STOP before the lift |
 | Result | SYS-01 **Pass** on 2026-11-20 (3 laps of 2 min 8 s to 2 min 15 s). Demo: followed the line in every attempt |
-| Status | **Partial**: line following passed on the car (SYS-01), but the requirement's 10 ms sampling is not met: the loop runs every 20 ms (F-01, proposal P1) |
-| Limitations | The requirement says sensors are read every 10 ms; the loop actually runs every 20 ms because of the 10 ms kernel tick ([review](software_quality_review.md) F-01). A line report still goes out at once when the position changes. Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
+| Status | **Partial**: line following passed on the car (SYS-01) with the demo firmware, whose loop ran every 20 ms (F-01). The 10 ms cyclic period is implemented after the demo (S3 decision 10, S3-U06); car test pending |
+| Limitations | In the demo firmware the loop ran every 20 ms because `tk_dly_tsk()` adds one 10 ms tick ([review](software_quality_review.md) F-01); the post-demo cyclic period has not yet run on the car. A line report still goes out at once when the position changes. Lap telemetry covers lap 1 and part of lap 2 (hotspot carried out of range). Lighting was not recorded. The left sensor needed re-adjustment twice on 2026-11-20 (S3-H01) |
 
 ### FR3 — decode Code 39 barcodes
 
@@ -100,7 +100,7 @@ test logs. "Demo" means the assessed runs of 2026-11-24
 | Criterion | ≥ 4 of 5 passes per barcode, no wrong letter |
 | Result | 2026-11-17: 4/4 and 2/2 F reads. Demo: 1 of 3 attempts decoded; no wrong letter. Host: every single misread element corrected or rejected; a steady speed change of 0.4 to 2.5 times across one code still decodes; in the demo firmware a single 20 ms blip inside the code gave a wrong letter in 25 of 234 synthetic cases (F-18). Post-demo fix (S3 decision 9): 0 wrong and 0 rejected over 4,524 blip cases (S3-U03), the 19 logged car captures unchanged (S3-U05); a damaged end plus a blip still gives a wrong letter in 39 of 702 cases (F-25, S3-U04) |
 | Status | **Partial**: decoding works and never gave a wrong letter on the car, but did not reach 4 of 5. F-18 is fixed after the demo (implemented, car test pending); F-25 (a double fault) remains a known defect on the host |
-| Limitations | Bar timings have 20 ms resolution (F-01), coarse for small prints. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
+| Limitations | In the demo firmware bar timings had 20 ms resolution (F-01), coarse for small prints; 10 ms after the post-demo change, car test pending. Small prints need the sensor close to the floor (demo day). Sensor height, print size and paper condition were not recorded for most runs |
 
 ### FR4 — carry out the barcode command at the next junction
 
@@ -371,7 +371,7 @@ fill it in afterwards.
 | SYS-09 never passed | No proof of a full autonomous course | Full-course runs with the console captured |
 | SYS-02 below 4 of 5 | Barcode reliability not shown | 5 passes per print with sensor height and print condition recorded; 10 ms sampling first ([P1](post_demo_proposals.md)) |
 | A damaged end plus a noise blip can give a wrong letter (F-25, S3-U04 known defect; the single-blip case F-18 was fixed after the demo) | "Never a wrong letter" is shown for single faults, not for every double fault | None: a 29-run capture cannot tell a blip from a genuine short element (S3 decision 9) |
-| FR2 sampling at 20 ms, not 10 ms (F-01) | FR2 not met as written | [P1](post_demo_proposals.md), then re-measure bar durations |
+| FR2 sampling at 20 ms, not 10 ms (F-01) | FR2 not met by the demo firmware | Fixed after the demo (S3 d10); re-measure bar durations on the car |
 | A car fully off the line reads as centred (F-17) | Line loss is not detected, so FR11's line-loss STOP cannot trigger | Sensor layout change ([P4](post_demo_proposals.md)) |
 | SYS-03 12-run set never run | Turn reliability not shown | 3 runs per command, console captured |
 | SYS-04 flat lap not run | False humps on a flat lap not excluded | One flat lap |
@@ -391,7 +391,7 @@ against each, with where the evidence is:
 | Successful completion of mission objectives | Each mission element worked on the car at least once (sections 2 and 4) | Partial | No full-course run (SYS-09); no turn in the assessed runs |
 | Navigation accuracy | Straight 500 mm worst +10 mm; 90° turns inside ±5°; U-turn inside ±10° (S2-H10, small samples) | Partial | Few runs per motion; angles judged by eye |
 | Obstacle avoidance effectiveness | SYS-07 3/3; demo attempt 3 with no contact | Pass on the formal test | Attempts 1 and 2 of the demo did not complete the bypass |
-| Barcode recognition reliability | No wrong letter seen on the car; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling (F-01); the noise-blip wrong letter (F-18) fixed after the demo, car test pending; double fault F-25 remains |
+| Barcode recognition reliability | No wrong letter seen on the car; 4/4 and 2/2 drives on 17 Nov; 1 of 3 attempts on demo day | Partial | Below 4 of 5; 20 ms sampling in the demo firmware (F-01, fixed after the demo, car test pending); the noise-blip wrong letter (F-18) fixed after the demo, car test pending; double fault F-25 remains |
 | Hump measurement capability | A hump detected on every assessed attempt (crossing count not checked); within our ±2 mm criterion on every recorded run | Partial | 6 mm minimum reading; no flat lap |
 | System robustness | Latched STOP, fault paths and recovery seen on the car; host fault injection; a failing or crashing host test fails the build; [fault table](tribunal_closure.md) | Partial | Line loss and task stalls not detected (F-17, F-08); stack margins calculated, not measured (F-24) |
 | Software design quality | Pure logic modules tested on the host; single PWM writer; event flags for STOP; 0 warnings under strict flags; a range comment on every cast; [review](software_quality_review.md), [BARR-C](barr_c_compliance.md) | Strong | 13 functions over 100 lines (task loops and state machines) |

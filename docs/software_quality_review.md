@@ -40,7 +40,7 @@ maintainability or documentation.
 
 | ID | Subsystem | Finding | Severity | Status |
 |---|---|---|---|---|
-| F-01 | S3 | The barcode and line loop samples every **20 ms**, not 10 ms | High | Proposal |
+| F-01 | S3 | The barcode and line loop samples every **20 ms**, not 10 ms | High | **Applied** (S3 d10): 10 ms cyclic handler; car test pending |
 | F-02 | S2 | A junction is recognised only when **both** front sensors are black, so a one-sided branch reads as a curve | High | Proposal (needs a car test) |
 | F-03 | S2 | No turn started after RIGHT was decoded on demo day; the cause cannot be shown from telemetry | High | Open |
 | F-04 | S4 | No hump can read below 6 mm; small humps read high | Medium | Explained; proposal |
@@ -252,26 +252,23 @@ synthetic cases, with the demo decoder and the fix alike. Such a capture
 has the right run count for a valid frame, so the blip cannot be found by
 count; finding it by length was tried and turned 63 of 468 frames with one
 blurred narrow element into wrong letters. It is a double fault, it stays a
-known defect in S3-U04, and the remedy is fewer blips (sensor height, P1).
+known defect in S3-U04, and the remedy is fewer blips (sensor height).
 
-**F-01 (High, proposal) — 20 ms sampling.** `s3_follow_run()` loops with
-`tk_dly_tsk(10)`, but the kernel tick (`CNF_TIMER_PERIOD`) is 10 ms, so the
-delay takes two ticks. Every one of the 953 bar durations logged on the car
-(629 on 2026-11-17, 324 on demo day) lies within 1 ms of a multiple of
-20 ms. Bar timings therefore have a resolution of 20 ms, which is 0.8 mm at
-40 mm/s. For the large print (narrow runs 120 to 220 ms) that is a 9% to
-17% error, which the decoder tolerates. In the demo-day
-console log (small and large prints together), 99 of the 324 logged runs
-are under 100 ms and 30 last only one or two samples (19 to 39 ms); for
-those, one sample more or less changes the run by 50% to 100%, enough to
-turn a narrow element into a wide one. FR2's "every
-10 ms" is also not met in practice. A line report still goes out as soon
-as the position changes; only the repeat of an unchanged position comes
-every 40 ms instead of 30 ms, well inside the 100 ms freshness and 500 ms
-watchdog limits. *Proposal:* drive the loop from a cyclic handler (as
-Motion Control does) or wake it on a 10 ms semaphore; then re-run SYS-02
-with both prints. Not applied: it changes the timing of the demonstrated
-line follower.
+**F-01 (High, applied) — 20 ms sampling.** `s3_follow_run()` looped with
+`tk_dly_tsk(10)`. µT-Kernel adds one tick to every delay, so on the 10 ms
+tick the delay took two ticks. Every one of the 953 bar durations logged on
+the car (629 on 2026-11-17, 324 on demo day) lies within 1 ms of a multiple
+of 20 ms. Bar timings therefore had a resolution of 20 ms, 0.8 mm at
+40 mm/s: a 9% to 17% error for the large print's narrow runs (120 to
+220 ms), but for the 30 demo-day runs of one or two samples, one sample
+more or less changed the run by 50% to 100%. FR2's "every 10 ms" was not
+met. *Applied* (S3 decision 10): a 10 ms cyclic handler wakes the loop, as
+in Motion Control, whose logs show that pattern holding 10 ms on this
+board. Wake-ups queued during a slow pass are counted as overruns and
+dropped. The steering filter (60 ms), the white-baseline step (160 ms) and
+the `line_q` stall margin keep the values that ran on the car; S3-U06
+checks the baseline step is time-based. Car test pending (SYS-01, SYS-02,
+and the loop's own `s3 loop:` timing line).
 
 **F-09 (Low) — barcode white limits.** `S3_BARCODE_MINIMUM_WHITE` 154 and
 `S3_BARCODE_MAXIMUM_WHITE` 184 were measured at the sensor's old height.
@@ -416,7 +413,8 @@ be set over MQTT, and the scan and bypass work from measurements.
 | `032437c` | Range comments for every narrowing cast (BARR-C 1.6a) | None (comments only) | Mission UF2 byte-identical |
 | `cc72bd2` | Removed the unused S3 command staging (F-20); S2-U77 checks that STOP drops a held command; F-18 fix kept as a patch | None (unused code; `--gc-sections` had already dropped it) | Mission UF2 byte-identical; [log](../testing/host/logs/2026-11-25_s3-nav-cleanup-and-f18-recheck.txt) |
 | `268e044` | A range comment on every cast; BARR-C naming rules 7.1e, 7.1k, 7.1m; 8.1 in test files; F-22, F-23 | None (comments and names) | Mission UF2 byte-identical; every build option 0 warnings; [log](../testing/host/logs/2026-11-25_barr-c-changes-verification.txt) |
-| (F-18 commit) | F-18: 31-run captures repaired, not searched (S3 d9); S3-U03 extended, S3-U04, S3-U05; `verify_all.sh` | **Yes**: which barcode captures decode. Car test pending (SYS-02) | S3 774 checks, 0 failures, 1 known defect (F-25); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f18.txt)) |
+| `2fddf92` | F-18: 31-run captures repaired, not searched (S3 d9); S3-U03 extended, S3-U04, S3-U05; `verify_all.sh` | **Yes**: which barcode captures decode. Car test pending (SYS-02) | S3 774 checks, 0 failures, 1 known defect (F-25); all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f18.txt)) |
+| (F-01 commit) | F-01: S3 loop woken by a 10 ms cyclic handler; overruns counted and dropped; filter, baseline step and `line_q` margin kept in time (S3 d10); S3-U06 | **Yes**: S3 samples every 10 ms instead of 20 ms. Car test pending (SYS-01, SYS-02) | S3 779 checks, 0 failures; all suites, builds 0 warnings ([log](../testing/host/logs/2026-11-25_verify-f01.txt)) |
 
 ## 10. Proposed changes not applied
 
@@ -427,7 +425,6 @@ this section said the team had decided to keep the firmware identical to
 the demonstrated image; no such decision was recorded. S2 decision 35
 records the decision to apply post-demo changes.)
 
-1. P1 (F-01): 10 ms sampling from a cyclic handler; SYS-01, SYS-02.
 3. P3 (F-02, F-03): junction event in telemetry, then a bench test of the course junction; SYS-03.
 4. P4 (F-17): a centre line sensor; software alone cannot tell "centred" from "lost".
 5. P5 (F-04): two-point hump calibration and a flat lap; SYS-04.

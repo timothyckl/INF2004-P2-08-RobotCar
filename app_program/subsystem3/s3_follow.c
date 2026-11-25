@@ -5,6 +5,13 @@
  * Moved unchanged in behaviour from the S3_LINE_TEST trial in
  * subsystem3_test.c, so the normal firmware runs the mission (S2
  * decision 28). Runs in the initial task, as the trial did.
+ *
+ * Period: S3_IR_SAMPLE_MS (10 ms) from a cyclic handler that wakes the
+ * loop, as Motion Control and the Obstacle Scan task do (S3 decision 10).
+ * The loop used to sleep with tk_dly_tsk(10); the kernel adds one tick to
+ * every delay, so a pass really came every 20 ms (F-01). Wake-ups that
+ * arrive while a pass is still running are counted as overruns and
+ * dropped, so a slow pass never causes a burst of catch-up passes.
  */
 #include "s3_follow.h"
 
@@ -37,11 +44,18 @@ static volatile uint32_t g_s3_line_loops = 0u;
 #endif
 
 #define S3_LINE_READY_POLL_MS        20u
-#define S3_LINE_FILTER_SAMPLES        3u
 #define S3_LINE_READY_LIMIT_MS     5000u
-#define S3_LINE_SAMPLE_MS            10u
+/* A front-sensor pattern must hold this long before it is reported: the
+ * 60 ms that line following ran with on the car (3 samples at the real
+ * 20 ms period, F-01), kept when sampling moved to 10 ms. */
+#define S3_LINE_FILTER_MS            60u
+#define S3_LINE_FILTER_SAMPLES     (S3_LINE_FILTER_MS / S3_IR_SAMPLE_MS)
 #define S3_LINE_REPORT_MS            30u
 #define S3_LINE_LOG_MS              500u
+/* Guard on the period wait: a lost wake-up costs one late pass, never a
+ * stopped loop. Five periods. */
+#define S3_LINE_WAKE_LIMIT_MS        50
+#define S3_LINE_TIMING_LOG_MS     10000u
 #define S3_LEFT_INITIAL_WHITE       136u
 #define S3_LEFT_MINIMUM_WHITE        96u
 #define S3_LEFT_MAXIMUM_WHITE       168u
@@ -56,11 +70,33 @@ static volatile uint32_t g_s3_line_loops = 0u;
 #define S3_RIGHT_WHITE_MARGIN       350u
 #define S3_RIGHT_BLACK_REFERENCE   3300u
 
+typedef char s3_line_filter_fits_t[
+    ((0u == (S3_LINE_FILTER_MS % S3_IR_SAMPLE_MS))
+     && (S3_LINE_FILTER_SAMPLES >= 1u)
+     && (S3_LINE_FILTER_SAMPLES <= UINT8_MAX)) ? 1 : -1];
+
+/* Loop timing, kept by the S3 loop only (no other task reads it). */
+typedef struct
+{
+    uint32_t pass_start_us;     /* TIMERAWL when the current pass woke */
+    uint32_t worst_pass_us;     /* longest pass since the loop started */
+    uint32_t overruns;          /* periods lost to a pass still running */
+    uint32_t late_wakes;        /* waits that ended on the guard time-out */
+    uint32_t last_log_ms;
+    bool     b_started;         /* pass_start_us is valid */
+} s3_follow_timing_t;
+
 static UB const g_s3_white[] = "WHITE";
 static UB const g_s3_black[] = "BLACK";
 
+/* The task the period handler wakes; written once before it starts. */
+static ID g_s3_follow_tid = 0;
+
 static void s3_follow_barcode_sample(s3_barcode_t * p_barcode,
                                      bool * p_read_failed);
+static bool s3_follow_start_period(void);
+static void s3_follow_cyclic(void * p_exinf);
+static void s3_follow_wait_period(s3_follow_timing_t * p_timing);
 static bool s3_follow_wait_ready(void);
 static uint32_t s3_follow_now_ms(void);
 static bool s3_follow_line_position(s3_line_t line, uint8_t * p_position);
@@ -89,6 +125,7 @@ s3_follow_run (void)
     s3_ir_adaptive_t right_state = {0};
     s3_barcode_t barcode = {0};
     s3_filter_t filter = {0};
+    s3_follow_timing_t timing = {0};
     uint32_t last_report_ms = 0u;
     uint32_t last_log_ms = 0u;
     uint8_t last_position = UINT8_MAX;
@@ -113,6 +150,13 @@ s3_follow_run (void)
         return;
     }
 
+    if (!s3_follow_start_period())
+    {
+        tm_printf((UB *)"s3 line: period handler not created; STOP\n");
+        (void)s2_line_stop();
+        return;
+    }
+
     tm_printf((UB *)"s3 line: place the car on the line, then press GP20 "
                     "to START or STOP\n");
     tm_printf((UB *)"s3 line: adaptive AO left=GP26 right=GP27\n");
@@ -125,6 +169,7 @@ s3_follow_run (void)
 
     for (;;)
     {
+        s3_follow_wait_period(&timing);
         S3_LINE_LOOP_DONE();    /* each pass, for the stall watcher */
 
         s3_ir_adc_sample_t sample = {0u, 0u};
@@ -143,7 +188,6 @@ s3_follow_run (void)
                 (void)s2_line_stop();
                 b_read_failed = true;
             }
-            (void)tk_dly_tsk(S3_LINE_SAMPLE_MS);
             continue;
         }
         b_read_failed = false;
@@ -160,9 +204,11 @@ s3_follow_run (void)
             black_mask |= S3_IR_RIGHT_MASK;
         }
 
-        if (!s3_ir_filter(&filter, black_mask, S3_LINE_FILTER_SAMPLES))
+        /* S3_LINE_FILTER_SAMPLES is 6; s3_line_filter_fits_t keeps it
+           within uint8_t. */
+        if (!s3_ir_filter(&filter, black_mask,
+                          (uint8_t)S3_LINE_FILTER_SAMPLES))
         {
-            (void)tk_dly_tsk(S3_LINE_SAMPLE_MS);
             continue;
         }
 
@@ -171,7 +217,6 @@ s3_follow_run (void)
         {
             tm_printf((UB *)"s3 line: invalid line decision; STOP\n");
             (void)s2_line_stop();
-            (void)tk_dly_tsk(S3_LINE_SAMPLE_MS);
             continue;
         }
 
@@ -239,8 +284,6 @@ s3_follow_run (void)
                 last_report_ms = now_ms;
             }
         }
-
-        (void)tk_dly_tsk(S3_LINE_SAMPLE_MS);
     }
 }
 
@@ -339,6 +382,89 @@ s3_follow_barcode_sample (s3_barcode_t * p_barcode, bool * p_read_failed)
     else
     {
         /* No capture finished in this period. */
+    }
+}
+
+/* Create and start the period handler that wakes this loop. */
+static bool
+s3_follow_start_period (void)
+{
+    T_CCYC ccyc = {0};
+
+    g_s3_follow_tid = tk_get_tid();
+    ccyc.cycatr = TA_HLNG | TA_STA;
+    /* FP is the kernel's generic handler type; the cast changes only the
+       pointer type. */
+    ccyc.cychdr = (FP)s3_follow_cyclic;
+    ccyc.cyctim = S3_IR_SAMPLE_MS;
+    ccyc.cycphs = S3_IR_SAMPLE_MS;
+
+    return ((g_s3_follow_tid > 0) && (tk_cre_cyc(&ccyc) >= E_OK));
+}
+
+/* Cyclic handler, every S3_IR_SAMPLE_MS: wake the loop. */
+static void
+s3_follow_cyclic (void * p_exinf)
+{
+    (void)p_exinf;
+
+    if (g_s3_follow_tid > 0)
+    {
+        (void)tk_wup_tsk(g_s3_follow_tid);
+    }
+}
+
+/*
+ * End one pass and wait for the next period. Wake-ups queued while the
+ * pass ran are periods it overran: they are counted and dropped, so the
+ * next pass starts on the next period boundary. The worst pass time and
+ * both counters are printed every S3_LINE_TIMING_LOG_MS.
+ */
+static void
+s3_follow_wait_period (s3_follow_timing_t * p_timing)
+{
+    /* TIMERAWL is the 32-bit low word of the 1 MHz timer (UW): same
+       width, no value changes. */
+    uint32_t const end_us = (uint32_t)in_w(TIMER_TIMERAWL);
+    /* Before the first pass, wake-ups queued during start-up are not
+       overruns; they are dropped all the same. */
+    INT const queued = tk_can_wup(TSK_SELF);
+    uint32_t now_ms;
+
+    if (p_timing->b_started)
+    {
+        /* Modulo 2^32 difference: correct across the timer wrap. */
+        uint32_t const pass_us = end_us - p_timing->pass_start_us;
+
+        p_timing->worst_pass_us = (pass_us > p_timing->worst_pass_us)
+                                  ? pass_us : p_timing->worst_pass_us;
+
+        if (queued > 0)
+        {
+            /* queued is a positive wake-up count, which uint32_t holds;
+               the counter would need over a year of overruns to wrap. */
+            p_timing->overruns += (uint32_t)queued;
+        }
+    }
+
+    if (E_TMOUT == tk_slp_tsk(S3_LINE_WAKE_LIMIT_MS))
+    {
+        p_timing->late_wakes++;
+    }
+
+    /* As above: the 32-bit timer word, unchanged. */
+    p_timing->pass_start_us = (uint32_t)in_w(TIMER_TIMERAWL);
+    p_timing->b_started = true;
+
+    now_ms = s3_follow_now_ms();
+    if ((now_ms - p_timing->last_log_ms) >= S3_LINE_TIMING_LOG_MS)
+    {
+        /* Counters and the pass time (us) are uint32_t; UINT is 32-bit. */
+        tm_printf((UB *)"s3 loop: period %u ms, worst pass %u us, "
+                        "overruns %u, late wakes %u\n",
+                  (UINT)S3_IR_SAMPLE_MS, (UINT)p_timing->worst_pass_us,
+                  (UINT)p_timing->overruns, (UINT)p_timing->late_wakes);
+        p_timing->last_log_ms = now_ms;
     }
 }
 

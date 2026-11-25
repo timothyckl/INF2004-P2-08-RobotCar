@@ -14,7 +14,6 @@ been run on the car.
 
 | ID | Requirement | Problem | Proposed change | Car test needed |
 |---|---|---|---|---|
-| P1 (F-01) | FR2, FR3 | S3 loop runs every 20 ms, not 10 ms | Cyclic handler wakes the loop every 10 ms | SYS-01, SYS-02 |
 | P3 (F-02, F-03) | FR4 | One-sided branches are not junctions; no record of why no turn happened | Junction event in telemetry first; then a bench test of the course junction | SYS-03 |
 | P4 (F-17) | FR11 | A car fully off the line reads as centred | Hardware: a centre sensor; software alone cannot see it | SYS-01 |
 | P5 (F-04) | FR5 | No hump reads below 6 mm; small humps read high | Two-point calibration, then review the 6 mm rise | SYS-04 with a flat lap |
@@ -30,7 +29,6 @@ the code.
 
 | ID | Complexity | Timing, memory, CPU | Host evidence today | What blocks it now |
 |---|---|---|---|---|
-| P1 | Small: one cyclic handler and one semaphore in `s3_follow.c` | Loop runs twice as often; its worst-case time is not measured, so its CPU share is unknown. No new buffers | S3-U02, U03 already sample at 10 ms | Changes line following; needs SYS-01 and SYS-02 on the car |
 | P3 | Step 1 is P8; step 3 is unknown until the bench test | — | S2-U58, U74 to U80 | Junction shape unknown; needs a bench drive with the console captured |
 | P4 | Hardware: one sensor, one ADC input. No free ADC input is left (ADC3/GP29 is the radio), so it needs a digital sensor on a spare GPIO or a multiplexer | One more read per S3 pass | None | Needs new hardware and wiring |
 | P5 | Small in code (two constants and one formula); most of the work is measurement | None | S4-U41, U42 | Needs reference humps and a flat lap on the car |
@@ -38,62 +36,6 @@ the code.
 | P7 | Medium: a check-in word shared by four tasks | One word under the existing mutex; a few instructions per cycle | None | A wrong timeout resets the car mid-run; needs one armed run first (S2 d28) |
 | P8 | Medium: encoder, decoder, dashboard and golden frame | +1 byte per frame (8 bit/s) | S1-U05 pattern | Changes the frame format; dashboard and SYS-08 must be re-run |
 | P9 | Process, no code | — | — | Needs the course and track time |
-
-## P1 — 10 ms sampling for the line and barcode loop (F-01)
-
-**Where.** `app_program/subsystem3/s3_follow.c`, `s3_follow_run()`;
-`S3_LINE_SAMPLE_MS` (10); kernel tick `CNF_TIMER_PERIOD` (10 ms,
-`config/config.h`).
-
-**Current behaviour.** The loop ends each pass with
-`tk_dly_tsk(S3_LINE_SAMPLE_MS)`. µT-Kernel rounds a delay up to whole
-ticks and starts counting at the next tick, so a 10 ms delay on a 10 ms
-tick lasts between 10 and 20 ms, plus the loop's own run time. All 953 bar
-durations logged on the car (629 on 2026-11-17, 324 on 2026-11-24) are
-within 1 ms of a multiple of 20 ms, so the loop actually runs every 20 ms.
-The IMU task, which uses the same pattern, was measured at about 21 ms per
-sample (S4 decision 12 note).
-
-**What sampling the barcodes need.** Bar timings are measured to the
-sampling period, so each element should span at least about three samples
-for one sample of error to stay near a third of its length:
-
-| Quantity | Formula | 20 ms (now) | 10 ms (proposed) |
-|---|---|---|---|
-| Travel per sample at 40 mm/s | v × T | 0.8 mm | 0.4 mm |
-| Shortest reliable narrow element (3 samples) | 3 × v × T | 2.4 mm | 1.2 mm |
-| Large print narrow element (runs 120–220 ms, 2026-11-11) | | 4.8–8.8 mm: 6–11 samples, fine | 12–22 samples |
-| Demo-day console: runs of one or two samples | | 30 of 324 runs (19–39 ms) | would be two to four samples |
-
-The optics set a second limit. The TCRT5000 datasheet gives a peak
-operating distance of 2.5 mm and a useful range of 0.2–15 mm; further from
-the paper the spot widens and a narrow space between two bars reads grey.
-This matches the team's observation that the small print decoded only
-after the sensor was lowered. Faster sampling cannot fix a blurred spot,
-so P1 must go with a recorded sensor height.
-
-**Proposed design.** Create a 10 ms cyclic handler (as Motion Control does
-in `task_motion.c`) that signals a semaphore, and replace the
-`tk_dly_tsk()` with a wait on it. The period becomes exactly one tick. The
-filter keeps 3 samples, so it then spans 30 ms instead of 60 ms; the
-report period (`S3_LINE_REPORT_MS` 30) is met instead of becoming 40.
-
-| Alternative | Why not chosen |
-|---|---|
-| `tk_dly_tsk(5)` | Still rounds to one or two ticks; the period would jitter between 10 and 20 ms |
-| 1 ms kernel tick | Ten times the tick interrupts for every task; changes all timing in the system |
-| Edge interrupts on the barcode sensor | Sensor is analogue (ADC2) with an adaptive threshold; would need a comparator output and a new design (Tribunal 1 R2 considered and deferred this) |
-
-**Risks.** The S3 loop runs at priority 1, above everything else. Twice as
-many passes doubles its CPU share; if a pass (ADC reads, filter, decoder,
-console print) ever takes more than 10 ms, the semaphore count builds up.
-The loop's worst-case time has not been measured. The steering filter
-responds twice as fast, so line following must be re-checked.
-
-**Acceptance.** On the car: logged bar durations become multiples of
-10 ms; SYS-01 three laps; SYS-02 five passes per print with the sensor
-height recorded, at least 4 of 5 and no wrong letter. Regression: all S3
-host checks (S3-U02, S3-U03 already model 10 ms sampling).
 
 ## P3 — Junction detection and the missing turn (F-02, F-03)
 
@@ -305,10 +247,10 @@ of the [demo report](DEMO_REPORT_2026-11-24.md)).
 
 **Why it has not been met.** The run depends on every element working in
 one go, so the blockers add up: the junction turn (P3), barcode reads
-below 4 of 5 (P1; F-18 is fixed) and line loss going unnoticed (P4). There is no
+below 4 of 5 (F-01 and F-18 are fixed, car test pending) and line loss going unnoticed (P4). There is no
 separate root cause to fix.
 
-**Proposed plan.** Apply and car-test P8, then P1 and the F-18 fix, then do the P3
+**Proposed plan.** Apply and car-test P8, then the 10 ms sampling and F-18 fixes, then do the P3
 bench test, one at a time, each with SYS-01 re-run to show line following
 is unchanged. Then three full-course runs with the console captured and
 the time recorded.

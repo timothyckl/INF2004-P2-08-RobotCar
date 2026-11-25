@@ -91,7 +91,11 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 /* ------------------------------------------------------------------------
  *  line_q (message buffer, owned by S2): the two front sensors report the
  *  latest steering observation. The Vehicle Controller alone translates
- *  it into Motion Control commands. Capacity is four 8-byte records.
+ *  it into Motion Control commands. Capacity is six 8-byte records (each
+ *  takes 12 bytes with the kernel's 4-byte header). S3 repeats an unchanged
+ *  report every 30 ms, so a full queue, which makes S3 latch STOP, needs
+ *  the controller to miss 180 ms; with four records at the old real 20 ms
+ *  sampling (a 40 ms repeat) it was 160 ms (S3 decision 10).
  * ------------------------------------------------------------------------ */
 #define S2_LINE_CENTER          0u
 #define S2_LINE_LEFT            1u
@@ -100,7 +104,7 @@ bool s2_remote_make (uint8_t command, uint32_t request_id,
 #define S2_LINE_STOP            4u
 #define S2_LINE_STRENGTH_MAX    UINT8_C(100)
 #define S2_LINE_MAX_AGE_MS      100u
-#define S2_LINE_Q_BYTES         48
+#define S2_LINE_Q_BYTES         72
 
 /* Report flags. BARCODE: the side sensor has a barcode capture in
    progress, so the controller softens strong curves (S2 decision 25). */

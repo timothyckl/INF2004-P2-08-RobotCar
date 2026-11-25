@@ -225,9 +225,13 @@ behaviour or the printed course barcodes.
 ## Barcode reporting in the line-follow image
 
 The mission image reads ADC2/GP28 in the same loop as the front sensors,
-so one task owns the ADC and the barcode state. The loop is configured for
-10 ms but runs every 20 ms on the car (`tk_dly_tsk()` rounding, finding
-F-01, proposal P1). The barcode
+so one task owns the ADC and the barcode state. A 10 ms cyclic handler
+(`S3_IR_SAMPLE_MS`) wakes the loop (decision 10). Until 2026-11-25 it slept
+with `tk_dly_tsk(10)` and really ran every 20 ms, because the kernel adds a
+tick to every delay (F-01). The steering filter (60 ms) and the
+white-baseline step (160 ms) keep the durations used on the car; every 10 s
+the loop prints its period, worst pass time and overruns (`s3 loop:`).
+The 10 ms period is implemented; a car run to confirm it is pending. The barcode
 never steers; each decoded letter goes to the Vehicle Controller, which
 acts on a mapped command at the next junction (below). Once a capture looks like a barcode (three
 runs of at least 60 ms), each line report carries `S2_LINE_FLAG_BARCODE`

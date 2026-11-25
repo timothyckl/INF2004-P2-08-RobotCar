@@ -11,6 +11,13 @@
 #define S3_IR_RIGHT_MASK  UINT8_C(2)
 #define S3_IR_ADC_MAX     UINT16_C(4095)
 
+/* Sample period of the S3 sensors (FR2). s3_follow.c reads them every
+ * S3_IR_SAMPLE_MS from a cyclic handler, and every time-based setting of
+ * subsystem 3 is converted to samples with it. Until 2026-11-25 the loop
+ * slept with tk_dly_tsk(10), which takes two 10 ms kernel ticks, so the
+ * sensors were really read every 20 ms (F-01). */
+#define S3_IR_SAMPLE_MS   10u
+
 typedef enum
 {
     S3_LINE_UNKNOWN = 0,
@@ -53,7 +60,7 @@ typedef struct
  * classifies it with its own adaptive state.
  */
 
-/** Call at a fixed rate. Required is 1..255 consecutive equal samples.
+/** Call every S3_IR_SAMPLE_MS. Required is 1..255 consecutive equal samples.
  * Reset the filter to {0} when changing required.
  * Returns true only when the current candidate has settled.
  */

@@ -47,6 +47,43 @@ static void known_defect(bool passed, char const * p_id, char const * p_name)
     }
 }
 
+/*
+ * S3-U06: sampling-period conversions (post-demo, 2026-11-25). The S3 loop
+ * now really samples every S3_IR_SAMPLE_MS (10 ms) instead of 20 ms (F-01),
+ * so settings tuned on the car are kept in milliseconds: the white
+ * baseline moves one count per 160 ms of steady white whatever the period,
+ * as it did with 8 samples at the old real 20 ms.
+ */
+static void test_ir_timing(void)
+{
+    s3_ir_adaptive_config_t const config = {136U, 96U, 168U, 100U, 80U};
+    s3_ir_adaptive_t state;
+    uint16_t const start = 136U;
+    uint32_t elapsed_ms = 0U;
+
+    check(10U == S3_IR_SAMPLE_MS, "S3 sample period is 10 ms (FR2)");
+    check(s3_ir_adaptive_init(&state, &config), "timing state accepted");
+
+    /* White a little above the baseline: it may only creep upwards. */
+    while ((elapsed_ms + S3_IR_SAMPLE_MS) < 160U)
+    {
+        (void)s3_ir_adaptive_update(&state, 150U);
+        elapsed_ms += S3_IR_SAMPLE_MS;
+    }
+    check(start == state.white_baseline,
+          "baseline holds for under 160 ms of white");
+    (void)s3_ir_adaptive_update(&state, 150U);
+    check((start + 1U) == state.white_baseline,
+          "baseline moves one count after 160 ms of white");
+
+    for (elapsed_ms = 0U; elapsed_ms < 1600U; elapsed_ms += S3_IR_SAMPLE_MS)
+    {
+        (void)s3_ir_adaptive_update(&state, 150U);
+    }
+    check((start + 11U) == state.white_baseline,
+          "baseline moves ten counts in 1.6 s more (6.25 counts/s)");
+}
+
 static void test_ir(void)
 {
     s3_filter_t filter = {0};
@@ -899,19 +936,21 @@ typedef struct
 #define REPLAY_WHITE_ADC    169U
 #define REPLAY_BLACK_ADC    2500U
 
-/* Feed one logged capture through the production pipeline as 1 ms ADC
- * samples: white idle, the runs (first black), then white until the
- * capture ends. Returns the first finished result. */
+/* Feed one logged capture through the production pipeline as ADC samples
+ * every S3_IR_SAMPLE_MS, as the firmware reads them: 1 s of white idle,
+ * the runs (first black; each rounded up to whole samples), then white
+ * until the capture ends. Returns the first finished result. */
 static s3_scan_result_t replay_capture(s3_barcode_t * p_barcode,
                                        recorded_capture_t const * p_capture,
                                        uint32_t * p_now, char * p_symbol)
 {
+    uint32_t const step_us = S3_IR_SAMPLE_MS * 1000U;
     s3_scan_result_t result = S3_SCAN_NONE;
     bool b_black = true;
 
-    for (uint16_t ms = 0U; ms < 1000U; ++ms)
+    for (uint16_t ms = 0U; ms < 1000U; ms = (uint16_t)(ms + S3_IR_SAMPLE_MS))
     {
-        *p_now += 1000U;
+        *p_now += step_us;
         (void)s3_barcode_update(p_barcode, REPLAY_WHITE_ADC, *p_now,
                                 p_symbol);
     }
@@ -921,16 +960,18 @@ static s3_scan_result_t replay_capture(s3_barcode_t * p_barcode,
         uint16_t const adc = b_black ? REPLAY_BLACK_ADC : REPLAY_WHITE_ADC;
 
         for (uint16_t ms = 0U; (ms < p_capture->runs_ms[idx])
-                               && (S3_SCAN_NONE == result); ++ms)
+                               && (S3_SCAN_NONE == result);
+             ms = (uint16_t)(ms + S3_IR_SAMPLE_MS))
         {
-            *p_now += 1000U;
+            *p_now += step_us;
             result = s3_barcode_update(p_barcode, adc, *p_now, p_symbol);
         }
         b_black = !b_black;
     }
-    for (uint16_t ms = 0U; (ms < 3000U) && (S3_SCAN_NONE == result); ++ms)
+    for (uint16_t ms = 0U; (ms < 3000U) && (S3_SCAN_NONE == result);
+         ms = (uint16_t)(ms + S3_IR_SAMPLE_MS))
     {
-        *p_now += 1000U;
+        *p_now += step_us;
         result = s3_barcode_update(p_barcode, REPLAY_WHITE_ADC, *p_now,
                                    p_symbol);
     }
@@ -940,7 +981,8 @@ static s3_scan_result_t replay_capture(s3_barcode_t * p_barcode,
 
 /*
  * S3-U05: replay of every barcode capture logged on the car (post-demo,
- * 2026-11-25), through s3_barcode_update() with the firmware's own limits.
+ * 2026-11-25), through s3_barcode_update() with the firmware's own limits
+ * and sample period.
  * The logs hold the runs of rejected captures only (and the two
  * stray-mark passes of test_scan_recorded(), logged before the 31-run path
  * existed). A decoder change may decode more of them, but none may decode
@@ -1104,7 +1146,7 @@ static void test_scan_failures(void)
  * bench readings (white about 170, solid black about 1690, faded black
  * about 1650) and the run widths follow the 40 mm/s observation (narrow
  * 120..220 ms, wide 420..540 ms). They are synthetic, not robot data. */
-#define TEST_SAMPLE_US      10000U
+#define TEST_SAMPLE_US      (S3_IR_SAMPLE_MS * 1000U)
 #define TEST_ADC_WHITE      170U
 #define TEST_ADC_BLACK      1690U
 #define TEST_ADC_FADED      1650U
@@ -1356,6 +1398,7 @@ static void test_unfiltered(void)
 int main(void)
 {
     test_ir();
+    test_ir_timing();
     test_unfiltered();
     test_barcode();
     test_navigation();

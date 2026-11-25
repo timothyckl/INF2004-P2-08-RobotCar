@@ -1493,6 +1493,55 @@ into wrong letters. F-25 stays a known defect in S3-U04
 
 Car test pending: SYS-02 with both prints.
 
+### 10. A 10 ms sampling period from a cyclic handler (F-01, 2026-11-25)
+
+Approved by Dalton on 2026-11-25 (S2 decision 35). Post-demo change.
+
+**Problem.** `s3_follow_run()` ended each pass with `tk_dly_tsk(10)`.
+µT-Kernel sets a delay's expiry to the last tick time plus the delay plus
+one tick (`knl_timer_insert_reltim()`, `kernel/tkernel/timer.c`), so on the
+10 ms tick a pass came every 20 ms: all 953 bar durations logged on the car
+are multiples of 20 ms. FR2 asks for 10 ms; decision 2 above already
+intended 10 ms (with a 3-sample, about 30 ms filter) but never got it.
+
+**Decision.** A cyclic handler (`TA_HLNG | TA_STA`, period
+`S3_IR_SAMPLE_MS` = 10 ms) wakes the loop with `tk_wup_tsk()`, and the loop
+waits with `tk_slp_tsk()`: the pattern Motion Control and the Obstacle Scan
+task already use. Motion Control's own console log shows the pattern holds
+its period on this board: 4,630 five-period intervals of 50 ms, 26 of 49 or
+51 ms (2026-11-10 logs). Before each wait the loop clears queued wake-ups
+with `tk_can_wup()`; any queued while a pass ran are overruns, counted and
+dropped, so a slow pass never causes a burst. The wait has a 50 ms guard.
+Every 10 s the loop prints its period, worst pass time, overruns and late
+wake-ups (`s3 loop:`), so the car run measures what the host cannot.
+
+**What is kept in time, not samples.** Line following passed SYS-01 and
+the demo with the real 20 ms period, and it cannot be re-tested now, so the
+settings tuned on the car keep their durations:
+
+| Setting | Was (at the real 20 ms) | Now (10 ms) |
+|---|---|---|
+| Steering filter (`S3_LINE_FILTER_MS`) | 3 samples = 60 ms | 6 samples = 60 ms |
+| White-baseline step (`S3_IR_ADAPTATION_MS`, both front sensors and the barcode sensor) | 8 samples = 160 ms | 16 samples = 160 ms |
+| Repeat of an unchanged line report (`S3_LINE_REPORT_MS`) | 30 ms set, 40 ms real | 30 ms |
+| `line_q` capacity (`S2_LINE_Q_BYTES`) | 4 records, 160 ms of controller stall before S3 latches STOP | 6 records (72 bytes), 180 ms |
+
+Each sample count is derived from `S3_IR_SAMPLE_MS`, with a compile-time
+check that it is whole and fits its counter. Decision 2's 30 ms filter
+remains the design intent; it is one constant (`S3_LINE_FILTER_MS` 30)
+once SYS-01 can be re-run with it.
+
+**Effect.** Barcode runs are timed to 10 ms, not 20 ms: a one-sample error
+on the small print's shortest runs (40 to 80 ms) drops from 25 to 50% to
+13 to 25% of the run. The F-18 fix (decision 9) is tested with 10 ms
+blips. The loop runs twice as often at the highest priority; its pass time
+is not measured, which the `s3 loop:` line will show (each pass is three
+ADC reads and integer logic, plus a decode only when a capture ends).
+Cost: +292 bytes of flash, 24 bytes more kernel memory for `line_q`.
+
+Car test pending: SYS-01 (3 laps), SYS-02 (both prints, bar durations
+should become multiples of 10 ms) and the `s3 loop:` line (overruns 0).
+
 ## Subsystem 4 — IMU and Terrain Monitoring (Khang)
 
 ### 1. Standalone ownership and wiring

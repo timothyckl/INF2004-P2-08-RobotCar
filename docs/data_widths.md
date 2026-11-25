@@ -21,7 +21,7 @@ not measured.
 | Telemetry frame v4 (MQTT, since 2026-11-24, S1 decision 7) | **Yes**, masks and shifts | 31 bytes per frame | 29 bytes (same method: two 12-bit pairs left byte-aligned) |
 | Same data unpacked (`telemetry_encoder_snapshot_t`) | reference | 48 bytes (44 in v3) | — |
 | Telemetry frame v3 (MQTT, until 2026-11-24) | **Yes** | 29 bytes | 27 bytes |
-| Interface queue records (IF-06, 09, 11, 21, motion_q) | No, whole-byte fields | 8 to 16 bytes each, 368 bytes of queue memory | about 290 bytes of queue memory |
+| Interface queue records (IF-06, 09, 11, 21, motion_q) | No, whole-byte fields | 8 to 16 bytes each, 392 bytes of queue memory | about 300 bytes of queue memory |
 | `s2_robot_state_t` (shared state) | No | 32 bytes | 21 bytes |
 | Barcode capture (`s3_capture_t`) | No | 264 bytes (on the initial task's stack) | 136 bytes with 16-bit ms runs |
 
@@ -91,7 +91,7 @@ of its static RAM; the network stack, USB and kernel make up the rest.
 | Largest application statics: `task_motion.o`, `task_controller.o`, `scan_task.o` | 549, 483, 472 |
 | Application task stacks (controller, motion, IMU, obstacle scan; `TASK_STACK_SIZE` 2048 each) | 8 192 |
 | Initial task stack (runs `s3_follow_run()`) | 4 096 |
-| Message-buffer memory (motion_q 160, remote_q 32, line_q 48, scan_q 96, nav_q 32) | 368 |
+| Message-buffer memory (motion_q 160, remote_q 32, line_q 72, scan_q 96, nav_q 32) | 392 |
 
 **Stack use (static estimate, 2026-11-25).** GCC `-fstack-usage` with the
 call graph gives the deepest chain of application frames from each task:
@@ -112,7 +112,7 @@ Each kernel message-buffer slot costs 4 bytes of header plus the record
 (the sizing comments in `subsystem2.h`). Ranges come from the `#define`s
 in the headers named.
 
-### `s2_line_report_t` (IF-06, `line_q`, 4 slots) — 8 bytes, 43 bits needed
+### `s2_line_report_t` (IF-06, `line_q`, 6 slots since S3 d10) — 8 bytes, 43 bits needed
 
 | Field | Range | Bits needed | Bits used |
 |---|---|---|---|
@@ -213,7 +213,7 @@ crosses barcodes at 40 mm/s and runs reach 2.5 s.
 | Change | RAM saved | Cost |
 |---|---|---|
 | Barcode runs as `uint16_t` milliseconds | 128 bytes of initial-task stack, more while a capture is copied for decoding | Decoder thresholds move from us to ms; re-run the S3 host cases and SYS-02 |
-| Pack the five queue records with masks and shifts | about 80 bytes of queue memory | Pack and unpack in every send and receive, inside the 10 ms controller and motion loops; re-run S2-U39/U40 and the integration tests |
+| Pack the five queue records with masks and shifts | about 90 bytes of queue memory | Pack and unpack in every send and receive, inside the 10 ms controller and motion loops; re-run S2-U39/U40 and the integration tests |
 | Pack `s2_robot_state_t` | 11 bytes | Every reader unpacks under `state_mutex`, which lengthens the time the lock is held |
 
 The telemetry frame is where packing pays: it is sent over WiFi every

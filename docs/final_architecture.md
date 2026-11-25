@@ -157,7 +157,7 @@ number means higher priority.
 
 | Task | Priority | Wake-up | Configured period | Measured | Inputs → outputs | Shared resources |
 |---|---|---|---|---|---|---|
-| Initial task: S3 line and barcode loop (`s3_follow_run()`) | 1 | `tk_dly_tsk(10)` | 10 ms | **20 ms** (953 bar durations, all 20 ms multiples) | ADC0–2 → `line_q`, `nav_q` | Letter table (single bytes) |
+| Initial task: S3 line and barcode loop (`s3_follow_run()`) | 1 | 10 ms cyclic handler (since 2026-11-25, S3 d10) | 10 ms | Demo firmware (`tk_dly_tsk(10)`): **20 ms** (953 bar durations, all 20 ms multiples). Cyclic version: not yet run on the car; prints worst pass and overruns | ADC0–2 → `line_q`, `nav_q` | Letter table (single bytes) |
 | USB console | 3 | Kernel | — | — | `tm_printf` | — |
 | WiFi, MQTT, S1 bridge | 4 | Kernel, link events | Telemetry 1 s, heartbeat 5 s | 98.6% of frames received (demo) | robot-state snapshot → MQTT; MQTT → `remote_q`, STOP flag | `state_mutex` (`TMO_POL`) |
 | Vehicle Controller (`controller_task`) | 14 | `controller_flags` wait, at most 10 ms | 10 ms | Not measured | Flags, queues, status snapshots → `motion_q`, `scan_q`, robot state | `state_mutex` (owner) |
@@ -318,8 +318,9 @@ have.
 | Item | Setting | Why |
 |---|---|---|
 | System timer | 1 MHz free-running (`TIMERAWL`), set by the kernel (S2 d7) | µs timestamps for encoder and echo edges and bar durations |
-| Kernel tick | 10 ms | Sets the granularity of every `tk_dly_tsk` (the cause of F-01) |
+| Kernel tick | 10 ms | Sets the granularity of every `tk_dly_tsk`, which adds one tick (the cause of F-01) |
 | Motion period | 10 ms cyclic handler | Exact period for the PID |
+| S3 sample period | 10 ms cyclic handler (`S3_IR_SAMPLE_MS`) | FR2; barcode runs timed to 10 ms (S3 d10) |
 | Motor PWM | 20 kHz | Above hearing; full 0..max duty range |
 | Servo PWM | 50 Hz, 1 µs | Standard hobby-servo frame |
 | ADC | 12-bit, channels 0–2 only; ADC3 (GP29) left for the radio | Three IR sensors |
@@ -349,13 +350,13 @@ table.
 | Autonomy | Line following, barcode decoding, hump measurement, obstacle scanning and bypass planning all run locally |
 | No dependence on the network | The car kept following for over 4 minutes with the link lost (SYS-01, 2026-11-20) |
 | Low latency for safety | STOP from a local source reaches the motors in under 1 ms (S2-H11); a network round trip would add an unbounded delay |
-| Low bandwidth | Raw data (ADC samples at 50 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 31-byte summary per second leaves it |
+| Low bandwidth | Raw data (ADC samples at 100 Hz × 3, IMU at 100 Hz, 19-angle scans) stays on the car; only a 31-byte summary per second leaves it |
 | Safe degradation | Losing WiFi clears the `link up` flag and nothing else (Tribunal 2 Entry 20) |
 | Privacy and exposure | No camera or location data exists; only run state and summary values leave the car, and the broker runs on the team laptop over a private hotspot. Credentials stay in the untracked `config/wifi_secrets.h` |
 | Working within resource limits | 264 KB SRAM and one core, so processing is integer-only and fixed-size: about 2 KB application RAM, no heap, no floating point (section 8) |
 
 **Cost of processing at the edge.** Every algorithm must fit the Pico's
-timing and memory. The 20 ms sampling limit (F-01) and the
+timing and memory. The 10 ms sampling period and the
 fixed-size bar buffer of the barcode decoder are direct results; a laptop
 could have run a heavier decoder, but only with network delay and the risk
 of losing the link mid-run.

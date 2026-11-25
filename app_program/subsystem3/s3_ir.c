@@ -3,7 +3,16 @@
 #include <stddef.h>
 
 #define S3_IR_FILTER_DIVISOR         2u
-#define S3_IR_ADAPTATION_SAMPLES     8u
+/* One white-baseline step per 160 ms of white: the rate tuned and run on
+ * the car while the loop really sampled every 20 ms (8 samples, F-01). */
+#define S3_IR_ADAPTATION_MS          160u
+#define S3_IR_ADAPTATION_SAMPLES     (S3_IR_ADAPTATION_MS / S3_IR_SAMPLE_MS)
+
+/* Whole samples, and a count that adaptation_count (uint8_t) can hold. */
+typedef char s3_ir_adaptation_fits_t[
+    ((0u == (S3_IR_ADAPTATION_MS % S3_IR_SAMPLE_MS))
+     && (S3_IR_ADAPTATION_SAMPLES >= 1u)
+     && (S3_IR_ADAPTATION_SAMPLES <= UINT8_MAX)) ? 1 : -1];
 
 static uint16_t s3_ir_threshold(uint16_t baseline, uint16_t margin);
 static bool s3_ir_adaptive_classify(s3_ir_adaptive_t * p_state,
