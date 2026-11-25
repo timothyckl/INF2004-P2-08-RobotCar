@@ -369,17 +369,17 @@ fill it in afterwards.
 | Gap | Effect | Next step |
 |---|---|---|
 | SYS-09 never passed | No proof of a full autonomous course | Full-course runs with the console captured |
-| SYS-02 below 4 of 5 | Barcode reliability not shown | 5 passes per print with sensor height and print condition recorded; 10 ms sampling first ([P1](post_demo_proposals.md)) |
+| SYS-02 below 4 of 5 | Barcode reliability not shown | 5 passes per print with sensor height and print condition recorded; 10 ms sampling is applied (S3 d10) |
 | A damaged capture that cannot be checked is rejected, not decoded: a 25-run capture with an element under 50 ms (S3 decision 12), and a damaged end that disagrees with the sentinel (decision 11). A noise pulse of 50 ms or more cannot be told from a real element | Fewer decodes from badly damaged captures; "never a wrong letter" rests on noise shorter than 50 ms, as recorded (19 to 40 ms) | Car test of the barcode prints (SYS-02) |
 | FR2 sampling at 20 ms, not 10 ms (F-01) | FR2 not met by the demo firmware | Fixed after the demo (S3 d10); re-measure bar durations on the car |
-| A car fully off the line reads as centred (F-17) | Line loss is not detected, so FR11's line-loss STOP cannot trigger | Sensor layout change ([P4](post_demo_proposals.md)) |
+| A car fully off the line reads as centred (F-17) | Line loss is not detected, so FR11's line-loss STOP cannot trigger | Requires hardware modification: a centre sensor ([P4](software_quality_review.md#10-proposed-changes-not-applied)) |
 | SYS-03 12-run set never run | Turn reliability not shown | 3 runs per command, console captured |
 | SYS-04 flat lap not run | False humps on a flat lap not excluded | One flat lap |
-| SYS-06 width fails | MR7 shape not met | Measured width correction or a larger beam allowance ([P6](post_demo_proposals.md)); geometry checked by S5-U72 |
-| NFR3 fault bitmask not implemented | Simultaneous faults not visible | [P8](post_demo_proposals.md); Tribunal 2 Entries 11 and 19 |
-| Watchdog off (`S2_WATCHDOG` 0) | A stalled task is not reset | Per-task check-in, then arm it after a car run ([P7](post_demo_proposals.md), Tribunal 2 Entry 4) |
-| Stack high-water marks not measured (F-24) | A stack overflow would corrupt memory without a clear fault; the controller's calculated margin is about 400 bytes | Paint the stacks and read the unused depth after a SYS-01 lap |
-| On-target `TEST=1` run last completed 2026-11-17 | Target-only unit tests not re-run on the v4 code | Run the `TEST=1` image |
+| SYS-06 width fails | MR7 shape not met | Requires calibration data: a beam allowance set from the measured beam ([P6](software_quality_review.md#10-proposed-changes-not-applied)); geometry checked by S5-U72 |
+| NFR3 fault bitmask not implemented | Simultaneous faults not visible | Not implemented: telemetry version 5 carries the first fault and its detail (S1 d8), not every concurrent fault; Tribunal 2 Entries 11 and 19 |
+| Watchdog off by default (`S2_WATCHDOG` 0) | A task that never yields is not reset; a blocked task still stops the motors (liveness guard, S2 d37 and d38) | One car run with it armed ([P7](software_quality_review.md#10-proposed-changes-not-applied), Tribunal 2 Entry 4) |
+| Stack high-water marks not measured (F-24) | A stack overflow would corrupt memory without a clear fault; the controller's calculated margin is about 400 bytes | Stacks are painted and reported at run end (S2-U83); read the `stack ...` lines after a SYS-01 lap |
+| On-target `TEST=1` run last completed 2026-11-17 | Target-only unit tests not re-run on the current code | Run the `TEST=1` image |
 
 ## 9. Assessment considerations from the brief
 

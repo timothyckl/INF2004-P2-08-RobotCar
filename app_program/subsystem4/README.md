@@ -163,9 +163,9 @@ evidence table are in the [subsystem 4 test log](../../testing/subsystem4/TEST_L
   and recalibrate.
 - Unstable stationary calibration restarts calibration in place; the sensor
   is not reopened. Neither recovery path requests vehicle movement.
-- An accelerometer overrun is not a fault: the kernel tick is 10 ms, so
-  reads are 10 to 20 ms apart and the newest of the 100 Hz samples is read
-  (decision 6).
+- An accelerometer overrun is not a fault: the kernel tick is 10 ms and
+  `tk_dly_tsk(10)` lasts two or three ticks, so reads are 20 or 30 ms apart
+  (review F-26) and the newest of the 100 Hz samples is read (decision 6).
 - A missing data-ready indication is polled again on the next period and
   is not immediately treated as a sensor failure.
 

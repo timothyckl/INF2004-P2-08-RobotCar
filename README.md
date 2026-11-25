@@ -25,7 +25,7 @@ a row says otherwise. The demo evidence is unchanged.
 | Mission requirement | Result | Evidence |
 |---|---|---|
 | Line following | Pass: 3 laps (SYS-01). The demo loop sampled every 20 ms, not the required 10 ms (F-01); post-demo: 10 ms cyclic period, car test pending | [system test log](testing/system/TEST_LOG.md) |
-| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; a damaged end plus a blip (F-25) is rejected rather than misread since 2026-11-26 (S3 decisions 11 and 12); host-verified only, not tested on the car | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
+| Barcode decoding | Partial: below 4 of 5 passes; no wrong letter seen on the car. Post-demo: the noise-blip wrong letter found on the host (F-18) is fixed; a damaged end plus a blip (F-25) is rejected rather than misread for noise under 50 ms at line-follow speed (S3 decisions 11 and 12); software-verified, physical acceptance not yet verified | [demo report](docs/DEMO_REPORT_2026-11-24.md) D-01 |
 | Barcode commands at junctions | Partial: left, right and U-turn shown before or at the demo; no turn in the assessed runs | D-02 |
 | Hump detection and highest peak | Detected in each assessed attempt; 6, 6, 7 mm for a 5 mm hump (within our ±2 mm engineering criterion). Post-demo: the detection threshold is back at the intended 6 mm (S4 d17); calibration for small humps needs the car | D-03 |
 | Obstacle detection | Pass (SYS-05) | system test log |
@@ -44,7 +44,7 @@ failures, is kept in the test logs.
 | Requirements → design → code → tests → results | [docs/requirements_traceability.md](docs/requirements_traceability.md) |
 | Architecture, RTOS tasks, state machines, sensors, timers, efficiency, edge computing | [docs/final_architecture.md](docs/final_architecture.md) |
 | Code and logic review, defects and proposals | [docs/software_quality_review.md](docs/software_quality_review.md) |
-| Proposed fixes after the demo (not in the demo firmware) | [docs/post_demo_proposals.md](docs/post_demo_proposals.md) |
+| Proposed changes not yet applied | [docs/software_quality_review.md](docs/software_quality_review.md#10-proposed-changes-not-applied), section 10 |
 | Tribunal 1 and 2 closure, fault handling | [docs/tribunal_closure.md](docs/tribunal_closure.md) |
 | BARR-C:2018 compliance and static analysis | [docs/barr_c_compliance.md](docs/barr_c_compliance.md) |
 | Data bit widths and memory | [docs/data_widths.md](docs/data_widths.md) |

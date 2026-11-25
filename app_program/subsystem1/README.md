@@ -21,13 +21,13 @@ straight (`S`) or U-turn (`U`) in subsystem 3's table, until the car
 restarts. A received command does not write motor PWM and does not bypass
 the Vehicle Controller.
 
-The telemetry frame is version 4 (`docs/decisions.md`, subsystem 1,
-decisions 1, 5 and 7), little-endian. The authoritative byte layout is the comment in
+The telemetry frame is version 5, 32 bytes (`docs/decisions.md`, subsystem 1,
+decisions 1, 5, 7 and 8), little-endian; the demo ran version 4 (31 bytes). The authoritative byte layout is the comment in
 `telemetry_encoder.h`; the decision lists every code. Summary:
 
 | Bytes | Content |
 |---:|---|
-| 0 | Format version (`4`) |
+| 0 | Format version (`5`) |
 | 1 | flags0: distance valid, stopped, MQTT link up, STOP latched, motion valid, line fresh, hump valid, last hump valid |
 | 2-5 | Snapshot time in milliseconds (`uint32_t`) |
 | 6-7 | Run distance in millimetres (`uint16_t`) |
@@ -40,6 +40,7 @@ decisions 1, 5 and 7), little-endian. The authoritative byte layout is the comme
 | 28 | Stop cause while STOP is latched (4 bits), barcode count (4 bits, wraps) |
 | 29 | Last completed hump in millimetres (`uint8_t`, saturated) |
 | 30 | Humps measured this run (`uint8_t`, saturates) |
+| 31 | Motion fault detail (3 bits), command held for the next junction (3 bits), junctions confirmed (low 2 bits, wraps) |
 
 A field is zero whenever its validity flag is clear. Bytes 0-7 keep their
 version 1 meaning and bytes 1-26 their version 2 meaning.
